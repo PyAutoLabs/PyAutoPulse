@@ -1,0 +1,168 @@
+"""pulse/status.py — render cached Pulse state with colour to stdout."""
+
+from __future__ import annotations
+
+import argparse
+import datetime
+import json
+import sys
+
+from pulse import state
+from pulse.pulse_color import (
+    c_bold, c_dim, c_fail, c_info, c_meta, c_ok, c_warn,
+    glyph_fail, glyph_ok, glyph_warn,
+)
+
+
+def _format_age(seconds: float | None) -> str:
+    if seconds is None:
+        return c_fail("no cache")
+    if seconds < 60:
+        return c_ok(f"{int(seconds)}s ago")
+    if seconds < 3600:
+        return c_meta(f"{int(seconds//60)}m ago")
+    return c_warn(f"{int(seconds//3600)}h ago")
+
+
+def _repo_glyph(repo: dict) -> tuple[str, str]:
+    """Return (glyph, label) summarising one repo's state. Worst-of."""
+    ci = repo.get("ci_status", {})
+    rs = repo.get("repo_state", {})
+    has_red = ci.get("conclusion") == "failure"
+    has_yellow = (
+        ci.get("status") in ("in_progress", "queued")
+        or rs.get("dirty_files", 0) > 0
+        or rs.get("ahead", 0) > 0
+        or rs.get("behind", 0) > 0
+        or (rs.get("branch") and rs.get("branch") != "main")
+    )
+
+    fragments: list[str] = []
+    if ci:
+        if ci.get("conclusion") == "success":
+            fragments.append(c_ok("CI ✓"))
+        elif ci.get("conclusion") == "failure":
+            fragments.append(c_fail("CI ✗"))
+        elif ci.get("status") in ("in_progress", "queued"):
+            fragments.append(c_warn(f"CI {ci['status']}"))
+        elif ci.get("conclusion"):
+            fragments.append(c_warn(f"CI {ci['conclusion']}"))
+    if rs:
+        if rs.get("branch") and rs.get("branch") != "main":
+            fragments.append(c_warn(f"branch={rs['branch']}"))
+        if rs.get("dirty_files"):
+            fragments.append(c_warn(f"dirty={rs['dirty_files']}"))
+        if rs.get("ahead"):
+            fragments.append(c_warn(f"ahead={rs['ahead']}"))
+        if rs.get("behind"):
+            fragments.append(c_warn(f"behind={rs['behind']}"))
+
+    if has_red:
+        glyph = glyph_fail()
+    elif has_yellow:
+        glyph = glyph_warn()
+    else:
+        glyph = glyph_ok()
+    label = "  ".join(fragments) if fragments else c_ok("clean / nominal")
+    return glyph, label
+
+
+def render(snapshot: dict, quiet: bool = False) -> None:
+    ts = snapshot.get("ts", "")
+    age = state.age_seconds()
+    print(c_bold("PyAutoPulse status") + "  " + c_meta(f"snapshot {ts}  ({_format_age(age)})"))
+    print()
+
+    # Per-repo table.
+    repos = snapshot.get("repos", {})
+    if repos:
+        print(c_info("REPOS"))
+        # Group repos by their group label for readability.
+        by_group: dict[str, list[tuple[str, dict]]] = {}
+        for name, body in sorted(repos.items()):
+            grp = body.get("repo_state", {}).get("group") or body.get("ci_status", {}).get("group") or "?"
+            by_group.setdefault(grp, []).append((name, body))
+        for group, entries in sorted(by_group.items()):
+            print("  " + c_meta(group))
+            for name, body in sorted(entries):
+                glyph, label = _repo_glyph(body)
+                print(f"    {glyph} {c_info(f'{name:<40}')} {label}")
+        print()
+
+    # Worktree drift block.
+    wt = snapshot.get("worktree_drift") or {}
+    if wt:
+        orphans = wt.get("orphans", [])
+        missing = wt.get("missing", [])
+        dirty = wt.get("dirty", [])
+        if dirty or missing:
+            print(c_info("WORKTREES") + " " + glyph_fail() + " " + c_fail(
+                f"{len(orphans)} orphan / {len(missing)} missing / {len(dirty)} dirty"
+            ))
+        elif orphans:
+            print(c_info("WORKTREES") + " " + glyph_warn() + " " + c_warn(f"{len(orphans)} orphan dir(s) (clean)"))
+        else:
+            print(c_info("WORKTREES") + " " + glyph_ok() + " " + c_ok("no drift"))
+        if not quiet and dirty:
+            for d in dirty[:5]:
+                print("  " + c_fail(f"  • {d.get('worktree')}/{d.get('repo')}: {d.get('dirty_files')} dirty"))
+        print()
+
+    # Script timing block.
+    timing = snapshot.get("script_timing") or {}
+    if timing:
+        r = timing.get("red_count", 0)
+        y = timing.get("yellow_count", 0)
+        g = timing.get("green_count", 0)
+        nb = timing.get("new_scripts_no_baseline", 0)
+        if r:
+            print(c_info("SCRIPT TIMINGS") + " " + glyph_fail() + " "
+                  + c_fail(f"{r} regressions (>3× baseline)") + "  " + c_warn(f"{y} slow (>1.5×)"))
+        elif y:
+            print(c_info("SCRIPT TIMINGS") + " " + glyph_warn() + " "
+                  + c_warn(f"{y} scripts >1.5× baseline") + "  " + c_meta(f"{g} within baseline"))
+        else:
+            print(c_info("SCRIPT TIMINGS") + " " + glyph_ok() + " "
+                  + c_ok(f"{g} within baseline") + "  " + c_meta(f"({nb} new, no baseline)"))
+        if not quiet:
+            for entry in timing.get("red", [])[:5]:
+                print("  " + c_fail(
+                    f"  ✗ {entry['project']}/{entry['file'].split('/')[-1]}  "
+                    f"{entry['latest_seconds']:.1f}s vs baseline {entry['baseline_seconds']:.1f}s  "
+                    f"({entry['ratio']}×)"
+                ))
+            for entry in timing.get("yellow", [])[:5]:
+                print("  " + c_warn(
+                    f"  ! {entry['project']}/{entry['file'].split('/')[-1]}  "
+                    f"{entry['latest_seconds']:.1f}s vs baseline {entry['baseline_seconds']:.1f}s  "
+                    f"({entry['ratio']}×)"
+                ))
+        print()
+
+
+def main(argv: list[str] | None = None) -> int:
+    ap = argparse.ArgumentParser(prog="pyauto-pulse status")
+    ap.add_argument("--json", action="store_true", help="print raw state.json to stdout")
+    ap.add_argument("--quiet", action="store_true", help="suppress drill-down details")
+    ap.add_argument("--no-color", action="store_true", help="disable ANSI colors")
+    ns = ap.parse_args(argv)
+    if ns.no_color:
+        import os
+        os.environ["NO_COLOR"] = "1"
+
+    snapshot = state.load()
+    if snapshot is None:
+        print(c_fail("no cache yet — run `pyauto-pulse tick` first"), file=sys.stderr)
+        return 2
+
+    if ns.json:
+        json.dump(snapshot, sys.stdout, indent=2, sort_keys=True)
+        sys.stdout.write("\n")
+        return 0
+
+    render(snapshot, quiet=ns.quiet)
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

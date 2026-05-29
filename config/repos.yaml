@@ -1,0 +1,89 @@
+# PyAutoPulse polled-repo registry.
+#
+# Repos listed here are polled every `tick` for CI / drift / timing.
+# Repos NOT listed are silently ignored. To add/remove a repo, edit
+# this file and reload the daemon (`pyauto-pulse stop && pyauto-pulse watch`).
+
+repos:
+  libraries:
+    - name: PyAutoConf
+      owner: PyAutoLabs
+    - name: PyAutoFit
+      owner: PyAutoLabs
+    - name: PyAutoArray
+      owner: PyAutoLabs
+    - name: PyAutoGalaxy
+      owner: PyAutoLabs
+    - name: PyAutoLens
+      owner: PyAutoLabs
+
+  build_workflow:
+    - name: PyAutoBuild
+      owner: PyAutoLabs
+    - name: PyAutoPrompt
+      owner: PyAutoLabs
+
+  workspaces:
+    - name: autofit_workspace
+      owner: PyAutoLabs
+    - name: autogalaxy_workspace
+      owner: PyAutoLabs
+    - name: autolens_workspace
+      owner: PyAutoLabs
+
+  workspaces_test:
+    - name: autofit_workspace_test
+      owner: PyAutoLabs
+    - name: autogalaxy_workspace_test
+      owner: PyAutoLabs
+    - name: autolens_workspace_test
+      owner: PyAutoLabs
+
+  workspaces_developer:
+    - name: autofit_workspace_developer
+      owner: Jammy2211
+    - name: autolens_workspace_developer
+      owner: PyAutoLabs
+
+  howto:
+    - name: HowToFit
+      owner: PyAutoLabs
+    - name: HowToGalaxy
+      owner: PyAutoLabs
+    - name: HowToLens
+      owner: PyAutoLabs
+
+  pipelines:
+    - name: euclid_strong_lens_modeling_pipeline
+      owner: PyAutoLabs
+
+# Excluded — not polled. Listed here for documentation only.
+excluded:
+  - admin_jammy           # personal tooling
+  - PyAutoPaper           # bibliography / wiki
+  - autolens_assistant    # public-facing template
+  - autolens_profiling    # profiling project
+  - z_help                # scratch
+  - z_projects            # in-progress science
+  - z_projects_complete   # archived science
+  - z_staging             # staging area
+  - z_vault               # archived material
+  - scripts               # utility scripts (not a checkout)
+
+# Tunable thresholds for the regression classifier.
+thresholds:
+  script_timing:
+    yellow_factor: 1.5    # latest / median > this → yellow
+    red_factor: 3.0       # latest / median > this → red
+    baseline_window: 7    # rolling-median window (last N runs)
+  repo_drift:
+    behind_yellow: 1      # 1+ commits behind → yellow
+    behind_red: 20        # 20+ commits behind → red
+    dirty_yellow: 1       # 1+ dirty files → yellow
+    dirty_red: 50         # 50+ dirty files → red
+  ci_status:
+    failure_red: true     # any latest=failure → red
+    in_progress_yellow: true
+  worktree_drift:
+    orphan_red: true      # orphan WT with uncommitted work → red
+    orphan_yellow: true   # orphan WT (clean) → yellow
