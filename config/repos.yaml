@@ -70,6 +70,19 @@ excluded:
   - z_vault               # archived material
   - scripts               # utility scripts (not a checkout)
 
+# Regenerated artifacts that perpetually show as dirty in `git status`.
+# A porcelain path matching any of these globs (or any untracked directory)
+# is counted as "generated noise" — informational, NOT actionable — and is
+# excluded from the dirty_yellow/dirty_red drift signal. Matched with
+# fnmatch, where `*` crosses `/` (so `*.fits` matches dataset/.../x.fits).
+# Tune freely; remove a pattern to make those changes surface as real drift.
+noise_globs:
+  - "*.fits"
+  - "*tracer.json"          # tracer.json, g_tracer.json, r_tracer.json
+  - "*point_dataset*.json"
+  - "*README.md"            # build-regenerated workspace docs
+  - "*test_report.md"
+
 # Tunable thresholds for the regression classifier.
 thresholds:
   script_timing:

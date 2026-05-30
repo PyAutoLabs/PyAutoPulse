@@ -21,10 +21,10 @@ check_one_repo() {
     return
   fi
 
-  local branch dirty ahead behind upstream
+  local branch porcelain ahead behind upstream
   branch="$(git -C "$repo_path" branch --show-current 2>/dev/null)"
   branch="${branch:-(detached)}"
-  dirty="$(git -C "$repo_path" status --porcelain 2>/dev/null | wc -l)"
+  porcelain="$(git -C "$repo_path" status --porcelain 2>/dev/null)"
   upstream="$(git -C "$repo_path" rev-parse --abbrev-ref --symbolic-full-name '@{u}' 2>/dev/null || echo "")"
 
   # Fetch silently before computing ahead/behind so the numbers are fresh.
@@ -42,35 +42,33 @@ check_one_repo() {
   local ts
   ts="$(date -Iseconds)"
 
-  pulse_write_json "$PULSE_PER_REPO_DIR/$name.repo_state.json" "$(python3 -c "
-import json
-print(json.dumps({
-    'name': '$name',
-    'group': '$group',
-    'present': True,
-    'branch': '$branch',
-    'dirty_files': $dirty,
-    'ahead': $ahead,
-    'behind': $behind,
-    'upstream': '$upstream',
-    'ts': '$ts',
-}))
-")"
+  # Delegate sidecar construction + dirty classification to pulse.noise.
+  # It splits the porcelain into real source drift vs regenerated-artifact
+  # noise and prints "<real> <noise>" back for the log summary below.
+  local counts_line dirty_real dirty_noise
+  counts_line="$(printf '%s' "$porcelain" | PYTHONPATH="$PULSE_HOME" python3 -m pulse.noise \
+      --name "$name" --group "$group" --branch "$branch" \
+      --ahead "$ahead" --behind "$behind" --upstream "$upstream" --ts "$ts" \
+      --out "$PULSE_PER_REPO_DIR/$name.repo_state.json" 2>/dev/null)"
+  dirty_real="${counts_line%% *}"; dirty_real="${dirty_real:-0}"
+  dirty_noise="${counts_line##* }"; dirty_noise="${dirty_noise:-0}"
 
-  # One-line summary.
-  local glyph dirty_str ahead_str behind_str branch_str
-  if [[ "$dirty" -eq 0 && "$ahead" -eq 0 && "$behind" -eq 0 && "$branch" == "main" ]]; then
+  # One-line summary. Only real drift drives the glyph; generated noise is
+  # shown dimmed so a workspace full of regenerated artifacts isn't yellow.
+  local glyph dirty_str noise_str ahead_str behind_str branch_str
+  if [[ "$dirty_real" -eq 0 && "$ahead" -eq 0 && "$behind" -eq 0 && "$branch" == "main" ]]; then
     glyph="$(glyph_ok)"
     branch_str="$(c_meta "$branch")"
     dirty_str=""; ahead_str=""; behind_str=""
   else
     glyph="$(glyph_warn)"
     if [[ "$branch" != "main" ]]; then branch_str="$(c_warn "$branch")"; else branch_str="$(c_meta main)"; fi
-    if [[ "$dirty" -gt 0 ]]; then dirty_str=" $(c_warn "dirty=$dirty")"; else dirty_str=""; fi
+    if [[ "$dirty_real" -gt 0 ]]; then dirty_str=" $(c_warn "dirty=$dirty_real")"; else dirty_str=""; fi
     if [[ "$ahead"  -gt 0 ]]; then ahead_str=" $(c_warn "ahead=$ahead")"; else ahead_str=""; fi
     if [[ "$behind" -gt 0 ]]; then behind_str=" $(c_warn "behind=$behind")"; else behind_str=""; fi
   fi
-  printf '%s %s %s%s%s%s\n' "$glyph" "$(c_info "$name")" "$branch_str" "$dirty_str" "$ahead_str" "$behind_str"
+  if [[ "$dirty_noise" -gt 0 ]]; then noise_str=" $(c_meta "+$dirty_noise gen")"; else noise_str=""; fi
+  printf '%s %s %s%s%s%s%s\n' "$glyph" "$(c_info "$name")" "$branch_str" "$dirty_str" "$noise_str" "$ahead_str" "$behind_str"
 }
 
 check_repo_state_all() {

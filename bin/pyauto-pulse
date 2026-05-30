@@ -16,6 +16,7 @@ source "$PULSE_HOME/pulse/_common.sh"
 SUBCOMMAND_ORDER=(
   "# Daemon"
   watch
+  live
   stop
   tick
   "# Reporting"
@@ -28,6 +29,7 @@ SUBCOMMAND_ORDER=(
 
 declare -A SHORT_DESC=(
   [watch]="Run the foreground monitoring loop (Ctrl-C to stop)"
+  [live]="Like watch, but force the live clear-and-redraw dashboard"
   [stop]="Stop a running daemon via pidfile"
   [tick]="One-shot refresh of the state cache"
   [status]="Print the cached state with green/yellow/red colouring"
@@ -52,6 +54,23 @@ EOF
 }
 cmd_watch() {
   exec bash "$PULSE_HOME/pulse/daemon.sh" "$@"
+}
+
+help_live() { cat <<EOF
+pyauto-pulse live [interval_seconds]
+
+Same as \`watch\`, but forces the live dashboard: each cycle clears the
+screen, streams the tick's per-repo progress, renders the colour-coded
+board, then shows a countdown to the next tick.
+
+\`watch\` auto-detects this when stdout is a terminal; \`live\` forces it on
+(PULSE_LIVE=1) even when output is redirected. Use plain \`watch\` (or
+PULSE_LIVE=0) for append-only streamed logs when run by an agent or piped
+to a file.
+EOF
+}
+cmd_live() {
+  exec env PULSE_LIVE=1 bash "$PULSE_HOME/pulse/daemon.sh" "$@"
 }
 
 help_stop() { cat <<EOF
@@ -141,6 +160,7 @@ invocation you can paste/run.
 
 Topics:
   ci <repo>              — the latest red CI run on that repo
+  dirty <repo>           — clean up a dirty working tree (real vs generated)
   drift                  — current worktree drift entries
   timing <project>       — script timing regressions for that project
 EOF
@@ -152,7 +172,7 @@ cmd_fix() {
   fi
   local topic="$1"; shift
   case "$topic" in
-    ci|drift|timing)
+    ci|dirty|drift|timing)
       env PYTHONPATH="$PULSE_HOME" python3 -m pulse.fix "$topic" "$@"
       ;;
     *)

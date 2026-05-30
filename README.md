@@ -25,11 +25,16 @@ All output is colour-coded:
 
 ## Quick start
 
-```bash
-# Install (one time)
-cd ~/Code/PyAutoLabs/PyAutoPulse
-pip install -e .
+PyAutoPulse is **not** pip-installed. Like the other PyAuto repos it runs
+from its checkout via `PYTHONPATH` + `PATH` in `~/.bashrc`:
 
+```bash
+# Setup (one time) — add to ~/.bashrc, then `source ~/.bashrc`
+export PYTHONPATH="$PYTHONPATH:$HOME/Code/PyAutoLabs/PyAutoPulse"   # makes `import pulse` work
+export PATH="$HOME/Code/PyAutoLabs/PyAutoPulse/bin:$PATH"          # puts the CLI on PATH
+```
+
+```bash
 # One-off refresh
 pyauto-pulse tick
 
@@ -37,10 +42,25 @@ pyauto-pulse tick
 pyauto-pulse status
 
 # Run the daemon in a tab (Ctrl-C to stop)
-pyauto-pulse watch                 # default 300s interval
+pyauto-pulse watch                 # default 300s interval; live board on a tty
 pyauto-pulse watch 60              # tick every 60s
+pyauto-pulse live                  # force the live clear-and-redraw board
 PULSE_INTERVAL=120 pyauto-pulse watch
 ```
+
+**Live vs plain.** On a terminal, `watch` clears the screen each cycle,
+streams the tick's per-repo progress, renders the colour board, then counts
+down to the next tick. When stdout is not a tty (an agent runs it, or output
+is piped), it degrades to plain streamed text. Force either with
+`PULSE_LIVE=1` (live) / `PULSE_LIVE=0` (plain); `live` is shorthand for the
+former.
+
+**Dirty vs generated.** Many workspaces commit regenerated artifacts
+(`*.fits`, `tracer.json`, build-generated `README.md`, …) that perpetually
+show as dirty. Pulse splits these out: `dirty=<n>` counts genuine source
+changes (drives yellow), while `+<n> gen` is the regenerated-artifact noise
+(informational, dimmed). The patterns live in `config/repos.yaml`
+(`noise_globs`). Untracked directories are treated as generated output too.
 
 After PyAutoBuild#TBD lands, the same commands work via the unified CLI:
 
@@ -64,6 +84,7 @@ When something turns red:
 
 ```bash
 pyauto-pulse fix ci <repo>          # CI failure
+pyauto-pulse fix dirty <repo>       # clean up a dirty tree (real vs generated)
 pyauto-pulse fix drift              # worktree state
 pyauto-pulse fix timing <project>   # script timing regressions
 ```
@@ -119,7 +140,7 @@ thresholds. To add or remove a repo, edit the file and restart the daemon
 ## Tests
 
 ```bash
-pip install -e .[dev]
+# Tests run with the venv's pytest — no install needed (stdlib + PyYAML only).
 pytest tests/ -v
 ```
 
