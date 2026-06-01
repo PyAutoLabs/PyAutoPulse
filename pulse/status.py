@@ -28,13 +28,22 @@ def _repo_glyph(repo: dict) -> tuple[str, str]:
     """Return (glyph, label) summarising one repo's state. Worst-of."""
     ci = repo.get("ci_status", {})
     rs = repo.get("repo_state", {})
-    has_red = ci.get("conclusion") == "failure"
+    pr = repo.get("open_prs", {})
+    # Only genuine source drift counts toward yellow; regenerated-artifact
+    # noise (dirty_noise) is informational. Fall back to the old dirty_files
+    # field for caches written before the real/noise split existed.
+    dirty_real = rs.get("dirty_real", rs.get("dirty_files", 0))
+    dirty_noise = rs.get("dirty_noise", 0)
+    pr_age = pr.get("max_age_days", 0) if pr.get("open_count") else 0
+
+    has_red = ci.get("conclusion") == "failure" or pr_age >= 30
     has_yellow = (
         ci.get("status") in ("in_progress", "queued")
-        or rs.get("dirty_files", 0) > 0
+        or dirty_real > 0
         or rs.get("ahead", 0) > 0
         or rs.get("behind", 0) > 0
         or (rs.get("branch") and rs.get("branch") != "main")
+        or pr_age >= 7
     )
 
     fragments: list[str] = []
@@ -50,12 +59,22 @@ def _repo_glyph(repo: dict) -> tuple[str, str]:
     if rs:
         if rs.get("branch") and rs.get("branch") != "main":
             fragments.append(c_warn(f"branch={rs['branch']}"))
-        if rs.get("dirty_files"):
-            fragments.append(c_warn(f"dirty={rs['dirty_files']}"))
+        if dirty_real:
+            fragments.append(c_warn(f"dirty={dirty_real}"))
+        if dirty_noise:
+            fragments.append(c_meta(f"+{dirty_noise} gen"))
         if rs.get("ahead"):
             fragments.append(c_warn(f"ahead={rs['ahead']}"))
         if rs.get("behind"):
             fragments.append(c_warn(f"behind={rs['behind']}"))
+    if pr.get("open_count"):
+        n = pr["open_count"]
+        if pr_age >= 30:
+            fragments.append(c_fail(f"PR×{n} (oldest {pr_age}d)"))
+        elif pr_age >= 7:
+            fragments.append(c_warn(f"PR×{n} (oldest {pr_age}d)"))
+        else:
+            fragments.append(c_info(f"PR×{n}"))
 
     if has_red:
         glyph = glyph_fail()

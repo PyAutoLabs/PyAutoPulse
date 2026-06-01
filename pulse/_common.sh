@@ -46,6 +46,23 @@ pulse_state_dir() {
   mkdir -p "$PULSE_STATE_DIR" "$PULSE_PER_REPO_DIR" "$PULSE_TIMINGS_DIR" "$PULSE_LOG_DIR"
 }
 
+# Live-mode detection. Live (clear-screen, redraw, countdown) when stdout is a
+# terminal; plain (streamed, append-only) otherwise — e.g. when an agent runs
+# the daemon or output is piped to a file. Override with PULSE_LIVE=1 (force
+# live) or PULSE_LIVE=0 (force plain).
+pulse_is_tty() {
+  case "${PULSE_LIVE:-}" in
+    1) return 0 ;;
+    0) return 1 ;;
+  esac
+  [ -t 1 ]
+}
+
+# Clear screen + home cursor (only meaningful on a tty).
+pulse_clear_screen() {
+  printf '\033[H\033[2J'
+}
+
 # Log to stdout (coloured by level) and to PULSE_TICK_LOG (plain).
 pulse_log() {
   local level="$1"; shift
