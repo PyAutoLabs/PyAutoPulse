@@ -89,6 +89,10 @@ noise_globs:
   - "*model.json"           # model snapshots
   - "*model_*.json"         # model_0.json, model_1.json, …
   - "*max_log_likelihood.json"  # result snapshots
+  - "*galaxies.json"        # generated dataset galaxies (HowTo*, *_test)
+  - "*summary.json"         # generated profiling summaries (postfix_N*_summary.json)
+  - "*comparison.json"      # jax_profiling result comparisons
+  - "*hpc_*.json"           # jax_profiling HPC run results (hpc_a100_fp64/mp.json)
   - "*.png"                 # generated plots / figures (global; PNGs here are always generated)
   - "*README.md"            # build-regenerated workspace docs
   - "*test_report.md"

@@ -18,6 +18,10 @@ GLOBS = [
     "*model.json",
     "*model_*.json",
     "*max_log_likelihood.json",
+    "*galaxies.json",
+    "*summary.json",
+    "*comparison.json",
+    "*hpc_*.json",
     "*.png",
     "*README.md",
     "*test_report.md",
@@ -126,6 +130,29 @@ def test_py_under_results_stays_real_despite_generated_neighbours():
     ]:
         assert expected in real, expected
         assert expected not in noise_files, expected
+
+
+def test_generated_leftover_json_is_noise():
+    # v1.5: galaxies / profiling-summary / jax-result jsons that escaped v1.4.
+    sample = [
+        " M dataset/imaging/simple/galaxies.json",
+        "?? ep/profiles/postfix_N3_summary.json",
+        " M jax_profiling/results/jit/imaging/delaunay/ao/comparison.json",
+        " M jax_profiling/results/jit/imaging/delaunay/ao/hpc_a100_fp64.json",
+        " M jax_profiling/results/jit/imaging/delaunay/ao/hpc_a100_mp.json",
+    ]
+    real, noise_files = noise.classify_dirty(sample, GLOBS)
+    assert real == []
+    assert len(noise_files) == len(sample)
+
+
+def test_summary_glob_does_not_hide_py_module():
+    # `*summary.json` must not be confused with a real summary.py source file.
+    real, noise_files = noise.classify_dirty(
+        [" M graphical/summary.py", " M x/postfix_summary.json"], GLOBS
+    )
+    assert "graphical/summary.py" in real
+    assert "x/postfix_summary.json" in noise_files
 
 
 def test_config_json_not_matched_by_data_or_model_globs():
