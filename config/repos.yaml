@@ -85,6 +85,7 @@ noise_globs:
   - "*.fits"
   - "*tracer.json"          # tracer.json, g_tracer.json, r_tracer.json
   - "*point_dataset*.json"
+  - "*positions.json"       # generated dataset positions (HowToLens etc.)
   - "*data.json"            # regenerated dataset payloads
   - "*model.json"           # model snapshots
   - "*model_*.json"         # model_0.json, model_1.json, …

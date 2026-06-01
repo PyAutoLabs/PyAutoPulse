@@ -14,6 +14,7 @@ GLOBS = [
     "*.fits",
     "*tracer.json",
     "*point_dataset*.json",
+    "*positions.json",
     "*data.json",
     "*model.json",
     "*model_*.json",
