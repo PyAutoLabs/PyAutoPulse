@@ -26,6 +26,9 @@ SUBCOMMAND_ORDER=(
   fix
   "# Deep checks (on-demand; too slow for the tick)"
   verify_install
+  "# URL hygiene (monitoring only — does not gate releases)"
+  url_check
+  url_sweep
   "# Meta"
   help
 )
@@ -40,6 +43,8 @@ declare -A SHORT_DESC=(
   [logs]="Tail the daemon log"
   [fix]="Bundle context for a specific topic and emit a Claude command"
   [verify_install]="Deep install-readiness: pip & conda install-path checks (slow)"
+  [url_check]="Offline forbidden-URL regex guard for one directory (default cwd)"
+  [url_sweep]="Sweep all PyAuto repos for forbidden URL patterns; write the sidecar"
   [help]="Show this help or details for a subcommand"
 )
 
@@ -280,6 +285,36 @@ cmd_verify_install() {
   mkdir -p "$PULSE_STATE_DIR"
   exec bash "$PULSE_HOME/pulse/checks/verify_install.sh" \
     --report-json "$PULSE_STATE_DIR/verify_install.json" "$@"
+}
+
+help_url_check() { cat <<EOF
+pyauto-pulse url_check [directory]
+
+Offline regex guard: scan rst/md/ipynb/py files under <directory> (default cwd)
+and exit non-zero if any forbidden Binder/Colab/owner URL pattern is present.
+
+Monitoring only — this is the per-directory check; \`url_sweep\` runs it across
+every PyAuto repo. URL hygiene does not gate releases.
+EOF
+}
+cmd_url_check() {
+  exec bash "$PULSE_HOME/pulse/checks/url_check.sh" "${1:-.}"
+}
+
+help_url_sweep() { cat <<EOF
+pyauto-pulse url_sweep
+
+Run the offline url_check across every PyAuto repo that used to carry its own
+url_check.yml, and write \$PULSE_STATE_DIR/url_check.json (consumed by
+\`pyauto-pulse status\`). Monitoring only — does not feed \`readiness\`.
+
+Takes a few seconds; runs on-demand and from the central url-check.yml cloud
+workflow, never in the <30s tick.
+EOF
+}
+cmd_url_sweep() {
+  mkdir -p "$PULSE_STATE_DIR"
+  exec bash "$PULSE_HOME/pulse/checks/url_sweep.sh"
 }
 
 # ---------- help dispatcher ----------

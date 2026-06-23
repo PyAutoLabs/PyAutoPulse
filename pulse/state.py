@@ -74,6 +74,7 @@ def aggregate() -> dict[str, Any]:
         "test_run": _read_json_or_default(PULSE_STATE_DIR / "test_run.json", {}),
         "version_skew": _read_json_or_default(PULSE_STATE_DIR / "version_skew.json", {}),
         "verify_install": _read_json_or_default(PULSE_STATE_DIR / "verify_install.json", {}),
+        "url_check": _read_json_or_default(PULSE_STATE_DIR / "url_check.json", {}),
     }
     atomic_write_json(PULSE_STATE_FILE, snapshot)
     return snapshot
