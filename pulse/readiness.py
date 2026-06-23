@@ -1,20 +1,26 @@
 """pulse/readiness.py — composite release-readiness verdict.
 
 Rolls the continuous-health signals already in ``state.json`` into a single
-green / yellow / red verdict answering "is it safe to release?". This is
-**advisory** — Pulse emits the verdict; PyAutoBuild keeps its own authoritative
-release gates and does not depend on this.
+green / yellow / red verdict answering "is it safe to release?". This is the
+**authoritative** release gate: PyAutoBuild is a pure executor and no longer
+runs its own readiness checks (``verify_workspace_versions.sh`` was removed) —
+the orchestrator (PyAutoAgent's release agent) consults this verdict via
+``pyauto-pulse readiness --json`` and only dispatches Build's ``release.yml``
+when it is green.
 
 The verdict uses STRICT release gates:
 
 - **RED** (a real blocker) if any of the 5 libraries has failing CI, is off
   ``main``, has uncommitted source changes, or is behind origin; or the latest
   Build test run is ``ready == false``; or any workspace is pinned AHEAD of its
-  installed library.
+  installed library, has a ``general.yaml`` ↔ ``version.txt`` MISMATCH, or an
+  unparseable (BAD) version; or the deep install verification last reported
+  ``ready == false``.
 - **YELLOW** (caution) for soft signals: script-timing regressions, stale open
-  PRs, stale parked scripts, a workspace pinned BEHIND, and — crucially — any
-  *unknown* (missing test-run report, a library absent from the snapshot). An
-  unknown is never silently treated as green and never escalated to red.
+  PRs, stale parked scripts, a workspace pinned BEHIND, a stale or never-run
+  install verification, and — crucially — any *unknown* (missing test-run
+  report, a library absent from the snapshot). An unknown is never silently
+  treated as green and never escalated to red.
 - **GREEN** otherwise.
 
 Red dominates yellow structurally: reasons are collected into separate lists
@@ -64,6 +70,12 @@ _WEIGHTS: dict[str, tuple[int, int]] = {
     "open_pr": (5, 15),
     "parked": (5, 15),
     "skew_behind": (8, 24),
+    "skew_mismatch": (25, 50),
+    "skew_bad": (25, 50),
+    "skew_unknown": (10, 30),
+    "install_not_ready": (40, 40),
+    "install_stale": (10, 10),
+    "install_unknown": (10, 10),
 }
 
 
@@ -84,11 +96,32 @@ def _as_int(v: Any, default: int = 0) -> int:
         return default
 
 
+# install verification older than this many days is treated as stale (YELLOW).
+INSTALL_STALE_DAYS = 14
+
+
+def _parse_ts(ts: Any) -> datetime.datetime | None:
+    try:
+        t = datetime.datetime.fromisoformat(str(ts))
+    except (TypeError, ValueError):
+        return None
+    return t.replace(tzinfo=datetime.timezone.utc) if t.tzinfo is None else t
+
+
+def _age_days(ts: Any, ref: datetime.datetime | None) -> float | None:
+    """Days between ``ts`` and ``ref`` (the snapshot time), or None if unknown."""
+    t = _parse_ts(ts)
+    if t is None or ref is None:
+        return None
+    return (ref - t).total_seconds() / 86400.0
+
+
 def compute(snapshot: dict | None, libraries: Sequence[str] | None = None) -> dict[str, Any]:
     """Pure verdict function. Never raises on missing/partial data."""
     snapshot = snapshot or {}
     libs = list(libraries) if libraries is not None else load_library_names()
     repos = snapshot.get("repos", {}) or {}
+    ref = _parse_ts(snapshot.get("ts")) or datetime.datetime.now(datetime.timezone.utc)
 
     red: list[str] = []
     yellow: list[str] = []
@@ -152,9 +185,47 @@ def compute(snapshot: dict | None, libraries: Sequence[str] | None = None) -> di
             if status == "AHEAD":
                 red.append(f"{w.get('workspace')}: pinned {w.get('pinned')} AHEAD of installed {w.get('installed')}")
                 hit("skew_ahead")
+            elif status == "MISMATCH":
+                red.append(
+                    f"{w.get('workspace')}: general.yaml {w.get('pinned')} "
+                    f"≠ version.txt {w.get('version_txt')}"
+                )
+                hit("skew_mismatch")
+            elif status == "BAD":
+                red.append(
+                    f"{w.get('workspace')}: unparseable version "
+                    f"(pinned {w.get('pinned')} / installed {w.get('installed')})"
+                )
+                hit("skew_bad")
             elif status == "BEHIND":
                 yellow.append(f"{w.get('workspace')}: pinned BEHIND installed {w.get('installed')}")
                 hit("skew_behind")
+            elif status == "UNKNOWN":
+                yellow.append(f"{w.get('workspace')}: installed {w.get('library')} version unknown")
+                hit("skew_unknown")
+
+    # --- install verification (deep check: RED on fail, YELLOW if stale/unrun) ---
+    vi = snapshot.get("verify_install")
+    if isinstance(vi, dict) and "ready" in vi:
+        if vi.get("ready") is False:
+            failed = [
+                str(c.get("check"))
+                for c in (vi.get("checks") or [])
+                if isinstance(c, dict) and str(c.get("status")).upper() == "FAIL"
+            ]
+            red.append(f"install verification FAILED (checks {', '.join(failed) or '?'})")
+            hit("install_not_ready")
+        else:
+            age = _age_days(vi.get("ts"), ref)
+            if age is None or age > INSTALL_STALE_DAYS:
+                yellow.append(
+                    "install verification stale "
+                    + ("(age unknown)" if age is None else f"({int(age)}d old)")
+                )
+                hit("install_stale")
+    else:
+        yellow.append("install verification not run")
+        hit("install_unknown")
 
     # --- script timing (YELLOW) ---
     timing = snapshot.get("script_timing", {}) or {}

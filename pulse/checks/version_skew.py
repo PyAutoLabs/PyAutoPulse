@@ -15,7 +15,17 @@ For each polled workspace that carries a pin, it resolves:
   library (keeps the tick cheap).
 
 Versions are ``YYYY.M.D.B`` tuples; the comparison yields MATCH / AHEAD /
-BEHIND / BAD. The result lands at ``$PULSE_STATE_DIR/version_skew.json``.
+BEHIND / BAD. Two further statuses mirror the hard-fail conditions of
+``verify_workspace_versions.sh`` so Pulse is the single authoritative readiness
+gate:
+
+- **MISMATCH** — ``config/general.yaml`` and ``version.txt`` both exist and
+  disagree (a release-blocking inconsistency in ``verify_workspace_versions.sh``).
+- **UNKNOWN** — the library ``__init__.py`` could not be read (the workspace is
+  pinned but the library isn't checked out); surfaced as caution, never a hard
+  block, matching the script's ``SKIP (cannot import …)`` behaviour.
+
+The result lands at ``$PULSE_STATE_DIR/version_skew.json``.
 """
 
 from __future__ import annotations
@@ -45,6 +55,7 @@ WORKSPACE_LIBRARY = {
     "HowToGalaxy": ("PyAutoGalaxy", "autogalaxy"),
     "HowToLens": ("PyAutoLens", "autolens"),
     "euclid_strong_lens_modeling_pipeline": ("PyAutoLens", "autolens"),
+    "autolens_assistant": ("PyAutoLens", "autolens"),
 }
 
 
@@ -58,24 +69,38 @@ def read_library_version(repo: str, pkg: str, root: Path = PYAUTO_ROOT) -> str |
     return m.group(1) if m else None
 
 
-def read_workspace_pin(workspace: str, root: Path = PYAUTO_ROOT) -> str | None:
-    """Pinned version: config/general.yaml:version.workspace_version, then version.txt."""
+def read_workspace_pin_sources(
+    workspace: str, root: Path = PYAUTO_ROOT
+) -> tuple[str | None, str | None]:
+    """Return ``(general_yaml_version, version_txt)`` — either may be None.
+
+    Kept separate from :func:`read_workspace_pin` so callers that need to detect
+    a general.yaml ↔ version.txt disagreement (MISMATCH) can see both sources.
+    """
     ws = root / workspace
+    yaml_v: str | None = None
     general = ws / "config" / "general.yaml"
     if general.is_file():
         try:
             data = yaml.safe_load(general.read_text()) or {}
             pin = (data.get("version") or {}).get("workspace_version")
             if pin:
-                return str(pin)
+                yaml_v = str(pin).strip()
         except yaml.YAMLError:
             pass
+    txt_v: str | None = None
     vtxt = ws / "version.txt"
     if vtxt.is_file():
         t = vtxt.read_text().strip()
         if t:
-            return t
-    return None
+            txt_v = t
+    return yaml_v, txt_v
+
+
+def read_workspace_pin(workspace: str, root: Path = PYAUTO_ROOT) -> str | None:
+    """Pinned version: config/general.yaml:version.workspace_version, then version.txt."""
+    yaml_v, txt_v = read_workspace_pin_sources(workspace, root)
+    return yaml_v if yaml_v is not None else txt_v
 
 
 def _tuple(v: str) -> tuple[int, ...] | None:
@@ -98,17 +123,37 @@ def compare(pinned: str | None, installed: str | None) -> str:
 def run(root: Path = PYAUTO_ROOT) -> dict[str, Any]:
     workspaces = []
     for workspace, (repo, pkg) in WORKSPACE_LIBRARY.items():
-        pinned = read_workspace_pin(workspace, root)
-        if pinned is None:
+        yaml_v, txt_v = read_workspace_pin_sources(workspace, root)
+        if yaml_v is None and txt_v is None:
             continue  # no pin (e.g. *_test workspaces) → not a skew candidate
         installed = read_library_version(repo, pkg, root)
+
+        # general.yaml ↔ version.txt disagreement is the same release-blocking
+        # condition verify_workspace_versions.sh fails on.
+        if yaml_v is not None and txt_v is not None and yaml_v != txt_v:
+            workspaces.append(
+                {
+                    "workspace": workspace,
+                    "library": repo,
+                    "pinned": yaml_v,
+                    "version_txt": txt_v,
+                    "installed": installed,
+                    "status": "MISMATCH",
+                }
+            )
+            continue
+
+        pinned = yaml_v if yaml_v is not None else txt_v
+        # Library not checked out → cannot compare. Caution, not a hard block
+        # (mirrors the script's "SKIP (cannot import <pkg>)").
+        status = "UNKNOWN" if installed is None else compare(pinned, installed)
         workspaces.append(
             {
                 "workspace": workspace,
                 "library": repo,
                 "pinned": pinned,
                 "installed": installed,
-                "status": compare(pinned, installed),
+                "status": status,
             }
         )
     result = {"workspaces": workspaces}
@@ -125,10 +170,19 @@ def main(argv: list[str]) -> int:
     workspaces = result["workspaces"]
     ahead = [w for w in workspaces if w["status"] == "AHEAD"]
     behind = [w for w in workspaces if w["status"] == "BEHIND"]
+    mismatch = [w for w in workspaces if w["status"] == "MISMATCH"]
     bad = [w for w in workspaces if w["status"] == "BAD"]
-    if ahead or bad:
+    blocking = ahead + mismatch + bad  # release-blocking statuses
+    if blocking:
         glyph = glyph_fail()
-        label = c_fail(f"{len(ahead)} ahead") + (f" {c_warn(str(len(bad)) + ' bad')}" if bad else "")
+        parts = []
+        if ahead:
+            parts.append(c_fail(f"{len(ahead)} ahead"))
+        if mismatch:
+            parts.append(c_fail(f"{len(mismatch)} mismatch"))
+        if bad:
+            parts.append(c_warn(f"{len(bad)} bad"))
+        label = " ".join(parts)
     elif behind:
         glyph = glyph_warn()
         label = c_warn(f"{len(behind)} behind")

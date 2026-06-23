@@ -186,19 +186,36 @@ def render(snapshot: dict, quiet: bool = False) -> None:
     # Version-skew block — only shown when something is out of sync.
     skew = (snapshot.get("version_skew") or {}).get("workspaces", [])
     off = [w for w in skew if w.get("status") not in ("MATCH", None)]
+    _BLOCKING = ("AHEAD", "MISMATCH", "BAD")
     if off:
-        ahead = [w for w in off if w.get("status") == "AHEAD"]
-        glyph = glyph_fail() if ahead else glyph_warn()
+        blocking = [w for w in off if w.get("status") in _BLOCKING]
+        glyph = glyph_fail() if blocking else glyph_warn()
         print(c_info("VERSION SKEW") + " " + glyph + " "
-              + (c_fail(f"{len(ahead)} ahead") if ahead else c_warn(f"{len(off)} skewed")))
+              + (c_fail(f"{len(blocking)} blocking") if blocking else c_warn(f"{len(off)} skewed")))
         if not quiet:
             for w in off[:8]:
-                colour = c_fail if w.get("status") == "AHEAD" else c_warn
+                colour = c_fail if w.get("status") in _BLOCKING else c_warn
                 print("  " + colour(
                     f"  {w.get('status')}: {w.get('workspace')} pinned {w.get('pinned')} "
                     f"vs installed {w.get('installed')}"
                 ))
         print()
+
+    # Install-verification block — only shown when run and not a fresh pass.
+    vi = snapshot.get("verify_install") or {}
+    if isinstance(vi, dict) and "ready" in vi:
+        ready = vi.get("ready")
+        if ready is False:
+            fails = [c.get("check") for c in (vi.get("checks") or [])
+                     if str(c.get("status")).upper() == "FAIL"]
+            print(c_info("INSTALL VERIFY") + " " + glyph_fail() + " "
+                  + c_fail(f"FAILED ({', '.join(map(str, fails)) or '?'})")
+                  + " " + c_meta(f"({vi.get('ts', '?')})"))
+            print()
+        elif not quiet:
+            print(c_info("INSTALL VERIFY") + " " + glyph_ok() + " "
+                  + c_ok("passed") + " " + c_meta(f"(last run {vi.get('ts', '?')})"))
+            print()
 
 
 def main(argv: list[str] | None = None) -> int:

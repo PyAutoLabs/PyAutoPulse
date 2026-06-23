@@ -24,6 +24,8 @@ SUBCOMMAND_ORDER=(
   readiness
   logs
   fix
+  "# Deep checks (on-demand; too slow for the tick)"
+  verify_install
   "# Meta"
   help
 )
@@ -37,6 +39,7 @@ declare -A SHORT_DESC=(
   [readiness]="Print the release-readiness verdict (green/yellow/red + score)"
   [logs]="Tail the daemon log"
   [fix]="Bundle context for a specific topic and emit a Claude command"
+  [verify_install]="Deep install-readiness: pip & conda install-path checks (slow)"
   [help]="Show this help or details for a subcommand"
 )
 
@@ -179,11 +182,13 @@ the last tick and persisted to \$PULSE_STATE_DIR/release_ready.json.
 
 RED  = a real release blocker (a library's CI failing / off main / dirty /
        behind; the latest Build test run not ready; a workspace pinned ahead
-       of its installed library).
+       of its installed library, or with a general.yaml/version.txt mismatch).
 YELLOW = caution (timing regressions, stale PRs/parked scripts, a workspace
        pinned behind, or an unknown such as a missing test-run report).
 
-Advisory only — PyAutoBuild keeps its own authoritative release gates.
+This is the authoritative release gate: PyAutoBuild is a pure executor and
+runs no readiness checks of its own. The release agent dispatches release.yml
+only when this verdict is green.
 EOF
 }
 cmd_readiness() {
@@ -246,6 +251,35 @@ cmd_fix() {
       return 2
       ;;
   esac
+}
+
+help_verify_install() { cat <<EOF
+pyauto-pulse verify_install [CHECKS...] [--version V] [--testpypi] [--keep]
+
+Deep release-readiness check for PyAutoLens: runs independent pip & conda
+install-path checks (A–E) in throwaway venvs/conda envs and reports a
+PASS/FAIL/SKIP table.
+
+This is SLOW (it installs from PyPI across several Python versions) — it is an
+**on-demand** check, never part of the <30s \`tick\` loop. It writes a JSON
+sidecar to \$PULSE_STATE_DIR/verify_install.json that \`readiness\` consumes:
+a FAIL makes readiness RED; a result older than 14 days (or never run) is
+YELLOW.
+
+Checks:
+  A  pip install autolens (default python3) + start_here.py + welcome.py
+  B  pip install autolens + import on python3.9 / 3.10 / 3.11 / 3.13
+  C  conda install flow (python=3.12) + start_here.py + welcome.py
+  D  pip install "autolens[optional]" resolves and imports
+  E  pip install autolens==<pinned> installs by explicit pin
+
+Arguments are forwarded to the underlying check; see \`-h\` on the script.
+EOF
+}
+cmd_verify_install() {
+  mkdir -p "$PULSE_STATE_DIR"
+  exec bash "$PULSE_HOME/pulse/checks/verify_install.sh" \
+    --report-json "$PULSE_STATE_DIR/verify_install.json" "$@"
 }
 
 # ---------- help dispatcher ----------

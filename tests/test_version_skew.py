@@ -68,3 +68,52 @@ def test_run_skips_unpinned_and_classifies(tmp_path):
     by_ws = {w["workspace"]: w for w in result["workspaces"]}
     assert by_ws["autolens_workspace"]["status"] == "AHEAD"
     assert "autofit_workspace" not in by_ws  # unpinned/missing → skipped
+
+
+def test_read_workspace_pin_sources_returns_both(tmp_path):
+    ws = tmp_path / "autolens_workspace"
+    (ws / "config").mkdir(parents=True)
+    (ws / "config" / "general.yaml").write_text(
+        "version:\n  workspace_version: 2026.6.1.2\n"
+    )
+    (ws / "version.txt").write_text("2026.1.1.1\n")
+    assert vs.read_workspace_pin_sources("autolens_workspace", root=tmp_path) == (
+        "2026.6.1.2",
+        "2026.1.1.1",
+    )
+
+
+def test_run_flags_general_yaml_version_txt_mismatch(tmp_path):
+    # general.yaml and version.txt both present and disagree → MISMATCH,
+    # the same release-blocking condition verify_workspace_versions.sh fails on.
+    ws = tmp_path / "autolens_workspace"
+    (ws / "config").mkdir(parents=True)
+    (ws / "config" / "general.yaml").write_text(
+        "version:\n  workspace_version: 2026.6.1.2\n"
+    )
+    (ws / "version.txt").write_text("2026.1.1.1\n")
+    lens = tmp_path / "PyAutoLens" / "autolens"
+    lens.mkdir(parents=True)
+    (lens / "__init__.py").write_text('__version__ = "2026.6.1.2"\n')
+    result = vs.run(root=tmp_path)
+    w = {x["workspace"]: x for x in result["workspaces"]}["autolens_workspace"]
+    assert w["status"] == "MISMATCH"
+    assert w["pinned"] == "2026.6.1.2" and w["version_txt"] == "2026.1.1.1"
+
+
+def test_run_unknown_when_library_not_checked_out(tmp_path):
+    # Pinned workspace but no library __init__.py to read → UNKNOWN (caution),
+    # never a hard block — mirrors the script's "SKIP (cannot import <pkg>)".
+    ws = tmp_path / "autolens_workspace" / "config"
+    ws.mkdir(parents=True)
+    (ws / "general.yaml").write_text("version:\n  workspace_version: 2026.6.1.1\n")
+    result = vs.run(root=tmp_path)
+    w = {x["workspace"]: x for x in result["workspaces"]}["autolens_workspace"]
+    assert w["status"] == "UNKNOWN"
+    assert w["installed"] is None
+
+
+def test_autolens_assistant_is_a_pinned_workspace():
+    # Gap closed vs verify_workspace_versions.sh, which covers 8 workspaces.
+    assert "autolens_assistant" in vs.WORKSPACE_LIBRARY
+    assert vs.WORKSPACE_LIBRARY["autolens_assistant"] == ("PyAutoLens", "autolens")
