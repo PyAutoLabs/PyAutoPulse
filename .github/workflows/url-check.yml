@@ -1,0 +1,117 @@
+name: URL Check (central)
+
+# Centralised URL-hygiene sweep for the PyAuto ecosystem.
+#
+# Replaces the 12 per-repo .github/workflows/url_check.yml workflows: instead of
+# each repo running its own offline + live URL audit and opening its own
+# [url-check] issue, PyAutoPulse sweeps every repo here and consolidates into a
+# SINGLE [url-check] tracking issue. Mirrors the pulse-health.yml pattern.
+#
+# Monitoring only — URL hygiene does not gate releases (Pulse owns the release
+# gate via `readiness`, which this does not touch).
+
+on:
+  schedule:
+    - cron: "0 4 * * 1"   # Mondays 04:00 UTC (same cadence as the old per-repo crons)
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+env:
+  REPOS: >-
+    HowToFit HowToGalaxy HowToLens
+    PyAutoConf PyAutoFit PyAutoArray PyAutoGalaxy PyAutoLens
+    autofit_workspace autogalaxy_workspace autolens_workspace
+    euclid_strong_lens_modeling_pipeline
+
+jobs:
+  url-check:
+    name: Central URL sweep
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout PyAutoPulse
+        uses: actions/checkout@v4
+        with:
+          path: pulse
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install requests (for the live HTTP audit)
+        run: pip install --quiet requests
+
+      - name: Sweep every repo (offline + live)
+        id: sweep
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set +e
+          body="# URL hygiene report"$'\n'
+          offline_hits=0
+          live_hits=0
+          for repo in $REPOS; do
+            git clone --depth 1 "https://github.com/PyAutoLabs/$repo" "checkout/$repo" >/dev/null 2>&1
+            if [ ! -d "checkout/$repo" ]; then
+              body+=$'\n'"## $repo"$'\n'"- clone failed (skipped)"$'\n'
+              continue
+            fi
+            # Offline forbidden-pattern guard.
+            off="$(bash pulse/pulse/checks/url_check.sh "checkout/$repo" 2>/dev/null)"
+            off_rc=$?
+            # Live HTTP audit (honours the repo's .url_check_allowlist.txt).
+            live="$(bash pulse/pulse/checks/url_check_live.sh "checkout/$repo" 2>/dev/null)"
+            live_rc=$?
+            if [ "$off_rc" -ne 0 ] || [ "$live_rc" -ne 0 ]; then
+              body+=$'\n'"## $repo"$'\n'
+              if [ "$off_rc" -ne 0 ]; then
+                offline_hits=$((offline_hits + 1))
+                body+="### Forbidden URL patterns (offline)"$'\n'
+                body+='```'$'\n'"$off"$'\n''```'$'\n'
+              fi
+              if [ "$live_rc" -ne 0 ]; then
+                live_hits=$((live_hits + 1))
+                body+="### Broken live URLs"$'\n'"$live"$'\n'
+              fi
+            fi
+          done
+
+          if [ "$offline_hits" -eq 0 ] && [ "$live_hits" -eq 0 ]; then
+            status=green
+            body="✅ URL hygiene clean across all $(echo $REPOS | wc -w) repos (offline + live)."
+          else
+            status=red
+          fi
+          printf '%s\n' "$body" > /tmp/url_body.md
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          cat /tmp/url_body.md
+
+      - name: Open or update the [url-check] issue
+        if: steps.sweep.outputs.status != 'green'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          existing=$(gh issue list --repo "$GITHUB_REPOSITORY" --search '"[url-check]"' --state open --json number --jq '.[0].number // empty')
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --repo "$GITHUB_REPOSITORY" --body-file /tmp/url_body.md
+          else
+            gh issue create --repo "$GITHUB_REPOSITORY" \
+              --title "[url-check] Broken or forbidden URLs across the ecosystem" \
+              --body-file /tmp/url_body.md \
+              --label url-check 2>/dev/null \
+              || gh issue create --repo "$GITHUB_REPOSITORY" \
+                --title "[url-check] Broken or forbidden URLs across the ecosystem" \
+                --body-file /tmp/url_body.md
+          fi
+
+      - name: Close the [url-check] issue when clean
+        if: steps.sweep.outputs.status == 'green'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          for n in $(gh issue list --repo "$GITHUB_REPOSITORY" --search '"[url-check]"' --state open --json number --jq '.[].number'); do
+            gh issue close "$n" --repo "$GITHUB_REPOSITORY" --comment "Central URL sweep is clean — closing automatically."
+          done

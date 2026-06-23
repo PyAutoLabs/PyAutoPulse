@@ -217,6 +217,25 @@ def render(snapshot: dict, quiet: bool = False) -> None:
                   + c_ok("passed") + " " + c_meta(f"(last run {vi.get('ts', '?')})"))
             print()
 
+    # URL hygiene block — monitoring only (never gates readiness).
+    uc = snapshot.get("url_check") or {}
+    if isinstance(uc, dict) and uc.get("repos"):
+        total = uc.get("total_findings", 0)
+        dirty = [r for r in uc["repos"] if r.get("findings", 0) > 0]
+        if dirty:
+            print(c_info("URL HYGIENE") + " " + glyph_warn() + " "
+                  + c_warn(f"{total} forbidden pattern(s) in {len(dirty)} repo(s)")
+                  + " " + c_meta(f"(swept {uc.get('ts', '?')})"))
+            if not quiet:
+                for r in dirty[:8]:
+                    print("  " + c_warn(f"  {r['repo']}: {r['findings']}"))
+            print()
+        elif not quiet:
+            print(c_info("URL HYGIENE") + " " + glyph_ok() + " "
+                  + c_ok(f"{len(uc['repos'])} repos clean")
+                  + " " + c_meta(f"(swept {uc.get('ts', '?')})"))
+            print()
+
 
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(prog="pyauto-pulse status")
