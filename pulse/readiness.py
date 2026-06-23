@@ -1,16 +1,20 @@
 """pulse/readiness.py — composite release-readiness verdict.
 
 Rolls the continuous-health signals already in ``state.json`` into a single
-green / yellow / red verdict answering "is it safe to release?". This is
-**advisory** — Pulse emits the verdict; PyAutoBuild keeps its own authoritative
-release gates and does not depend on this.
+green / yellow / red verdict answering "is it safe to release?". This is the
+**authoritative** release gate: PyAutoBuild is a pure executor and no longer
+runs its own readiness checks (``verify_workspace_versions.sh`` was removed) —
+the orchestrator (PyAutoAgent's release agent) consults this verdict via
+``pyauto-pulse readiness --json`` and only dispatches Build's ``release.yml``
+when it is green.
 
 The verdict uses STRICT release gates:
 
 - **RED** (a real blocker) if any of the 5 libraries has failing CI, is off
   ``main``, has uncommitted source changes, or is behind origin; or the latest
   Build test run is ``ready == false``; or any workspace is pinned AHEAD of its
-  installed library.
+  installed library, has a ``general.yaml`` ↔ ``version.txt`` MISMATCH, or an
+  unparseable (BAD) version.
 - **YELLOW** (caution) for soft signals: script-timing regressions, stale open
   PRs, stale parked scripts, a workspace pinned BEHIND, and — crucially — any
   *unknown* (missing test-run report, a library absent from the snapshot). An
@@ -64,6 +68,9 @@ _WEIGHTS: dict[str, tuple[int, int]] = {
     "open_pr": (5, 15),
     "parked": (5, 15),
     "skew_behind": (8, 24),
+    "skew_mismatch": (25, 50),
+    "skew_bad": (25, 50),
+    "skew_unknown": (10, 30),
 }
 
 
@@ -152,9 +159,24 @@ def compute(snapshot: dict | None, libraries: Sequence[str] | None = None) -> di
             if status == "AHEAD":
                 red.append(f"{w.get('workspace')}: pinned {w.get('pinned')} AHEAD of installed {w.get('installed')}")
                 hit("skew_ahead")
+            elif status == "MISMATCH":
+                red.append(
+                    f"{w.get('workspace')}: general.yaml {w.get('pinned')} "
+                    f"≠ version.txt {w.get('version_txt')}"
+                )
+                hit("skew_mismatch")
+            elif status == "BAD":
+                red.append(
+                    f"{w.get('workspace')}: unparseable version "
+                    f"(pinned {w.get('pinned')} / installed {w.get('installed')})"
+                )
+                hit("skew_bad")
             elif status == "BEHIND":
                 yellow.append(f"{w.get('workspace')}: pinned BEHIND installed {w.get('installed')}")
                 hit("skew_behind")
+            elif status == "UNKNOWN":
+                yellow.append(f"{w.get('workspace')}: installed {w.get('library')} version unknown")
+                hit("skew_unknown")
 
     # --- script timing (YELLOW) ---
     timing = snapshot.get("script_timing", {}) or {}

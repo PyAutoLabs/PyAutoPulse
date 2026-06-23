@@ -69,6 +69,37 @@ def test_version_skew_ahead_is_red():
     assert v["score"] == 75
 
 
+def test_version_skew_mismatch_is_red():
+    snap = make_snapshot(version_skew={"workspaces": [
+        {"workspace": "autolens_workspace", "pinned": "2026.6.1.2",
+         "version_txt": "2026.1.1.1", "installed": "2026.6.1.2", "status": "MISMATCH"}
+    ]})
+    v = compute(snap)
+    assert v["verdict"] == "red"
+    assert any("general.yaml" in r and "version.txt" in r for r in v["red_reasons"])
+    assert v["score"] == 75
+
+
+def test_version_skew_bad_is_red():
+    snap = make_snapshot(version_skew={"workspaces": [
+        {"workspace": "autolens_workspace", "pinned": "not.a.version",
+         "installed": "2026.6.1.2", "status": "BAD"}
+    ]})
+    v = compute(snap)
+    assert v["verdict"] == "red"
+    assert any("unparseable" in r for r in v["red_reasons"])
+
+
+def test_version_skew_unknown_is_yellow():
+    snap = make_snapshot(version_skew={"workspaces": [
+        {"workspace": "autolens_workspace", "library": "PyAutoLens",
+         "pinned": "2026.6.1.1", "installed": None, "status": "UNKNOWN"}
+    ]})
+    v = compute(snap)
+    assert v["verdict"] == "yellow"
+    assert any("version unknown" in r for r in v["yellow_reasons"])
+
+
 def test_library_off_main_is_red():
     snap = make_snapshot()
     snap["repos"]["PyAutoFit"]["repo_state"]["branch"] = "feature/x"

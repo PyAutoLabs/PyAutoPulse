@@ -179,11 +179,13 @@ the last tick and persisted to \$PULSE_STATE_DIR/release_ready.json.
 
 RED  = a real release blocker (a library's CI failing / off main / dirty /
        behind; the latest Build test run not ready; a workspace pinned ahead
-       of its installed library).
+       of its installed library, or with a general.yaml/version.txt mismatch).
 YELLOW = caution (timing regressions, stale PRs/parked scripts, a workspace
        pinned behind, or an unknown such as a missing test-run report).
 
-Advisory only — PyAutoBuild keeps its own authoritative release gates.
+This is the authoritative release gate: PyAutoBuild is a pure executor and
+runs no readiness checks of its own. The release agent dispatches release.yml
+only when this verdict is green.
 EOF
 }
 cmd_readiness() {
