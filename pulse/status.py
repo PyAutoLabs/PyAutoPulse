@@ -201,6 +201,22 @@ def render(snapshot: dict, quiet: bool = False) -> None:
                 ))
         print()
 
+    # Install-verification block — only shown when run and not a fresh pass.
+    vi = snapshot.get("verify_install") or {}
+    if isinstance(vi, dict) and "ready" in vi:
+        ready = vi.get("ready")
+        if ready is False:
+            fails = [c.get("check") for c in (vi.get("checks") or [])
+                     if str(c.get("status")).upper() == "FAIL"]
+            print(c_info("INSTALL VERIFY") + " " + glyph_fail() + " "
+                  + c_fail(f"FAILED ({', '.join(map(str, fails)) or '?'})")
+                  + " " + c_meta(f"({vi.get('ts', '?')})"))
+            print()
+        elif not quiet:
+            print(c_info("INSTALL VERIFY") + " " + glyph_ok() + " "
+                  + c_ok("passed") + " " + c_meta(f"(last run {vi.get('ts', '?')})"))
+            print()
+
 
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(prog="pyauto-pulse status")

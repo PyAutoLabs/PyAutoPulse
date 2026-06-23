@@ -26,6 +26,9 @@ def make_snapshot(**overrides) -> dict:
         "script_timing": {"red_count": 0, "yellow_count": 0, "green_count": 10},
         "test_run": {"ready": True, "passed": 100, "failed": 0, "parked_stale_count": 0},
         "version_skew": {"workspaces": [{"workspace": "autolens_workspace", "status": "MATCH"}]},
+        # fresh passing install verification (ts == snapshot ts → age 0, not stale)
+        "verify_install": {"ready": True, "ts": "2026-06-01T00:00:00+00:00",
+                           "version": "2026.6.1.1", "checks": []},
     }
     snap.update(overrides)
     return snap
@@ -98,6 +101,42 @@ def test_version_skew_unknown_is_yellow():
     v = compute(snap)
     assert v["verdict"] == "yellow"
     assert any("version unknown" in r for r in v["yellow_reasons"])
+
+
+def test_install_verification_failed_is_red():
+    snap = make_snapshot(verify_install={
+        "ready": False, "ts": "2026-06-01T00:00:00+00:00",
+        "checks": [{"check": "A", "status": "PASS"}, {"check": "B", "status": "FAIL"}],
+    })
+    v = compute(snap)
+    assert v["verdict"] == "red"
+    assert any("install verification FAILED" in r and "B" in r for r in v["red_reasons"])
+    assert v["score"] == 60
+
+
+def test_install_verification_stale_is_yellow():
+    snap = make_snapshot(verify_install={
+        "ready": True, "ts": "2026-05-01T00:00:00+00:00",  # ~31d before snapshot ts
+        "checks": [],
+    })
+    v = compute(snap)
+    assert v["verdict"] == "yellow"
+    assert any("install verification stale" in r for r in v["yellow_reasons"])
+
+
+def test_install_verification_not_run_is_yellow():
+    snap = make_snapshot()
+    snap.pop("verify_install")
+    v = compute(snap)
+    assert v["verdict"] == "yellow"
+    assert any("install verification not run" in r for r in v["yellow_reasons"])
+
+
+def test_install_verification_fresh_pass_is_green():
+    # baseline already carries a fresh passing verify_install → stays green.
+    v = compute(make_snapshot())
+    assert v["verdict"] == "green"
+    assert not any("install" in r for r in v["reasons"])
 
 
 def test_library_off_main_is_red():
