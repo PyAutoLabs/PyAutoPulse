@@ -43,7 +43,7 @@ HEART_STATE_DIR = Path(
 # of the workspace-integration verdict. The tick reads only its conclusion +
 # timestamp via one `gh run list` call (cheap, same budget as ci_status); the
 # full report.json detail still comes from a local `autobuild run_all`.
-VALIDATION_REPO = "PyAutoLabs/PyAutoHeart"
+VALIDATION_REPO = os.environ.get("GITHUB_REPOSITORY", "PyAutoLabs/PyAutoPulse")
 VALIDATION_WORKFLOW = "workspace-validation.yml"
 
 
@@ -181,8 +181,10 @@ def run(results_dir: Path | None = None, fetch_cloud: bool | None = None) -> dic
         summary["cloud_url"] = cloud["url"]
         summary["source"] = "cloud"
 
-    HEART_STATE_DIR.mkdir(parents=True, exist_ok=True)
-    (HEART_STATE_DIR / "test_run.json").write_text(json.dumps(summary, indent=2))
+    sys.path.insert(0, str(HEART_HOME))
+    from heart import state
+
+    state.atomic_write_json(HEART_STATE_DIR / "test_run.json", summary)
     return summary
 
 

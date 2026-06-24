@@ -182,8 +182,10 @@ def run(results_dir: Path | None = None) -> dict[str, Any]:
         "yellow": sorted(findings["yellow"], key=lambda x: -x["ratio"]),
     }
 
-    HEART_STATE_DIR.mkdir(parents=True, exist_ok=True)
-    (HEART_STATE_DIR / "script_timing.json").write_text(json.dumps(summary, indent=2))
+    sys.path.insert(0, str(HEART_HOME))
+    from heart import state
+
+    state.atomic_write_json(HEART_STATE_DIR / "script_timing.json", summary)
     return summary
 
 

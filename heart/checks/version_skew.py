@@ -162,8 +162,10 @@ def run(root: Path = PYAUTO_ROOT) -> dict[str, Any]:
             }
         )
     result = {"workspaces": workspaces}
-    HEART_STATE_DIR.mkdir(parents=True, exist_ok=True)
-    (HEART_STATE_DIR / "version_skew.json").write_text(json.dumps(result, indent=2))
+    sys.path.insert(0, str(HEART_HOME))
+    from heart import state
+
+    state.atomic_write_json(HEART_STATE_DIR / "version_skew.json", result)
     return result
 
 
