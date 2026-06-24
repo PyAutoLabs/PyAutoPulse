@@ -1,0 +1,107 @@
+name: Library Tests (reusable)
+
+# Pulse-owned reusable unit-test workflow for the 5 PyAuto libraries
+# (Stage 4 Phase A). Each library's own .github/workflows/main.yml is now a thin
+# caller:
+#
+#   jobs:
+#     unittest:
+#       uses: PyAutoLabs/PyAutoPulse/.github/workflows/lib-tests.yml@main
+#       with: { package: autolens }
+#       secrets: inherit
+#
+# PR-time gating is preserved: the caller's `unittest` job runs on push/PR and is
+# the required status check. Pulse owns the test definition; the library just
+# triggers it. Dependency-aware (conf→none, fit/array→conf, galaxy→conf+fit+array,
+# lens→all) so lightweight libs don't install the heavy stack. GitHub-hosted +
+# pip caching.
+
+on:
+  workflow_call:
+    inputs:
+      package:
+        description: "PyAuto package under test: autoconf|autofit|autoarray|autogalaxy|autolens"
+        required: true
+        type: string
+
+jobs:
+  unittest:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.12", "3.13"]
+    steps:
+      - name: Map package → repo + dependency chain
+        id: map
+        run: |
+          case "${{ inputs.package }}" in
+            autoconf)   repo=PyAutoConf;   deps="" ;;
+            autofit)    repo=PyAutoFit;    deps="PyAutoConf" ;;
+            autoarray)  repo=PyAutoArray;  deps="PyAutoConf" ;;
+            autogalaxy) repo=PyAutoGalaxy; deps="PyAutoConf PyAutoFit PyAutoArray" ;;
+            autolens)   repo=PyAutoLens;   deps="PyAutoConf PyAutoFit PyAutoArray PyAutoGalaxy" ;;
+            *) echo "::error::unknown package '${{ inputs.package }}'"; exit 1 ;;
+          esac
+          echo "repo=$repo" >> "$GITHUB_OUTPUT"
+          echo "deps=$deps" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout ${{ steps.map.outputs.repo }} (repo under test, at the PR ref)
+        uses: actions/checkout@v4
+        with:
+          path: ${{ steps.map.outputs.repo }}
+
+      - name: Clone dependency libraries (matching branch if it exists)
+        run: |
+          set -e
+          BRANCH="${{ github.ref_name }}"
+          for dep in ${{ steps.map.outputs.deps }}; do
+            git clone "https://github.com/PyAutoLabs/$dep" "$dep"
+            if git -C "$dep" ls-remote --exit-code --heads origin "$BRANCH" >/dev/null 2>&1; then
+              echo "Branch $BRANCH exists in $dep — checking it out"
+              git -C "$dep" checkout "$BRANCH"
+            fi
+          done
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+
+      - name: Install (deps + package from source, [optional] extras)
+        run: |
+          pip install --upgrade pip setuptools wheel
+          pip install pytest coverage pytest-cov
+          for r in ${{ steps.map.outputs.deps }} ${{ steps.map.outputs.repo }}; do
+            pip install "./$r[optional]"
+          done
+
+      - name: Run tests
+        run: |
+          export JAX_ENABLE_X64=True
+          ROOT="$(pwd)"
+          for r in ${{ steps.map.outputs.deps }} ${{ steps.map.outputs.repo }}; do
+            export PYTHONPATH="$PYTHONPATH:$ROOT/$r"
+          done
+          pushd "${{ steps.map.outputs.repo }}"
+          pytest --cov ${{ inputs.package }} --cov-report xml:coverage.xml
+
+      - name: Upload coverage to Codecov
+        if: always()
+        uses: codecov/codecov-action@v4
+        with:
+          files: ${{ steps.map.outputs.repo }}/coverage.xml
+          fail_ci_if_error: false
+
+      - name: Slack on failure
+        if: ${{ failure() }}
+        uses: slackapi/slack-github-action@v1.21.0
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        with:
+          channel-id: C03S98FEDK2
+          payload: |
+            {
+              "text": "${{ github.repository }}/${{ github.ref_name }} (Python ${{ matrix.python-version }}) build result: ${{ job.status }}\n${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            }
