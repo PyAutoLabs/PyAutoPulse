@@ -51,7 +51,8 @@ def _repo_glyph(repo: dict) -> tuple[str, str]:
         if ci.get("conclusion") == "success":
             fragments.append(c_ok("CI ✓"))
         elif ci.get("conclusion") == "failure":
-            fragments.append(c_fail("CI ✗"))
+            wf = ci.get("workflow")
+            fragments.append(c_fail(f"CI ✗ {wf}".rstrip() if wf else "CI ✗"))
         elif ci.get("status") in ("in_progress", "queued"):
             fragments.append(c_warn(f"CI {ci['status']}"))
         elif ci.get("conclusion"):

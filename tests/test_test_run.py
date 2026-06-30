@@ -96,10 +96,57 @@ def test_cloud_verdict_no_runs_is_none(monkeypatch):
 def test_run_cloud_overrides_ready_keeps_local_detail(monkeypatch, tmp_path):
     (tmp_path / "report.json").write_text(json.dumps({
         "ready": True, "run_label": "local", "summary": {"passed": 5, "failed": 0}}))
-    monkeypatch.setattr(tr, "_cloud_verdict", lambda: {
+    monkeypatch.setattr(tr, "_server_verdict", lambda: {
         "ready": False, "ts": "2026-06-20T00:00:00Z", "run_id": 7, "url": "U"})
     out = tr.run(results_dir=tmp_path, fetch_cloud=True)
     assert out["ready"] is False                  # cloud is authoritative
     assert out["ts"] == "2026-06-20T00:00:00Z"
     assert out["source"] == "cloud"
     assert out["passed"] == 5                      # detail retained from local report
+
+
+# --- server-first signal (finding 3): report absent, server green --------------
+
+def test_run_server_green_with_no_local_report_is_ready(monkeypatch, tmp_path):
+    """The mobile case: no local report.json at all, but the server (MCP/gh)
+    reports green → ready True, NOT unknown/None."""
+    monkeypatch.setattr(tr, "_server_verdict", lambda: {
+        "ready": True, "ts": "2026-06-25T00:00:00Z", "run_id": 9, "url": "U"})
+    out = tr.run(results_dir=tmp_path, fetch_cloud=True)  # empty dir → no report
+    assert out["ready"] is True
+    assert out["source"] == "cloud"
+    assert out["ts"] == "2026-06-25T00:00:00Z"
+    assert out["cloud_url"] == "U"
+
+
+def test_agent_supplied_verdict_works_without_gh(monkeypatch, tmp_path):
+    """`gh` absent → _cloud_verdict None, but a Brain/MCP-written file is used."""
+    vfile = tmp_path / "cloud_validation.json"
+    vfile.write_text(json.dumps({"ready": True, "ts": "2026-06-26T00:00:00Z", "run_id": 11}))
+    monkeypatch.setattr(tr, "VALIDATION_FILE", vfile)
+    monkeypatch.setattr(tr, "_cloud_verdict", lambda: None)  # no gh
+    v = tr._server_verdict()
+    assert v is not None and v["ready"] is True and v["run_id"] == 11
+
+
+def test_agent_supplied_verdict_normalises_raw_run(monkeypatch, tmp_path):
+    """The file may hold a raw Actions run record (conclusion/status)."""
+    vfile = tmp_path / "cloud_validation.json"
+    vfile.write_text(json.dumps({"conclusion": "failure", "status": "completed",
+                                 "createdAt": "t", "id": 5, "html_url": "h"}))
+    monkeypatch.setattr(tr, "VALIDATION_FILE", vfile)
+    v = tr._agent_supplied_verdict()
+    assert v["ready"] is False and v["run_id"] == 5 and v["url"] == "h"
+
+
+def test_server_verdict_prefers_agent_file_over_gh(monkeypatch, tmp_path):
+    vfile = tmp_path / "cloud_validation.json"
+    vfile.write_text(json.dumps({"ready": False, "ts": "t", "run_id": 1}))
+    monkeypatch.setattr(tr, "VALIDATION_FILE", vfile)
+    monkeypatch.setattr(tr, "_cloud_verdict", lambda: {"ready": True, "ts": "t2", "run_id": 2, "url": "u"})
+    assert tr._server_verdict()["run_id"] == 1     # file wins
+
+
+def test_agent_supplied_verdict_absent_is_none(monkeypatch, tmp_path):
+    monkeypatch.setattr(tr, "VALIDATION_FILE", tmp_path / "nope.json")
+    assert tr._agent_supplied_verdict() is None

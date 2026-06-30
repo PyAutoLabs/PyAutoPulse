@@ -20,7 +20,7 @@ repos:
   build_workflow:
     - name: PyAutoBuild
       owner: PyAutoLabs
-    - name: PyAutoPrompt
+    - name: PyAutoMind
       owner: PyAutoLabs
 
   workspaces:
@@ -57,10 +57,38 @@ repos:
     - name: euclid_strong_lens_modeling_pipeline
       owner: PyAutoLabs
 
+  # The PyAuto "organism" repos — the reasoning/health/memory layer. Heart
+  # watching itself (and its siblings) is intentional and useful: drift or a
+  # red CI on these is just as real as on a library.
+  organism:
+    - name: PyAutoBrain
+      owner: PyAutoLabs
+    - name: PyAutoHeart
+      owner: PyAutoLabs
+    - name: PyAutoMemory
+      owner: PyAutoLabs
+
+# Required gating workflows per group, keyed by the GitHub Actions workflow
+# *name* (the `name:` field, e.g. "Smoke Tests"), matched against
+# `workflowName` from `gh run list`. `ci_status` records the conclusion of each
+# of these on the `main` HEAD commit, and `readiness` gates (RED) on a failure
+# of any of them. Groups absent here are observed but advisory — their latest
+# run is recorded for the dashboard but never blocks a release.
+#
+# NOTE: url-checking is deliberately NOT a required workflow. It moved off the
+# per-repo `url_check.yml` into PyAutoHeart's central `url-check.yml` sweep and
+# is monitoring-only (see the URL HYGIENE block in status.py) — a forbidden-URL
+# finding never gates a release, so a green `url_check` cannot mask a red
+# `smoke_tests`.
+required_workflows:
+  libraries: ["Tests"]                              # main.yml (pytest, 3.12 + 3.13)
+  workspaces: ["Smoke Tests", "Navigator Check"]    # smoke_tests.yml + navigator_check.yml
+  workspaces_test: ["Smoke Tests"]                  # smoke_tests.yml
+  howto: ["Smoke Tests", "Navigator Check"]         # smoke_tests.yml + navigator_check.yml
+
 # Excluded — not polled. Listed here for documentation only.
 excluded:
   - admin_jammy           # personal tooling
-  - PyAutoPaper           # bibliography / wiki
   - autolens_assistant    # public-facing template
   - autolens_profiling    # profiling project
   - z_help                # scratch
