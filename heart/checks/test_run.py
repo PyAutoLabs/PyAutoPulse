@@ -39,16 +39,63 @@ HEART_STATE_DIR = Path(
     or Path.home() / ".pyauto-heart"
 )
 
-# The cloud workspace-validation workflow (Heart-owned) is the continuous source
-# of the workspace-integration verdict. The tick reads only its conclusion +
-# timestamp via one `gh run list` call (cheap, same budget as ci_status); the
-# full report.json detail still comes from a local `autobuild run_all`.
-VALIDATION_REPO = os.environ.get("GITHUB_REPOSITORY", "PyAutoLabs/PyAutoPulse")
+# The cloud workspace-validation workflow (Heart-owned, lives in PyAutoHeart's
+# own .github/workflows/workspace-validation.yml) is the continuous source of
+# the workspace-integration verdict. The tick reads only its conclusion +
+# timestamp (cheap, same budget as ci_status); the full report.json detail still
+# comes from a local `autobuild run_all` when one is present.
+VALIDATION_REPO = os.environ.get("GITHUB_REPOSITORY", "PyAutoLabs/PyAutoHeart")
 VALIDATION_WORKFLOW = "workspace-validation.yml"
+
+# Agent/MCP-supplied conclusion drop point. On a mobile/cloud session there is no
+# `gh` (and no local report.json); Brain queries the run conclusion via its MCP
+# GitHub tools and writes it here so the server signal still reaches readiness.
+# Same shape as `_cloud_verdict()`: {ready, ts, run_id, url}. Overridable for
+# tests via HEART_VALIDATION_FILE.
+VALIDATION_FILE = Path(
+    os.environ.get("HEART_VALIDATION_FILE")
+    or (HEART_STATE_DIR / "cloud_validation.json")
+)
+
+
+def _verdict_from_run(r: dict[str, Any]) -> dict[str, Any]:
+    """Normalise one Actions run record into {ready, ts, run_id, url}.
+
+    ready is True/False on a completed run, None while in progress. Accepts both
+    the `gh`/REST shape (`databaseId`) and the MCP shape (`id`)."""
+    conclusion = r.get("conclusion")
+    status = r.get("status")
+    ready: bool | None = None if status != "completed" else (conclusion == "success")
+    return {
+        "ready": ready,
+        "ts": r.get("createdAt") or r.get("created_at"),
+        "run_id": r.get("databaseId") or r.get("id"),
+        "url": r.get("url") or r.get("html_url"),
+    }
+
+
+def _agent_supplied_verdict() -> dict[str, Any] | None:
+    """Read a Brain/MCP-supplied conclusion file, or None if absent/malformed.
+
+    The file may hold either an already-normalised verdict ({ready, ts, ...}) or
+    a raw Actions run record (with conclusion/status) which we normalise."""
+    data = _read_json(VALIDATION_FILE)
+    if not isinstance(data, dict) or not data:
+        return None
+    if "ready" in data:
+        return {
+            "ready": data.get("ready"),
+            "ts": data.get("ts") or data.get("createdAt"),
+            "run_id": data.get("run_id") or data.get("databaseId") or data.get("id"),
+            "url": data.get("url") or data.get("html_url"),
+        }
+    if "conclusion" in data or "status" in data:
+        return _verdict_from_run(data)
+    return None
 
 
 def _cloud_verdict() -> dict[str, Any] | None:
-    """Latest cloud workspace-validation run: {ready, ts, run_id, url} or None.
+    """Latest cloud workspace-validation run via `gh`: {ready, ts, run_id, url}.
 
     ready is True/False on a completed run, None while in progress. Never raises;
     returns None if gh is unavailable or no run exists."""
@@ -64,20 +111,16 @@ def _cloud_verdict() -> dict[str, Any] | None:
         return None
     if not runs:
         return None
-    r = runs[0]
-    conclusion = r.get("conclusion")
-    status = r.get("status")
-    ready: bool | None
-    if status != "completed":
-        ready = None
-    else:
-        ready = conclusion == "success"
-    return {
-        "ready": ready,
-        "ts": r.get("createdAt"),
-        "run_id": r.get("databaseId"),
-        "url": r.get("url"),
-    }
+    return _verdict_from_run(runs[0])
+
+
+def _server_verdict() -> dict[str, Any] | None:
+    """Server-first workspace-validation conclusion, gh-independent.
+
+    Prefers a Brain/MCP-supplied conclusion file (works with no `gh` on mobile),
+    falling back to a direct `gh` query. This is the PRIMARY test_run signal;
+    the local report.json is enrichment (count detail) only."""
+    return _agent_supplied_verdict() or _cloud_verdict()
 
 
 def _read_json(path: Path) -> Any:
@@ -166,9 +209,11 @@ def run(results_dir: Path | None = None, fetch_cloud: bool | None = None) -> dic
             report_path.stat().st_mtime, datetime.timezone.utc
         ).isoformat()
 
-    # The cloud workspace-validation run is the authoritative continuous verdict;
-    # let it set ready/ts (the local report still supplies the count detail).
-    cloud = _cloud_verdict() if fetch_cloud else None
+    # The server workspace-validation run is the authoritative continuous verdict
+    # (server-first: MCP-supplied file, else `gh`); it sets ready/ts so a missing
+    # local report.json no longer forces "unknown" when the cloud run is green.
+    # The local report, when present, still supplies the count detail.
+    cloud = _server_verdict() if fetch_cloud else None
     if cloud is not None:
         if not summary:
             summary = {

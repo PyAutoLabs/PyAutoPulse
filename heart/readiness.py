@@ -44,6 +44,7 @@ from typing import Any, Sequence
 import yaml
 
 from heart import state
+from heart.checks.ci_status import FAILURE_CONCLUSIONS, load_required_workflows
 from heart.heart_color import (
     c_bold, c_fail, c_info, c_meta, c_ok, c_warn,
     glyph_fail, glyph_ok, glyph_warn,
@@ -54,6 +55,14 @@ CONFIG_PATH = HEART_HOME / "config" / "repos.yaml"
 RELEASE_READY_FILE = state.HEART_STATE_DIR / "release_ready.json"
 
 DEFAULT_LIBRARIES = ("PyAutoConf", "PyAutoFit", "PyAutoArray", "PyAutoGalaxy", "PyAutoLens")
+
+# Workspace repo groups whose required-workflow conclusions on `main` HEAD are a
+# hard release gate (RED on failure). Libraries are gated separately (the lib
+# loop); url-checking is advisory and intentionally absent from the required set
+# (see config/repos.yaml `required_workflows`). A red `smoke_tests` on a
+# workspace's main is a real release blocker — a green `url_check` cannot mask
+# it because url is not a required workflow.
+GATED_WORKSPACE_GROUPS = frozenset({"workspaces", "workspaces_test", "howto"})
 
 # gate key -> (penalty per occurrence, cap). Score = 100 - sum(min(n*w, cap)).
 # Advisory only; colour is decided by reason presence, not by score.
@@ -78,6 +87,7 @@ _WEIGHTS: dict[str, tuple[int, int]] = {
     "install_stale": (10, 10),
     "install_unknown": (10, 10),
     "test_stale": (10, 10),
+    "ws_ci": (20, 60),
 }
 
 
@@ -120,10 +130,15 @@ def _age_days(ts: Any, ref: datetime.datetime | None) -> float | None:
     return (ref - t).total_seconds() / 86400.0
 
 
-def compute(snapshot: dict | None, libraries: Sequence[str] | None = None) -> dict[str, Any]:
+def compute(
+    snapshot: dict | None,
+    libraries: Sequence[str] | None = None,
+    required_workflows: dict[str, list[str]] | None = None,
+) -> dict[str, Any]:
     """Pure verdict function. Never raises on missing/partial data."""
     snapshot = snapshot or {}
     libs = list(libraries) if libraries is not None else load_library_names()
+    req_wf = required_workflows if required_workflows is not None else load_required_workflows()
     repos = snapshot.get("repos", {}) or {}
     ref = _parse_ts(snapshot.get("ts")) or datetime.datetime.now(datetime.timezone.utc)
 
@@ -159,6 +174,36 @@ def compute(snapshot: dict | None, libraries: Sequence[str] | None = None) -> di
         if behind > 0:
             red.append(f"{lib}: {behind} commit(s) behind origin")
             hit("lib_behind")
+
+    # --- workspace CI gate (RED) ---
+    # Gate each gated workspace/howto repo on the conclusion of its REQUIRED
+    # workflows on the `main` HEAD. A failing required workflow (e.g. red
+    # `Smoke Tests`) is a real release blocker; a green non-required workflow
+    # (url_check) cannot mask it. Libraries are handled by the loop above, so
+    # they are skipped here. Absent repos are simply not observed (no reason).
+    for name, body in sorted(repos.items()):
+        if not isinstance(body, dict):
+            continue
+        ci = body.get("ci_status", {}) or {}
+        group = ci.get("group")
+        if group not in GATED_WORKSPACE_GROUPS:
+            continue
+        required = req_wf.get(group, [])
+        if not required:
+            continue
+        workflows = ci.get("workflows")
+        if isinstance(workflows, dict):
+            for wf in required:
+                concl = (workflows.get(wf) or {}).get("conclusion")
+                if concl in FAILURE_CONCLUSIONS:
+                    red.append(f"{name}: {wf} {concl} on main")
+                    hit("ws_ci")
+        else:
+            # Pre-structured sidecar: fall back to the rolled-up conclusion.
+            concl = ci.get("conclusion")
+            if concl in FAILURE_CONCLUSIONS:
+                red.append(f"{name}: CI {concl} on main")
+                hit("ws_ci")
 
     # --- test-run gate (RED if false, YELLOW if unknown) ---
     test_run = snapshot.get("test_run")

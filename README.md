@@ -13,12 +13,15 @@ build/release/deployment work. See `AGENTS.md` for the boundary.
 Polls 19 PyAuto repos every N minutes for:
 
 - **Repo state** — branch / dirty / ahead / behind
-- **CI status** — latest workflow conclusion per repo (via `gh run list`)
+- **CI status** — the conclusion of each *required* workflow on the `main` HEAD
+  per repo (e.g. `Smoke Tests` + `Navigator Check` for workspaces, `Tests` for
+  libraries), via `gh run list --branch main` — not just the newest run
 - **Open PRs** — count + max age, classified by staleness
 - **Worktree drift** — `~/Code/PyAutoLabs-wt/` dirs vs `active.md` claims
 - **Script timing** — per-script duration regressions vs a rolling baseline
-- **Test run** — the latest PyAutoBuild release-run verdict (ready / counts /
-  stale parked scripts), read from `test_results/latest/report.json`
+- **Test run** — the workspace-validation verdict, **server-first** (the cloud
+  run conclusion via MCP-supplied file or `gh`), enriched by a local
+  `test_results/latest/report.json` when present
 - **Version skew** — each workspace's pinned version vs the installed library
   (AHEAD = a release blocker; BEHIND = caution)
 
@@ -104,13 +107,16 @@ pyauto-heart readiness            # verdict + score + reasons
 pyauto-heart readiness --json     # machine-readable (for scripts / skills)
 ```
 
-- **RED** — a real release blocker: any of the 5 libraries has failing CI, is
-  off `main`, has uncommitted source changes, or is behind origin; the latest
-  Build test run is not ready; or a workspace is pinned **ahead** of its
-  installed library.
-- **YELLOW** — caution: timing regressions, stale PRs, stale parked scripts, a
-  workspace pinned **behind**, or an *unknown* (e.g. no recent test-run report
-  — never silently treated as green).
+- **RED** — a real release blocker: any of the 5 libraries has failing CI (its
+  `Tests` workflow on `main`), is off `main`, has uncommitted source changes, or
+  is behind origin; any gated workspace / HowTo repo has a failing **required**
+  workflow on `main` (e.g. red `Smoke Tests` — a green non-required `url_check`
+  cannot mask it); a workspace is pinned **ahead** of its installed library; or
+  the deep install verification last reported not-ready.
+- **YELLOW** — caution: a not-passing workspace-validation run (advisory —
+  workspace scripts carry standing debt), timing regressions, stale PRs, stale
+  parked scripts, a workspace pinned **behind**, or an *unknown* (e.g. no recent
+  test-run signal — never silently treated as green).
 - **GREEN** — none of the above.
 
 Red always dominates yellow. The verdict is written to
@@ -181,11 +187,12 @@ heart/
   noise.py                       # dirty real-vs-generated classifier
   checks/
     repo_state.sh
-    ci_status.sh
+    ci_status.sh                 # gh fetch loop → ci_status.py
+    ci_status.py                 # per-required-workflow conclusions on main HEAD
     open_prs.sh
     worktree_drift.sh
     script_timing.py
-    test_run.py                  # latest PyAutoBuild report.json verdict
+    test_run.py                  # server-first workspace-validation verdict
     version_skew.py              # workspace pin vs installed library
 
 config/
@@ -237,7 +244,7 @@ pytest tests/ -v
 ## Relationship to other PyAuto repos
 
 - **PyAutoBuild** — provides the primitives (`autobuild run_all`, `autobuild url_check`, etc.) and writes `test_results/latest/report.json`, which Heart reads for the test-run check and readiness verdict. Heart shells out / reads files but never imports PyAutoBuild Python. The readiness verdict is advisory — Build keeps its own release gates.
-- **PyAutoPrompt** — Heart reads `active.md` for worktree drift detection (read-only).
+- **PyAutoMind** — Heart reads `active.md` for worktree drift detection (read-only).
 - **admin_jammy** — Heart sources `software/worktree.sh` for `PYAUTO_WT_ROOT` etc.
 
 Heart never writes to any other repo. State lives entirely under `~/.pyauto-heart/`.

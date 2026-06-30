@@ -49,7 +49,42 @@ def test_thresholds_have_expected_fields(config):
     assert thresholds["script_timing"]["baseline_window"] >= 3
 
 
-def test_19_repos_polled(config):
+def test_22_repos_polled(config):
     """Sanity check the polled count — bumps need a deliberate update."""
     total = sum(len(v) for v in config["repos"].values())
-    assert total == 19, f"expected 19 polled repos, got {total}"
+    assert total == 22, f"expected 22 polled repos, got {total}"
+
+
+def _all_names(config):
+    return {r["name"] for entries in config["repos"].values() for r in entries}
+
+
+def test_registry_renames_applied(config):
+    names = _all_names(config)
+    # PyAutoPrompt → PyAutoMind, PyAutoPaper → PyAutoMemory.
+    assert "PyAutoMind" in names and "PyAutoPrompt" not in names
+    assert "PyAutoMemory" in names and "PyAutoPaper" not in names
+    # Stale names must not linger in the excluded list either.
+    assert "PyAutoPaper" not in config.get("excluded", [])
+
+
+def test_organism_repos_polled(config):
+    names = _all_names(config)
+    for repo in ("PyAutoBrain", "PyAutoHeart", "PyAutoMemory"):
+        assert repo in names, f"organism repo {repo} not polled"
+
+
+def test_required_workflows_block(config):
+    rw = config["required_workflows"]
+    assert isinstance(rw, dict)
+    # Every gated group must reference real repo groups and list workflow names.
+    for group, workflows in rw.items():
+        assert group in config["repos"], f"required_workflows group {group} not in repos"
+        assert isinstance(workflows, list) and workflows
+        assert all(isinstance(w, str) for w in workflows)
+    # The smoke gate must exist for the user-facing workspaces; url is NOT a
+    # required workflow (advisory only).
+    assert "Smoke Tests" in rw["workspaces"]
+    assert "Navigator Check" in rw["workspaces"]
+    for workflows in rw.values():
+        assert not any("url" in w.lower() for w in workflows)

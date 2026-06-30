@@ -16,7 +16,8 @@ set -u
 source "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/../_common.sh"
 
 PYAUTO_WT_ROOT="${PYAUTO_WT_ROOT:-$HOME/Code/PyAutoLabs-wt}"
-ACTIVE_MD="$PYAUTO_ROOT/PyAutoPrompt/active.md"
+# The active-task journal moved with the PyAutoPrompt → PyAutoMind rename.
+ACTIVE_MD="$PYAUTO_ROOT/PyAutoMind/active.md"
 
 check_worktree_drift() {
   heart_state_dir

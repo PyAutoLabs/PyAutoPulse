@@ -220,6 +220,113 @@ def test_missing_test_run_is_yellow_unknown_not_crash():
     assert v["score"] == 90
 
 
+REQ_WF = {
+    "workspaces": ["Smoke Tests", "Navigator Check"],
+    "workspaces_test": ["Smoke Tests"],
+    "howto": ["Smoke Tests", "Navigator Check"],
+    "libraries": ["Tests"],
+}
+
+
+def _ws_ci(group, **wf_conclusions):
+    """A ci_status sidecar for a workspace repo with given workflow conclusions."""
+    return {
+        "group": group,
+        "workflows": {
+            name: {"conclusion": concl, "status": "completed", "on_head": True}
+            for name, concl in wf_conclusions.items()
+        },
+    }
+
+
+def _compute_ws(snap):
+    return readiness.compute(snap, libraries=LIBS, required_workflows=REQ_WF)
+
+
+def test_workspace_red_smoke_with_green_url_is_red():
+    """Headline gate of the spec: a red workspace smoke_tests on main is a
+    release blocker even though a (non-required) url_check is green."""
+    snap = make_snapshot()
+    snap["repos"]["autolens_workspace"] = {
+        "ci_status": _ws_ci(
+            "workspaces",
+            **{"Smoke Tests": "failure", "Navigator Check": "success", "url_check": "success"},
+        )
+    }
+    v = _compute_ws(snap)
+    assert v["verdict"] == "red"
+    assert any("autolens_workspace" in r and "Smoke Tests" in r for r in v["red_reasons"])
+
+
+def test_workspace_all_required_green_is_green():
+    snap = make_snapshot()
+    snap["repos"]["autolens_workspace"] = {
+        "ci_status": _ws_ci("workspaces", **{"Smoke Tests": "success", "Navigator Check": "success"})
+    }
+    v = _compute_ws(snap)
+    assert v["verdict"] == "green"
+
+
+def test_howto_navigator_failure_is_red():
+    snap = make_snapshot()
+    snap["repos"]["HowToLens"] = {
+        "ci_status": _ws_ci("howto", **{"Smoke Tests": "success", "Navigator Check": "failure"})
+    }
+    v = _compute_ws(snap)
+    assert v["verdict"] == "red"
+    assert any("HowToLens" in r and "Navigator Check" in r for r in v["red_reasons"])
+
+
+def test_workspace_test_smoke_failure_is_red():
+    snap = make_snapshot()
+    snap["repos"]["autolens_workspace_test"] = {
+        "ci_status": _ws_ci("workspaces_test", **{"Smoke Tests": "failure"})
+    }
+    assert _compute_ws(snap)["verdict"] == "red"
+
+
+def test_workspace_in_progress_required_is_not_red():
+    # In-progress / not-concluded required workflow is unknown, never a hard RED
+    # (mirrors the library gate which does not RED on an empty conclusion).
+    snap = make_snapshot()
+    snap["repos"]["autolens_workspace"] = {
+        "ci_status": _ws_ci("workspaces", **{"Smoke Tests": "", "Navigator Check": "success"})
+    }
+    v = _compute_ws(snap)
+    assert v["verdict"] == "green"
+    assert not v["red_reasons"]
+
+
+def test_workspace_skipped_required_is_not_red():
+    # `skipped` is a non-event (e.g. path filter), not a failure.
+    snap = make_snapshot()
+    snap["repos"]["autolens_workspace"] = {
+        "ci_status": _ws_ci("workspaces", **{"Smoke Tests": "skipped", "Navigator Check": "success"})
+    }
+    assert _compute_ws(snap)["verdict"] != "red"
+
+
+def test_workspace_ci_fallback_to_rolled_conclusion():
+    # Pre-structured sidecar (no `workflows` dict) → fall back to top-level
+    # rolled-up conclusion.
+    snap = make_snapshot()
+    snap["repos"]["autogalaxy_workspace"] = {
+        "ci_status": {"group": "workspaces", "conclusion": "failure"}
+    }
+    assert _compute_ws(snap)["verdict"] == "red"
+
+
+def test_library_group_not_double_gated_by_workspace_loop():
+    # A library carrying a ci_status.group of "libraries" must not be processed
+    # by the workspace loop (it is gated by the library loop only).
+    snap = make_snapshot()
+    snap["repos"]["PyAutoLens"]["ci_status"] = {"group": "libraries", "conclusion": "success",
+                                                "workflows": {"Tests": {"conclusion": "success",
+                                                              "status": "completed", "on_head": True}}}
+    v = _compute_ws(snap)
+    assert v["verdict"] == "green"
+
+
 def test_red_dominates_yellow():
     snap = make_snapshot(script_timing={"red_count": 3})
     snap["repos"]["PyAutoLens"]["ci_status"]["conclusion"] = "failure"
