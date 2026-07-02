@@ -14,15 +14,20 @@ The verdict uses STRICT release gates:
   ``main``, has uncommitted source changes, or is behind origin; or any workspace
   is pinned AHEAD of its installed library, has a ``general.yaml`` ↔
   ``version.txt`` MISMATCH, or an unparseable (BAD) version; or the deep install
-  verification last reported ``ready == false``.
+  verification last reported ``ready == false``; or the release-validation
+  report last ingested reports ``release_ready == false`` (a stage failed).
 - **YELLOW** (caution) for soft signals: workspace-validation not passing (the
   workspace scripts/notebooks carry standing debt, so this is advisory — never a
   hard block), script-timing regressions, stale open PRs, stale parked scripts, a
-  workspace pinned BEHIND, a stale or never-run install verification, and —
-  crucially — any *unknown* (missing test-run report, a library absent from the
-  snapshot). An unknown is never silently treated as green and never escalated to
-  red.
-- **GREEN** otherwise.
+  workspace pinned BEHIND, a stale or never-run install verification, **no fresh
+  release-validation report for the current source** (absent, stale by age, or
+  whose ``commit_shas`` no longer match the current ``main`` HEADs, or which ran
+  under a profile other than ``release``), and — crucially — any *unknown*
+  (missing test-run report, a library absent from the snapshot). An unknown is
+  never silently treated as green and never escalated to red.
+- **GREEN** otherwise — which now REQUIRES a fresh, passing release-validation
+  report matching the current source under the ``release`` profile, not just an
+  absence of red signals.
 
 Red dominates yellow structurally: reasons are collected into separate lists
 and ``verdict = red if red_reasons else yellow if yellow_reasons else green``.
@@ -88,6 +93,12 @@ _WEIGHTS: dict[str, tuple[int, int]] = {
     "install_unknown": (10, 10),
     "test_stale": (10, 10),
     "ws_ci": (20, 60),
+    "validation_failed": (40, 40),
+    "validation_absent": (15, 15),
+    "validation_stale_sha": (15, 15),
+    "validation_unknown": (12, 12),
+    "validation_profile": (12, 12),
+    "validation_stale": (10, 10),
 }
 
 
@@ -112,6 +123,29 @@ def _as_int(v: Any, default: int = 0) -> int:
 INSTALL_STALE_DAYS = 14
 # workspace-validation test run older than this many days is treated as stale.
 TEST_STALE_DAYS = 10
+# a release-validation rehearsal older than this many days is stale (YELLOW),
+# even if its commit_shas still match — releases move fast enough that a
+# week-old rehearsal warrants a fresh run.
+VALIDATION_STALE_DAYS = 7
+
+# The library repos whose current `main` HEAD must match a validation report's
+# recorded commit_shas for the release-validation gate to go GREEN.
+_GATE_SHA_LIBS = DEFAULT_LIBRARIES
+
+
+def _sha_eq(a: Any, b: Any) -> bool:
+    """True if two commit SHAs refer to the same commit (prefix-tolerant).
+
+    ci_status records a short (7-char) HEAD sha while a report may carry the
+    full 40-char sha (or vice versa), so compare on the shorter length. A match
+    needs at least 7 significant hex chars — an empty/too-short value never
+    matches (it is treated as *unknown*, never a silent pass)."""
+    sa = str(a or "").strip().lower()
+    sb = str(b or "").strip().lower()
+    n = min(len(sa), len(sb))
+    if n < 7:
+        return False
+    return sa[:n] == sb[:n]
 
 
 def _parse_ts(ts: Any) -> datetime.datetime | None:
@@ -286,6 +320,72 @@ def compute(
     else:
         yellow.append("install verification not run")
         hit("install_unknown")
+
+    # --- release-validation gate (hard) -------------------------------------
+    # GREEN-for-release now REQUIRES a fresh, passing validation_report whose
+    # commit_shas match the current `main` HEADs and whose profile == release.
+    # This is the M2 gate: the report proves the exact source about to ship was
+    # built, published to TestPyPI, installed from the wheel, and exercised at
+    # release fidelity. Absent/stale/source-not-matching → YELLOW ("no release
+    # rehearsal for current source"); failing → RED. Pass/fail (release_ready)
+    # is the RED axis; fidelity+freshness (profile / commit_shas / age) is the
+    # YELLOW axis — a passing-but-stale report is a caution, not a blocker.
+    vr = snapshot.get("validation_report")
+    if isinstance(vr, dict) and vr:
+        ready = vr.get("release_ready")
+        if ready is False:
+            failed_stages = [
+                n for n, s in (vr.get("stages") or {}).items()
+                if isinstance(s, dict) and s.get("status") == "fail"
+            ]
+            red.append(
+                "release validation FAILED"
+                + (f" (stage {', '.join(failed_stages)})" if failed_stages else "")
+            )
+            hit("validation_failed")
+        elif ready is True:
+            commit_shas = vr.get("commit_shas") or {}
+            mismatched: list[str] = []
+            confirmed = 0
+            for lib in _GATE_SHA_LIBS:
+                want = commit_shas.get(lib)
+                cur = ((repos.get(lib) or {}).get("ci_status") or {}).get("head_sha")
+                if not want or not cur:
+                    continue  # can't confirm this repo (unknown), don't over-penalise
+                if _sha_eq(want, cur):
+                    confirmed += 1
+                else:
+                    mismatched.append(lib)
+            profile = str(vr.get("profile") or "").strip().lower()
+            if not commit_shas:
+                yellow.append("release validation source unconfirmed (no commit_shas)")
+                hit("validation_unknown")
+            elif mismatched:
+                yellow.append(
+                    "release validation stale: source moved since rehearsal ("
+                    + ", ".join(mismatched) + ")"
+                )
+                hit("validation_stale_sha")
+            elif confirmed == 0:
+                yellow.append("release validation source unconfirmed (current HEADs unknown)")
+                hit("validation_unknown")
+            elif profile != "release":
+                yellow.append(
+                    f"release validation profile '{vr.get('profile') or '?'}' is not 'release'"
+                )
+                hit("validation_profile")
+            else:
+                age = _age_days(vr.get("ts"), ref)
+                if age is not None and age > VALIDATION_STALE_DAYS:
+                    yellow.append(f"release validation stale ({int(age)}d old)")
+                    hit("validation_stale")
+                # else: fresh, passing, matching, release profile → GREEN-eligible
+        else:
+            yellow.append("release validation status unknown")
+            hit("validation_unknown")
+    else:
+        yellow.append("no release validation for current source")
+        hit("validation_absent")
 
     # --- script timing (YELLOW) ---
     timing = snapshot.get("script_timing", {}) or {}

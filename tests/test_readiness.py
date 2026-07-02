@@ -10,11 +10,35 @@ from heart import readiness
 
 LIBS = ["PyAutoConf", "PyAutoFit", "PyAutoArray", "PyAutoGalaxy", "PyAutoLens"]
 
+# Deterministic 40-char main HEAD sha per library; the baseline validation
+# report's commit_shas match these, so the release-validation gate stays GREEN.
+SHAS = {lib: f"{i + 1:040x}" for i, lib in enumerate(LIBS)}
 
-def _green_lib() -> dict:
+
+def _green_lib(sha: str = "") -> dict:
     return {
-        "ci_status": {"conclusion": "success"},
+        "ci_status": {"conclusion": "success", "head_sha": sha},
         "repo_state": {"branch": "main", "dirty_real": 0, "behind": 0},
+    }
+
+
+def _green_validation_report(ts: str = "2026-06-01T00:00:00+00:00") -> dict:
+    """A fresh, passing release-validation report matching the baseline HEADs."""
+    return {
+        "schema_version": 1,
+        "release_ready": True,
+        "testpypi_version": "2026.6.1.1.dev100",
+        "profile": "release",
+        "commit_shas": dict(SHAS),
+        "stages": {
+            "rehearse": {"status": "pass", "index": "testpypi", "version": "2026.6.1.1.dev100"},
+            "integrate": {"status": "pass", "profile": "release"},
+        },
+        "totals": {"passed": 100, "failed": 0, "skipped": 0, "timeout": 0},
+        "per_project": {},
+        "failures": [],
+        "run_urls": {},
+        "ts": ts,
     }
 
 
@@ -22,13 +46,15 @@ def make_snapshot(**overrides) -> dict:
     """A fully-green baseline snapshot; override slices per test."""
     snap = {
         "ts": "2026-06-01T00:00:00+00:00",
-        "repos": {lib: _green_lib() for lib in LIBS},
+        "repos": {lib: _green_lib(SHAS[lib]) for lib in LIBS},
         "script_timing": {"red_count": 0, "yellow_count": 0, "green_count": 10},
         "test_run": {"ready": True, "passed": 100, "failed": 0, "parked_stale_count": 0},
         "version_skew": {"workspaces": [{"workspace": "autolens_workspace", "status": "MATCH"}]},
         # fresh passing install verification (ts == snapshot ts → age 0, not stale)
         "verify_install": {"ready": True, "ts": "2026-06-01T00:00:00+00:00",
                            "version": "2026.6.1.1", "checks": []},
+        # fresh passing release-validation rehearsal matching the current HEADs
+        "validation_report": _green_validation_report(),
     }
     snap.update(overrides)
     return snap
@@ -156,6 +182,96 @@ def test_install_verification_fresh_pass_is_green():
     v = compute(make_snapshot())
     assert v["verdict"] == "green"
     assert not any("install" in r for r in v["reasons"])
+
+
+# --- release-validation hard gate (M2) -----------------------------------
+
+
+def test_validation_fresh_pass_matching_source_is_green():
+    # baseline carries a fresh passing report whose commit_shas match the HEADs.
+    v = compute(make_snapshot())
+    assert v["verdict"] == "green"
+    assert not any("release validation" in r for r in v["reasons"])
+
+
+def test_validation_absent_is_yellow():
+    snap = make_snapshot()
+    del snap["validation_report"]
+    v = compute(snap)
+    assert v["verdict"] == "yellow"
+    assert not v["red_reasons"]
+    assert any("no release validation for current source" in r for r in v["yellow_reasons"])
+
+
+def test_validation_empty_dict_is_yellow():
+    v = compute(make_snapshot(validation_report={}))
+    assert v["verdict"] == "yellow"
+    assert any("no release validation" in r for r in v["yellow_reasons"])
+
+
+def test_validation_failed_is_red():
+    report = _green_validation_report()
+    report["release_ready"] = False
+    report["stages"]["integrate"] = {"status": "fail", "profile": "release"}
+    v = compute(make_snapshot(validation_report=report))
+    assert v["verdict"] == "red"
+    assert any("release validation FAILED" in r and "integrate" in r for r in v["red_reasons"])
+    assert v["score"] == 60  # validation_failed penalty 40
+
+
+def test_validation_stale_by_sha_is_yellow():
+    # A report whose commit_shas no longer match the current main HEADs is stale:
+    # the source moved on since the rehearsal → caution, not a blocker, not green.
+    snap = make_snapshot()
+    snap["repos"]["PyAutoLens"]["ci_status"]["head_sha"] = "f" * 40  # HEAD moved
+    v = compute(snap)
+    assert v["verdict"] == "yellow"
+    assert not v["red_reasons"]
+    assert any("source moved since rehearsal" in r and "PyAutoLens" in r
+               for r in v["yellow_reasons"])
+
+
+def test_validation_wrong_profile_is_yellow():
+    report = _green_validation_report()
+    report["profile"] = "smoke"
+    report["stages"]["integrate"] = {"status": "pass", "profile": "smoke"}
+    v = compute(make_snapshot(validation_report=report))
+    assert v["verdict"] == "yellow"
+    assert any("profile 'smoke' is not 'release'" in r for r in v["yellow_reasons"])
+
+
+def test_validation_stale_by_age_is_yellow():
+    # passing + matching + release profile, but the rehearsal is >7d old.
+    report = _green_validation_report(ts="2026-05-01T00:00:00+00:00")  # ~31d before snap ts
+    v = compute(make_snapshot(validation_report=report))
+    assert v["verdict"] == "yellow"
+    assert any("release validation stale" in r for r in v["yellow_reasons"])
+
+
+def test_validation_no_commit_shas_is_yellow():
+    report = _green_validation_report()
+    report["commit_shas"] = {}
+    v = compute(make_snapshot(validation_report=report))
+    assert v["verdict"] == "yellow"
+    assert any("source unconfirmed" in r for r in v["yellow_reasons"])
+
+
+def test_validation_ready_unknown_is_yellow():
+    report = _green_validation_report()
+    report["release_ready"] = None
+    v = compute(make_snapshot(validation_report=report))
+    assert v["verdict"] == "yellow"
+    assert any("release validation status unknown" in r for r in v["yellow_reasons"])
+
+
+def test_validation_failed_dominates_and_reds_first():
+    report = _green_validation_report()
+    report["release_ready"] = False
+    report["stages"]["rehearse"] = {"status": "fail"}
+    snap = make_snapshot(validation_report=report, script_timing={"red_count": 2})
+    v = compute(snap)
+    assert v["verdict"] == "red"
+    assert v["reasons"][0] in v["red_reasons"]
 
 
 def test_library_off_main_is_red():
