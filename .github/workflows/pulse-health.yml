@@ -1,29 +1,60 @@
 name: Heart Health
 
-# Scheduled cloud-safe half of the PyAutoHeart hybrid CI layer.
+# The cloud half of the PyAutoHeart hybrid CI layer, extended in M5 to publish
+# the ONE unified health dashboard (heart/dashboard.py) alongside the existing
+# alerting.
 #
-# Runs the two checks that need only the GitHub API (no local working tree) —
-# CI status and open PRs — across every polled repo, then opens-or-updates a
-# single "[heart-health]" tracking issue when anything is red/degraded, and
-# closes it when everything is clean again. No agent, no Slack, no secret
-# beyond the auto-provisioned GITHUB_TOKEN — mirrors the url_check.yml pattern.
+# It runs the two checks that need only the GitHub API (no local working tree) —
+# CI status and open PRs — across every polled repo, then:
+#   1. renders the unified board (one renderer, many formats) and publishes it
+#      three ways, all from the SAME snapshot so they cannot disagree:
+#        * GitHub Pages   — self-contained fmt="html" + a shields badge.json
+#        * step summary    — fmt="md" into $GITHUB_STEP_SUMMARY (zero hosting)
+#        * README          — a shields verdict badge + an auto-updated
+#                            <!-- heart:begin -->…<!-- heart:end --> md block
+#   2. opens-or-updates a single "[heart-health]" tracking ISSUE when anything
+#      is red/degraded and closes it when clean — the ALERTING channel (kept).
 #
-# The local-only checks (repo_state, worktree_drift, script_timing, test_run,
-# version_skew) run on the developer box via the bashrc-started `watch` daemon.
+# Cloud-only-honest: the cloud job has no working tree, so the board renders
+# with --cloud, which marks the local-only checks (repo_state, worktree_drift,
+# script_timing, test_run, version_skew) as "not observed here" rather than
+# silently green. A dev box can enrich the SAME page by pushing a full snapshot
+# rendered without --cloud — never a second, competing page.
+#
+# Observer boundary: everything here writes ONLY within PyAutoHeart's own repo
+# (its gh-pages, its README, its [heart-health] issue), the job step summary, or
+# the job workspace. No foreign repo, no build/workflow dispatch, no secret
+# beyond the auto-provisioned GITHUB_TOKEN.
 
 on:
   schedule:
     - cron: "0 6 * * *"   # daily 06:00 UTC
   workflow_dispatch:
 
+# contents: write  → commit the README badge/block into Heart's OWN README
+# issues:   write  → the [heart-health] tracking issue
+# pages/id-token   → publish the Pages board
 permissions:
-  contents: read
+  contents: write
   issues: write
+  pages: write
+  id-token: write
+
+# Never let two runs publish Pages at once; let the newest win.
+concurrency:
+  group: heart-health-pages
+  cancel-in-progress: false
+
+env:
+  HEART_STATE_DIR: ${{ github.workspace }}/.heart-state
+  NO_COLOR: "1"
 
 jobs:
   heart-health:
-    name: Cloud health checks
+    name: Cloud health checks + dashboard
     runs-on: ubuntu-latest
+    outputs:
+      status: ${{ steps.classify.outputs.status }}
     steps:
       - name: Checkout PyAutoHeart
         uses: actions/checkout@v4
@@ -37,25 +68,84 @@ jobs:
         run: pip install --quiet pyyaml
 
       - name: Run cloud-safe checks (ci_status, open_prs)
-        id: checks
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # Force colour off; write sidecars under a workspace-local state dir.
-          NO_COLOR: "1"
-          HEART_STATE_DIR: ${{ github.workspace }}/.heart-state
         run: |
           set +e
           bash heart/checks/ci_status.sh
           bash heart/checks/open_prs.sh
           exit 0
 
-      - name: Classify results
-        id: classify
+      - name: Aggregate snapshot + compute readiness verdict
+        run: |
+          # Fold the per-repo sidecars into state.json, then compute the
+          # authoritative verdict into release_ready.json. Both are pure
+          # projections of what the cloud observed — no recompute in the board.
+          PYTHONPATH="$PWD" python -c "from heart import state; state.aggregate()"
+          PYTHONPATH="$PWD" python -c "from heart import readiness; readiness.run()"
+
+      - name: Render the unified board (html / badge / md)
+        run: |
+          mkdir -p _site
+          # --cloud marks the local-only checks as "not observed here"; every
+          # file below is a projection of the same snapshot + verdict.
+          PYTHONPATH="$PWD" python -m heart.dashboard --cloud --html  > _site/index.html
+          PYTHONPATH="$PWD" python -m heart.dashboard --cloud --badge > _site/badge.json
+          PYTHONPATH="$PWD" python -m heart.dashboard --cloud --md    > board.md
+
+      - name: Write the board to the job step summary
+        run: |
+          {
+            cat board.md
+            echo ""
+            echo "_Published board: https://pyautolabs.github.io/PyAutoHeart/_"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Update README badge + block (own repo only, main only)
+        if: github.ref == 'refs/heads/main'
         env:
-          HEART_STATE_DIR: ${{ github.workspace }}/.heart-state
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python - <<'PY'
+          import pathlib, re
+          readme = pathlib.Path("README.md")
+          text = readme.read_text()
+          board = pathlib.Path("board.md").read_text().strip()
+          begin, end = "<!-- heart:begin -->", "<!-- heart:end -->"
+          block = f"{begin}\n{board}\n{end}"
+          if begin in text and end in text:
+              text = re.sub(re.escape(begin) + r".*?" + re.escape(end), block,
+                            text, flags=re.DOTALL)
+          else:
+              # First run: insert the block just after the H1 title line.
+              lines = text.splitlines()
+              for i, ln in enumerate(lines):
+                  if ln.startswith("# "):
+                      lines.insert(i + 1, "\n" + block + "\n")
+                      break
+              text = "\n".join(lines)
+          readme.write_text(text)
+          PY
+          if ! git diff --quiet README.md; then
+            git config user.name  "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add README.md
+            git commit -m "docs(heart): auto-update health dashboard block [skip ci]"
+            git push
+          else
+            echo "README health block unchanged — nothing to commit."
+          fi
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Classify results (alerting channel)
+        id: classify
         run: |
           python3 - <<'PY'
-          import json, os, glob, pathlib
+          import json, os, pathlib
           state = pathlib.Path(os.environ["HEART_STATE_DIR"]) / "per-repo"
           red, yellow = [], []
           for f in sorted(state.glob("*.ci_status.json")):
@@ -69,7 +159,8 @@ jobs:
                   red.append(f"- **{d['name']}**: open PR {age}d old (>30d)")
               elif d.get("open_count", 0) and age >= 7:
                   yellow.append(f"- {d['name']}: open PR {age}d old")
-          lines = ["# Heart health report", ""]
+          lines = ["# Heart health report", "",
+                   "Board: https://pyautolabs.github.io/PyAutoHeart/", ""]
           if red:
               lines += ["## 🔴 Red", *red, ""]
           if yellow:
@@ -110,3 +201,18 @@ jobs:
           for n in $(gh issue list --search '"[heart-health]"' --state open --json number --jq '.[].number'); do
             gh issue close "$n" --comment "Cloud health checks are green — closing automatically."
           done
+
+  deploy-pages:
+    name: Publish the board to GitHub Pages
+    needs: heart-health
+    runs-on: ubuntu-latest
+    # Only publish from the canonical branch; branch dispatches still render +
+    # upload the artifact above, they just don't deploy it live.
+    if: github.ref == 'refs/heads/main'
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
