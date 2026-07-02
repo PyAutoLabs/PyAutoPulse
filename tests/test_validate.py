@@ -89,6 +89,67 @@ def test_ingest_full_pass(tmp_path):
     assert report["stages"]["integrate"]["status"] == "pass"
 
 
+# --- ingest: add_report() must not double-count a re-ingested stage --------
+
+
+def test_ingest_report_plus_same_stage_does_not_double_count(tmp_path):
+    """A prior validation_report.json alongside the raw stage that produced it
+    (e.g. an artifacts dir that happens to include both) must not double the
+    totals — Copilot review finding on PyAutoHeart#24: add_report() folded in
+    totals/per_project/failures unconditionally, contradicting its own
+    "idempotent re-ingest" docstring claim."""
+    prior_report = {
+        "schema_version": validate.SCHEMA_VERSION,
+        "release_ready": True,
+        "testpypi_version": "2026.6.30.1.dev64501",
+        "profile": "release",
+        "commit_shas": dict(SHAS),
+        "stages": {"integrate": {"status": "pass", "profile": "release"}},
+        "totals": {"passed": 120, "failed": 0, "skipped": 3, "timeout": 0},
+        "per_project": {
+            "autolens_workspace": {"passed": 60, "failed": 0, "skipped": 1, "timeout": 0},
+        },
+        "failures": [],
+        "run_urls": {"integrate": "https://github.com/x/actions/runs/999"},
+        "ts": "2026-06-30T12:00:00+00:00",
+    }
+    _write(tmp_path / "prior_report.json", prior_report)
+    _write(tmp_path / "integrate.json", INTEGRATE)  # the SAME stage, re-ingested alongside it
+
+    report = validate.ingest([tmp_path])
+    # Must equal INTEGRATE's own totals, NOT double them.
+    assert report["totals"] == {"passed": 120, "failed": 0, "skipped": 3, "timeout": 0}
+    assert report["per_project"]["autolens_workspace"]["passed"] == 60
+    assert report["failures"] == []
+
+
+def test_ingest_report_alone_still_seeds_counts(tmp_path):
+    """Re-ingesting ONLY a previously-emitted full report (no fresh stage
+    artifacts) must still seed totals/per_project/failures from it — the
+    ordinary "idempotent re-ingest" path the docstring describes."""
+    prior_report = {
+        "schema_version": validate.SCHEMA_VERSION,
+        "release_ready": True,
+        "testpypi_version": "2026.6.30.1.dev64501",
+        "profile": "release",
+        "commit_shas": dict(SHAS),
+        "stages": {"integrate": {"status": "pass", "profile": "release"}},
+        "totals": {"passed": 120, "failed": 0, "skipped": 3, "timeout": 0},
+        "per_project": {
+            "autolens_workspace": {"passed": 60, "failed": 0, "skipped": 1, "timeout": 0},
+        },
+        "failures": [{"project": "x", "script": "y.py"}],
+        "run_urls": {"integrate": "https://github.com/x/actions/runs/999"},
+        "ts": "2026-06-30T12:00:00+00:00",
+    }
+    _write(tmp_path / "prior_report.json", prior_report)
+
+    report = validate.ingest([tmp_path])
+    assert report["totals"] == {"passed": 120, "failed": 0, "skipped": 3, "timeout": 0}
+    assert report["per_project"]["autolens_workspace"]["passed"] == 60
+    assert report["failures"] == [{"project": "x", "script": "y.py"}]
+
+
 def test_ingest_commit_shas_wrapper_form(tmp_path):
     _write(tmp_path / "rehearsal.json", REHEARSAL)
     _write(tmp_path / "commit_shas.json", {"commit_shas": SHAS})
