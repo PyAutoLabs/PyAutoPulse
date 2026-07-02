@@ -725,6 +725,8 @@ def main(argv: list[str] | None = None) -> int:
         if getattr(ns, name):
             fmt = name
             break
+    if ns.badge:
+        fmt = "badge"   # so the no-cache fallback below emits an "unknown" badge
 
     snapshot = state.load()
     if snapshot is None:

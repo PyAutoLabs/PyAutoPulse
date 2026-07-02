@@ -40,7 +40,10 @@ permissions:
   pages: write
   id-token: write
 
-# Never let two runs publish Pages at once; let the newest win.
+# Never let two runs publish Pages at once. cancel-in-progress is false so a
+# newer run QUEUES behind an in-progress one rather than cancelling it — we don't
+# want to abort a publish/deploy mid-flight (the GitHub Pages-recommended
+# setting); the queued run then publishes the newer snapshot.
 concurrency:
   group: heart-health-pages
   cancel-in-progress: false

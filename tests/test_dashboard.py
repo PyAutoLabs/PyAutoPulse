@@ -215,3 +215,27 @@ def test_readiness_block_matches_readiness_module():
     from heart import readiness
     v = make_verdict("red", 40, red_reasons=["boom"])
     assert readiness.render_block(v) == dashboard.render_readiness_block(v)
+
+
+# --- CLI main() no-cache degradation (the I/O shell) -------------------------
+def test_main_no_cache_oneline_degrades_cleanly(monkeypatch, tmp_path, capsys):
+    from heart import state
+    monkeypatch.setattr(state, "HEART_STATE_FILE", tmp_path / "absent.json")
+    rc = dashboard.main(["--oneline"])
+    out = capsys.readouterr().out
+    assert rc == 0                       # must never error the prompt
+    assert "no fresh state" in out
+
+
+def test_main_no_cache_badge_emits_unknown_payload(monkeypatch, tmp_path, capsys):
+    # Regression: --badge must reach the no-cache fallback (fmt selection must
+    # include "badge"), not exit 2 with the generic "no cache" error.
+    from heart import state
+    monkeypatch.setattr(state, "HEART_STATE_FILE", tmp_path / "absent.json")
+    rc = dashboard.main(["--badge"])
+    out = capsys.readouterr().out
+    assert rc == 0
+    payload = json.loads(out)
+    assert payload["schemaVersion"] == 1
+    assert payload["message"] == "unknown"
+    assert payload["color"] == "lightgrey"

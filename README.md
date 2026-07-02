@@ -2,9 +2,10 @@
 
 [![health](https://img.shields.io/endpoint?url=https://pyautolabs.github.io/PyAutoHeart/badge.json)](https://pyautolabs.github.io/PyAutoHeart/)
 
-<!-- heart:begin -->
-<!-- The block below is auto-updated by .github/workflows/pulse-health.yml. -->
+<!-- The block below is auto-updated by .github/workflows/pulse-health.yml (everything -->
+<!-- between the heart:begin/heart:end markers is replaced with the rendered board). -->
 <!-- Live board: https://pyautolabs.github.io/PyAutoHeart/ -->
+<!-- heart:begin -->
 <!-- heart:end -->
 
 The **health and vital-signs layer** of the PyAuto organism: a
