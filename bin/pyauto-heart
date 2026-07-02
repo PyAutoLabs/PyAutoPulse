@@ -22,6 +22,7 @@ SUBCOMMAND_ORDER=(
   "# Reporting"
   status
   readiness
+  dashboard
   logs
   fix
   "# Release validation (ingest-and-judge only; never dispatches a build)"
@@ -42,6 +43,7 @@ declare -A SHORT_DESC=(
   [tick]="One-shot refresh of the state cache"
   [status]="Print the cached state with green/yellow/red colouring"
   [readiness]="Print the release-readiness verdict (green/yellow/red + score)"
+  [dashboard]="The unified health board (--oneline/--md/--html/--json); reads cache, no tick"
   [validate]="Ingest release-validation artifacts into validation_report.json"
   [logs]="Tail the daemon log"
   [fix]="Bundle context for a specific topic and emit a Claude command"
@@ -201,6 +203,33 @@ EOF
 }
 cmd_readiness() {
   exec env PYTHONPATH="$HEART_HOME" python3 -m heart.readiness "$@"
+}
+
+help_dashboard() { cat <<EOF
+pyauto-heart dashboard [--oneline|--md|--html|--json|--badge] [--cloud]
+                       [--quiet] [--no-color] [--stale-after SECS]
+
+The ONE unified health board — a single renderer, many formats. It folds
+today's \`status\` + \`readiness\` + the release-validation report into one screen
+and reads the CACHED snapshot only (no tick), so it is instant.
+
+Formats (default is the full colour terminal board):
+  --oneline   compact one-liner for a venv/shell prompt hook
+  --md        GitHub-flavoured markdown (step summary / issue / README block)
+  --html      standalone self-contained page (GitHub Pages)
+  --json      the machine surface the Health Agent + mobile card consume
+  --badge     a shields.io endpoint-badge JSON (verdict colour)
+
+  --cloud     mark the local-only checks (repo_state, worktree_drift,
+              script_timing, test_run, version_skew) as "not observed here" —
+              the honest vantage of the cloud job, which has no working tree.
+
+Every format is a projection of the same snapshot + verdict, so the surfaces
+cannot disagree. See also the sourceable venv hook: heart/shell/heart_prompt.sh.
+EOF
+}
+cmd_dashboard() {
+  exec env PYTHONPATH="$HEART_HOME" python3 -m heart.dashboard "$@"
 }
 
 help_validate() { cat <<EOF

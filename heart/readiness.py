@@ -458,29 +458,14 @@ def load_verdict() -> dict[str, Any]:
 
 
 def render_block(verdict: dict[str, Any], quiet: bool = False) -> list[str]:
-    v = verdict.get("verdict", "green")
-    score = verdict.get("score", 0)
-    if v == "red":
-        glyph, word = glyph_fail(), c_fail("RED")
-    elif v == "yellow":
-        glyph, word = glyph_warn(), c_warn("YELLOW")
-    else:
-        glyph, word = glyph_ok(), c_ok("GREEN")
-    lines = [f"{c_info('RELEASE READINESS')}  {glyph} {word}  {c_meta(f'score {score}')}"]
+    """The coloured RELEASE READINESS header block.
 
-    reds = verdict.get("red_reasons", [])
-    yellows = verdict.get("yellow_reasons", [])
-    limit = 1 if quiet else 6
-    shown = 0
-    for r in reds:
-        lines.append("  " + c_fail(f"✗ {r}"))
-        shown += 1
-        if shown >= limit:
-            break
-    if shown < limit:
-        for y in yellows[: limit - shown]:
-            lines.append("  " + c_warn(f"! {y}"))
-    return lines
+    Delegates to ``heart/dashboard.py`` so the readiness header has exactly one
+    definition, shared by ``readiness`` output, ``status``, and the unified
+    ``dashboard`` board (the "one renderer" invariant).
+    """
+    from heart import dashboard
+    return dashboard.render_readiness_block(verdict, quiet=quiet)
 
 
 def main(argv: list[str] | None = None) -> int:

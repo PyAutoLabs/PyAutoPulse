@@ -24,10 +24,12 @@ primary_query:
   command: "pyauto-heart readiness --json"
   returns: "{ verdict: green|yellow|red, score: 0-100, red_reasons[], yellow_reasons[], ts }"
   detail_query: "pyauto-heart status --json"   # full per-repo + per-check snapshot
+  dashboard_query: "pyauto-heart dashboard --json"   # the unified board as one card
   persisted_state:
     snapshot: "~/.pyauto-heart/state.json"
     verdict: "~/.pyauto-heart/release_ready.json"
     validation_report: "~/.pyauto-heart/validation_report.json"
+  published_board: "https://pyautolabs.github.io/PyAutoHeart/"   # the live GitHub Pages board
 
 # The authoritative gate. The Health Agent REPORTS this verdict; it must not
 # re-derive it from raw checks. Heart computes it (heart/readiness.py:compute).
@@ -129,6 +131,40 @@ release_validation:
     orchestrated_by: "PyAutoBrain Release Agent (agents/release/) — dispatch/poll/download"
     boundary: "ingest-and-judge only; never dispatches release.yml or workspace-validation.yml"
 
+# Unified health dashboard (M5) — ONE pure renderer, many surfaces. Every
+# surface is a projection of the same snapshot + verdict (+ validation_report),
+# so the web page, the CLI line, and the mobile card cannot disagree. The
+# Health Agent renders its mobile card from the json/md view of this capability.
+dashboard:
+  - id: dashboard
+    impl: heart/dashboard.py
+    cli: "pyauto-heart dashboard [--oneline|--md|--html|--json|--badge] [--cloud]"
+    signal: none                         # a projection of existing signals; recomputes nothing
+    reads: >-
+      the CACHED snapshot only (state.json + release_ready.json +
+      validation_report.json) — never ticks, so it is instant.
+    formats: "term | oneline | md | html | json (+ a shields badge.json)"
+    surfaces:
+      web:
+        pages: "https://pyautolabs.github.io/PyAutoHeart/"   # self-contained fmt=html board
+        step_summary: "fmt=md written to $GITHUB_STEP_SUMMARY by pulse-health.yml"
+        readme: "verdict badge + auto-updated <!-- heart:begin -->…<!-- heart:end --> block"
+      cli_venv:
+        command: "pyauto-heart dashboard"
+        hook: "heart/shell/heart_prompt.sh (sourceable; prints fmt=oneline on shell/venv open)"
+      mobile:
+        via: "pyauto-brain health — the Health Agent renders the fmt=json/md card"
+    cloud_only_honest: >-
+      the cloud job (pulse-health.yml) renders with --cloud, marking the
+      local-only checks (repo_state, worktree_drift, script_timing, test_run,
+      version_skew) as "not observed here" instead of silently green. A dev box
+      can enrich the SAME page by rendering without --cloud from its full snapshot.
+    gate_role: "none — the dashboard SHOWS health (readiness remains the gate); it never acts on it"
+    boundary: >-
+      observer-only. Writes only within PyAutoHeart's own repo (gh-pages,
+      README, [heart-health] issue), the job step summary, or ~/.pyauto-heart/.
+      The venv hook is read-only over cached state.
+
 # GitHub workflows Heart owns (the cloud half of the hybrid CI layer).
 workflows:
   - file: .github/workflows/lib-tests.yml
@@ -136,7 +172,12 @@ workflows:
     role: "reusable unit-test workflow for the 5 libraries (3.12/3.13); each library calls it"
   - file: .github/workflows/pulse-health.yml
     name: "Heart Health"
-    role: "daily cloud-safe ci_status + open_prs sweep; opens/updates a single [heart-health] issue"
+    role: >-
+      daily cloud-safe ci_status + open_prs sweep. Publishes the unified health
+      dashboard (M5) three ways from the one renderer — GitHub Pages (fmt=html +
+      badge.json), $GITHUB_STEP_SUMMARY (fmt=md), and a README verdict badge +
+      auto-updated block — and opens/updates a single [heart-health] issue as the
+      alerting channel. Cloud-only-honest: renders with --cloud.
   - file: .github/workflows/url-check.yml
     name: "URL Check (central)"
     role: "weekly central URL-hygiene sweep; one consolidated [url-check] issue (monitoring only)"
@@ -154,6 +195,7 @@ workflows:
 
 # Operational surface (reporting / triage) the agent can cite in recommendations.
 operations:
+  dashboard: "pyauto-heart dashboard [--oneline|--md|--html|--json|--badge] [--cloud]   # the unified board"
   status:   "pyauto-heart status [--json] [--quiet]   # full coloured snapshot"
   fix:      "pyauto-heart fix <ci|dirty|drift|timing> [arg]   # emits a Claude remediation bundle"
   daemon:   "pyauto-heart watch|live|tick|stop          # the continuous monitor"

@@ -1,5 +1,13 @@
 # PyAutoHeart
 
+[![health](https://img.shields.io/endpoint?url=https://pyautolabs.github.io/PyAutoHeart/badge.json)](https://pyautolabs.github.io/PyAutoHeart/)
+
+<!-- The block below is auto-updated by .github/workflows/pulse-health.yml (everything -->
+<!-- between the heart:begin/heart:end markers is replaced with the rendered board). -->
+<!-- Live board: https://pyautolabs.github.io/PyAutoHeart/ -->
+<!-- heart:begin -->
+<!-- heart:end -->
+
 The **health and vital-signs layer** of the PyAuto organism: a
 continuous-monitoring daemon that owns release-readiness checking, workspace
 validation, URL hygiene, generated-artifact/noise classification, and the
@@ -124,6 +132,63 @@ Red always dominates yellow. The verdict is written to
 own authoritative gates (`verify_workspace_versions`, the release pipeline) —
 Heart just surfaces the same signals continuously so drift is visible the day
 it appears, not the day of a release.
+
+## Unified health dashboard (one renderer, three surfaces)
+
+`heart/dashboard.py` is the **single** renderer for "the board". One pure
+function projects the same cached snapshot (`state.json` + `release_ready.json` +
+`validation_report.json`) into every surface's format, so a human or the Health
+Agent sees the whole organism's health at a glance — and the surfaces **cannot
+disagree**, because they are all projections of one `Board`:
+
+```bash
+pyauto-heart dashboard            # the full colour terminal board (fmt=term)
+pyauto-heart dashboard --oneline  # compact one-liner (venv/prompt hook)
+pyauto-heart dashboard --md       # GitHub-flavoured markdown (summary/issue/README)
+pyauto-heart dashboard --html     # standalone self-contained page (GitHub Pages)
+pyauto-heart dashboard --json     # the machine surface (Health Agent + mobile)
+pyauto-heart dashboard --badge    # a shields.io endpoint-badge JSON
+```
+
+`dashboard` reads the **cached** snapshot only — it never ticks, so it is
+instant. `status.render` and `readiness.render_block` delegate to this same
+renderer, so there is exactly one definition of what the board looks like.
+
+**Three surfaces:**
+
+1. **GitHub web** — [`https://pyautolabs.github.io/PyAutoHeart/`](https://pyautolabs.github.io/PyAutoHeart/)
+   (the `fmt="html"` board), the `$GITHUB_STEP_SUMMARY` (`fmt="md"`), and the
+   README verdict badge + auto-updated block above — all published by
+   `pulse-health.yml`. The badge is the entry point.
+2. **CLI / venv** — `pyauto-heart dashboard` plus a sourceable one-line hook
+   (`heart/shell/heart_prompt.sh`) that prints the `fmt="oneline"` vital sign on
+   shell/venv activation. It reads cache only (<100 ms, never blocks the
+   prompt), never errors on absent/stale state (degrades to a "run
+   `pyauto-heart tick`" hint), honours `NO_COLOR`, and is opt-in:
+
+   ```bash
+   # ~/.bashrc
+   export PYAUTO_HEART_PROMPT=1
+   source "$HOME/Code/PyAutoLabs/PyAutoHeart/heart/shell/heart_prompt.sh"
+   ```
+3. **Mobile** — the PyAutoBrain Health Agent renders the same board from the
+   `fmt="json"`/`"md"` view on `pyauto-brain health`.
+
+**Two resolved design decisions** (see `feature/pyautoheart/health_dashboard.md`):
+
+- **Cloud-only-honest baseline.** The cloud job has no working tree, so it
+  renders with `--cloud`, which marks the local-only checks (`repo_state`,
+  `worktree_drift`, `script_timing`, `test_run`, `version_skew`) as
+  *"not observed here"* rather than silently green. A dev box can enrich the
+  **same** page by rendering without `--cloud` from its full snapshot — never a
+  second, competing page.
+- **Pages *and* README block, badge as entry point.** Both ship from the same
+  `md`/`html` renderer: Pages is the live board, the README block is the
+  zero-hosting fallback, and the shields endpoint badge (driven by the published
+  `badge.json`) links to Pages.
+
+The dashboard only *shows* health; it never *acts* on it. Everything it writes
+stays within PyAutoHeart's own repo/state (the observer boundary).
 
 ## Automation (hybrid CI layer)
 
