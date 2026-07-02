@@ -285,6 +285,33 @@ AGGREGATE_FAIL = {
 }
 
 
+def test_to_stage_report_malformed_summary_and_per_project_does_not_raise():
+    # Copilot review finding on PyAutoHeart#25: summary/per_project were
+    # accessed via `.get()`/`.items()` without an isinstance guard, so a
+    # malformed (non-dict) shape from Build's aggregate_results.py would raise
+    # instead of producing a safe default stage report.
+    malformed = {
+        "ready": True,
+        "summary": ["not", "a", "dict"],
+        "per_project": "also not a dict",
+        "failures": "not a list either",
+    }
+    report = validate.to_stage_report(malformed, stage="integrate")
+    assert report["summary"] == {"passed": 0, "failed": 0, "skipped": 0, "timeout": 0}
+    assert report["per_project"] == {}
+    assert report["failures"] == []
+    assert report["status"] == "pass"
+
+
+def test_to_stage_report_ready_must_be_strict_bool():
+    # Copilot review finding on PyAutoHeart#25: `aggregate.get("ready")` was
+    # used as a truthy check, so a stray non-bool value (e.g. the string
+    # "false", which is truthy in Python) would incorrectly read as "pass".
+    stringy = dict(AGGREGATE_PASS, ready="false")
+    report = validate.to_stage_report(stringy, stage="integrate")
+    assert report["status"] == "fail"
+
+
 def test_to_stage_report_pass_shape():
     report = validate.to_stage_report(
         AGGREGATE_PASS, stage="integrate", profile="release",

@@ -407,17 +407,22 @@ def to_stage_report(
     nothing about (e.g. ``verify_install`` A-E against the same wheels) into the
     stage's pass/fail axis without inventing a second stage.
     """
-    summary_raw = aggregate.get("summary") or {}
+    summary_raw = aggregate.get("summary")
+    summary_raw = summary_raw if isinstance(summary_raw, dict) else {}
     summary = {k: int(summary_raw.get(k, 0) or 0) for k in _COUNT_KEYS}
 
+    per_project_raw = aggregate.get("per_project")
+    per_project_raw = per_project_raw if isinstance(per_project_raw, dict) else {}
     per_project: dict[str, dict[str, int]] = {}
-    for proj, counts in (aggregate.get("per_project") or {}).items():
+    for proj, counts in per_project_raw.items():
         if not isinstance(counts, dict):
             continue
         per_project[str(proj)] = {k: int(counts.get(k, 0) or 0) for k in _COUNT_KEYS}
 
+    failures_raw = aggregate.get("failures")
+    failures_raw = failures_raw if isinstance(failures_raw, list) else []
     failures: list[dict[str, Any]] = []
-    for f in aggregate.get("failures") or []:
+    for f in failures_raw:
         if not isinstance(f, dict):
             continue
         entry: dict[str, Any] = {"project": f.get("project"), "script": f.get("file")}
@@ -428,7 +433,10 @@ def to_stage_report(
         if isinstance(f, dict):
             failures.append(dict(f))
 
-    status = "pass" if (aggregate.get("ready") and not force_fail) else "fail"
+    # Strict boolean check (not truthiness): this is a CI contract, so a
+    # malformed/non-boolean "ready" (e.g. a stray string "false", which is
+    # truthy in Python) must never be read as a pass.
+    status = "pass" if (aggregate.get("ready") is True and not force_fail) else "fail"
 
     report: dict[str, Any] = {"stage": stage, "status": status}
     if profile:

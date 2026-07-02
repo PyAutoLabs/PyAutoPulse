@@ -273,7 +273,15 @@ jobs:
             fi
             sleep 10
           done
-          pip install matplotlib==3.6.0 pynufft==2025.1.1 numba
+          # NOT pinning matplotlib here (unlike release.yml's run_smoke_tests,
+          # which pins matplotlib==3.6.0): PyAutoArray's own pyproject.toml
+          # requires matplotlib>=3.7.0, already satisfied by the wheels just
+          # installed above, and 3.6.0 predates cp312 wheel builds entirely
+          # (confirmed via `pip download matplotlib==3.6.0 --python-version 312
+          # --only-binary=:all:` — no matching distribution) — pinning down to
+          # it would force an unnecessary, needlessly slow source rebuild for
+          # zero benefit on a version this job's own wheels already reject.
+          pip install pynufft==2025.1.1 numba
           # Belt-and-braces JAX install — the [optional] -> [jax] chain
           # occasionally silently drops jax from test.pypi resolution.
           pip install "jax>=0.7,<0.11" "jaxlib>=0.7,<0.11"
