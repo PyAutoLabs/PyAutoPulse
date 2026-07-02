@@ -199,6 +199,130 @@ def test_run_persists_report_and_history(tmp_path, monkeypatch):
     importlib.reload(v_mod)
 
 
+# --- to_stage_report(): Build report.json -> Heart stage report ------------
+
+AGGREGATE_PASS = {
+    "ready": True,
+    "summary": {"passed": 58, "failed": 0, "skipped": 2, "timeout": 0},
+    "per_project": {
+        "autolens_workspace": {"passed": 30, "failed": 0, "skipped": 1, "timeout": 0},
+        "autolens_workspace_test": {"passed": 28, "failed": 0, "skipped": 1, "timeout": 0},
+    },
+    "failures": [],
+}
+
+AGGREGATE_FAIL = {
+    "ready": False,
+    "summary": {"passed": 55, "failed": 3, "skipped": 2, "timeout": 0},
+    "per_project": {
+        "autolens_workspace": {"passed": 30, "failed": 3, "skipped": 1, "timeout": 0},
+    },
+    "failures": [
+        {"project": "autolens_workspace", "file": "scripts/imaging/start_here.py",
+         "status": "failed", "error_message": "boom"},
+    ],
+}
+
+
+def test_to_stage_report_pass_shape():
+    report = validate.to_stage_report(
+        AGGREGATE_PASS, stage="integrate", profile="release",
+        version="2026.6.30.1.dev64501", commit_shas=SHAS,
+        run_url="https://github.com/x/actions/runs/999",
+    )
+    assert report["stage"] == "integrate"
+    assert report["status"] == "pass"
+    assert report["profile"] == "release"
+    assert report["version"] == "2026.6.30.1.dev64501"
+    assert report["run_url"] == "https://github.com/x/actions/runs/999"
+    assert report["commit_shas"] == SHAS
+    assert report["summary"] == {"passed": 58, "failed": 0, "skipped": 2, "timeout": 0}
+    assert report["per_project"]["autolens_workspace"]["passed"] == 30
+    assert report["failures"] == []
+
+
+def test_to_stage_report_maps_file_to_script_and_project():
+    report = validate.to_stage_report(AGGREGATE_FAIL, stage="integrate")
+    assert report["status"] == "fail"
+    assert report["failures"] == [
+        {"project": "autolens_workspace", "script": "scripts/imaging/start_here.py"},
+    ]
+
+
+def test_to_stage_report_force_fail_from_verify_install():
+    report = validate.to_stage_report(
+        AGGREGATE_PASS, stage="integrate",
+        extra_failures=[{"project": None, "script": "verify_install", "reason": "verify_install FAILED"}],
+        force_fail=True,
+    )
+    assert report["status"] == "fail"
+    assert any(f.get("script") == "verify_install" for f in report["failures"])
+
+
+def test_to_stage_report_is_ingestable(tmp_path):
+    """Round-trip: emit a stage report, then ingest it like the Release Agent would."""
+    stage_report = validate.to_stage_report(
+        AGGREGATE_PASS, stage="integrate", profile="release",
+        version="2026.6.30.1.dev64501", commit_shas=SHAS,
+        run_url="https://github.com/x/actions/runs/999",
+    )
+    _write(tmp_path / "integrate.json", stage_report)
+    _write(tmp_path / "rehearsal.json", REHEARSAL)
+    report = validate.ingest([tmp_path])
+    assert report["release_ready"] is True
+    assert report["profile"] == "release"
+    assert report["commit_shas"]["PyAutoLens"] == SHAS["PyAutoLens"]
+    assert report["totals"] == {"passed": 58, "failed": 0, "skipped": 2, "timeout": 0}
+
+
+# --- CLI: --emit-stage-report ------------------------------------------------
+
+
+def test_cli_emit_stage_report_pass(tmp_path, capsys):
+    agg_path = _write(tmp_path / "report.json", AGGREGATE_PASS)
+    shas_path = _write(tmp_path / "commit_shas.json", SHAS)
+    out_path = tmp_path / "stage_report.json"
+
+    rc = validate.main([
+        "--emit-stage-report", str(agg_path),
+        "--stage", "integrate",
+        "--profile", "release",
+        "--testpypi-version", "2026.6.30.1.dev64501",
+        "--commit-shas", str(shas_path),
+        "--run-url", "https://github.com/x/actions/runs/999",
+        "--out", str(out_path),
+    ])
+    assert rc == 0
+    written = json.loads(out_path.read_text())
+    assert written["stage"] == "integrate"
+    assert written["status"] == "pass"
+    assert written["profile"] == "release"
+    assert written["commit_shas"] == SHAS
+
+
+def test_cli_emit_stage_report_fail_exit_code(tmp_path):
+    agg_path = _write(tmp_path / "report.json", AGGREGATE_FAIL)
+    out_path = tmp_path / "stage_report.json"
+    rc = validate.main(["--emit-stage-report", str(agg_path), "--out", str(out_path)])
+    assert rc == 1
+    assert json.loads(out_path.read_text())["status"] == "fail"
+
+
+def test_cli_emit_stage_report_verify_install_forces_fail(tmp_path):
+    agg_path = _write(tmp_path / "report.json", AGGREGATE_PASS)
+    vi_path = _write(tmp_path / "verify_install.json", {"ready": False, "checks": []})
+    out_path = tmp_path / "stage_report.json"
+    rc = validate.main([
+        "--emit-stage-report", str(agg_path),
+        "--verify-install", str(vi_path),
+        "--out", str(out_path),
+    ])
+    assert rc == 1
+    written = json.loads(out_path.read_text())
+    assert written["status"] == "fail"
+    assert any(f.get("script") == "verify_install" for f in written["failures"])
+
+
 def test_run_out_override(tmp_path, monkeypatch):
     monkeypatch.setenv("HEART_STATE_DIR", str(tmp_path))
     import heart.state as state_mod
