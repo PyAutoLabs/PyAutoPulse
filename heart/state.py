@@ -84,6 +84,7 @@ def aggregate() -> dict[str, Any]:
         "version_skew": _read_json_or_default(HEART_STATE_DIR / "version_skew.json", {}),
         "verify_install": _read_json_or_default(HEART_STATE_DIR / "verify_install.json", {}),
         "url_check": _read_json_or_default(HEART_STATE_DIR / "url_check.json", {}),
+        "validation_report": _read_json_or_default(HEART_STATE_DIR / "validation_report.json", {}),
     }
     atomic_write_json(HEART_STATE_FILE, snapshot)
     return snapshot

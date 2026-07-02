@@ -27,6 +27,7 @@ primary_query:
   persisted_state:
     snapshot: "~/.pyauto-heart/state.json"
     verdict: "~/.pyauto-heart/release_ready.json"
+    validation_report: "~/.pyauto-heart/validation_report.json"
 
 # The authoritative gate. The Health Agent REPORTS this verdict; it must not
 # re-derive it from raw checks. Heart computes it (heart/readiness.py:compute).
@@ -37,6 +38,12 @@ gate:
     yellow: "Mostly healthy. Work may proceed; human review recommended."
     red:    "Blocked. Do not release until the blocking reasons clear."
   rule: "red dominates yellow dominates green; an unknown is YELLOW, never silently green."
+  release_gate: >-
+    GREEN-for-release additionally REQUIRES a fresh, passing validation_report
+    (see the `validate` capability) whose commit_shas match the current `main`
+    HEADs and whose profile == release. Absent/stale/SHA-mismatch/wrong-profile
+    → YELLOW; a failed validation stage → RED. This is the M2 hard gate: no
+    release rehearsal for the current source can no longer be GREEN.
 
 # Continuous checks — cheap, run every <30s tick (heart/tick.sh).
 continuous_checks:
@@ -96,6 +103,31 @@ deep_checks:
     measures: "live HTTP HEAD/GET audit of URLs (Colab/Binder reachability)"
     gate_role: "monitoring only (weekly cloud workflow)"
 
+# Release validation — the third Heart tier (M2). Not a cheap tick, not the
+# existing deep checks: an INGEST-AND-JUDGE capability. Heart defines the report
+# spec and folds already-collected artifacts into it; it NEVER dispatches a build
+# or talks to GitHub (that is the Brain Release Agent's job — see boundary).
+release_validation:
+  - id: validate
+    impl: heart/validate.py
+    cli: "pyauto-heart validate --ingest <artifacts...>"
+    signal: validation_report            # ~/.pyauto-heart/validation_report.json
+    consumes: >-
+      the M1 TestPyPI rehearsal artifact (rehearsal.json / testpypi_version.txt),
+      a {repo: sha} commit_shas.json, and (from M3) the wheel-based integration
+      report.json — collected and handed over by the Brain Release Agent.
+    produces: >-
+      validation_report.json (schema_version 1): release_ready, testpypi_version,
+      profile, per-repo commit_shas, per-stage status, per-project counts,
+      failures, run URLs, timestamp — persisted in Heart state + a
+      validation_history/ archive.
+    gate_role: >-
+      HARD readiness gate. release_ready==false → RED; absent / stale-by-age /
+      commit_shas not matching current main HEADs / profile != release → YELLOW;
+      fresh pass matching current source under the release profile → GREEN.
+    orchestrated_by: "PyAutoBrain Release Agent (agents/release/) — dispatch/poll/download"
+    boundary: "ingest-and-judge only; never dispatches release.yml or workspace-validation.yml"
+
 # GitHub workflows Heart owns (the cloud half of the hybrid CI layer).
 workflows:
   - file: .github/workflows/lib-tests.yml
@@ -123,7 +155,15 @@ operations:
 
 # Boundary the agent must respect (see pyautobuild_boundary_audit.md).
 boundary:
-  heart: "owns all health/readiness checks and the authoritative readiness verdict"
-  brain: "reasons over Heart's outputs (this Health Agent); owns no checks"
+  heart: >-
+    owns all health/readiness checks, the release-validation report spec + ingest,
+    and the authoritative readiness verdict. Ingest-and-judge only: it NEVER
+    dispatches release.yml / workspace-validation.yml or mutates a repo.
+  brain_health: "reasons over Heart's outputs (the Health Agent, read-only); owns no checks; never dispatches"
+  brain_release: >-
+    the Release Agent ORCHESTRATES release validation: dispatches the M1 TestPyPI
+    rehearsal + (M3) the wheel integration run, polls, downloads the artifacts,
+    hands them to `pyauto-heart validate --ingest`, then consults the Health Agent
+    for the verdict. All GitHub dispatch/credentials live here, not in Heart.
   build_hands: "pure executor; runs NO readiness checks; acts only on a GREEN/YELLOW/RED decision"
-  call_chain: "Brain -> Heart (gate) -> Hands (execute)"
+  call_chain: "Mind -> Release Agent (orchestrate) -> Heart (measure) -> Health Agent (judge) -> Hands/Build (promote on GREEN)"

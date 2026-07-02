@@ -218,6 +218,29 @@ def render(snapshot: dict, quiet: bool = False) -> None:
                   + c_ok("passed") + " " + c_meta(f"(last run {vi.get('ts', '?')})"))
             print()
 
+    # Release-validation block — the tracked rehearsal report (M2). Shown when a
+    # report has been ingested; it is a hard readiness gate, so surface it.
+    vr = snapshot.get("validation_report") or {}
+    if isinstance(vr, dict) and vr:
+        ready = vr.get("release_ready")
+        ver = vr.get("testpypi_version") or "?"
+        profile = vr.get("profile") or "?"
+        stages = vr.get("stages") or {}
+        stage_str = ", ".join(f"{n}:{s.get('status', '?')}" for n, s in stages.items())
+        meta = c_meta(f"v{ver}  profile={profile}  ({vr.get('ts', '?')})")
+        if ready is False:
+            print(c_info("RELEASE VALIDATION") + " " + glyph_fail() + " "
+                  + c_fail("NOT release_ready") + "  " + meta)
+        elif ready is True:
+            print(c_info("RELEASE VALIDATION") + " " + glyph_ok() + " "
+                  + c_ok("release_ready") + "  " + meta)
+        else:
+            print(c_info("RELEASE VALIDATION") + " " + glyph_warn() + " "
+                  + c_warn("release_ready unknown") + "  " + meta)
+        if not quiet and stage_str:
+            print("  " + c_meta(f"  stages: {stage_str}"))
+        print()
+
     # URL hygiene block — monitoring only (never gates readiness).
     uc = snapshot.get("url_check") or {}
     if isinstance(uc, dict) and uc.get("repos"):

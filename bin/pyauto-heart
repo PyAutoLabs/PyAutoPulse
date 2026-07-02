@@ -24,6 +24,8 @@ SUBCOMMAND_ORDER=(
   readiness
   logs
   fix
+  "# Release validation (ingest-and-judge only; never dispatches a build)"
+  validate
   "# Deep checks (on-demand; too slow for the tick)"
   verify_install
   "# URL hygiene (monitoring only — does not gate releases)"
@@ -40,6 +42,7 @@ declare -A SHORT_DESC=(
   [tick]="One-shot refresh of the state cache"
   [status]="Print the cached state with green/yellow/red colouring"
   [readiness]="Print the release-readiness verdict (green/yellow/red + score)"
+  [validate]="Ingest release-validation artifacts into validation_report.json"
   [logs]="Tail the daemon log"
   [fix]="Bundle context for a specific topic and emit a Claude command"
   [verify_install]="Deep install-readiness: pip & conda install-path checks (slow)"
@@ -198,6 +201,35 @@ EOF
 }
 cmd_readiness() {
   exec env PYTHONPATH="$HEART_HOME" python3 -m heart.readiness "$@"
+}
+
+help_validate() { cat <<EOF
+pyauto-heart validate --ingest <artifacts...> [--profile P] [--testpypi-version V]
+                      [--commit-shas FILE] [--out FILE] [--json]
+
+Ingest-and-judge ONLY. Consume the release-validation artifacts the Brain
+Release Agent has already collected — the M1 TestPyPI rehearsal artifact
+(rehearsal.json / testpypi_version.txt), a {repo: sha} commit_shas.json, and
+(from M3) the wheel-based integration report.json — and fold them into a single
+\$HEART_STATE_DIR/validation_report.json (plus a validation_history/ archive).
+
+This NEVER dispatches a build, talks to GitHub, or mutates any repo. All
+dispatching/polling/downloading is the Brain Release Agent's job; Heart is spec
++ ingest + verdict, credential-free.
+
+The report carries release_ready (pass/fail axis), testpypi_version, profile,
+per-repo commit_shas, per-stage status, per-project counts, failures and run
+URLs. \`pyauto-heart readiness\` consumes it as a HARD gate: GREEN-for-release
+now requires a fresh passing report whose commit_shas match the current main
+HEADs under the 'release' profile; absent/stale/mismatch → YELLOW; a failed
+stage → RED.
+
+With no --ingest, prints the currently persisted validation_report.json.
+EOF
+}
+cmd_validate() {
+  mkdir -p "$HEART_STATE_DIR"
+  exec env PYTHONPATH="$HEART_HOME" python3 -m heart.validate "$@"
 }
 
 help_logs() { cat <<EOF
