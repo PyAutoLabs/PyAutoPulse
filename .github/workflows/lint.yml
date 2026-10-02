@@ -11,6 +11,8 @@
 #      Offline on purpose: a project commit landing mid-PR must not redden an
 #      unrelated organ PR (dashboard_refresh.yml re-reads the network nightly).
 #   4. lychee link-rot over the prose *.md. raw.githubusercontent.com,
+#      github.com blob pages (GitHub answers non-browser page views with 503;
+#      a token does not help — the links stay for humans, only the gate skips them),
 #      dashboard.md (hundreds of commit-pinned evidence links), the organ's own
 #      Pages URL (until Pages is enabled and the first deploy lands) and
 #      GitHub issue/pull/commit URLs are excluded.
@@ -81,6 +83,7 @@ jobs:
           lychee \
             --github-token "${GITHUB_TOKEN}" \
             --exclude '^https://raw\.githubusercontent\.com/' \
+            --exclude '^https://github\.com/.*/blob/' \
             --exclude '^https://pyautolabs\.github\.io/PyAutoPulse' \
             --exclude '^https://github\.com/.*/(issues|pull|commit|releases)/' \
             --no-progress \
