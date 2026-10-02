@@ -1,0 +1,37 @@
+{
+ "schema": "profiling-summary",
+ "version": 1,
+ "project": "fixture_profiling",
+ "scope": "release-runtime",
+ "generated_at": "2026-09-30T12:00:00Z",
+ "evidence_updated_at": null,
+ "evidence_updated_at_reason": "no rows measured yet",
+ "valid_until": null,
+ "producer_revision": "0123456789abcdef0123456789abcdef01234567",
+ "comparison_policy": {
+  "id": "fixture-policy",
+  "ratio": 2.0,
+  "floor_s": 0.001
+ },
+ "coverage": {
+  "expected": {
+   "sections": [
+    "runtime"
+   ],
+   "cells": null,
+   "reason": "fixture"
+  },
+  "observed": {
+   "series": 0,
+   "points": 0,
+   "releases": 0,
+   "cells": 0
+  },
+  "excluded": []
+ },
+ "records": [],
+ "comparisons": [],
+ "limitations": [
+  "fixture: hand-written to exercise one reader acceptance case"
+ ]
+}
