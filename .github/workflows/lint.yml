@@ -73,8 +73,13 @@ jobs:
         run: bin/pyauto-pulse check --offline --mind _mind
 
       - name: lychee (markdown link-rot)
+        env:
+          # github.com serves 503 to unauthenticated page fetches (rate limit);
+          # with a token lychee checks github.com links through the API instead.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           lychee \
+            --github-token "${GITHUB_TOKEN}" \
             --exclude '^https://raw\.githubusercontent\.com/' \
             --exclude '^https://pyautolabs\.github\.io/PyAutoPulse' \
             --exclude '^https://github\.com/.*/(issues|pull|commit|releases)/' \
