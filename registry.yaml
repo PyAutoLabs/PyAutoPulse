@@ -1,0 +1,14 @@
+# registry.yaml — the PyAutoPulse instance registry: one row per project that
+# publishes a profiling summary. A row names the project by its PyAutoMind
+# body-map identity (`repo`); the repository's location and GitHub home are
+# read from PyAutoMind/repos.yaml at run time, never copied here. Schema and
+# the rules for adding a row: REFERENCE.md ("Registry").
+schema: 1
+instances:
+  - instance: lens
+    repo: autolens_profiling
+    summary_path: dashboard/summary.json
+    supported_schema: profiling-summary@1
+    dashboard_url: https://pyautolabs.github.io/autolens_profiling/
+    library_refs: [PyAutoLens, PyAutoGalaxy, PyAutoArray, PyAutoFit]
+    cortex_project: null

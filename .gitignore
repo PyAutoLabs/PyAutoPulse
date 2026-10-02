@@ -10,3 +10,10 @@ venv/
 
 # Pages staging
 _site/
+
+# PyAutoMind checkout the refresh workflow reads the body map from
+_mind/
+
+# Half-written receipt/snapshot files (written then renamed into place)
+receipts/*.tmp
+snapshots/*.tmp

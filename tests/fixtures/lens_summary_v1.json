@@ -1,0 +1,526 @@
+{
+ "schema": "profiling-summary",
+ "version": 1,
+ "project": "autolens_profiling",
+ "scope": "release-runtime",
+ "generated_at": "2026-09-30T19:43:00Z",
+ "evidence_updated_at": "2026-08-17T00:00:00Z",
+ "evidence_updated_at_reason": null,
+ "valid_until": null,
+ "producer_revision": "227b5c919b1c205962427a6f48fe233770220a69",
+ "comparison_policy": {
+  "id": "runtime-drift-2x-1ms",
+  "ratio": 2.0,
+  "floor_s": 0.001,
+  "reference_host": "euclid-ral-gpu-2",
+  "loadavg_cap": 8.0
+ },
+ "coverage": {
+  "expected": {
+   "sections": [
+    "runtime",
+    "breakdown",
+    "simulators",
+    "lens"
+   ],
+   "cells": null,
+   "reason": "no declared cell matrix; the results/ scan is the inventory"
+  },
+  "observed": {
+   "series": 5,
+   "points": 11,
+   "releases": 3,
+   "cells": 5
+  },
+  "excluded": [
+   {
+    "id": "breakdown:interferometer/sdp81/delaunay/sdp81:hpc_a100_fp64@2026.8.17.1",
+    "reason": "loadavg 65.7 above the cap 8",
+    "evidence": {
+     "path": "results/breakdown/interferometer/sdp81/delaunay_hpc_a100_fp64.json",
+     "fragment": null
+    }
+   },
+   {
+    "id": "breakdown:interferometer/sdp81/delaunay_numba/sdp81:hpc_ral_cpu_fp64@2026.8.17.1",
+    "reason": "loadavg 68.3 above the cap 8",
+    "evidence": {
+     "path": "results/breakdown/interferometer/sdp81/delaunay_numba_hpc_ral_cpu_fp64.json",
+     "fragment": null
+    }
+   }
+  ]
+ },
+ "records": [
+  {
+   "id": "runtime:imaging/delaunay/hst:local_cpu_fp64@2026.7.6.649",
+   "axis": "runtime",
+   "unit": "s",
+   "measurement": {
+    "single_jit_s": 16.729484930000034,
+    "vmap_per_call_s": 12.66077735333335
+   },
+   "identity": {
+    "section": "runtime",
+    "cell": "imaging/delaunay/hst",
+    "config": "local_cpu_fp64",
+    "sparse": false,
+    "tier": "local",
+    "device": "cpu",
+    "backend": "cpu",
+    "precision": "float64",
+    "library": "PyAutoLens",
+    "library_version": "2026.7.6.649",
+    "release_date": "2026-07-06",
+    "reason": null
+   },
+   "provenance": {
+    "host": null,
+    "job": null,
+    "loadavg": null,
+    "has_provenance": false,
+    "qualified": false,
+    "reason": "no provenance block (pre-#342 row)"
+   },
+   "evidence": {
+    "path": "results/runtime/imaging/delaunay/hst/comparison.json",
+    "fragment": "local_cpu_fp64"
+   }
+  },
+  {
+   "id": "runtime:imaging/delaunay/hst:local_cpu_fp64@2026.8.17.1",
+   "axis": "runtime",
+   "unit": "s",
+   "measurement": {
+    "single_jit_s": 4.523518409999815,
+    "vmap_per_call_s": 3.774630096666685
+   },
+   "identity": {
+    "section": "runtime",
+    "cell": "imaging/delaunay/hst",
+    "config": "local_cpu_fp64",
+    "sparse": false,
+    "tier": "local",
+    "device": "cpu",
+    "backend": "cpu",
+    "precision": "float64",
+    "library": "PyAutoLens",
+    "library_version": "2026.8.17.1",
+    "release_date": "2026-08-17",
+    "reason": null
+   },
+   "provenance": {
+    "host": null,
+    "job": null,
+    "loadavg": null,
+    "has_provenance": false,
+    "qualified": false,
+    "reason": "no provenance block (pre-#342 row)"
+   },
+   "evidence": {
+    "path": "results/runtime/imaging/delaunay/delaunay_likelihood_summary_hst_v2026.8.17.1.json",
+    "fragment": null
+   }
+  },
+  {
+   "id": "runtime:imaging/mge/hst:local_cpu_fp64@2026.7.6.649",
+   "axis": "runtime",
+   "unit": "s",
+   "measurement": {
+    "single_jit_s": 0.11771118000033312,
+    "vmap_per_call_s": 0.1651308966667178
+   },
+   "identity": {
+    "section": "runtime",
+    "cell": "imaging/mge/hst",
+    "config": "local_cpu_fp64",
+    "sparse": false,
+    "tier": "local",
+    "device": "cpu",
+    "backend": "cpu",
+    "precision": "float64",
+    "library": "PyAutoLens",
+    "library_version": "2026.7.6.649",
+    "release_date": "2026-07-06",
+    "reason": null
+   },
+   "provenance": {
+    "host": null,
+    "job": null,
+    "loadavg": null,
+    "has_provenance": false,
+    "qualified": false,
+    "reason": "no provenance block (pre-#342 row)"
+   },
+   "evidence": {
+    "path": "results/runtime/imaging/mge/hst/comparison.json",
+    "fragment": "local_cpu_fp64"
+   }
+  },
+  {
+   "id": "runtime:imaging/mge/hst:local_cpu_fp64@2026.8.17.1",
+   "axis": "runtime",
+   "unit": "s",
+   "measurement": {
+    "single_jit_s": 0.07903557000008732,
+    "vmap_per_call_s": 0.11596217666665325
+   },
+   "identity": {
+    "section": "runtime",
+    "cell": "imaging/mge/hst",
+    "config": "local_cpu_fp64",
+    "sparse": false,
+    "tier": "local",
+    "device": "cpu",
+    "backend": "cpu",
+    "precision": "float64",
+    "library": "PyAutoLens",
+    "library_version": "2026.8.17.1",
+    "release_date": "2026-08-17",
+    "reason": null
+   },
+   "provenance": {
+    "host": "DESKTOP-H143S82",
+    "job": null,
+    "loadavg": null,
+    "has_provenance": false,
+    "qualified": false,
+    "reason": "no provenance block (pre-#342 row)"
+   },
+   "evidence": {
+    "path": "results/runtime/imaging/mge/mge_likelihood_summary_hst_v2026.8.17.1.json",
+    "fragment": null
+   }
+  },
+  {
+   "id": "runtime:imaging/pixelization/hst:local_cpu_fp64@2026.7.6.649",
+   "axis": "runtime",
+   "unit": "s",
+   "measurement": {
+    "single_jit_s": 13.724898559999565,
+    "vmap_per_call_s": 12.49813459666669
+   },
+   "identity": {
+    "section": "runtime",
+    "cell": "imaging/pixelization/hst",
+    "config": "local_cpu_fp64",
+    "sparse": false,
+    "tier": "local",
+    "device": "cpu",
+    "backend": "cpu",
+    "precision": "float64",
+    "library": "PyAutoLens",
+    "library_version": "2026.7.6.649",
+    "release_date": "2026-07-06",
+    "reason": null
+   },
+   "provenance": {
+    "host": null,
+    "job": null,
+    "loadavg": null,
+    "has_provenance": false,
+    "qualified": false,
+    "reason": "no provenance block (pre-#342 row)"
+   },
+   "evidence": {
+    "path": "results/runtime/imaging/pixelization/hst/comparison.json",
+    "fragment": "local_cpu_fp64"
+   }
+  },
+  {
+   "id": "runtime:imaging/pixelization/hst:local_cpu_fp64@2026.8.17.1",
+   "axis": "runtime",
+   "unit": "s",
+   "measurement": {
+    "single_jit_s": 3.1860993599999348,
+    "vmap_per_call_s": 4.622900409999965
+   },
+   "identity": {
+    "section": "runtime",
+    "cell": "imaging/pixelization/hst",
+    "config": "local_cpu_fp64",
+    "sparse": false,
+    "tier": "local",
+    "device": "cpu",
+    "backend": "cpu",
+    "precision": "float64",
+    "library": "PyAutoLens",
+    "library_version": "2026.8.17.1",
+    "release_date": "2026-08-17",
+    "reason": null
+   },
+   "provenance": {
+    "host": null,
+    "job": null,
+    "loadavg": null,
+    "has_provenance": false,
+    "qualified": false,
+    "reason": "no provenance block (pre-#342 row)"
+   },
+   "evidence": {
+    "path": "results/runtime/imaging/pixelization/pixelization_likelihood_summary_hst_v2026.8.17.1.json",
+    "fragment": null
+   }
+  },
+  {
+   "id": "breakdown:cluster/image_plane:local_cpu_fp64@2026.7.23.1",
+   "axis": "runtime",
+   "unit": "s",
+   "measurement": {
+    "single_jit_s": 10.24726366665709,
+    "vmap_per_call_s": null
+   },
+   "identity": {
+    "section": "breakdown",
+    "cell": "cluster/image_plane",
+    "config": "local_cpu_fp64",
+    "sparse": false,
+    "tier": "local",
+    "device": "cpu",
+    "backend": "cpu",
+    "precision": "float64",
+    "library": "PyAutoLens",
+    "library_version": "2026.7.23.1",
+    "release_date": "2026-07-23",
+    "reason": null
+   },
+   "provenance": {
+    "host": null,
+    "job": null,
+    "loadavg": null,
+    "has_provenance": false,
+    "qualified": false,
+    "reason": "no provenance block (pre-#342 row)"
+   },
+   "evidence": {
+    "path": "results/breakdown/cluster/image_plane_breakdown_v2026.7.23.1.json",
+    "fragment": null
+   }
+  },
+  {
+   "id": "breakdown:cluster/image_plane:local_cpu_fp64@2026.8.17.1",
+   "axis": "runtime",
+   "unit": "s",
+   "measurement": {
+    "single_jit_s": 4.809658799998337,
+    "vmap_per_call_s": null
+   },
+   "identity": {
+    "section": "breakdown",
+    "cell": "cluster/image_plane",
+    "config": "local_cpu_fp64",
+    "sparse": false,
+    "tier": "local",
+    "device": "cpu",
+    "backend": "cpu",
+    "precision": "float64",
+    "library": "PyAutoLens",
+    "library_version": "2026.8.17.1",
+    "release_date": "2026-08-17",
+    "reason": null
+   },
+   "provenance": {
+    "host": "DESKTOP-H143S82",
+    "job": null,
+    "loadavg": null,
+    "has_provenance": false,
+    "qualified": false,
+    "reason": "no provenance block (pre-#342 row)"
+   },
+   "evidence": {
+    "path": "results/breakdown/cluster/image_plane_local_cpu_fp64.json",
+    "fragment": null
+   }
+  },
+  {
+   "id": "runtime:imaging/delaunay/hst:local_cpu_fp64_sparse@2026.7.6.649",
+   "axis": "runtime",
+   "unit": "s",
+   "measurement": {
+    "single_jit_s": 4.144032109999898,
+    "vmap_per_call_s": 5.215584503333351
+   },
+   "identity": {
+    "section": "runtime",
+    "cell": "imaging/delaunay/hst",
+    "config": "local_cpu_fp64",
+    "sparse": true,
+    "tier": "local",
+    "device": "cpu",
+    "backend": "cpu",
+    "precision": "float64",
+    "library": "PyAutoLens",
+    "library_version": "2026.7.6.649",
+    "release_date": "2026-07-06",
+    "reason": null
+   },
+   "provenance": {
+    "host": null,
+    "job": null,
+    "loadavg": null,
+    "has_provenance": false,
+    "qualified": false,
+    "reason": "no provenance block (pre-#342 row)"
+   },
+   "evidence": {
+    "path": "results/runtime/imaging/delaunay/hst/comparison.json",
+    "fragment": "local_cpu_fp64_sparse"
+   }
+  },
+  {
+   "id": "runtime:point_source_source/source_plane_solved:hpc_ral_cpu_fp64@2026.8.17.1",
+   "axis": "runtime",
+   "unit": "s",
+   "measurement": {
+    "single_jit_s": 0.00025833239778876304,
+    "vmap_per_call_s": 9.664240060374141e-05
+   },
+   "identity": {
+    "section": "runtime",
+    "cell": "point_source_source/source_plane_solved",
+    "config": "hpc_ral_cpu_fp64",
+    "sparse": false,
+    "tier": "hpc",
+    "device": "ral_cpu",
+    "backend": "cpu",
+    "precision": "float64",
+    "library": "PyAutoLens",
+    "library_version": "2026.8.17.1",
+    "release_date": "2026-08-17",
+    "reason": null
+   },
+   "provenance": {
+    "host": "euclid-ral-gpu-2",
+    "job": "366911",
+    "loadavg": 0.16,
+    "has_provenance": true,
+    "qualified": true,
+    "reason": null
+   },
+   "evidence": {
+    "path": "results/runtime/point_source_source/source_plane_solved/comparison.json",
+    "fragment": "hpc_ral_cpu_fp64"
+   }
+  },
+  {
+   "id": "runtime:point_source_source/source_plane_solved:hpc_a100_fp64@2026.8.17.1",
+   "axis": "runtime",
+   "unit": "s",
+   "measurement": {
+    "single_jit_s": 0.0006424111023079603,
+    "vmap_per_call_s": 5.645434339385247e-06
+   },
+   "identity": {
+    "section": "runtime",
+    "cell": "point_source_source/source_plane_solved",
+    "config": "hpc_a100_fp64",
+    "sparse": false,
+    "tier": "hpc",
+    "device": "a100",
+    "backend": "gpu",
+    "precision": "float64",
+    "library": "PyAutoLens",
+    "library_version": "2026.8.17.1",
+    "release_date": "2026-08-17",
+    "reason": null
+   },
+   "provenance": {
+    "host": "euclid-ral-gpu-2",
+    "job": "366912",
+    "loadavg": 1.16,
+    "has_provenance": true,
+    "qualified": true,
+    "reason": null
+   },
+   "evidence": {
+    "path": "results/runtime/point_source_source/source_plane_solved/comparison.json",
+    "fragment": "hpc_a100_fp64"
+   }
+  }
+ ],
+ "comparisons": [
+  {
+   "comparison_key": "runtime:imaging/delaunay/hst:local_cpu_fp64",
+   "policy": "runtime-drift-2x-1ms",
+   "axis": "runtime",
+   "metric": "single_jit_s",
+   "baseline": "2026.7.6.649",
+   "candidate": "2026.8.17.1",
+   "ratio": 0.27,
+   "status": "improved",
+   "qualified": false,
+   "reasons": [
+    "baseline row unqualified: no provenance block (pre-#342 row)",
+    "candidate row unqualified: no provenance block (pre-#342 row)"
+   ]
+  },
+  {
+   "comparison_key": "runtime:imaging/mge/hst:local_cpu_fp64",
+   "policy": "runtime-drift-2x-1ms",
+   "axis": "runtime",
+   "metric": "single_jit_s",
+   "baseline": "2026.7.6.649",
+   "candidate": "2026.8.17.1",
+   "ratio": 0.671,
+   "status": "flat",
+   "qualified": false,
+   "reasons": [
+    "baseline row unqualified: no provenance block (pre-#342 row)",
+    "candidate row unqualified: no provenance block (pre-#342 row)"
+   ]
+  },
+  {
+   "comparison_key": "runtime:imaging/pixelization/hst:local_cpu_fp64",
+   "policy": "runtime-drift-2x-1ms",
+   "axis": "runtime",
+   "metric": "single_jit_s",
+   "baseline": "2026.7.6.649",
+   "candidate": "2026.8.17.1",
+   "ratio": 0.232,
+   "status": "improved",
+   "qualified": false,
+   "reasons": [
+    "baseline row unqualified: no provenance block (pre-#342 row)",
+    "candidate row unqualified: no provenance block (pre-#342 row)"
+   ]
+  },
+  {
+   "comparison_key": "breakdown:cluster/image_plane:local_cpu_fp64",
+   "policy": "runtime-drift-2x-1ms",
+   "axis": "runtime",
+   "metric": "single_jit_s",
+   "baseline": "2026.7.23.1",
+   "candidate": "2026.8.17.1",
+   "ratio": 0.469,
+   "status": "improved",
+   "qualified": false,
+   "reasons": [
+    "baseline row unqualified: no provenance block (pre-#342 row)",
+    "candidate row unqualified: no provenance block (pre-#342 row)"
+   ]
+  },
+  {
+   "comparison_key": "runtime:imaging/delaunay/hst:local_cpu_fp64_sparse",
+   "policy": "runtime-drift-2x-1ms",
+   "axis": "runtime",
+   "metric": "single_jit_s",
+   "baseline": null,
+   "candidate": null,
+   "ratio": null,
+   "status": "insufficient",
+   "qualified": false,
+   "reasons": [
+    "one release only"
+   ]
+  }
+ ],
+ "limitations": [
+  "runtime axis only: compile times, VRAM and per-step component timings are not in this feed",
+  "evidence_updated_at is the newest release date encoded in a measured library version; result rows do not record measurement wall-clock time",
+  "valid_until is null: this project declares no freshness policy for release trends",
+  "vmap_per_call_s is null where a row carries no vmap block",
+  "rows without a device.provenance block (pre-autolens_profiling#342) are unqualified",
+  "6 row(s) above the load-average cap 8 are listed under coverage.excluded and never enter records"
+ ],
+ "fixture_note": "trimmed copy of autolens_profiling dashboard/summary.json at d9f385f002803b822a6293d7bd20113d2611dca1 (producer_revision 227b5c91)"
+}

@@ -1,0 +1,121 @@
+{
+ "schema": "profiling-summary",
+ "version": 1,
+ "project": "autogalaxy_profiling_fixture",
+ "scope": "release-runtime",
+ "generated_at": "2026-09-30T12:00:00Z",
+ "evidence_updated_at": "2026-09-01T00:00:00Z",
+ "evidence_updated_at_reason": null,
+ "valid_until": null,
+ "producer_revision": "0123456789abcdef0123456789abcdef01234567",
+ "comparison_policy": {
+  "id": "fixture-policy",
+  "ratio": 2.0,
+  "floor_s": 0.001
+ },
+ "coverage": {
+  "expected": {
+   "sections": [
+    "runtime"
+   ],
+   "cells": null,
+   "reason": "fixture"
+  },
+  "observed": {
+   "series": 1,
+   "points": 2,
+   "releases": 2,
+   "cells": 1
+  },
+  "excluded": []
+ },
+ "records": [
+  {
+   "id": "ellipse:hst/ellipse_fit/x7:gpu_mp@2026.9.1.1",
+   "axis": "runtime",
+   "unit": "s",
+   "measurement": {
+    "single_jit_s": 0.002,
+    "vmap_per_call_s": null
+   },
+   "identity": {
+    "section": "ellipse",
+    "cell": "hst/ellipse_fit/x7",
+    "config": "gpu_mp",
+    "sparse": false,
+    "tier": "local",
+    "device": "a100",
+    "backend": "gpu",
+    "precision": "mixed",
+    "library": "PyAutoLens",
+    "library_version": "2026.9.1.1",
+    "release_date": "2026-09-01",
+    "reason": null
+   },
+   "provenance": {
+    "host": "gpu-2",
+    "job": null,
+    "loadavg": 0.5,
+    "has_provenance": true,
+    "qualified": true,
+    "reason": null
+   },
+   "evidence": {
+    "path": "results/ellipse/hst_x7.json",
+    "fragment": "gpu_mp"
+   }
+  },
+  {
+   "id": "ellipse:hst/ellipse_fit/x7:gpu_mp@2026.9.27.1",
+   "axis": "runtime",
+   "unit": "s",
+   "measurement": {
+    "single_jit_s": 0.0051,
+    "vmap_per_call_s": null
+   },
+   "identity": {
+    "section": "ellipse",
+    "cell": "hst/ellipse_fit/x7",
+    "config": "gpu_mp",
+    "sparse": false,
+    "tier": "local",
+    "device": "a100",
+    "backend": "gpu",
+    "precision": "mixed",
+    "library": "PyAutoLens",
+    "library_version": "2026.9.27.1",
+    "release_date": "2026-09-01",
+    "reason": null
+   },
+   "provenance": {
+    "host": "gpu-2",
+    "job": null,
+    "loadavg": 0.5,
+    "has_provenance": true,
+    "qualified": true,
+    "reason": null
+   },
+   "evidence": {
+    "path": "results/ellipse/hst_x7.json",
+    "fragment": "gpu_mp"
+   }
+  }
+ ],
+ "comparisons": [
+  {
+   "comparison_key": "ellipse:hst/ellipse_fit/x7:gpu_mp",
+   "policy": "fixture-policy",
+   "axis": "runtime",
+   "metric": "single_jit_s",
+   "baseline": "2026.9.1.1",
+   "candidate": "2026.9.27.1",
+   "ratio": 2.55,
+   "status": "drifted",
+   "qualified": true,
+   "reasons": []
+  }
+ ],
+ "limitations": [
+  "second-producer fixture: a different section/cell grammar behind the same profiling-summary@1 contract"
+ ]
+}

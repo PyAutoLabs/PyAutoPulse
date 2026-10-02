@@ -1,0 +1,285 @@
+{
+ "schema": "profiling-summary",
+ "version": 1,
+ "project": "fixture_profiling",
+ "scope": "release-runtime",
+ "generated_at": "2026-09-30T12:00:00Z",
+ "evidence_updated_at": "2026-09-01T00:00:00Z",
+ "evidence_updated_at_reason": null,
+ "valid_until": null,
+ "producer_revision": "0123456789abcdef0123456789abcdef01234567",
+ "comparison_policy": {
+  "id": "fixture-policy",
+  "ratio": 2.0,
+  "floor_s": 0.001
+ },
+ "coverage": {
+  "expected": {
+   "sections": [
+    "runtime"
+   ],
+   "cells": null,
+   "reason": "fixture"
+  },
+  "observed": {
+   "series": 3,
+   "points": 6,
+   "releases": 2,
+   "cells": 1
+  },
+  "excluded": []
+ },
+ "records": [
+  {
+   "id": "runtime:imaging/mge:local_cpu_fp64@1.0.0",
+   "axis": "runtime",
+   "unit": "s",
+   "measurement": {
+    "single_jit_s": 0.5,
+    "vmap_per_call_s": null
+   },
+   "identity": {
+    "section": "runtime",
+    "cell": "imaging/mge",
+    "config": "local_cpu_fp64",
+    "sparse": false,
+    "tier": "local",
+    "device": "cpu",
+    "backend": "cpu",
+    "precision": "float64",
+    "library": "PyAutoLens",
+    "library_version": "1.0.0",
+    "release_date": "2026-09-01",
+    "reason": null
+   },
+   "provenance": {
+    "host": "host-a",
+    "job": null,
+    "loadavg": 0.5,
+    "has_provenance": true,
+    "qualified": true,
+    "reason": null
+   },
+   "evidence": {
+    "path": "results/a.json",
+    "fragment": "local_cpu_fp64"
+   }
+  },
+  {
+   "id": "runtime:imaging/mge:local_cpu_fp64@1.1.0",
+   "axis": "runtime",
+   "unit": "s",
+   "measurement": {
+    "single_jit_s": 0.55,
+    "vmap_per_call_s": null
+   },
+   "identity": {
+    "section": "runtime",
+    "cell": "imaging/mge",
+    "config": "local_cpu_fp64",
+    "sparse": false,
+    "tier": "local",
+    "device": "cpu",
+    "backend": "cpu",
+    "precision": "float64",
+    "library": "PyAutoLens",
+    "library_version": "1.1.0",
+    "release_date": "2026-09-01",
+    "reason": null
+   },
+   "provenance": {
+    "host": "host-a",
+    "job": null,
+    "loadavg": 0.5,
+    "has_provenance": true,
+    "qualified": true,
+    "reason": null
+   },
+   "evidence": {
+    "path": "results/a.json",
+    "fragment": "local_cpu_fp64"
+   }
+  },
+  {
+   "id": "runtime:imaging/mge:a100_fp32@1.0.0",
+   "axis": "runtime",
+   "unit": "s",
+   "measurement": {
+    "single_jit_s": 0.01,
+    "vmap_per_call_s": null
+   },
+   "identity": {
+    "section": "runtime",
+    "cell": "imaging/mge",
+    "config": "a100_fp32",
+    "sparse": false,
+    "tier": "local",
+    "device": "a100",
+    "backend": "gpu",
+    "precision": "float32",
+    "library": "PyAutoLens",
+    "library_version": "1.0.0",
+    "release_date": "2026-09-01",
+    "reason": null
+   },
+   "provenance": {
+    "host": "gpu-1",
+    "job": null,
+    "loadavg": 0.5,
+    "has_provenance": true,
+    "qualified": true,
+    "reason": null
+   },
+   "evidence": {
+    "path": "results/a.json",
+    "fragment": "a100_fp32"
+   }
+  },
+  {
+   "id": "runtime:imaging/mge:a100_fp32@1.1.0",
+   "axis": "runtime",
+   "unit": "s",
+   "measurement": {
+    "single_jit_s": 0.012,
+    "vmap_per_call_s": null
+   },
+   "identity": {
+    "section": "runtime",
+    "cell": "imaging/mge",
+    "config": "a100_fp32",
+    "sparse": false,
+    "tier": "local",
+    "device": "a100",
+    "backend": "gpu",
+    "precision": "float32",
+    "library": "PyAutoLens",
+    "library_version": "1.1.0",
+    "release_date": "2026-09-01",
+    "reason": null
+   },
+   "provenance": {
+    "host": "gpu-1",
+    "job": null,
+    "loadavg": 0.5,
+    "has_provenance": true,
+    "qualified": true,
+    "reason": null
+   },
+   "evidence": {
+    "path": "results/a.json",
+    "fragment": "a100_fp32"
+   }
+  },
+  {
+   "id": "runtime:imaging/mge:mixed@1.0.0",
+   "axis": "runtime",
+   "unit": "s",
+   "measurement": {
+    "single_jit_s": 0.5,
+    "vmap_per_call_s": null
+   },
+   "identity": {
+    "section": "runtime",
+    "cell": "imaging/mge",
+    "config": "mixed",
+    "sparse": false,
+    "tier": "local",
+    "device": "cpu",
+    "backend": "cpu",
+    "precision": "float64",
+    "library": "PyAutoLens",
+    "library_version": "1.0.0",
+    "release_date": "2026-09-01",
+    "reason": null
+   },
+   "provenance": {
+    "host": "host-a",
+    "job": null,
+    "loadavg": 0.5,
+    "has_provenance": true,
+    "qualified": true,
+    "reason": null
+   },
+   "evidence": {
+    "path": "results/a.json",
+    "fragment": "mixed"
+   }
+  },
+  {
+   "id": "runtime:imaging/mge:mixed@1.1.0",
+   "axis": "runtime",
+   "unit": "s",
+   "measurement": {
+    "single_jit_s": 0.01,
+    "vmap_per_call_s": null
+   },
+   "identity": {
+    "section": "runtime",
+    "cell": "imaging/mge",
+    "config": "mixed",
+    "sparse": false,
+    "tier": "local",
+    "device": "a100",
+    "backend": "gpu",
+    "precision": "float32",
+    "library": "PyAutoLens",
+    "library_version": "1.1.0",
+    "release_date": "2026-09-01",
+    "reason": null
+   },
+   "provenance": {
+    "host": "gpu-1",
+    "job": null,
+    "loadavg": 0.5,
+    "has_provenance": true,
+    "qualified": true,
+    "reason": null
+   },
+   "evidence": {
+    "path": "results/a.json",
+    "fragment": "mixed"
+   }
+  }
+ ],
+ "comparisons": [
+  {
+   "comparison_key": "runtime:imaging/mge:local_cpu_fp64",
+   "policy": "fixture-policy",
+   "axis": "runtime",
+   "metric": "single_jit_s",
+   "baseline": "1.0.0",
+   "candidate": "1.1.0",
+   "ratio": 1.1,
+   "status": "flat",
+   "qualified": true,
+   "reasons": []
+  },
+  {
+   "comparison_key": "runtime:imaging/mge:a100_fp32",
+   "policy": "fixture-policy",
+   "axis": "runtime",
+   "metric": "single_jit_s",
+   "baseline": "1.0.0",
+   "candidate": "1.1.0",
+   "ratio": 1.2,
+   "status": "flat",
+   "qualified": true,
+   "reasons": []
+  },
+  {
+   "comparison_key": "runtime:imaging/mge:mixed",
+   "policy": "fixture-policy",
+   "axis": "runtime",
+   "metric": "single_jit_s",
+   "baseline": "1.0.0",
+   "candidate": "1.1.0",
+   "ratio": 0.02,
+   "status": "improved",
+   "qualified": true,
+   "reasons": []
+  }
+ ],
+ "limitations": [
+  "fixture: hand-written to exercise one reader acceptance case"
+ ]
+}
