@@ -1,5 +1,11 @@
 # PyAutoPulse — reference
 
+The [campaign control room](CHECKIN.md) provides one editable check-in prompt,
+active campaigns and Pulse-owned tasks above the detailed profiling evidence.
+`campaigns.yaml` is the scheduling ledger; `migration.yaml` records original Mind
+prompts and their source commit. Board refreshes never change task status or stamp
+a check-in. Run `bin/pyauto-pulse board --offline` after ledger edits.
+
 The registry schema, the `profiling-summary` v1 contract as this organ reads
 it, and the formats of the receipts, snapshots, board markers and cockpit feed.
 Prose boundaries live in [AGENTS.md](AGENTS.md); the design is

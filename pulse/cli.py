@@ -9,7 +9,7 @@ import os
 import sys
 from pathlib import Path
 
-from pulse import ORGAN_ROOT, board, ingest, registry
+from pulse import ORGAN_ROOT, board, campaigns, ingest, registry
 from pulse import summary as summary_mod
 
 
@@ -158,6 +158,14 @@ def _check_state(path: Path) -> list[str]:
 def cmd_check(args) -> int:
     problems = []
     try:
+        campaign_data = campaigns.load()
+    except campaigns.CampaignError as exc:
+        print(f"FAIL campaigns: {exc}")
+        return 1
+    print(
+        f"ok   campaigns: {len(campaign_data['campaigns'])} campaigns, {len(campaign_data['tasks'])} tasks"
+    )
+    try:
         body_map = registry.load_body_map(args.mind)
         print(f"ok   body map: {registry.body_map_path(args.mind)}")
         instances = registry.load(args.registry, body_map=body_map)
@@ -202,6 +210,10 @@ def cmd_check(args) -> int:
         problems.append("dashboard.md / dashboard.html missing")
         print("FAIL dashboard: dashboard.md / dashboard.html missing — run `pyauto-pulse board`")
     else:
+        expected = campaigns.marker(campaign_data)
+        if expected not in md.read_text() or expected not in page.read_text():
+            problems.append("campaign dashboard stale — run pyauto-pulse board")
+            print("FAIL campaigns: dashboard does not match the campaign ledger")
         recorded = board.markers(md.read_text())
         names = {i.instance for i in instances}
         stale = sorted(
