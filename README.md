@@ -1,5 +1,11 @@
 # PyAutoPulse
 
+The [campaign control room](CHECKIN.md) provides one editable check-in prompt,
+active campaigns and Pulse-owned tasks above the detailed profiling evidence.
+`campaigns.yaml` is the scheduling ledger; `migration.yaml` records original Mind
+prompts and their source commit. Board refreshes never change task status or stamp
+a check-in. Run `bin/pyauto-pulse board --offline` after ledger edits.
+
 The **Pulse** organ of the [PyAuto organism](https://github.com/PyAutoLabs/PyAutoBrain/blob/main/ORGANISM.md):
 where the organism feels how fast it runs.
 

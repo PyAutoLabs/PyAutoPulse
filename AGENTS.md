@@ -1,5 +1,16 @@
 # PyAutoPulse — agent instructions
 
+## Profiling campaign front door
+
+Read `CHECKIN.md` for all-campaign updates and one-chat operation. Pulse now owns
+profiling campaign intent and pending tasks in `campaigns.yaml` and `tasks/`,
+including prompts migrated from Mind (`migration.yaml`). The board displays
+the editable check-in prompt, active campaigns, open tasks, then measurements.
+Mind retains bounded development issue/PR lifecycle and repository claims;
+project repos retain measurement evidence. This explicit ownership update takes
+precedence over older descriptions of Pulse as only a summary reader.
+
+
 This file is for AI coding agents (Claude Code, Codex, Cursor, etc.) and humans
 discovering this repository. PyAutoPulse is the **Pulse** organ of the PyAuto
 organism — where the organism feels how fast it runs. It is the cross-project
