@@ -1,73 +1,89 @@
 version: 1
-last_checkin: null
+last_checkin: '2026-10-04T17:18:38Z'
 campaigns:
 - id: point-source-image-cpu
   title: Point-source image plane · CPU
   status: active
-  updated: '2026-10-03'
-  next: Phases 1–4 shipped; reconcile carried cleanup and test-placement work.
-  evidence: https://github.com/PyAutoLabs/autolens_profiling/blob/efcece3ea39c622e62cc61518f58394ee3986d4c/wiki/campaigns/point_source_image_plane_cpu.md
+  updated: '2026-10-04'
+  next: 'Phases 1–4 shipped; PyAutoLens#764 (extent warning) released in 2026.10.4.1. Next: docs-only autolens_profiling
+    PR writing campaign completion evidence and fixing stale wiki/index lines (#763 ''in flight'' → #764 merged).
+    RAL leftover folders present; mirror sync unverified.'
+  evidence: https://github.com/PyAutoLabs/autolens_profiling/blob/a93f37a7ade16fcb7673a7777dfde505183728ed/wiki/campaigns/point_source_image_plane_cpu.md
 - id: point-source-image-gpu
   title: Point-source image plane · A100
   status: needs-decision
-  updated: '2026-10-03'
-  next: Measure an image-plane fit for the admission decision; retain forward-gradient correctness findings.
-  evidence: https://github.com/PyAutoLabs/autolens_profiling/blob/efcece3ea39c622e62cc61518f58394ee3986d4c/wiki/campaigns/point_source_gpu_breakdown.md
+  updated: '2026-10-04'
+  next: 'Phase 0+1 shipped (profiling#353 merged 2026-09-30; wiki stale). Forward-mode gradient NaN is unfixed and
+    live in 2026.10.4.1 but only a Mind draft. Human decisions: issue that bug; authorize the autolens_inference
+    image-plane fit measurement.'
+  evidence: https://github.com/PyAutoLabs/autolens_profiling/blob/a93f37a7ade16fcb7673a7777dfde505183728ed/wiki/campaigns/point_source_gpu_breakdown.md
 - id: point-source-source
   title: Point-source source plane
   status: parked
-  updated: '2026-10-03'
-  next: Core complete; gradient-sampler admission required before blackjax work. Warm-up measurement fix remains
-    open.
-  evidence: https://github.com/PyAutoLabs/autolens_profiling/blob/efcece3ea39c622e62cc61518f58394ee3986d4c/wiki/campaigns/point_source_source_plane.md
+  updated: '2026-10-04'
+  next: 'Core complete. Nautilus leaf autolens_inference#17 merged 2026-10-02 (wiki still says open). Blackjax parked:
+    gradient-sampler admission not met. Warm-up task awaits the human''s option (a)/(b)/(c).'
+  evidence: https://github.com/PyAutoLabs/autolens_profiling/blob/a93f37a7ade16fcb7673a7777dfde505183728ed/wiki/campaigns/point_source_source_plane.md
 - id: cluster-pointsolver
   title: Cluster PointSolver robustness and performance
   status: active
-  updated: '2026-10-03'
-  next: Reconcile the expanded robustness contract; select one bounded phase and current representative baseline.
-  evidence: https://github.com/PyAutoLabs/autolens_profiling/blob/efcece3ea39c622e62cc61518f58394ee3986d4c/wiki/campaigns/cluster_pointsolver.md
+  updated: '2026-10-04'
+  next: 'Unchanged since 2026-09-27; nothing issued or claimed. Wiki still points at the removed Mind draft (now
+    Pulse tasks/). Pick one bounded phase: observable-overflow invalid-result policy + CI witness, or a representative-data
+    baseline cell.'
+  evidence: https://github.com/PyAutoLabs/autolens_profiling/blob/a93f37a7ade16fcb7673a7777dfde505183728ed/wiki/campaigns/cluster_pointsolver.md
 - id: interferometer
   title: Interferometer likelihood and streaming
   status: active
-  updated: '2026-10-03'
-  next: Collect the final CPU matrix cell; scope streaming scaling, curvature reuse and FFT levers separately.
-  evidence: https://github.com/PyAutoLabs/autolens_profiling/blob/efcece3ea39c622e62cc61518f58394ee3986d4c/wiki/campaigns/interferometer_likelihood.md
+  updated: '2026-10-04'
+  next: 'Last CPU cell ran (RAL job 375978_3 COMPLETED 1:11:36, JSON on RAL, not on main) but misses the ≤1e-3 nat
+    CPU/A100 witness: human decision needed. Streaming phases 3–5 shipped; the scaling measurement needs compute
+    authorization. Curvature, memo and FFT tasks unstarted.'
+  evidence: https://github.com/PyAutoLabs/autolens_profiling/blob/a93f37a7ade16fcb7673a7777dfde505183728ed/wiki/campaigns/interferometer_likelihood.md
 - id: linear-solver
   title: Linear-solver accuracy and cost
   status: blocked
-  updated: '2026-10-03'
-  next: Verify release containing Array#595 and RAL sync before GPU/vmap parity and timing.
-  evidence: https://github.com/PyAutoLabs/autolens_profiling/blob/efcece3ea39c622e62cc61518f58394ee3986d4c/wiki/campaigns/linear_solver_accuracy.md
+  updated: '2026-10-04'
+  next: 'Release half met: PyAutoArray#595 is in 2026.10.2.1 and 2026.10.4.1. RAL mirror sync (HPCPullPyAuto, plus
+    a dependency-floor diff) unverified; phase 3 GPU/vmap parity and timing waits on it.'
+  evidence: https://github.com/PyAutoLabs/autolens_profiling/blob/a93f37a7ade16fcb7673a7777dfde505183728ed/wiki/campaigns/linear_solver_accuracy.md
 - id: imaging
   title: Production imaging and likelihood breakdown
   status: active
-  updated: '2026-10-03'
-  next: Reconcile measured GPU/CPU coverage, then profile production over-sampling and remaining costs.
-  evidence: https://github.com/PyAutoLabs/autolens_profiling/blob/efcece3ea39c622e62cc61518f58394ee3986d4c/wiki/campaigns/post_certified_breakdown.md
+  updated: '2026-10-04'
+  next: 'No new results since the pin. Over-sampling phase 1: add --instrument production presets to the JAX Delaunay
+    cells (CPU smoke only); PyAutoArray#606 S/N over-sampling helper (in 2026.10.4.1) is new context. Post-certified
+    Blocked-by is stale (resolved 2026-09-27).'
+  evidence: https://github.com/PyAutoLabs/autolens_profiling/blob/a93f37a7ade16fcb7673a7777dfde505183728ed/wiki/campaigns/post_certified_breakdown.md
 - id: measurement-tools
   title: Measurement reliability and profiling tools
   status: active
-  updated: '2026-10-03'
-  next: Audit timing noise; repair warm-up, cumulative accounting, memo blindness and compile-cell construction.
-  evidence: https://github.com/PyAutoLabs/PyAutoMind/tree/f21898e042be67afd86cc9c512879b3ad1c9ca9a/draft
+  updated: '2026-10-04'
+  next: 'Only timing_noise_audit is issued (autolens_profiling#362: open, no comments, unassigned); start its audit
+    phase via start_dev. Other nine tasks unchanged and unissued; mass_field superseded confirmed.'
+  evidence: https://github.com/PyAutoLabs/PyAutoPulse/tree/f1801514ddcf2272b832c2b53713cd2257aea5c0/tasks
 - id: autofit
   title: PyAutoFit profiling bootstrap
   status: needs-decision
-  updated: '2026-10-03'
-  next: Confirm new repository creation before porting baseline packages; no empty producer registration.
-  evidence: https://github.com/PyAutoLabs/PyAutoMind/tree/f21898e042be67afd86cc9c512879b3ad1c9ca9a/draft
+  updated: '2026-10-04'
+  next: PyAutoLabs/autofit_profiling does not exist (gh, 2026-10-04). Human decision pending on repo creation; no
+    producer registration until it exists with ported baselines.
+  evidence: https://github.com/PyAutoLabs/PyAutoPulse/tree/f1801514ddcf2272b832c2b53713cd2257aea5c0/tasks
 - id: critical-curves
   title: Critical curves and evaluation grids
-  status: blocked
-  updated: '2026-10-03'
-  next: Galaxy#646 and profiling#365 merged; workspace#343 remains release-gated in Mind.
-  evidence: https://github.com/PyAutoLabs/autolens_profiling/blob/efcece3ea39c622e62cc61518f58394ee3986d4c/wiki/campaigns/critical_curves.md
+  status: needs-decision
+  updated: '2026-10-04'
+  next: 'Release gate met: PyAutoGalaxy#646 first released in 2026.10.4.1. autolens_workspace_test#343 (workspace_test,
+    not workspace) is an open draft, checks green 2026-10-02; awaits human mark-ready + /prm (re-run CI) to close
+    the evaluation-grid-cap-field task.'
+  evidence: https://github.com/PyAutoLabs/autolens_profiling/blob/a93f37a7ade16fcb7673a7777dfde505183728ed/wiki/campaigns/critical_curves.md
 - id: certified-solver
   title: Certified positive solver
   status: parked
-  updated: '2026-10-03'
-  next: Retain the parked opt-in solver study; read the project ledger before proposing new work.
-  evidence: https://github.com/PyAutoLabs/autolens_profiling/blob/efcece3ea39c622e62cc61518f58394ee3986d4c/wiki/campaigns/certified_positive_solver.md
+  updated: '2026-10-04'
+  next: Parked by choice; wiki unchanged since ab1e4fd (2026-09-27). Its three library/workspace Mind drafts remain
+    in Mind. Retain parked; read the project ledger before proposing new work.
+  evidence: https://github.com/PyAutoLabs/autolens_profiling/blob/a93f37a7ade16fcb7673a7777dfde505183728ed/wiki/campaigns/certified_positive_solver.md
 tasks:
 - id: runtime_cell_single_jit_gpu_warmup
   campaign: point-source-source
@@ -76,16 +92,19 @@ tasks:
   status: needs-decision
   priority: low
   path: tasks/runtime_cell_single_jit_gpu_warmup.md
-  updated: '2026-10-03'
-  next: Read the task and resolve its explicit human decision before execution.
+  updated: '2026-10-04'
+  next: Human picks option (a) add warm calls + median field, (b) headline vmap.per_call on GPU, or (c) re-base
+    at next release. Runtime cell unchanged since 464f948 (2026-09-28).
+  evidence: https://github.com/PyAutoLabs/autolens_profiling/blob/a93f37a7ade16fcb7673a7777dfde505183728ed/scripts/point_source_source/likelihood_runtime/source_plane_solved.py
 - id: timing_noise_audit
   campaign: measurement-tools
   title: Audit timing tests and profiling gates for measurement noise
   status: ready
   priority: high
   path: tasks/timing_noise_audit.md
-  updated: '2026-10-03'
-  next: Read the task and select the next bounded step; check current repository claims.
+  updated: '2026-10-04'
+  next: Issued as autolens_profiling#362 (open, 0 comments, unassigned). Start its read-and-classify audit phase
+    via start_dev.
   issue: https://github.com/PyAutoLabs/autolens_profiling/issues/362
 - id: mge_likelihood_breakdown_steps_are_cumulative_an
   campaign: measurement-tools
@@ -93,40 +112,45 @@ tasks:
   status: ready
   priority: low
   path: tasks/mge_likelihood_breakdown_steps_are_cumulative_an.md
-  updated: '2026-10-03'
-  next: Read the task and select the next bounded step; check current repository claims.
+  updated: '2026-10-04'
+  next: Unchanged and unissued (no GitHub refs, 2026-10-04). Select one bounded step when measurement-tools is prioritised.
 - id: gradient_cost_probe
   campaign: measurement-tools
   title: 'A gradient-cost probe: forward vs `value_and_grad` ms/eval and a strict FD check, on any registry cell'
   status: ready
   priority: low
   path: tasks/gradient_cost_probe.md
-  updated: '2026-10-03'
-  next: Read the task and select the next bounded step; check current repository claims.
+  updated: '2026-10-04'
+  next: Unchanged and unissued (workspace_developer#117 closed 2026-07-28). Select one bounded step when prioritised.
+  evidence: https://github.com/PyAutoLabs/autolens_workspace_developer/issues/117
 - id: numba_breakdown_harness_memo_blind
   campaign: measurement-tools
   title: 'Numba breakdown harness: perturb the instance so the operated-matrix memo cannot hide a step'
   status: ready
   priority: medium
   path: tasks/numba_breakdown_harness_memo_blind.md
-  updated: '2026-10-03'
-  next: Read the task and select the next bounded step; check current repository claims.
+  updated: '2026-10-04'
+  next: Unchanged and unissued (PyAutoArray#496 closed 2026-08-27). Select one bounded step when prioritised.
+  evidence: https://github.com/PyAutoLabs/PyAutoArray/issues/496
 - id: search_settings_estimation_infrastructure
   campaign: measurement-tools
   title: Search settings-estimation + profiling infrastructure (n_starts / batch_size / n_batch)
   status: ready
   priority: normal
   path: tasks/search_settings_estimation_infrastructure.md
-  updated: '2026-10-03'
-  next: Read the task and select the next bounded step; check current repository claims.
+  updated: '2026-10-04'
+  next: Unchanged and unissued (autolens_profiling#82 closed 2026-08-18). Select one bounded step when prioritised.
+  evidence: https://github.com/PyAutoLabs/autolens_profiling/issues/82
 - id: jax_compile_probe_needs_own_cell_builder
   campaign: measurement-tools
   title: jax_compile/probe.py lost its cell builder with the searches tier — give profiling its own
   status: ready
   priority: normal
   path: tasks/jax_compile_probe_needs_own_cell_builder.md
-  updated: '2026-10-03'
-  next: Read the task and select the next bounded step; check current repository claims.
+  updated: '2026-10-04'
+  next: Unchanged and unissued; scripts/misc/jax_compile/probe.py still on main (run state unverified). Select one
+    bounded step when prioritised.
+  evidence: https://github.com/PyAutoLabs/autolens_profiling/blob/a93f37a7ade16fcb7673a7777dfde505183728ed/scripts/misc/jax_compile/probe.py
 - id: mass_field_flat_adoption_science_repos
   campaign: measurement-tools
   title: 'Remaining code consumers move to the flat `fields=` form: profiling, inference, JOSS benchmarks, Reduce
@@ -134,41 +158,47 @@ tasks:
   status: superseded
   priority: normal
   path: tasks/mass_field_flat_adoption_science_repos.md
-  updated: '2026-10-03'
-  next: Historical umbrella; shipped work retained. Do not issue it again.
+  updated: '2026-10-04'
+  next: 'Superseded confirmed 2026-10-04: all five refs closed/merged 2026-09-18/19, nothing open. Historical umbrella;
+    do not issue it again.'
 - id: mge_nnls_fix_pyautoarray_571_slam_60
   campaign: linear-solver
   title: 'Linear-solver programme phase 3: GPU/vmap/A100 timing and parity rows for the solver corpus'
   status: blocked
   priority: medium
   path: tasks/mge_nnls_fix_pyautoarray_571_slam_60.md
-  updated: '2026-10-03'
-  next: a release shipping the phase-2 fix (PyAutoArray#595, merged 2026-09-30 pending release; record complete/2026/09/raw-pdip-forward-polish.md)
-    AND the RAL mirror synced via HPCPullPyAuto
+  updated: '2026-10-04'
+  next: 'Release half met: PyAutoArray#595 (7a89e19a) is in 2026.10.2.1 and 2026.10.4.1. Still blocked on the RAL
+    mirror sync via HPCPullPyAuto (unverified; also diff dependency floors).'
+  evidence: https://github.com/PyAutoLabs/PyAutoArray/pull/595
 - id: autofit_profiling_bootstrap
   campaign: autofit
   title: 'autofit_profiling: bootstrap the repo + general PyAutoFit profiling epic'
   status: needs-decision
   priority: normal
   path: tasks/autofit_profiling_bootstrap.md
-  updated: '2026-10-03'
-  next: Read the task and resolve its explicit human decision before execution.
+  updated: '2026-10-04'
+  next: Human answers the single repo-creation question (PyAutoLabs/autofit_profiling absent, 2026-10-04) before
+    any porting.
 - id: cluster_pointsolver_speed
   campaign: cluster-pointsolver
   title: Cluster PointSolver — robustness, analysis settings and performance
   status: ready
   priority: normal
   path: tasks/cluster_pointsolver_speed.md
-  updated: '2026-10-03'
-  next: Read the task and select the next bounded step; check current repository claims.
+  updated: '2026-10-04'
+  next: 'Unissued, no claim. Pick one bounded phase per Mind epics.md: observable-overflow invalid-result policy
+    + CI witness, or a representative-data baseline cell.'
 - id: imaging_production_over_sampling
   campaign: imaging
   title: Profile imaging pixelizations at production over-sampling
   status: ready
   priority: normal
   path: tasks/imaging_production_over_sampling.md
-  updated: '2026-10-03'
-  next: Read the task and select the next bounded step; check current repository claims.
+  updated: '2026-10-04'
+  next: 'Phase 1 (workspace-only): --instrument euclid|hst presets for the JAX Delaunay runtime/breakdown cells,
+    keeping flat-1 selectable; CPU smoke only. A100 re-measure is a separate compute-authorized phase.'
+  evidence: https://github.com/PyAutoLabs/PyAutoArray/pull/606
 - id: interferometer_decision_matrix_last_cell
   campaign: interferometer
   title: Interferometer decision matrix — fill the last cell (CPU rect 39² at alma_high r5.0) and flip the wiki
@@ -176,32 +206,36 @@ tasks:
   status: needs-decision
   priority: normal
   path: tasks/interferometer_decision_matrix_last_cell.md
-  updated: '2026-10-03'
-  next: Read the task and resolve its explicit human decision before execution.
+  updated: '2026-10-04'
+  next: 'Human decision: accept the ~1.59e-3 nat CPU/A100 gap vs the ≤1e-3 contract (as the r3.5 cell did) or re-run
+    the A100 row on post-#595 revisions. Job 375978_3 COMPLETED 1:11:36, 0 tracebacks; JSON on RAL, not on main.
+    Then commit the row (no compute).'
 - id: interferometer_fixed_mapper_curvature_preload
   campaign: interferometer
   title: 'Interferometer fixed-mapper searches: reuse the W~ curvature matrix across likelihood calls via `preloads.curvature_matrix`'
   status: needs-slicing
   priority: normal
   path: tasks/interferometer_fixed_mapper_curvature_preload.md
-  updated: '2026-10-03'
-  next: Scope one bounded phase from the full task contract.
+  updated: '2026-10-04'
+  next: Unstarted (no PR/issue/branch/results, 2026-10-04). Scope one bounded phase from the full task contract.
 - id: interferometer_nnls_memo_scattered_stream_guard
   campaign: interferometer
   title: 'fnnls warm-start memo: stop it slowing scattered evaluation streams (interferometer CPU, autolens_profiling#332)'
   status: ready
   priority: medium
   path: tasks/interferometer_nnls_memo_scattered_stream_guard.md
-  updated: '2026-10-03'
-  next: Read the task and select the next bounded step; check current repository claims.
+  updated: '2026-10-04'
+  next: Unstarted (no PR/issue/branch/results, 2026-10-04). Select one bounded step when prioritised.
 - id: interferometer_streaming_scaling
   campaign: interferometer
   title: 'Campaign: interferometer streaming (array-free) vs in-memory — memory and time scaling to 2e8 visibilities'
   status: ready
   priority: high
   path: tasks/interferometer_streaming_scaling.md
-  updated: '2026-10-03'
-  next: Read the task and select the next bounded step; check current repository claims.
+  updated: '2026-10-04'
+  next: 'Go/no-go overtaken: streaming phases 3–5 shipped Sep 30–Oct 1 (PyAutoArray #589/#593/#601 in 2026.10.2.1).
+    The scaling measurement itself is unrun and needs compute authorization.'
+  evidence: https://github.com/PyAutoLabs/PyAutoArray/pull/601
 - id: interferometer_w_tilde_fft_size_levers
   campaign: interferometer
   title: 'Interferometer W~ curvature matrix is FFT-bound on the mask extent: pruned padded FFT and real-space pixel
@@ -209,77 +243,92 @@ tasks:
   status: ready
   priority: normal
   path: tasks/interferometer_w_tilde_fft_size_levers.md
-  updated: '2026-10-03'
-  next: Read the task and select the next bounded step; check current repository claims.
+  updated: '2026-10-04'
+  next: Unstarted (no PR/issue/branch/results, 2026-10-04). Select one bounded step when prioritised.
 - id: point_solver_profiling_cells
   campaign: cluster-pointsolver
   title: 'PointSolver profiling cells: lensed quasar → cluster runtime tier → single/multi-source → multiplane'
   status: ready
   priority: normal
   path: tasks/point_solver_profiling_cells.md
-  updated: '2026-10-03'
-  next: Read the task and select the next bounded step; check current repository claims.
+  updated: '2026-10-04'
+  next: 'Unissued, no claim. Candidate first cell: a representative-data cluster likelihood_runtime baseline (single-source
+    preset).'
 - id: point_source_image_plane_gpu_breakdown
   campaign: point-source-image-gpu
   title: 'Point-source A100 speed-up campaign: profile and optimize with the shared breakdown'
   status: needs-decision
   priority: high
   path: tasks/point_source_image_plane_gpu_breakdown.md
-  updated: '2026-10-03'
-  next: Read the task and resolve its explicit human decision before execution.
+  updated: '2026-10-04'
+  next: Issue the forward-mode gradient NaN bug (Mind draft draft/bug/autolens/point_image_pair_all_forward_grad_nan.md,
+    reproduces on CPU, live in 2026.10.4.1); human to authorize the autolens_inference image-plane fit measurement.
+  evidence: https://github.com/PyAutoLabs/PyAutoMind/blob/cc93f8c425bbcbd83bcb6cd5e649a60d17640b5f/draft/bug/autolens/point_image_pair_all_forward_grad_nan.md
 - id: point_source_source_plane_chi_squared_speed
   campaign: point-source-source
   title: Point-source source-plane chi-squared speed-up campaign — remaining candidates (phases 1–2e shipped)
   status: blocked
   priority: low
   path: tasks/point_source_source_plane_chi_squared_speed.md
-  updated: '2026-10-03'
-  next: Await gradient-sampler admission evidence; core campaign already complete.
+  updated: '2026-10-04'
+  next: 'Still blocked: gradient-sampler admission not met (autolens_inference has only the Nautilus source-plane
+    leaf, #17 merged 2026-10-02). Blackjax stays parked.'
+  evidence: https://github.com/PyAutoLabs/autolens_inference/pull/17
 - id: pointsolver_cpu_speed_campaign_remainder
   campaign: point-source-image-cpu
   title: Point-source (single-source) CPU campaign — carried leftovers and completion evidence
   status: ready
   priority: low
   path: tasks/pointsolver_cpu_speed_campaign_remainder.md
-  updated: '2026-10-03'
-  next: Read the task and select the next bounded step; check current repository claims.
+  updated: '2026-10-04'
+  next: 'Docs-only PR: completion evidence + fix stale wiki lines (#763 ''in flight'' → #764 merged, released 2026.10.4.1);
+    RAL leftover folders present, mirror sync unverified.'
+  evidence: https://github.com/PyAutoLabs/PyAutoLens/pull/764
 - id: post_certified_solver_likelihood_breakdown
   campaign: imaging
   title: Assess remaining likelihood bottlenecks after certified solver integration on CPU and GPUs
   status: needs-slicing
   priority: normal
   path: tasks/post_certified_solver_likelihood_breakdown.md
-  updated: '2026-10-03'
-  next: Scope one bounded phase from the full task contract.
+  updated: '2026-10-04'
+  next: 'Blocked-by is stale: resolved 2026-09-27 (PyAutoArray#567 in 2026.9.26.1). Unissued; scope one bounded
+    phase from the full task contract.'
+  evidence: https://github.com/PyAutoLabs/PyAutoArray/pull/567
 - id: profile_lens_aggregator_needs_config_dir
   campaign: measurement-tools
   title: 'profile_lens_aggregator.py cannot run from the autolens_workspace_developer root: no config/ directory'
   status: ready
   priority: low
   path: tasks/profile_lens_aggregator_needs_config_dir.md
-  updated: '2026-10-03'
-  next: Read the task, reconcile current evidence and select one bounded step.
+  updated: '2026-10-04'
+  next: 'Unchanged: workspace_developer main still has no root config/ (bug presumed live, not re-run). Select one
+    bounded step when prioritised.'
+  evidence: https://github.com/PyAutoLabs/PyAutoFit/issues/1582
 - id: gradient_pixelization_pin_residual_drift
   campaign: measurement-tools
   title: 'jax_profiling/gradient/imaging/pixelization.py: 3.2% of its pin move is unattributed'
   status: ready
   priority: normal
   path: tasks/gradient_pixelization_pin_residual_drift.md
-  updated: '2026-10-03'
-  next: Read the task, reconcile current evidence and select one bounded step.
+  updated: '2026-10-04'
+  next: Unchanged and unissued (PyAutoArray#490 merged 2026-08-26). Select one bounded step when prioritised.
+  evidence: https://github.com/PyAutoLabs/PyAutoArray/pull/490
 - id: pair_jax_xla_env_vars_with_measured
   campaign: measurement-tools
   title: Pair JAX/XLA env vars with measured compile and run times, per backend
   status: ready
   priority: high
   path: tasks/pair_jax_xla_env_vars_with_measured.md
-  updated: '2026-10-03'
-  next: Read the task, reconcile current evidence and select one bounded step.
+  updated: '2026-10-04'
+  next: 'Unchanged and unissued. Context: jax-version policy changes merged to library mains 2026-10-04, unreleased.
+    Select one bounded step when prioritised.'
 - id: quick_update_plotting_cost
   campaign: imaging
   title: Quick-update plotting cost — minutes per update, and it is not JAX compile
   status: ready
   priority: medium
   path: tasks/quick_update_plotting_cost.md
-  updated: '2026-10-03'
-  next: Read the task, reconcile current evidence and select one bounded step.
+  updated: '2026-10-04'
+  next: Unchanged; targets PyAutoLens/PyAutoGalaxy (PyAutoLens#680 closed 2026-07-31, no follow-up issue). Select
+    one bounded step when prioritised.
+  evidence: https://github.com/PyAutoLabs/PyAutoLens/issues/680

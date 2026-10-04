@@ -3,6 +3,13 @@ Migrated-at: 2026-10-03
 
 The original task below is retained verbatim. Current scheduling state lives in `campaigns.yaml`; historical `Status` and paths below are provenance, not a second queue. Resolve old Mind paths through `migration.yaml`.
 
+## Check-in 2026-10-04
+
+- VERIFIED: the Blocked-by is stale: resolved 2026-09-27 ([PyAutoArray#567](https://github.com/PyAutoLabs/PyAutoArray/pull/567) released in 2026.9.26.1). profiling#268 and #259 closed 2026-09-16/14.
+- VERIFIED: wiki `post_certified_breakdown.md` unchanged since `9313c41`; its Open section still names the removed Mind draft path.
+- Unavailable: RAL GPU/CPU result coverage not inspected.
+- Next: scope one bounded phase; unissued, no claim.
+
 ---
 
 # Assess remaining likelihood bottlenecks after certified solver integration on CPU and GPUs

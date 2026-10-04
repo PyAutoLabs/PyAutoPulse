@@ -3,6 +3,11 @@ Migrated-at: 2026-10-03
 
 The original task below is retained verbatim. Current scheduling state lives in `campaigns.yaml`; historical `Status` and paths below are provenance, not a second queue. Resolve old Mind paths through `migration.yaml`.
 
+## Check-in 2026-10-04
+
+- VERIFIED: [autolens_workspace_developer#117](https://github.com/PyAutoLabs/autolens_workspace_developer/issues/117) closed 2026-07-28; no change since the pin. The Mind source draft was removed in Mind `dbbe5b22` (2026-10-03, move to Pulse); it is not in Mind complete/ or active.md, so this file is the live record.
+- Next: select one bounded step when prioritised.
+
 ---
 
 # A gradient-cost probe: forward vs `value_and_grad` ms/eval and a strict FD check, on any registry cell

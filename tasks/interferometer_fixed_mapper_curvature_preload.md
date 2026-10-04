@@ -3,6 +3,12 @@ Migrated-at: 2026-10-03
 
 The original task below is retained verbatim. Current scheduling state lives in `campaigns.yaml`; historical `Status` and paths below are provenance, not a second queue. Resolve old Mind paths through `migration.yaml`.
 
+## Check-in 2026-10-04
+
+- VERIFIED 2026-10-04: no PR, issue, branch or results on GitHub; `scripts/interferometer/` on `a93f37a` has only likelihood_breakdown, likelihood_runtime and quick_update.
+- No Mind active claim.
+- Next: scope one bounded phase from the full contract.
+
 ---
 
 # Interferometer fixed-mapper searches: reuse the W~ curvature matrix across likelihood calls via `preloads.curvature_matrix`

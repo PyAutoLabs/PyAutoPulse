@@ -3,6 +3,11 @@ Migrated-at: 2026-10-03
 
 The original task below is retained verbatim. Current scheduling state lives in `campaigns.yaml`; historical `Status` and paths below are provenance, not a second queue. Resolve old Mind paths through `migration.yaml`.
 
+## Check-in 2026-10-04
+
+- VERIFIED 2026-10-04: no PR, issue, branch or results on GitHub; unstarted. No Mind active claim.
+- Next: select one bounded step when the interferometer campaign prioritises it.
+
 ---
 
 # fnnls warm-start memo: stop it slowing scattered evaluation streams (interferometer CPU, autolens_profiling#332)

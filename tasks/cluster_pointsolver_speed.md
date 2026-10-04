@@ -3,6 +3,12 @@ Migrated-at: 2026-10-03
 
 The original task below is retained verbatim. Current scheduling state lives in `campaigns.yaml`; historical `Status` and paths below are provenance, not a second queue. Resolve old Mind paths through `migration.yaml`.
 
+## Check-in 2026-10-04
+
+- VERIFIED: wiki `cluster_pointsolver.md` unchanged since `a5e5d77` (2026-09-27); it still points at the removed Mind draft path (now this file).
+- VERIFIED: Mind epics.md now links this file as the cluster epic ledger; no new task issued since the human expansion of 2026-10-01; no open issue/PR or Mind claim.
+- Next: pick one bounded phase: observable-overflow invalid-result policy + CI witness (autolens_workspace_test), or a representative-data baseline cell.
+
 ---
 
 # Cluster PointSolver — robustness, analysis settings and performance

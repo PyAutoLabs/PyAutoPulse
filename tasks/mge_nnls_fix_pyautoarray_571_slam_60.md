@@ -3,6 +3,13 @@ Migrated-at: 2026-10-03
 
 The original task below is retained verbatim. Current scheduling state lives in `campaigns.yaml`; historical `Status` and paths below are provenance, not a second queue. Resolve old Mind paths through `migration.yaml`.
 
+## Check-in 2026-10-04
+
+- VERIFIED: [PyAutoArray#595](https://github.com/PyAutoLabs/PyAutoArray/pull/595) merged 2026-09-30 (`7a89e19a`) and is an ancestor of tags 2026.10.2.1 (first release) and 2026.10.4.1. The release half of the blocker is met.
+- Unverified: the RAL mirror sync via HPCPullPyAuto; no record since 2026-10-02. Also diff the RAL venv's dependency floors, not only library hashes.
+- Context: jax-version policy changes (e.g. PyAutoArray#612) merged to mains 2026-10-04, unreleased; a mirror sync now pulls them too. Mind epics.md still says "#595 pending release" (stale).
+- Next: a CLI session runs HPCPullPyAuto and records the synced hashes; then this task can flip to ready.
+
 ---
 
 # Linear-solver programme phase 3: GPU/vmap/A100 timing and parity rows for the solver corpus

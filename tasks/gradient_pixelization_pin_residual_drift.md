@@ -3,6 +3,11 @@ Migrated-at: 2026-10-03
 
 Original task retained verbatim below. Current scheduling state: `campaigns.yaml`. Historical paths: `migration.yaml`.
 
+## Check-in 2026-10-04
+
+- VERIFIED: [PyAutoArray#490](https://github.com/PyAutoLabs/PyAutoArray/pull/490) merged 2026-08-26; no change since the pin. The Mind source draft was removed in Mind `dbbe5b22` (2026-10-03, move to Pulse); it is not in Mind complete/ or active.md, so this file is the live record.
+- Next: select one bounded step when prioritised.
+
 ---
 
 # jax_profiling/gradient/imaging/pixelization.py: 3.2% of its pin move is unattributed

@@ -3,6 +3,11 @@ Migrated-at: 2026-10-03
 
 Original task retained verbatim below. Current scheduling state: `campaigns.yaml`. Historical paths: `migration.yaml`.
 
+## Check-in 2026-10-04
+
+- VERIFIED: targets PyAutoLens/PyAutoGalaxy, not autolens_profiling; [PyAutoLens#680](https://github.com/PyAutoLabs/PyAutoLens/issues/680) closed 2026-07-31; no follow-up issue; no Mind claim.
+- Next: select one bounded step when prioritised.
+
 ---
 
 # Quick-update plotting cost — minutes per update, and it is not JAX compile

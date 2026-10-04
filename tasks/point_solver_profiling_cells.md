@@ -3,6 +3,11 @@ Migrated-at: 2026-10-03
 
 The original task below is retained verbatim. Current scheduling state lives in `campaigns.yaml`; historical `Status` and paths below are provenance, not a second queue. Resolve old Mind paths through `migration.yaml`.
 
+## Check-in 2026-10-04
+
+- VERIFIED: no open issue/PR and no Mind claim (2026-10-04). The Mind source draft was removed in Mind `dbbe5b22` (2026-10-03, move to Pulse); it is not in Mind complete/ or active.md, so this file is the live record.
+- Next: issue one bounded cell when cluster-pointsolver selects it (candidate: representative-data cluster likelihood_runtime baseline, single-source preset).
+
 ---
 
 # PointSolver profiling cells: lensed quasar → cluster runtime tier → single/multi-source → multiplane
