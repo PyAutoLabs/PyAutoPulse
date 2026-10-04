@@ -3,6 +3,12 @@ Migrated-at: 2026-10-03
 
 Original task retained verbatim below. Current scheduling state: `campaigns.yaml`. Historical paths: `migration.yaml`.
 
+## Check-in 2026-10-04
+
+- VERIFIED: no GitHub refs; no change since the pin. The Mind source draft was removed in Mind `dbbe5b22` (2026-10-03, move to Pulse); it is not in Mind complete/ or active.md, so this file is the live record.
+- Context: jax-version policy changes (Mind `complete/2026/10/jax-lapack-compatibility-repair.md`) merged to library mains 2026-10-04, unreleased.
+- Next: select one bounded step when prioritised.
+
 ---
 
 # Pair JAX/XLA env vars with measured compile and run times, per backend

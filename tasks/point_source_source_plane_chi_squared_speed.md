@@ -3,6 +3,12 @@ Migrated-at: 2026-10-03
 
 The original task below is retained verbatim. Current scheduling state lives in `campaigns.yaml`; historical `Status` and paths below are provenance, not a second queue. Resolve old Mind paths through `migration.yaml`.
 
+## Check-in 2026-10-04
+
+- VERIFIED: the Nautilus leaf [autolens_inference#17](https://github.com/PyAutoLabs/autolens_inference/pull/17) merged 2026-10-02 and issue #15 closed; the wiki line calling it an open PR is stale.
+- VERIFIED: gradient-sampler admission evidence is not met: autolens_inference `scripts/point_source/` has only the Nautilus source-plane leaf; no blackjax NUTS/SMC leaf.
+- Status stays blocked; blackjax work stays parked.
+
 ---
 
 # Point-source source-plane chi-squared speed-up campaign — remaining candidates (phases 1–2e shipped)

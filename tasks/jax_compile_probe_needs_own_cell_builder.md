@@ -3,6 +3,12 @@ Migrated-at: 2026-10-03
 
 The original task below is retained verbatim. Current scheduling state lives in `campaigns.yaml`; historical `Status` and paths below are provenance, not a second queue. Resolve old Mind paths through `migration.yaml`.
 
+## Check-in 2026-10-04
+
+- VERIFIED: autolens_profiling#245 closed 2026-09-11; [`scripts/misc/jax_compile/probe.py`](https://github.com/PyAutoLabs/autolens_profiling/blob/a93f37a7ade16fcb7673a7777dfde505183728ed/scripts/misc/jax_compile/probe.py) still present on main. The Mind source draft was removed in Mind `dbbe5b22` (2026-10-03, move to Pulse); it is not in Mind complete/ or active.md, so this file is the live record.
+- Unverified: whether the probe currently runs (not executed).
+- Next: select one bounded step when prioritised.
+
 ---
 
 # jax_compile/probe.py lost its cell builder with the searches tier — give profiling its own

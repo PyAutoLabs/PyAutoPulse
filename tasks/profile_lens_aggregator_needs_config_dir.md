@@ -3,6 +3,12 @@ Migrated-at: 2026-10-03
 
 Original task retained verbatim below. Current scheduling state: `campaigns.yaml`. Historical paths: `migration.yaml`.
 
+## Check-in 2026-10-04
+
+- VERIFIED: [PyAutoFit#1582](https://github.com/PyAutoLabs/PyAutoFit/issues/1582) closed 2026-09-08; autolens_workspace_developer#133 merged 2026-09-08; developer main still has no root `config/` (aggregator_profiling last touched `e4874fe`).
+- Unverified: the bug presumably persists; it was not run.
+- Next: select one bounded step when prioritised.
+
 ---
 
 # profile_lens_aggregator.py cannot run from the autolens_workspace_developer root: no config/ directory

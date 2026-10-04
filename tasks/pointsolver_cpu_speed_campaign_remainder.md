@@ -3,6 +3,18 @@ Migrated-at: 2026-10-03
 
 The original task below is retained verbatim. Current scheduling state lives in `campaigns.yaml`; historical `Status` and paths below are provenance, not a second queue. Resolve old Mind paths through `migration.yaml`.
 
+## Check-in 2026-10-04
+
+- VERIFIED: PyAutoLens#763 closed 2026-10-02, [#764](https://github.com/PyAutoLabs/PyAutoLens/pull/764) merged 2026-10-02 and released in 2026.10.4.1; autolens_workspace_test#338 merged 2026-10-02. The wiki header "In flight: #763" and the index "(unreleased)" marks for #580/#584/#753 (released 2026.9.27.2) are stale.
+- VERIFIED: RAL leftover dirs are still present (`PyAutoArray_point-source-cpu-p2`, `-p3`, `PyAutoLens_point-source-cpu-p3`, `point-source-cpu-p3/p4`, `_p2_untracked_backup_20260924`, `pointsolver-step0-gather`, `PyAutoArray_pointsolver-step0-gather`, `pointsolver-mcs-headroom`); `PyAutoLens_point-source-cpu-p2` is absent. Mirror sync unverified; deletion needs human authority.
+- Unverified: a Mind draft for the register_model grad-zero item (no GitHub issue found); test placement of `test_static_lattice_jax.py`; `nopad` dead code; smoke coverage of the breakdown cells.
+- Next: a docs-only autolens_profiling PR: completion evidence in `results/notes/point_source_cpu_campaign.md` from committed rows, and the stale wiki/index lines fixed. No compute.
+
+### Execution 2026-10-04
+
+- Issue: [autolens_profiling#370](https://github.com/PyAutoLabs/autolens_profiling/issues/370). Branch `feature/point-source-wiki-reconcile` @`0560284`, parked at Heart RED.
+- Still owed: RAL cleanup, register_model grad-zero prompt, test move, CI smoke cells, `nopad` deletion.
+
 ---
 
 # Point-source (single-source) CPU campaign — carried leftovers and completion evidence

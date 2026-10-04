@@ -3,6 +3,19 @@ Migrated-at: 2026-10-03
 
 The original task below is retained verbatim. Current scheduling state lives in `campaigns.yaml`; historical `Status` and paths below are provenance, not a second queue. Resolve old Mind paths through `migration.yaml`.
 
+## Check-in 2026-10-04
+
+- VERIFIED: phase 0+1 shipped: autolens_profiling issue #350 closed and [PR #353](https://github.com/PyAutoLabs/autolens_profiling/pull/353) merged 2026-09-30. The wiki still says "unstarted" (stale).
+- VERIFIED: the forward-mode NaN is unfixed and live in the released stack: `AnalysisPoint.gradient_mode = "forward"` at PyAutoLens tag 2026.10.4.1 (`autolens/point/model/analysis.py:56`); `pair_all.py` has no commit after `0cebe059d`. The bug exists only as a [Mind draft](https://github.com/PyAutoLabs/PyAutoMind/blob/cc93f8c425bbcbd83bcb6cd5e649a60d17640b5f/draft/bug/autolens/point_image_pair_all_forward_grad_nan.md) (high priority, filed 2026-09-28); no GitHub issue. The NaN was not re-run today.
+- VERIFIED: the admission prerequisite is not met: autolens_inference has only the source-plane Nautilus leaf, no image-plane fit measurement.
+- Unavailable: the compile-time row of job 366916 was not extracted; RAL scratch dirs `point-source-gpu-p01*` were listed but not inspected.
+- Human decisions: (1) issue the forward-NaN bug through intake/start_dev into PyAutoLens (CPU witness, no GPU job); (2) authorize the autolens_inference image-plane fit measurement, or stop at phase 0+1.
+
+### Execution 2026-10-04
+
+- Forward-mode NaN bug issued: [PyAutoLens#767](https://github.com/PyAutoLabs/PyAutoLens/issues/767). Reproduced on CPU fp64: forward `[nan]x5`, reverse finite; stack 2026.10.4.1+3 `b695e57b6`. Mind registry commit `0112ccba`.
+- The autolens_inference image-plane fit measurement still awaits human authorisation.
+
 ---
 
 # Point-source A100 speed-up campaign: profile and optimize with the shared breakdown

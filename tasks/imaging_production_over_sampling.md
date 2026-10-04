@@ -3,6 +3,13 @@ Migrated-at: 2026-10-03
 
 The original task below is retained verbatim. Current scheduling state lives in `campaigns.yaml`; historical `Status` and paths below are provenance, not a second queue. Resolve old Mind paths through `migration.yaml`.
 
+## Check-in 2026-10-04
+
+- VERIFIED: autolens_profiling has no wiki/results/scripts change between pin `efcece3` and origin/main [`a93f37a`](https://github.com/PyAutoLabs/autolens_profiling/commit/a93f37a7ade16fcb7673a7777dfde505183728ed) (2026-10-04; hooks-only commit).
+- VERIFIED: `scripts/imaging/likelihood_runtime/delaunay.py` still hard-codes `over_sample_size_pixelization=1` (lines 232, 244); the witness is not met.
+- Context: [PyAutoArray#606](https://github.com/PyAutoLabs/PyAutoArray/pull/606) merged 2026-10-02 adds `over_sample_size_via_snr_from` (present in 2026.10.4.1), which may simplify the presets.
+- Next: phase 1 (workspace-only) adds `--instrument euclid|hst` presets with flat-1 selectable; CPU smoke only. The A100 re-measure is a separate compute-authorized phase.
+
 ---
 
 # Profile imaging pixelizations at production over-sampling

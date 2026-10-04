@@ -3,6 +3,18 @@ Migrated-at: 2026-10-03
 
 The original task below is retained verbatim. Current scheduling state lives in `campaigns.yaml`; historical `Status` and paths below are provenance, not a second queue. Resolve old Mind paths through `migration.yaml`.
 
+## Check-in 2026-10-04
+
+- VERIFIED: the [runtime cell](https://github.com/PyAutoLabs/autolens_profiling/blob/a93f37a7ade16fcb7673a7777dfde505183728ed/scripts/point_source_source/likelihood_runtime/source_plane_solved.py) is unchanged since `464f948` (2026-09-28); the warm-up statistic is still present. No warm-up PR or issue exists.
+- VERIFIED: dashboard/summary.json comparisons for this cell read `insufficient`, "one release only". Source checkouts still stamp `autolens_version 2026.8.17.1` (seen again in the RAL interferometer JSON), so release-axis comparisons stay insufficient; not decided.
+- Human decision still open: option (a), (b) or (c) from "Decision needed" above. After it, a single autolens_profiling PR with no re-run.
+
+### Execution 2026-10-04
+
+- Decision: option (a). Issue: [autolens_profiling#371](https://github.com/PyAutoLabs/autolens_profiling/issues/371). Branch `feature/runtime-single-jit-median` @`87a7fcc`, parked at Heart RED.
+- Local CPU witness: `single_jit` 0.417 ms vs median 0.388 ms (p10 0.320, p90 0.545).
+- Imaging cells not yet wired.
+
 ---
 
 # Runtime cells' A100 `single_jit` includes the post-compile warm-up — source-plane 0.642 ms vs a steady 0.267 ms on the same node

@@ -3,6 +3,12 @@ Migrated-at: 2026-10-03
 
 The original task below is retained verbatim. Current scheduling state lives in `campaigns.yaml`; historical `Status` and paths below are provenance, not a second queue. Resolve old Mind paths through `migration.yaml`.
 
+## Check-in 2026-10-04
+
+- VERIFIED: [autolens_profiling#362](https://github.com/PyAutoLabs/autolens_profiling/issues/362) is open, 0 comments, unassigned, last updated 2026-10-02 (filed from PR #361).
+- Adjacent but distinct: PyAutoHeart#276 / PR #277 (unit-timing distinct baseline) completed 2026-10-04; that is Heart unit-test timing, not profiling gates.
+- Next: start the audit (read-and-classify) phase via start_dev, reusing #362.
+
 ---
 
 # Audit timing tests and profiling gates for measurement noise

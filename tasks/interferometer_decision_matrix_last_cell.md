@@ -3,6 +3,21 @@ Migrated-at: 2026-10-03
 
 The original task below is retained verbatim. Current scheduling state lives in `campaigns.yaml`; historical `Status` and paths below are provenance, not a second queue. Resolve old Mind paths through `migration.yaml`.
 
+## Check-in 2026-10-04
+
+- VERIFIED: RAL `sacct -j 375978` shows `375978_3 COMPLETED 01:11:36 0:0` on euclid-ral-gpu-1; `error.375978_3.err` has 0 Traceback and 0 RESOURCE_EXHAUSTED.
+- VERIFIED: `results/breakdown/interferometer/alma_high/pixelization_numba_hpc_ral_cpu_fp64_r5.0.{json,png}` exist under `/mnt/ral/jnightin/autolens_profiling_wt/interferometer-decision-matrix/` (Sep 30 21:44) and are absent from autolens_profiling origin/main `a93f37a`. The JSON reports `inversion_path == InversionInterferometerSparseNumba` and `numba_vs_numpy_fft_max_abs_nats = 7.45e-09`.
+- Witness not met as read: the CPU `log_evidence` (-60244101.501766354) and the A100 row's `figure_of_merit` (-60244101.503356226, [on main](https://github.com/PyAutoLabs/autolens_profiling/blob/a93f37a7ade16fcb7673a7777dfde505183728ed/results/breakdown/interferometer/alma_high/pixelization_hpc_a100_fp64_r5.0.json)) differ by ~1.59e-3 nat (subtraction of the two reported log-evidences, by the survey agent), above the ≤1e-3 nat bar. The A100 row predates PyAutoArray#595 (Array `9428eca2`, pdip); cause attribution unverified.
+- Unverified/unavailable: float32-truncation grep of the error log; RAL mirror revisions.
+- Human decision: accept the gap as the r3.5 cell did (alma_high r3.5 rect misses at 1.5e-3 nat, wiki journal 2026-09-30), or re-run the A100 row on post-#595 revisions. Then steps 1–5 (commit the row, fill note and index; no compute). Step 6 RAL cleanup of both dirs (still present) also needs the human's go-ahead.
+
+### Execution 2026-10-04
+
+- Decision: ACCEPT the 1.59e-3 nat CPU/A100 gap (precedent: alma_high r3.5 at 1.5e-3 nat).
+- Issue: [autolens_profiling#369](https://github.com/PyAutoLabs/autolens_profiling/issues/369). Branch `feature/interferometer-decision-matrix-last-cell` @`93a002a`, committed locally; ship PARKED at Heart RED "release validation FAILED (stage integrate)".
+- Caveat (executing agent): the A100 row's own A/B shows certified solver = PDIP to 0.0 nat, so the gap may come from F/D on older revisions rather than the solver. Not verified.
+- Correction: PyAutoArray#582 was first released in 2026.9.27.2.
+
 ---
 
 # Interferometer decision matrix — fill the last cell (CPU rect 39² at alma_high r5.0) and flip the wiki row to shipped

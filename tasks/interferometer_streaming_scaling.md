@@ -3,6 +3,22 @@ Migrated-at: 2026-10-03
 
 The original task below is retained verbatim. Current scheduling state lives in `campaigns.yaml`; historical `Status` and paths below are provenance, not a second queue. Resolve old Mind paths through `migration.yaml`.
 
+## Check-in 2026-10-04
+
+- VERIFIED: streaming phases 3–5 merged Sep 30–Oct 1: PyAutoArray [#589](https://github.com/PyAutoLabs/PyAutoArray/pull/589), [#593](https://github.com/PyAutoLabs/PyAutoArray/pull/593), [#597](https://github.com/PyAutoLabs/PyAutoArray/pull/597), [#599](https://github.com/PyAutoLabs/PyAutoArray/pull/599), [#601](https://github.com/PyAutoLabs/PyAutoArray/pull/601); PyAutoLens #758/#761/#762; PyAutoGalaxy #639. #589/#593/#601 are in release 2026.10.2.1. Mind has `complete/2026/10/streaming-p5-cubes-phase-centre.md` ("phase 5 of 5").
+- The go/no-go on phases 3–5 is overtaken by events.
+- VERIFIED: the scaling measurement is unrun: no `scripts/interferometer/streaming_scaling/` and no `results/streaming_scaling/` on autolens_profiling `a93f37a`.
+- Unverified: Discussion https://github.com/orgs/PyAutoLabs/discussions/13 not fetched.
+- Next: the scaling measurement needs compute authorization from the human.
+
+### Execution 2026-10-04
+
+- Issue: [autolens_profiling#368](https://github.com/PyAutoLabs/autolens_profiling/issues/368). Branch `feature/interferometer-streaming-scaling` @`4a0ef46`, parked at Heart RED.
+- Results (laptop CPU, 8 threads, indicative): chunk 65536 wall 17.5 / 43.8 / 180.7 / 504.5 s at 1e6 / 4e6 / 1.6e7 / 5e7 visibilities, RSS 1.47–1.69 GB; chunk 4096 wall 43.6 / 149.2 / 608.6 s at 1e6 / 4e6 / 1.6e7.
+- In-memory first failure at 1e6 under a 10 GB cap (both arms). The `nufft_chunk_size` arm fails in `transformer.image_from`: a second memory wall, library candidate, no issue filed.
+- Parity 1.2e-9 nats at 5e5. The 1e8 row was skipped (budget).
+- Go/no-go overtaken; recorded as release evidence for 2026.10.4.1.
+
 ---
 
 # Campaign: interferometer streaming (array-free) vs in-memory — memory and time scaling to 2e8 visibilities

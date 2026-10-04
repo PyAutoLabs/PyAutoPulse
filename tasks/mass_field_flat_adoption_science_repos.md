@@ -3,6 +3,11 @@ Migrated-at: 2026-10-03
 
 The original task below is retained verbatim. Current scheduling state lives in `campaigns.yaml`; historical `Status` and paths below are provenance, not a second queue. Resolve old Mind paths through `migration.yaml`.
 
+## Check-in 2026-10-04
+
+- VERIFIED: superseded status confirmed: PyAutoBrain#389, PyAutoGalaxy#625, PyAutoLens#745, PyAutoReduce#77 and autolens_workspace#561 all closed/merged 2026-09-18/19; nothing open.
+- Historical umbrella; do not issue it again.
+
 ---
 
 # Remaining code consumers move to the flat `fields=` form: profiling, inference, JOSS benchmarks, Reduce prototypes

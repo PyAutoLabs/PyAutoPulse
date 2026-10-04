@@ -3,6 +3,21 @@ Migrated-at: 2026-10-03
 
 The original task below is retained verbatim. Current scheduling state lives in `campaigns.yaml`; historical `Status` and paths below are provenance, not a second queue. Resolve old Mind paths through `migration.yaml`.
 
+## Check-in 2026-10-04
+
+- VERIFIED 2026-10-04: no PR, issue, branch or results on GitHub; `scripts/interferometer/` on `a93f37a` has only likelihood_breakdown, likelihood_runtime and quick_update.
+- No Mind active claim.
+- Next: scope one bounded phase from the full contract.
+
+### Slicing 2026-10-04
+
+- Phase 1 filed as a Mind development prompt (library work routes through Mind): https://github.com/PyAutoLabs/PyAutoMind/blob/55a453cf/draft/feature/autoarray/interferometer_curvature_preload_phase1.md
+- Invariant: F = A^T W~ A (+ diagonal) depends only on the mapper and W~; reusable when mass, fields, adapt images and every mesh/image-mesh parameter are fixed. H, the F+H solve, both log-dets and chi^2 are recomputed per call.
+- Preload key: `PreloadsInterferometer(curvature_matrix=F)` via `fit_from(preloads=...)`; the sparse path already returns it unchanged. Only `curvature_matrix` is preloaded; `mapper_galaxy_dict` must not be (it carries the regularization).
+- Witnesses: PyAutoArray unit tests (F built at theta_1, reused at theta_2, log_evidence bit-identical or <= 1e-9 nats) and a `--levers fixed_mapper` arm on the autolens_profiling CPU breakdown cells (alma + sma, Delaunay + rectangular). No GPU.
+- Finding for the human: no production stage qualifies as configured - interferometer SLaM `source_pix_2` fixes the mass but leaves `weight_power`/`weight_floor` free, which change the mapping. Phase 1 measures a regularization-only configuration; adopting such a stage is a science decision.
+- Later phases: search-side opt-in (`fixed_mapper=True`), JAX jit/vmap + compile size, A100/jvla rows, data-vector preload, SLaM regularization-only stage, mixed MGE+mapper, dense path.
+
 ---
 
 # Interferometer fixed-mapper searches: reuse the W~ curvature matrix across likelihood calls via `preloads.curvature_matrix`
