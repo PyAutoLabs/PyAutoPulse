@@ -11,6 +11,11 @@ The original task below is retained verbatim. Current scheduling state lives in 
 - Unavailable: the compile-time row of job 366916 was not extracted; RAL scratch dirs `point-source-gpu-p01*` were listed but not inspected.
 - Human decisions: (1) issue the forward-NaN bug through intake/start_dev into PyAutoLens (CPU witness, no GPU job); (2) authorize the autolens_inference image-plane fit measurement, or stop at phase 0+1.
 
+### Execution 2026-10-04
+
+- Forward-mode NaN bug issued: [PyAutoLens#767](https://github.com/PyAutoLabs/PyAutoLens/issues/767). Reproduced on CPU fp64: forward `[nan]x5`, reverse finite; stack 2026.10.4.1+3 `b695e57b6`. Mind registry commit `0112ccba`.
+- The autolens_inference image-plane fit measurement still awaits human authorisation.
+
 ---
 
 # Point-source A100 speed-up campaign: profile and optimize with the shared breakdown

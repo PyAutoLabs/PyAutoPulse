@@ -11,6 +11,13 @@ The original task below is retained verbatim. Current scheduling state lives in 
 - Unverified/unavailable: float32-truncation grep of the error log; RAL mirror revisions.
 - Human decision: accept the gap as the r3.5 cell did (alma_high r3.5 rect misses at 1.5e-3 nat, wiki journal 2026-09-30), or re-run the A100 row on post-#595 revisions. Then steps 1–5 (commit the row, fill note and index; no compute). Step 6 RAL cleanup of both dirs (still present) also needs the human's go-ahead.
 
+### Execution 2026-10-04
+
+- Decision: ACCEPT the 1.59e-3 nat CPU/A100 gap (precedent: alma_high r3.5 at 1.5e-3 nat).
+- Issue: [autolens_profiling#369](https://github.com/PyAutoLabs/autolens_profiling/issues/369). Branch `feature/interferometer-decision-matrix-last-cell` @`93a002a`, committed locally; ship PARKED at Heart RED "release validation FAILED (stage integrate)".
+- Caveat (executing agent): the A100 row's own A/B shows certified solver = PDIP to 0.0 nat, so the gap may come from F/D on older revisions rather than the solver. Not verified.
+- Correction: PyAutoArray#582 was first released in 2026.9.27.2.
+
 ---
 
 # Interferometer decision matrix — fill the last cell (CPU rect 39² at alma_high r5.0) and flip the wiki row to shipped

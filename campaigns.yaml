@@ -73,9 +73,7 @@ campaigns:
   title: Critical curves and evaluation grids
   status: needs-decision
   updated: '2026-10-04'
-  next: 'Release gate met: PyAutoGalaxy#646 first released in 2026.10.4.1. autolens_workspace_test#343 (workspace_test,
-    not workspace) is an open draft, checks green 2026-10-02; awaits human mark-ready + /prm (re-run CI) to close
-    the evaluation-grid-cap-field task.'
+  next: 'Release gate met: PyAutoGalaxy#646 first released in 2026.10.4.1. 2026-10-04: /prm of autolens_workspace_test#343 was denied by the auto-mode classifier ("Merge Without Review"); the human runs it outside auto mode to close the evaluation-grid-cap-field task.'
   evidence: https://github.com/PyAutoLabs/autolens_profiling/blob/a93f37a7ade16fcb7673a7777dfde505183728ed/wiki/campaigns/critical_curves.md
 - id: certified-solver
   title: Certified positive solver
@@ -89,12 +87,12 @@ tasks:
   campaign: point-source-source
   title: Runtime cells' A100 `single_jit` includes the post-compile warm-up — source-plane 0.642 ms vs a steady
     0.267 ms on the same node
-  status: needs-decision
+  status: active
   priority: low
   path: tasks/runtime_cell_single_jit_gpu_warmup.md
   updated: '2026-10-04'
-  next: Human picks option (a) add warm calls + median field, (b) headline vmap.per_call on GPU, or (c) re-base
-    at next release. Runtime cell unchanged since 464f948 (2026-09-28).
+  next: 'Execution 2026-10-04: human chose option (a). Branch feature/runtime-single-jit-median @87a7fcc (issue autolens_profiling#371) parked at Heart RED. Local CPU witness: single_jit 0.417 ms, median 0.388 ms (p10 0.320, p90 0.545). Imaging cells not yet wired.'
+  issue: https://github.com/PyAutoLabs/autolens_profiling/issues/371
   evidence: https://github.com/PyAutoLabs/autolens_profiling/blob/a93f37a7ade16fcb7673a7777dfde505183728ed/scripts/point_source_source/likelihood_runtime/source_plane_solved.py
 - id: timing_noise_audit
   campaign: measurement-tools
@@ -168,8 +166,7 @@ tasks:
   priority: medium
   path: tasks/mge_nnls_fix_pyautoarray_571_slam_60.md
   updated: '2026-10-04'
-  next: 'Release half met: PyAutoArray#595 (7a89e19a) is in 2026.10.2.1 and 2026.10.4.1. Still blocked on the RAL
-    mirror sync via HPCPullPyAuto (unverified; also diff dependency floors).'
+  next: 'RAL sync SKIPPED 2026-10-04: 180 euclid_dr1 tasks RUNNING on the shared base; mirror at 2026-09-27 state, 16–35 commits behind tag 2026.10.4.1; a sync pulls MAINS and also needs a jax reinstall (Nerves main excludes jax 0.10.2). Next: sync when `squeue -u jnightin -t R` shows no euclid_dr1 jobs on the shared base, or the human accepts the risk.'
   evidence: https://github.com/PyAutoLabs/PyAutoArray/pull/595
 - id: autofit_profiling_bootstrap
   campaign: autofit
@@ -203,13 +200,12 @@ tasks:
   campaign: interferometer
   title: Interferometer decision matrix — fill the last cell (CPU rect 39² at alma_high r5.0) and flip the wiki
     row to shipped
-  status: needs-decision
+  status: active
   priority: normal
   path: tasks/interferometer_decision_matrix_last_cell.md
   updated: '2026-10-04'
-  next: 'Human decision: accept the ~1.59e-3 nat CPU/A100 gap vs the ≤1e-3 contract (as the r3.5 cell did) or re-run
-    the A100 row on post-#595 revisions. Job 375978_3 COMPLETED 1:11:36, 0 tracebacks; JSON on RAL, not on main.
-    Then commit the row (no compute).'
+  next: 'Execution 2026-10-04: human decision ACCEPT the 1.59e-3 nat CPU/A100 gap (precedent r3.5 at 1.5e-3). Branch feature/interferometer-decision-matrix-last-cell @93a002a committed locally; ship PARKED at Heart RED (release validation FAILED, stage integrate). Caveat: the A100 row''s own A/B shows certified solver = PDIP to 0.0 nat, so the gap may be F/D on older revisions rather than solver. Correction: PyAutoArray#582 first released 2026.9.27.2. Next: ship once Heart clears.'
+  issue: https://github.com/PyAutoLabs/autolens_profiling/issues/369
 - id: interferometer_fixed_mapper_curvature_preload
   campaign: interferometer
   title: 'Interferometer fixed-mapper searches: reuse the W~ curvature matrix across likelihood calls via `preloads.curvature_matrix`'
@@ -229,12 +225,12 @@ tasks:
 - id: interferometer_streaming_scaling
   campaign: interferometer
   title: 'Campaign: interferometer streaming (array-free) vs in-memory — memory and time scaling to 2e8 visibilities'
-  status: ready
+  status: active
   priority: high
   path: tasks/interferometer_streaming_scaling.md
   updated: '2026-10-04'
-  next: 'Go/no-go overtaken: streaming phases 3–5 shipped Sep 30–Oct 1 (PyAutoArray #589/#593/#601 in 2026.10.2.1).
-    The scaling measurement itself is unrun and needs compute authorization.'
+  next: 'Execution 2026-10-04: branch feature/interferometer-streaming-scaling @4a0ef46 (issue autolens_profiling#368) parked at Heart RED. Laptop CPU 8-thread indicative rows recorded (chunk 65536 to 5e7 vis; in-memory first failure 1e6 under a 10 GB cap; parity 1.2e-9 nats at 5e5; 1e8 skipped). Go/no-go overtaken; recorded as release evidence for 2026.10.4.1. nufft_chunk_size arm hits a second memory wall in transformer.image_from (library candidate, no issue filed).'
+  issue: https://github.com/PyAutoLabs/autolens_profiling/issues/368
   evidence: https://github.com/PyAutoLabs/PyAutoArray/pull/601
 - id: interferometer_w_tilde_fft_size_levers
   campaign: interferometer
@@ -261,9 +257,8 @@ tasks:
   priority: high
   path: tasks/point_source_image_plane_gpu_breakdown.md
   updated: '2026-10-04'
-  next: Issue the forward-mode gradient NaN bug (Mind draft draft/bug/autolens/point_image_pair_all_forward_grad_nan.md,
-    reproduces on CPU, live in 2026.10.4.1); human to authorize the autolens_inference image-plane fit measurement.
-  evidence: https://github.com/PyAutoLabs/PyAutoMind/blob/cc93f8c425bbcbd83bcb6cd5e649a60d17640b5f/draft/bug/autolens/point_image_pair_all_forward_grad_nan.md
+  next: 'Execution 2026-10-04: forward-mode NaN issued as PyAutoLens#767 (reproduced on CPU fp64: forward [nan]x5, reverse finite; stack 2026.10.4.1+3 b695e57b6); Mind registry 0112ccba. The autolens_inference image-plane fit measurement still awaits human authorisation.'
+  evidence: https://github.com/PyAutoLabs/PyAutoLens/issues/767
 - id: point_source_source_plane_chi_squared_speed
   campaign: point-source-source
   title: Point-source source-plane chi-squared speed-up campaign — remaining candidates (phases 1–2e shipped)
@@ -281,8 +276,8 @@ tasks:
   priority: low
   path: tasks/pointsolver_cpu_speed_campaign_remainder.md
   updated: '2026-10-04'
-  next: 'Docs-only PR: completion evidence + fix stale wiki lines (#763 ''in flight'' → #764 merged, released 2026.10.4.1);
-    RAL leftover folders present, mirror sync unverified.'
+  next: 'Execution 2026-10-04: docs-only branch feature/point-source-wiki-reconcile @0560284 (issue autolens_profiling#370), parked at Heart RED. Still owed: RAL cleanup, register_model grad-zero prompt, test move, CI smoke cells, nopad deletion.'
+  issue: https://github.com/PyAutoLabs/autolens_profiling/issues/370
   evidence: https://github.com/PyAutoLabs/PyAutoLens/pull/764
 - id: post_certified_solver_likelihood_breakdown
   campaign: imaging

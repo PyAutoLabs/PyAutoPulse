@@ -10,6 +10,11 @@ The original task below is retained verbatim. Current scheduling state lives in 
 - Unverified: a Mind draft for the register_model grad-zero item (no GitHub issue found); test placement of `test_static_lattice_jax.py`; `nopad` dead code; smoke coverage of the breakdown cells.
 - Next: a docs-only autolens_profiling PR: completion evidence in `results/notes/point_source_cpu_campaign.md` from committed rows, and the stale wiki/index lines fixed. No compute.
 
+### Execution 2026-10-04
+
+- Issue: [autolens_profiling#370](https://github.com/PyAutoLabs/autolens_profiling/issues/370). Branch `feature/point-source-wiki-reconcile` @`0560284`, parked at Heart RED.
+- Still owed: RAL cleanup, register_model grad-zero prompt, test move, CI smoke cells, `nopad` deletion.
+
 ---
 
 # Point-source (single-source) CPU campaign — carried leftovers and completion evidence

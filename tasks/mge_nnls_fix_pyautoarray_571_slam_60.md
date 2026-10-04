@@ -10,6 +10,13 @@ The original task below is retained verbatim. Current scheduling state lives in 
 - Context: jax-version policy changes (e.g. PyAutoArray#612) merged to mains 2026-10-04, unreleased; a mirror sync now pulls them too. Mind epics.md still says "#595 pending release" (stale).
 - Next: a CLI session runs HPCPullPyAuto and records the synced hashes; then this task can flip to ready.
 
+### Execution 2026-10-04
+
+- RAL sync SKIPPED 2026-10-04: 180 euclid_dr1 tasks RUNNING with `PYAUTO_HPC_BASE=/mnt/ral/jnightin/PyAuto` on PYTHONPATH.
+- Mirror at 2026-09-27 state (Nerves `bf10410231`, Fit `404b3e5f77`, Array `9428eca24a`, Galaxy `c960982566`, Lens `21b520be4d`), 16–35 commits behind tag 2026.10.4.1.
+- HPCPullPyAuto pulls MAINS, and Nerves main excludes jax 0.10.2 (installed on RAL and locally), so a sync also needs a jax reinstall.
+- Next: sync when `squeue -u jnightin -t R` shows no euclid_dr1 jobs on the shared base, or the human accepts the risk.
+
 ---
 
 # Linear-solver programme phase 3: GPU/vmap/A100 timing and parity rows for the solver corpus

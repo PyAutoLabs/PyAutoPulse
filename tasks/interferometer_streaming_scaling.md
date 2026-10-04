@@ -11,6 +11,14 @@ The original task below is retained verbatim. Current scheduling state lives in 
 - Unverified: Discussion https://github.com/orgs/PyAutoLabs/discussions/13 not fetched.
 - Next: the scaling measurement needs compute authorization from the human.
 
+### Execution 2026-10-04
+
+- Issue: [autolens_profiling#368](https://github.com/PyAutoLabs/autolens_profiling/issues/368). Branch `feature/interferometer-streaming-scaling` @`4a0ef46`, parked at Heart RED.
+- Results (laptop CPU, 8 threads, indicative): chunk 65536 wall 17.5 / 43.8 / 180.7 / 504.5 s at 1e6 / 4e6 / 1.6e7 / 5e7 visibilities, RSS 1.47–1.69 GB; chunk 4096 wall 43.6 / 149.2 / 608.6 s at 1e6 / 4e6 / 1.6e7.
+- In-memory first failure at 1e6 under a 10 GB cap (both arms). The `nufft_chunk_size` arm fails in `transformer.image_from`: a second memory wall, library candidate, no issue filed.
+- Parity 1.2e-9 nats at 5e5. The 1e8 row was skipped (budget).
+- Go/no-go overtaken; recorded as release evidence for 2026.10.4.1.
+
 ---
 
 # Campaign: interferometer streaming (array-free) vs in-memory — memory and time scaling to 2e8 visibilities
