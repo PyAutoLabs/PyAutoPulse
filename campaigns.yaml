@@ -209,11 +209,12 @@ tasks:
 - id: interferometer_fixed_mapper_curvature_preload
   campaign: interferometer
   title: 'Interferometer fixed-mapper searches: reuse the W~ curvature matrix across likelihood calls via `preloads.curvature_matrix`'
-  status: needs-slicing
+  status: ready
   priority: normal
   path: tasks/interferometer_fixed_mapper_curvature_preload.md
   updated: '2026-10-04'
-  next: Unstarted (no PR/issue/branch/results, 2026-10-04). Scope one bounded phase from the full task contract.
+  next: Phase 1 sliced 2026-10-04 into a Mind draft (PyAutoArray preload plumbing + CPU breakdown lever, no GPU); run it through start_dev. Human science call first - no production SLaM stage holds the mapper fixed today.
+  evidence: https://github.com/PyAutoLabs/PyAutoMind/blob/55a453cf/draft/feature/autoarray/interferometer_curvature_preload_phase1.md
 - id: interferometer_nnls_memo_scattered_stream_guard
   campaign: interferometer
   title: 'fnnls warm-start memo: stop it slowing scattered evaluation streams (interferometer CPU, autolens_profiling#332)'
