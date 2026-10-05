@@ -7,8 +7,8 @@ schema: 1
 instances:
   - instance: lens
     repo: autolens_profiling
-    summary_path: dashboard/summary.json
-    supported_schema: profiling-summary@1
+    summary_path: dashboard/catalogue.json
+    supported_schema: profiling-summary@2
     dashboard_url: https://pyautolabs.github.io/autolens_profiling/
     library_refs: [PyAutoLens, PyAutoGalaxy, PyAutoArray, PyAutoFit]
     cortex_project: null

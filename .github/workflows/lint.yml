@@ -31,7 +31,7 @@ permissions:
 jobs:
   lint:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
 
@@ -68,6 +68,18 @@ jobs:
         env:
           PYAUTO_BRAIN: ${{ github.workspace }}/_brain
         run: python -m pytest tests -q
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Chromium interaction checks
+        env:
+          PYAUTO_BRAIN: ${{ github.workspace }}/_brain
+        run: |
+          npm install --no-save --no-package-lock playwright@1.63.0
+          npx playwright install --with-deps chromium
+          node tests/browser_setup.cjs
 
       - name: pyauto-pulse check --offline
         env:

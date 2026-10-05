@@ -31,7 +31,7 @@ from collections import OrderedDict
 from datetime import UTC, datetime
 from pathlib import Path
 
-from pulse import ORGAN_ROOT, campaigns
+from pulse import ORGAN_ROOT, campaigns, setup_browser
 from pulse import summary as summary_mod
 from pulse.ingest import Snapshot
 
@@ -339,6 +339,27 @@ def _md_detail(s: Snapshot, now: str | None = None) -> list[str]:
 
 def render_markdown(views, now: str | None = None, campaign_data: dict | None = None) -> str:
     now = now or _utc_now()
+    if any((s.doc or {}).get("version") == 2 for s in views):
+        out = [
+            "# PyAutoPulse — profiling dashboard",
+            "",
+            campaigns.markdown(campaign_data if campaign_data is not None else campaigns.load()),
+            f"[Interactive board]({PAGES_URL})",
+            "",
+        ]
+        for snapshot in views:
+            if snapshot.failed or snapshot.cached:
+                out += [f"**{snapshot.instance.instance}: {integrity(snapshot)}**", ""]
+            if (snapshot.doc or {}).get("version") == 2:
+                out += setup_browser.markdown(snapshot)
+            out += [
+                "<details><summary>Capture, qualification and legacy diagnostics</summary>",
+                "",
+                *_md_detail(snapshot, now),
+                "</details>",
+                "",
+            ]
+        return "\n".join(out).rstrip("\n") + "\n"
     out = [
         "# PyAutoPulse — profiling dashboard",
         "",
@@ -377,68 +398,29 @@ def render_markdown(views, now: str | None = None, campaign_data: dict | None = 
 # ----------------------------------------------------------------- html ---
 
 CSS = """
-:root{--bg:#ffffff;--fg:#1f2328;--muted:#59636e;--card:#f6f8fa;--line:#d1d9e0;
---accent:#0b7a4b;--hero1:#062b1c;--hero2:#000000;--glow:#2ee88f;--ok:#1a7f37;--warn:#9a6700;
---bad:#cf222e}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1117;--fg:#e6edf3;
---muted:#9198a1;--card:#151b23;--line:#3d444d;--accent:#34d399;--ok:#3fb950;--warn:#d29922;
---bad:#f85149}}
-:root[data-theme="dark"]{--bg:#0d1117;--fg:#e6edf3;--muted:#9198a1;--card:#151b23;
---line:#3d444d;--accent:#34d399;--ok:#3fb950;--warn:#d29922;--bad:#f85149}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--fg);
-font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
-main{max-width:1200px;margin:0 auto;padding:0 16px 48px}
-.hero{background:radial-gradient(circle at 30% 20%,var(--hero1),var(--hero2));color:#fff;
-padding:28px 16px 22px;text-align:center}
-.hero h1{margin:0;font-size:28px;letter-spacing:.5px}.hero h1 span{color:var(--glow)}
-.hero p{margin:6px 0 0;color:#bfe9d3;font-size:13px;letter-spacing:2px;text-transform:uppercase}
-h2,h3{color:var(--accent)}h2{border-bottom:1px solid var(--line);padding-bottom:4px;margin-top:32px}
-a{color:var(--accent)}
-.lede{color:var(--muted)}
-.tablewrap{overflow-x:auto}
-table{border-collapse:collapse;width:100%;font-size:14px}
-th,td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
-td.num{text-align:right;white-space:nowrap}
-.ok{color:var(--ok)}.warn{color:var(--warn)}.bad{color:var(--bad)}.muted{color:var(--muted)}
-.notions{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px;margin:8px 0}
-.notions div{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:8px 12px}
-.notions b{display:block;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
-.stats{display:flex;flex-wrap:wrap;gap:12px;margin:16px 0}
-.stats div{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:8px 14px}
-.stats b{display:block;font-size:20px;color:var(--accent)}.stats span{font-size:12px;color:var(--muted)}
-button[data-copy]{font:12px ui-monospace,SFMono-Regular,Menlo,monospace;text-align:left;
-background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:6px;
-padding:3px 6px;cursor:pointer;word-break:break-all}
-button.copied{border-color:var(--ok)}
-.checkin textarea{display:block;width:100%;font:inherit;font-size:14px;line-height:1.5;background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:8px;padding:12px;margin:8px 0;resize:vertical}
-#copy-checkin{background:var(--accent);color:var(--bg);border:0;border-radius:6px;padding:10px 16px;cursor:pointer;font-weight:600}
-#copy-status{margin-left:12px}
-code{color:var(--accent);word-break:break-all}
+.controls{margin:1.2rem 0}.prompt-action{display:flex;flex-wrap:wrap;gap:.5rem .8rem;align-items:center;margin:.7rem 0}.prompt-action details{flex-basis:100%}.prompt-action details:not([open]){flex-basis:auto}.prompt-action summary{cursor:pointer;font-size:.8rem;color:var(--muted)}
+.prompt-action textarea{width:100%;display:block;margin:.5rem 0;padding:.7rem;font:inherit;font-size:.85rem;color:var(--fg);background:var(--btn);border:1px solid var(--line);border-radius:8px;resize:vertical}.review-meta{font-size:.75rem;color:var(--muted)}
+.campaign-table table{width:100%;table-layout:fixed}.campaign-table th:first-child{width:66%}.campaign-table th:nth-child(2){width:21%}.campaign-table th:last-child{width:13%}.campaign-table td{vertical-align:top;padding:.7rem .45rem}.campaign-table strong{font-weight:600}.campaign-detail{margin:.2rem 0 0}.campaign-detail summary{cursor:pointer;font-size:.8rem;padding:.15rem 0}.campaign-detail h3{font-size:.9rem}.campaign-task{border-top:1px solid var(--line);padding:.6rem 0}.campaign-task h4,.campaign-task p{margin:.3rem 0}.campaign-task h4{font-size:.85rem}.campaign-task p{font-size:.8rem}.link-icons{display:flex;gap:.3rem;flex-wrap:wrap}.icon-link{display:inline-flex;justify-content:center;align-items:center;width:2rem;min-height:2rem;border:1px solid var(--line);border-radius:6px;text-decoration:none}.capture-details{margin:1.5rem 0}.capture-details summary{cursor:pointer}.tablewrap{overflow-x:auto}.notions{font-size:.85rem}.warn{color:var(--warn)}.bad{color:var(--bad)}.ok{color:var(--ok)}
+@media(max-width:34rem){.campaign-table th:first-child{width:57%}.campaign-table th:nth-child(2){width:26%}.campaign-table th:last-child{width:17%}.campaign-table td{padding:.55rem .3rem}.campaign-table .pill{font-size:.65rem;overflow-wrap:anywhere;white-space:normal;text-overflow:clip}.campaign-table{font-size:.8rem}}
 """
 
 JS = """
-var copyCheckin=document.getElementById('copy-checkin');
-if(copyCheckin){copyCheckin.addEventListener('click',async function(){
-  var field=document.getElementById('checkin-prompt'), status=document.getElementById('copy-status');
-  try {
-    if(navigator.clipboard && window.isSecureContext){await navigator.clipboard.writeText(field.value)}
-    else {field.focus();field.select();if(!document.execCommand('copy')){throw new Error('copy unavailable')}}
-    status.textContent='Copied';
-  } catch(error){field.focus();field.select();status.textContent='Select and copy the prompt above.'}
-});}
-
-document.querySelectorAll('button[data-copy]').forEach(function(b){
-  b.addEventListener('click',function(){
-    var t=b.getAttribute('data-copy');
-    var done=function(){b.classList.add('copied');setTimeout(function(){b.classList.remove('copied')},1200)};
-    if(navigator.clipboard){navigator.clipboard.writeText(t).then(done,function(){})}
+document.querySelectorAll('button[data-field]').forEach(function(button){
+  button.addEventListener('click',async function(){
+    var field=document.getElementById(button.dataset.field), status=document.getElementById('copy-status');
+    try{if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(field.value)}
+    else{field.closest('details').open=true;field.focus();field.select();if(!document.execCommand('copy'))throw Error('copy unavailable')}
+    status.textContent='Copied';}
+    catch(error){field.closest('details').open=true;field.focus();field.select();status.textContent='Select and copy the prompt above.'}
   });
 });
-document.querySelectorAll('[data-age-from]').forEach(function(el){
-  var t=Date.parse(el.getAttribute('data-age-from'));
-  if(!isNaN(t)){el.textContent=' · '+Math.max(0,Math.floor((Date.now()-t)/864e5))+' d today';}
-});
+document.querySelectorAll('[data-open]').forEach(function(link){link.addEventListener('click',function(){var target=document.getElementById(link.dataset.open);target.open=true;target.querySelector('summary').focus();});});
+document.querySelectorAll('button[data-copy]').forEach(function(button){button.addEventListener('click',async function(){
+  try{await navigator.clipboard.writeText(button.dataset.copy);button.textContent='Copied';}
+  catch(error){var field=document.createElement('textarea');field.value=button.dataset.copy;button.after(field);field.focus();field.select();}
+});});
+function openCampaign(){var id=location.hash.slice(1);if(id.startsWith('campaign-')){var target=document.getElementById(id);if(target)target.open=true;}}
+window.addEventListener('hashchange',openCampaign);openCampaign();
 """
 
 
@@ -553,43 +535,39 @@ def _html_detail(s: Snapshot, now: str | None = None) -> str:
 
 def render_html(views, now: str | None = None, campaign_data: dict | None = None) -> str:
     now = now or _utc_now()
-    rows = []
-    for s in views:
-        inst = s.instance
-        rows.append(
-            f"<tr><td><a href='#{_e(inst.instance)}'>{_e(inst.instance)}</a> "
-            f"<span class='muted'>{_e(inst.repo)}</span></td>"
-            f"<td>{_e((s.doc or {}).get('scope') or '—')}</td><td>{_e(evidence(s))}</td>"
-            f"<td>{_e(last_fetch(s))}</td><td>{_e(coverage(s))}</td>"
-            f"<td class='{_integrity_class(s)}'>{_e(integrity(s))}</td>"
-            f"<td>{_e(freshness(s, now))}</td><td>{_e(qualification(s))}</td>"
-            f"<td><a href='{_e(inst.dashboard_url)}'>dashboard</a> · "
-            f"<a href='{_e(inst.github_url)}'>repo</a> · "
-            f"<a href='{_e(receipt_url(s))}'>receipt</a></td></tr>"
+    shared = setup_browser.theme()
+    browser_css, browser_js = setup_browser.assets()
+    content = []
+    for snapshot in views:
+        name = snapshot.instance.instance
+        if snapshot.failed or snapshot.cached:
+            content.append(
+                f'<p class="warn">{_e(name)}: {_e(integrity(snapshot))}. Displayed evidence retains its captured source.</p>'
+            )
+        content.append(setup_browser.render(snapshot))
+        if (snapshot.doc or {}).get("version") != 2:
+            content.append(
+                f"<p>{_e(name)}: setup catalogue unavailable; original project evidence remains below.</p>"
+            )
+        content.append(
+            '<details class="capture-details"><summary>'
+            + _e(name)
+            + " · capture, qualification and legacy diagnostics</summary>"
+            + _html_detail(snapshot, now)
+            + "</details>"
         )
-    tiles = "".join(f"<div><b>{n}</b><span>{_e(label)}</span></div>" for label, n in counts(views))
-    lede = _e(LEDE).replace("`/profiling triage`", "<code>/profiling triage</code>")
-    lede = re.sub(r"`(.+?)`", r"<code>\1</code>", lede)
-    notions = re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", _e(NOTIONS))
-    notions = re.sub(r"`(.+?)`", r"<code>\1</code>", notions)
     return (
-        "<!doctype html>\n<html lang='en'><head><meta charset='utf-8'>"
-        "<meta name='viewport' content='width=device-width,initial-scale=1'>"
+        '<!doctype html>\n<html lang="en"><head><meta charset="utf-8">'
+        '<meta name="viewport" content="width=device-width,initial-scale=1">'
         "<title>PyAutoPulse dashboard</title>"
         "<!-- Generated by `bin/pyauto-pulse board`. Do not edit by hand. -->"
-        f"<style>{CSS}</style></head><body>"
-        "<header class='hero'><h1>PyAuto<span>Pulse</span></h1>"
-        "<p>Measure. Trace. Compare.</p></header>"
-        f"<main>{campaigns.render_html(campaign_data if campaign_data is not None else campaigns.load())}"
-        f"<p class='lede'>{lede}</p>"
-        f"<div class='stats'>{tiles}</div>"
-        "<h2 id='projects'>Projects</h2>"
-        "<div class='tablewrap'><table><thead><tr><th>Project</th><th>Scope</th>"
-        "<th>Evidence</th><th>Last fetch</th><th>Coverage</th><th>Integrity</th>"
-        "<th>Freshness</th><th>Qualification</th><th>Links</th></tr></thead>"
-        f"<tbody>{''.join(rows)}</tbody></table></div>"
-        f"<p class='muted'>{notions}</p>"
-        f"{''.join(_html_detail(s, now) for s in views)}</main><script>{JS}</script></body></html>\n"
+        f"<style>{shared.css('pulse')}\n{CSS}\n{browser_css}</style></head><body>"
+        + shared.hero("pulse", "Profiling dashboard")
+        + "<main>"
+        + campaigns.render_html(campaign_data if campaign_data is not None else campaigns.load())
+        + "".join(content)
+        + "</main>"
+        + f"<script>{JS}\n{browser_js}</script></body></html>\n"
     )
 
 

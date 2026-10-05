@@ -121,10 +121,8 @@ catalogue of repositories.
 
 The reader accepts `profiling-summary` v1 and v2; registry rows still pin one
 exact version. V2 adds setup identities, typed evidence and explicit reference
-selections (`pulse/catalogue.py`, `REFERENCE.md`). Keep the live registry on v1
-until the project exporter migration. Accepting a schema is not scientific
-acceptance and does not launch a baseline campaign. The setup browser follows
-in its own phase.
+selections (`pulse/catalogue.py`, `REFERENCE.md`). The live lens registry now reads the project v2 catalogue. Accepting a schema is not scientific
+acceptance and does not launch a baseline campaign. The setup browser reads the captured index and verifies same-commit detail shards.
 
 ## Boundary (what this organ never does)
 

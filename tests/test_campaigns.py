@@ -64,7 +64,7 @@ def test_control_room_precedes_measurements_and_escapes():
         board.render_markdown([], campaign_data=data),
     ):
         assert (
-            text.index("Check in on all profiling work")
+            text.index("Profiling Check In")
             < text.index("Active campaigns")
             < text.index("Active tasks")
             < text.index("Profiling evidence")
@@ -91,3 +91,27 @@ def test_refresh_does_not_stamp_checkin_or_change_qualification(tmp_path):
 def test_missing_ledger_is_not_an_empty_success(tmp_path):
     with pytest.raises(campaigns.CampaignError, match="missing campaign ledger"):
         campaigns.load(tmp_path)
+
+
+def test_each_open_task_is_inside_its_campaign_and_links_are_separate():
+    import html
+    import re
+
+    data = campaigns.load()
+    page = campaigns.render_html(data)
+    for campaign in data["campaigns"]:
+        if campaign["status"] in campaigns.CLOSED:
+            continue
+        section = re.search(r'<details id="campaign-' + campaign["id"] + r'".*?</details>', page)[0]
+        expected = [
+            t
+            for t in data["tasks"]
+            if t["campaign"] == campaign["id"] and t["status"] not in campaigns.CLOSED
+        ]
+        assert section.count('<article class="campaign-task">') == len(expected)
+        for task in expected:
+            assert html.escape(task["title"]) in section
+            assert campaigns.URL + task["path"] in section
+        assert 'aria-label="Tasks for ' + html.escape(campaign["title"], quote=True) in page
+        if campaign.get("evidence"):
+            assert 'aria-label="Evidence for ' + html.escape(campaign["title"], quote=True) in page
