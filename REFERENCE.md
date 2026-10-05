@@ -94,6 +94,112 @@ precision`, in producer order (never sorted by ratio).
 **Outcomes.** `ok` · `invalid` (not JSON, or contract breaks) · `unsupported`
 (schema/version) · `unavailable` (transport: API or raw file unreadable).
 
+## `profiling-summary` v2: setup catalogue
+
+The v2 reader lands before the project producer migrates. Registry entries
+still pin an exact version; supporting v2 does **not** silently upgrade the live
+`profiling-summary@1` registry or reinterpret a saved v1 snapshot. The full
+[synthetic fixture](tests/fixtures/setup_summary_v2.json) is an executable
+producer example. Validation is stdlib-only in `pulse/catalogue.py`, through
+`pulse.summary.classify`; it never opens evidence files or judges science.
+
+V2 retains the common v1 envelope and receipt fields. It requires `setups`,
+`records`, `selections`, `hazards`, and `recommendations` lists (empty is valid).
+IDs are non-empty and unique within each list; references resolve within the
+same document and project. `comparisons` must be `[]`: this catalogue presents
+selected results, not release trends. Keep `comparison_policy.id` explicitly
+labelled, e.g. `no-temporal-comparisons`, for common receipt/board compatibility.
+The existing board can ingest/render v2 metadata; the interactive setup browser
+is a subsequent phase. Historical v1 feeds and their comparison rules remain
+supported without rewriting measurements, pins, or policy.
+
+### Setups
+
+Each setup has `id`, `label`, `dataset`, `model`, `instrument`,
+`configuration_id`, and a non-empty `configuration` object. IDs are semantic,
+not script paths. A configuration ID identifies exact scientific settings;
+changing solver, regularization, dataset or resolution requires a different
+setup. Instrument is a string, or null with `unknowns.instrument` explaining
+why (including dataset-independent component profiling).
+
+Configuration fields are named objects with `value` and `unit`; examples are
+`source_pixels: {value: 1500, unit: count}` and
+`psf_shape: {value: [21, 21], unit: pixel}`. Use `name` for settings such as
+solver and `dimensionless` where appropriate. A null value requires `reason`.
+Include all scientifically relevant settings, not merely the instrument name;
+legacy unknowns must remain unknown rather than inheriting today's defaults.
+All nested metadata must be finite JSON; NaN and infinity are refused.
+
+### Measurement records
+
+Each record has:
+
+- `id`, `setup_id`, `run_id`, `axis`, `metric`, `unit`, and `measurement`.
+  Axes/units follow the v1 table. `measurement` contains **exactly one** key,
+  equal to `metric`, with a finite non-negative value; booleans/null are not
+  measurements. Missing cells belong in selections, not zero-valued records.
+- `identity`: `device`, `backend`, `precision`, `library_version`, and a
+  non-empty `software` mapping of measured package names to versions/revisions.
+  Nullable identity fields require corresponding `identity.unknowns` reasons.
+  Software captures the measured stack, not the current reader environment.
+- `method`: `id`, `statistic`, positive integer `repetitions`, `warmup`,
+  `synchronization`, and `cache_state`. Except for `id`, unknowns may be null
+  with corresponding `method.unknowns` reasons. Reusing a method ID with a
+  different method definition is invalid. Name single-call latency, batch
+  throughput, instrumented component cost and compile/cache procedures
+  distinctly; method IDs are meaningful producer-owned identifiers.
+- `provenance`: boolean `has_provenance` and `qualified`; `host` and
+  `measured_at` (UTC timestamp), each nullable with `provenance.unknowns`
+  reasons. Qualified evidence requires `has_provenance: true`.
+- `validation`: `status` (`accepted`, `unreviewed`, `rejected`) and a non-empty
+  `reason`. Accepted records must be qualified; these are producer declarations,
+  never an acceptance decision inferred by Pulse.
+- `evidence`: repo-relative `path` and optional string/null `fragment`, resolved
+  at the captured project commit. Absolute paths, URLs and traversal are refused.
+
+Memory metrics are explicitly `host_peak_rss`, `device_peak_allocated`,
+`device_peak_reserved`, or `device_total`; the last is device capacity, **not**
+measured application VRAM. Additional memory meanings require an explicit
+contract extension. Component timings remain `axis: breakdown`, never runtime.
+
+### Explicit selections and coverage
+
+A selection represents one declared measurement slot, with `id`, `setup_id`,
+`axis`, `metric`, `unit`, `method_id`, full `identity`, `host`, `status`,
+`record_id`, and a non-empty `reason`. Unknown host uses `unknowns.host`.
+
+For `accepted` or `unreviewed`, `record_id` must resolve, and the setup, axis,
+metric, unit, method ID, complete identity (including software revisions), host
+and validation status must match the named record. Duplicate slots are refused.
+The producer chooses references; Pulse never selects a latest/fastest row.
+Other states (`not_measured`, `failed`, `unusable`, `inapplicable`) require
+`record_id: null`. Diagnostic artifacts can remain linked from findings;
+a failed run is never presented as a zero-cost successful measurement.
+
+`coverage.expected.cells` equals the selection count. `coverage.observed`
+contains accurate `setups`, `records`, and `selected` counts. This distinguishes
+a declared missing GPU cell from an undeclared cell. The common `excluded`
+list retains excluded evidence and reasons. An empty catalogue is no evidence,
+not a scientific pass.
+
+### Hazards and recommendations
+
+Both have `id`, `title`, `description`, non-empty `evidence` (objects with safe
+`path` and optional `fragment`), and `applies_to`:
+
+- non-empty `setup_ids` referencing exact setups;
+- non-empty `library_versions` naming applicable measured versions;
+- `constraints` object, plus a non-empty `limitations` string.
+
+Hazards have `status: open | resolved | unknown`. Recommendations additionally
+have non-empty `record_ids` and `validation` as above. Supporting records must
+belong to the applicable setups and library versions; an accepted recommendation
+requires accepted supporting records. Constraints and scientific claims remain
+producer-owned: the reader checks structure and reference integrity, not whether
+a recommended solver is correct. Consumers must inspect the cited records'
+hardware/method and applicability, and must not extrapolate to a different setup
+or interpret a per-likelihood measurement as a total-fit prediction.
+
 ## Ingest
 
 1. `GET https://api.github.com/repos/<owner>/<repo>/commits/main` → one 40-hex SHA
