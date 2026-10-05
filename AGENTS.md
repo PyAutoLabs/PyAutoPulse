@@ -117,6 +117,15 @@ else `$PYAUTO_MIND`, else `$PYAUTO_ROOT/organs/PyAutoMind` or
 `$PYAUTO_ROOT/PyAutoMind`, else beside this organ). There is no second
 catalogue of repositories.
 
+## Setup catalogue migration
+
+The reader accepts `profiling-summary` v1 and v2; registry rows still pin one
+exact version. V2 adds setup identities, typed evidence and explicit reference
+selections (`pulse/catalogue.py`, `REFERENCE.md`). Keep the live registry on v1
+until the project exporter migration. Accepting a schema is not scientific
+acceptance and does not launch a baseline campaign. The setup browser follows
+in its own phase.
+
 ## Boundary (what this organ never does)
 
 From the spec's "Profiling domain contract", verbatim:

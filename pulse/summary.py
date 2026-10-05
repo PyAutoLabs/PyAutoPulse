@@ -1,9 +1,10 @@
-"""The ``profiling-summary`` v1 exchange contract, as the organ reads it.
+"""The ``profiling-summary`` v1/v2 exchange contracts, as the organ reads them.
 
 The contract is owned by the producer and documented beside it
 (``autolens_profiling/dashboard/README.md``, "summary.json — the
 profiling-summary v1 read contract": Envelope / Records / Comparisons). This
-module validates the **exchange** contract only — known schema/version,
+module dispatches setup-oriented v2 validation to ``pulse.catalogue`` and
+validates the **exchange** contract only — known schema/version,
 required fields, unique ids, finite numerics, UTC dates, safe evidence paths,
 axis/unit consistency — and pairs each producer comparison with its two
 records so the board can refuse a pair whose axis or hardware identity
@@ -19,7 +20,7 @@ import re
 from dataclasses import dataclass, field
 from datetime import datetime
 
-SUPPORTED = {("profiling-summary", 1)}
+SUPPORTED = {("profiling-summary", 1), ("profiling-summary", 2)}
 
 ENVELOPE = (
     "schema",
@@ -107,7 +108,7 @@ def supported(doc, wanted: tuple[str, int] | None = None) -> str | None:
     if not isinstance(doc, dict):
         return "summary is not a JSON object"
     got = (doc.get("schema"), doc.get("version"))
-    if got not in SUPPORTED:
+    if not isinstance(got[0], str) or type(got[1]) is not int or got not in SUPPORTED:
         known = ", ".join(f"{s}@{v}" for s, v in sorted(SUPPORTED))
         return f"unsupported schema {got[0]!r} version {got[1]!r} (this reader supports {known})"
     if wanted is not None and got != tuple(wanted):
@@ -116,6 +117,18 @@ def supported(doc, wanted: tuple[str, int] | None = None) -> str | None:
 
 
 def validate(doc) -> list[str]:
+    """Validate the versioned contract; unsupported documents fail closed."""
+    why = supported(doc)
+    if why:
+        return [why]
+    if doc["version"] == 2:
+        from pulse import catalogue
+
+        return catalogue.validate(doc)
+    return _validate_v1(doc)
+
+
+def _validate_v1(doc) -> list[str]:
     """Every exchange-contract break in a parsed summary (empty = valid).
 
     Schema/version support is checked separately by ``supported``; this

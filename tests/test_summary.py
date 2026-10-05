@@ -43,7 +43,7 @@ def test_valid_empty_feed_is_ok():
 def test_unsupported_version_is_refused_not_validated():
     outcome, errors = summary.classify(fixture_doc("unsupported_schema.json"), V1)
     assert outcome == "unsupported"
-    assert "version 2" in errors[0]
+    assert "version 99" in errors[0]
 
 
 def test_registered_schema_must_match():

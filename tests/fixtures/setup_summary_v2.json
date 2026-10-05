@@ -1,0 +1,419 @@
+{
+  "schema": "profiling-summary",
+  "version": 2,
+  "project": "fixture_profiling",
+  "scope": "setup-catalogue",
+  "generated_at": "2026-09-30T12:00:00Z",
+  "evidence_updated_at": null,
+  "evidence_updated_at_reason": "no rows measured yet",
+  "valid_until": null,
+  "producer_revision": "0123456789abcdef0123456789abcdef01234567",
+  "comparison_policy": {
+    "id": "no-temporal-comparisons"
+  },
+  "coverage": {
+    "expected": {
+      "cells": 5
+    },
+    "observed": {
+      "setups": 1,
+      "records": 4,
+      "selected": 4
+    },
+    "excluded": []
+  },
+  "records": [
+    {
+      "id": "runtime-fixture",
+      "setup_id": "imaging/delaunay/hst/reference",
+      "run_id": "synthetic-run-1",
+      "axis": "runtime",
+      "metric": "single_call",
+      "unit": "s",
+      "measurement": {
+        "single_call": 0.05
+      },
+      "identity": {
+        "device": "cpu",
+        "backend": "jax",
+        "precision": "float64",
+        "library_version": "2026.10.4.1",
+        "software": {
+          "PyAutoLens": "2026.10.4.1",
+          "PyAutoArray": "0123456789abcdef0123456789abcdef01234567",
+          "jax": "fixture"
+        }
+      },
+      "method": {
+        "id": "runtime-fixture-method",
+        "statistic": "median",
+        "repetitions": 5,
+        "warmup": "one call",
+        "synchronization": "block_until_ready",
+        "cache_state": "warm"
+      },
+      "provenance": {
+        "host": "fixture-host",
+        "measured_at": "2026-10-04T12:00:00Z",
+        "has_provenance": true,
+        "qualified": true
+      },
+      "validation": {
+        "status": "accepted",
+        "reason": "synthetic fixture only; not a scientific result"
+      },
+      "evidence": {
+        "path": "results/fixture/runtime.json",
+        "fragment": "single_call"
+      }
+    },
+    {
+      "id": "breakdown-fixture",
+      "setup_id": "imaging/delaunay/hst/reference",
+      "run_id": "synthetic-run-1",
+      "axis": "breakdown",
+      "metric": "mapping",
+      "unit": "s",
+      "measurement": {
+        "mapping": 0.02
+      },
+      "identity": {
+        "device": "cpu",
+        "backend": "jax",
+        "precision": "float64",
+        "library_version": "2026.10.4.1",
+        "software": {
+          "PyAutoLens": "2026.10.4.1",
+          "PyAutoArray": "0123456789abcdef0123456789abcdef01234567",
+          "jax": "fixture"
+        }
+      },
+      "method": {
+        "id": "breakdown-fixture-method",
+        "statistic": "median",
+        "repetitions": 5,
+        "warmup": "one call",
+        "synchronization": "block_until_ready",
+        "cache_state": "warm"
+      },
+      "provenance": {
+        "host": "fixture-host",
+        "measured_at": "2026-10-04T12:00:00Z",
+        "has_provenance": true,
+        "qualified": true
+      },
+      "validation": {
+        "status": "accepted",
+        "reason": "synthetic fixture only; not a scientific result"
+      },
+      "evidence": {
+        "path": "results/fixture/breakdown.json",
+        "fragment": "mapping"
+      }
+    },
+    {
+      "id": "compile-fixture",
+      "setup_id": "imaging/delaunay/hst/reference",
+      "run_id": "synthetic-run-1",
+      "axis": "compile",
+      "metric": "cold_compile",
+      "unit": "s",
+      "measurement": {
+        "cold_compile": 3.0
+      },
+      "identity": {
+        "device": "cpu",
+        "backend": "jax",
+        "precision": "float64",
+        "library_version": "2026.10.4.1",
+        "software": {
+          "PyAutoLens": "2026.10.4.1",
+          "PyAutoArray": "0123456789abcdef0123456789abcdef01234567",
+          "jax": "fixture"
+        }
+      },
+      "method": {
+        "id": "compile-fixture-method",
+        "statistic": "median",
+        "repetitions": 5,
+        "warmup": "one call",
+        "synchronization": "block_until_ready",
+        "cache_state": "cold"
+      },
+      "provenance": {
+        "host": "fixture-host",
+        "measured_at": "2026-10-04T12:00:00Z",
+        "has_provenance": true,
+        "qualified": true
+      },
+      "validation": {
+        "status": "accepted",
+        "reason": "synthetic fixture only; not a scientific result"
+      },
+      "evidence": {
+        "path": "results/fixture/compile.json",
+        "fragment": "cold_compile"
+      }
+    },
+    {
+      "id": "memory-fixture",
+      "setup_id": "imaging/delaunay/hst/reference",
+      "run_id": "synthetic-run-1",
+      "axis": "memory",
+      "metric": "host_peak_rss",
+      "unit": "MiB",
+      "measurement": {
+        "host_peak_rss": 250
+      },
+      "identity": {
+        "device": "cpu",
+        "backend": "jax",
+        "precision": "float64",
+        "library_version": "2026.10.4.1",
+        "software": {
+          "PyAutoLens": "2026.10.4.1",
+          "PyAutoArray": "0123456789abcdef0123456789abcdef01234567",
+          "jax": "fixture"
+        }
+      },
+      "method": {
+        "id": "memory-fixture-method",
+        "statistic": "median",
+        "repetitions": 5,
+        "warmup": "one call",
+        "synchronization": "block_until_ready",
+        "cache_state": "warm"
+      },
+      "provenance": {
+        "host": "fixture-host",
+        "measured_at": "2026-10-04T12:00:00Z",
+        "has_provenance": true,
+        "qualified": true
+      },
+      "validation": {
+        "status": "accepted",
+        "reason": "synthetic fixture only; not a scientific result"
+      },
+      "evidence": {
+        "path": "results/fixture/memory.json",
+        "fragment": "host_peak_rss"
+      }
+    }
+  ],
+  "comparisons": [],
+  "limitations": [
+    "fixture: hand-written to exercise one reader acceptance case"
+  ],
+  "setups": [
+    {
+      "id": "imaging/delaunay/hst/reference",
+      "label": "HST Delaunay reference",
+      "dataset": "imaging",
+      "model": "delaunay",
+      "instrument": "hst",
+      "configuration_id": "synthetic-reference-v1",
+      "configuration": {
+        "source_pixels": {
+          "value": 1500,
+          "unit": "count"
+        },
+        "psf_shape": {
+          "value": [
+            21,
+            21
+          ],
+          "unit": "pixel"
+        },
+        "solver": {
+          "value": "fixture-solver",
+          "unit": "name"
+        },
+        "oversampling": {
+          "value": null,
+          "unit": "dimensionless",
+          "reason": "not recorded in this synthetic fixture"
+        }
+      }
+    }
+  ],
+  "selections": [
+    {
+      "setup_id": "imaging/delaunay/hst/reference",
+      "axis": "runtime",
+      "metric": "single_call",
+      "unit": "s",
+      "identity": {
+        "device": "cpu",
+        "backend": "jax",
+        "precision": "float64",
+        "library_version": "2026.10.4.1",
+        "software": {
+          "PyAutoLens": "2026.10.4.1",
+          "PyAutoArray": "0123456789abcdef0123456789abcdef01234567",
+          "jax": "fixture"
+        }
+      },
+      "id": "runtime-selection",
+      "method_id": "runtime-fixture-method",
+      "host": "fixture-host",
+      "record_id": "runtime-fixture",
+      "status": "accepted",
+      "reason": "explicit synthetic reference selection"
+    },
+    {
+      "setup_id": "imaging/delaunay/hst/reference",
+      "axis": "breakdown",
+      "metric": "mapping",
+      "unit": "s",
+      "identity": {
+        "device": "cpu",
+        "backend": "jax",
+        "precision": "float64",
+        "library_version": "2026.10.4.1",
+        "software": {
+          "PyAutoLens": "2026.10.4.1",
+          "PyAutoArray": "0123456789abcdef0123456789abcdef01234567",
+          "jax": "fixture"
+        }
+      },
+      "id": "breakdown-selection",
+      "method_id": "breakdown-fixture-method",
+      "host": "fixture-host",
+      "record_id": "breakdown-fixture",
+      "status": "accepted",
+      "reason": "explicit synthetic reference selection"
+    },
+    {
+      "setup_id": "imaging/delaunay/hst/reference",
+      "axis": "compile",
+      "metric": "cold_compile",
+      "unit": "s",
+      "identity": {
+        "device": "cpu",
+        "backend": "jax",
+        "precision": "float64",
+        "library_version": "2026.10.4.1",
+        "software": {
+          "PyAutoLens": "2026.10.4.1",
+          "PyAutoArray": "0123456789abcdef0123456789abcdef01234567",
+          "jax": "fixture"
+        }
+      },
+      "id": "compile-selection",
+      "method_id": "compile-fixture-method",
+      "host": "fixture-host",
+      "record_id": "compile-fixture",
+      "status": "accepted",
+      "reason": "explicit synthetic reference selection"
+    },
+    {
+      "setup_id": "imaging/delaunay/hst/reference",
+      "axis": "memory",
+      "metric": "host_peak_rss",
+      "unit": "MiB",
+      "identity": {
+        "device": "cpu",
+        "backend": "jax",
+        "precision": "float64",
+        "library_version": "2026.10.4.1",
+        "software": {
+          "PyAutoLens": "2026.10.4.1",
+          "PyAutoArray": "0123456789abcdef0123456789abcdef01234567",
+          "jax": "fixture"
+        }
+      },
+      "id": "memory-selection",
+      "method_id": "memory-fixture-method",
+      "host": "fixture-host",
+      "record_id": "memory-fixture",
+      "status": "accepted",
+      "reason": "explicit synthetic reference selection"
+    },
+    {
+      "setup_id": "imaging/delaunay/hst/reference",
+      "axis": "runtime",
+      "metric": "single_call",
+      "unit": "s",
+      "identity": {
+        "device": "a100",
+        "backend": "cuda",
+        "precision": "float64",
+        "library_version": "2026.10.4.1",
+        "software": {
+          "PyAutoLens": "2026.10.4.1",
+          "PyAutoArray": "0123456789abcdef0123456789abcdef01234567",
+          "jax": "fixture"
+        }
+      },
+      "id": "missing-gpu",
+      "method_id": "runtime-fixture-method",
+      "host": null,
+      "record_id": null,
+      "status": "not_measured",
+      "reason": "no GPU measurement",
+      "unknowns": {
+        "host": "no measurement"
+      }
+    }
+  ],
+  "hazards": [
+    {
+      "id": "fixture-hazard",
+      "title": "Synthetic hazard",
+      "description": "Exercise linking a finding to a setup.",
+      "status": "unknown",
+      "applies_to": {
+        "setup_ids": [
+          "imaging/delaunay/hst/reference"
+        ],
+        "library_versions": [
+          "2026.10.4.1"
+        ],
+        "constraints": {
+          "precision": [
+            "float64"
+          ]
+        },
+        "limitations": "Synthetic exact setup only; no extrapolation."
+      },
+      "evidence": [
+        {
+          "path": "results/hazards/fixture.json"
+        }
+      ]
+    }
+  ],
+  "recommendations": [
+    {
+      "id": "fixture-recommendation",
+      "title": "Synthetic recommendation",
+      "description": "Fixture for validating an evidence-backed recommendation.",
+      "applies_to": {
+        "setup_ids": [
+          "imaging/delaunay/hst/reference"
+        ],
+        "library_versions": [
+          "2026.10.4.1"
+        ],
+        "constraints": {
+          "precision": [
+            "float64"
+          ]
+        },
+        "limitations": "Synthetic exact setup only; no extrapolation."
+      },
+      "record_ids": [
+        "runtime-fixture"
+      ],
+      "validation": {
+        "status": "accepted",
+        "reason": "synthetic fixture only"
+      },
+      "evidence": [
+        {
+          "path": "wiki/fixture.md"
+        }
+      ]
+    }
+  ]
+}
