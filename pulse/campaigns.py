@@ -94,49 +94,49 @@ def _md(value) -> str:
     return html.escape(str(value)).replace("|", "\\|").replace("\n", " ")
 
 
+FIX_PROMPT = """Use the bug and profiling skills to investigate profiling problems systematically. Read PyAutoPulse/AGENTS.md, CHECKIN.md, campaigns.yaml and the relevant project evidence. Identify one concrete symptom, distinguish correctness from performance and measurement quality, and trace it to the exact setup, software and hardware. Preserve original evidence and unknowns; never call unreviewed timings a regression or accepted baseline. Propose a bounded plan and route any code changes through start-dev. Do not launch compute, change defaults or baselines, release or merge without the corresponding authorization."""
+
+
 def markdown(data: dict) -> str:
     rows = [
         marker(data),
-        "## Check in on all profiling work",
+        "## Profiling Check In",
         "",
-        "Copy this into one chat. Add a campaign focus or idea before or after it, or leave it unchanged.",
+        "<details><summary>Full check-in prompt</summary>",
         "",
         "```text",
         PROMPT,
         "```",
         "",
-        f"Last check-in: {data.get('last_checkin') or 'not recorded yet'}. Ledger dates are review dates, not measurement freshness.",
+        "</details>",
+        "",
+        f"Last check-in: {data.get('last_checkin') or 'not recorded yet'} (review date, not measurement freshness).",
         "",
         "## Active campaigns",
         "",
-        "| Campaign | Status | Open tasks | Next step | Reviewed |",
-        "|---|---|---:|---|---|",
     ]
     for c in data["campaigns"]:
         if c["status"] in CLOSED:
             continue
-        n = sum(t["campaign"] == c["id"] and t["status"] not in CLOSED for t in data["tasks"])
-        title = f"[{_md(c['title'])}]({c['evidence']})" if c.get("evidence") else _md(c["title"])
-        rows.append(f"| {title} | {c['status']} | {n} | {_md(c['next'])} | {c['updated']} |")
+        rows += [
+            f"<details><summary>{_md(c['title'])} — {c['status']}</summary>",
+            "",
+            f"Reviewed {c['updated']}. {_md(c['next'])}",
+            "",
+        ]
+        if c.get("evidence"):
+            rows.append(f"[Campaign evidence]({c['evidence']})")
+        rows += ["", "### Active tasks", ""]
+        for task in data["tasks"]:
+            if task["campaign"] == c["id"] and task["status"] not in CLOSED:
+                rows.append(
+                    f"- [{_md(task['title'])}]({URL}{task['path']}) — {task['status']}: {_md(task['next'])}"
+                )
+        rows += ["", "</details>", ""]
     rows += [
-        "",
-        "## Active tasks",
-        "",
-        "Open means tracked, not necessarily running. Blockers and decisions still apply.",
-        "",
-        "| Task | Campaign | Status | Priority | Next step |",
-        "|---|---|---|---|---|",
-    ]
-    for t in data["tasks"]:
-        if t["status"] not in CLOSED:
-            rows.append(
-                f"| [{_md(t['title'])}]({URL}{t['path']}) | {t['campaign']} | {t['status']} | {_md(t.get('priority', 'normal'))} | {_md(t['next'])} |"
-            )
-    rows += [
-        "",
-        "Completed and superseded tasks remain in the [ledger](" + URL + "campaigns.yaml).",
-        "",
         "## Profiling evidence",
+        "",
+        "Choose a project, dataset and model on the interactive board.",
         "",
     ]
     return "\n".join(rows)
@@ -146,46 +146,56 @@ def render_html(data: dict) -> str:
     def e(value):
         return html.escape(str(value), quote=True)
 
-    campaigns = []
+    def action(key, title, prompt, review=""):
+        return (
+            f'<div class="prompt-action"><button type="button" class="copy text" data-field="{key}-prompt">{e(title)}</button>{review}'
+            f'<details id="{key}-details"><summary>Full prompt</summary><label for="{key}-prompt">Edit before copying</label>'
+            f'<textarea id="{key}-prompt" rows="7">{e(prompt)}</textarea></details></div>'
+        )
+
+    reviewed = str(data.get("last_checkin") or "not recorded yet")
+    review = f'<span class="review-meta" title="Ledger dates are review dates, not measurement freshness.">Last check-in: {e(reviewed[:10] if data.get("last_checkin") else reviewed)} · review date</span>'
+    parts = [
+        marker(data),
+        '<section class="controls" aria-label="Profiling actions">',
+        action("fix", "Fix Profiling Systematically", FIX_PROMPT),
+        action("checkin", "Profiling Check In", PROMPT, review),
+        '<span id="copy-status" role="status" aria-live="polite"></span></section>',
+        '<h2 id="campaigns">Active campaigns</h2><div class="campaign-table"><table><thead><tr><th>Campaign</th><th>Status</th><th>Links</th></tr></thead><tbody>',
+    ]
     for c in data["campaigns"]:
         if c["status"] in CLOSED:
             continue
-        n = sum(t["campaign"] == c["id"] and t["status"] not in CLOSED for t in data["tasks"])
-        title = (
-            f'<a href="{e(c["evidence"])}">{e(c["title"])}</a>'
-            if c.get("evidence")
-            else e(c["title"])
+        tasks = [t for t in data["tasks"] if t["campaign"] == c["id"] and t["status"] not in CLOSED]
+        details_id = "campaign-" + c["id"]
+        parts.append(
+            f'<tr><td><strong>{e(c["title"])}</strong><details id="{details_id}" class="campaign-detail"><summary>{len(tasks)} {"task" if len(tasks) == 1 else "tasks"} · next step</summary><p>{e(c["next"])}</p><span class="review-meta">Reviewed {e(c["updated"])}</span><h3>Active tasks</h3>'
         )
-        campaigns.append(
-            f"<tr><td>{title}</td><td>{e(c['status'])}</td><td>{n}</td><td>{e(c['next'])}</td><td>{e(c['updated'])}</td></tr>"
+        if not tasks:
+            parts.append('<p class="muted">No open tasks.</p>')
+        for t in tasks:
+            issue = (
+                f'<a class="icon-link" href="{e(t["issue"])}" aria-label="Issue for {e(t["title"])}" title="Issue">↗</a>'
+                if t.get("issue")
+                else ""
+            )
+            parts.append(
+                f'<article class="campaign-task"><h4><a href="{URL}{e(t["path"])}">{e(t["title"])}</a>{issue}</h4><p class="review-meta">{e(t["status"])} · {e(t.get("priority", "normal"))}</p><p>{e(t["next"])}</p></article>'
+            )
+        parts.append(
+            f'</details></td><td><span class="pill">{e(c["status"])}</span></td><td><div class="link-icons">'
         )
-    tasks = []
-    for t in data["tasks"]:
-        if t["status"] in CLOSED:
-            continue
-        issue = f' · <a href="{e(t["issue"])}">issue</a>' if t.get("issue") else ""
-        tasks.append(
-            f'<tr><td><a href="{URL}{e(t["path"])}">{e(t["title"])}</a>{issue}</td><td>{e(t["campaign"])}</td><td>{e(t["status"])}</td><td>{e(t.get("priority", "normal"))}</td><td>{e(t["next"])}</td></tr>'
+        if c.get("evidence"):
+            parts.append(
+                f'<a class="icon-link" href="{e(c["evidence"])}" aria-label="Evidence for {e(c["title"])}" title="Campaign evidence">↗</a>'
+            )
+        parts.append(
+            f'<a class="icon-link" href="#{details_id}" data-open="{details_id}" aria-label="Tasks for {e(c["title"])}" title="Open tasks">☷</a></div></td></tr>'
         )
-
-    def table(headers, rows):
-        return (
-            '<div class="tablewrap"><table><thead><tr>'
-            + "".join(f"<th>{h}</th>" for h in headers)
-            + "</tr></thead><tbody>"
-            + "".join(rows)
-            + "</tbody></table></div>"
-        )
-
-    return (
-        marker(data) + '<section class="checkin"><h2>Check in on all profiling work</h2>'
-        "<p>One prompt, one ongoing chat. Add a campaign focus or idea here, or tell the chat before or afterwards.</p>"
-        f'<label for="checkin-prompt">Your check-in prompt</label><textarea id="checkin-prompt" rows="8">{e(PROMPT)}</textarea>'
-        '<button type="button" id="copy-checkin">Copy check-in prompt</button><span id="copy-status" role="status" aria-live="polite"></span>'
-        f'<p class="muted">Last check-in: {e(data.get("last_checkin") or "not recorded yet")}. Ledger dates are review dates, not measurement freshness.</p></section>'
-        '<h2 id="campaigns">Active campaigns</h2>'
-        + table(["Campaign", "Status", "Open tasks", "Next step", "Reviewed"], campaigns)
-        + '<h2 id="tasks">Active tasks</h2><p>Open means tracked, not necessarily running. Blockers and decisions still apply.</p>'
-        + table(["Task", "Campaign", "Status", "Priority", "Next step"], tasks)
-        + f'<p>Completed and superseded tasks remain in the <a href="{URL}campaigns.yaml">ledger</a>.</p><h2 id="evidence">Profiling evidence</h2>'
-    )
+    parts += [
+        '</tbody></table></div><p class="review-meta">Open means tracked, not necessarily running. <a href="'
+        + URL
+        + 'campaigns.yaml">Full ledger ↗</a></p>',
+        '<h2 id="evidence">Profiling evidence</h2><p class="muted">Choose a project, dataset and model. Qualification belongs to each recorded setup.</p>',
+    ]
+    return "".join(parts)

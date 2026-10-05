@@ -67,6 +67,12 @@ jobs:
           repository: ${{ github.repository_owner }}/PyAutoMind
           path: _mind
 
+      - name: PyAutoBrain (shared dashboard theme)
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository_owner }}/PyAutoBrain
+          path: _brain
+
       - name: Dependencies
         run: python3 -m pip install --quiet pyyaml
 
@@ -74,6 +80,7 @@ jobs:
         if: github.event_name == 'pull_request'
         env:
           GH_TOKEN: ${{ github.token }}
+          PYAUTO_BRAIN: ${{ github.workspace }}/_brain
         run: |
           bin/pyauto-pulse board --mind _mind
           git status --short
@@ -82,6 +89,7 @@ jobs:
         if: github.event_name != 'pull_request'
         env:
           GH_TOKEN: ${{ github.token }}
+          PYAUTO_BRAIN: ${{ github.workspace }}/_brain
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"

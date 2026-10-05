@@ -10,7 +10,7 @@
 #      built from those receipts, and state.json meets the Brain contract.
 #      Offline on purpose: a project commit landing mid-PR must not redden an
 #      unrelated organ PR (dashboard_refresh.yml re-reads the network nightly).
-#   4. lychee link-rot over the prose *.md. raw.githubusercontent.com,
+#   4. lychee link-rot over repository-owned prose *.md (tracked files only). raw.githubusercontent.com,
 #      github.com blob pages (GitHub answers non-browser page views with 503;
 #      a token does not help — the links stay for humans, only the gate skips them),
 #      dashboard.md (hundreds of commit-pinned evidence links), the organ's own
@@ -31,7 +31,7 @@ permissions:
 jobs:
   lint:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
 
@@ -69,6 +69,18 @@ jobs:
           PYAUTO_BRAIN: ${{ github.workspace }}/_brain
         run: python -m pytest tests -q
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Chromium interaction checks
+        env:
+          PYAUTO_BRAIN: ${{ github.workspace }}/_brain
+        run: |
+          npm install --no-save --no-package-lock playwright@1.63.0
+          npx playwright install --with-deps chromium
+          node tests/browser_setup.cjs
+
       - name: pyauto-pulse check --offline
         env:
           PYAUTO_BRAIN: ${{ github.workspace }}/_brain
@@ -80,6 +92,11 @@ jobs:
           # with a token lychee checks github.com links through the API instead.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          # Dependency installs and sibling checkouts are outside this repo's prose.
+          # Keep filenames intact, including spaces, when passing tracked Markdown.
+          mapfile -d '' -t markdown_files < <(
+            git ls-files -z -- '*.md' ':!:dashboard.md' ':!:.claude/**' ':!:_mind/**' ':!:_brain/**'
+          )
           lychee \
             --github-token "${GITHUB_TOKEN}" \
             --exclude '^https://raw\.githubusercontent\.com/' \
@@ -89,4 +106,4 @@ jobs:
             --no-progress \
             --accept '200..=299,429' \
             --max-redirects 5 \
-            $(find . -name '*.md' -not -name 'dashboard.md' -not -path './.claude/*' -not -path './.git/*' -not -path './_mind/*' -not -path './_brain/*')
+            "${markdown_files[@]}"

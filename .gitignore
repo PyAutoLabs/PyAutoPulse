@@ -17,3 +17,7 @@ _mind/
 # Half-written receipt/snapshot files (written then renamed into place)
 receipts/*.tmp
 snapshots/*.tmp
+
+# Shared theme checkout and browser test dependencies
+_brain/
+node_modules/
