@@ -63,6 +63,9 @@ def test_control_room_precedes_measurements_and_escapes():
         board.render_html([], campaign_data=data),
         board.render_markdown([], campaign_data=data),
     ):
+        # Check content order independently of the section navigation labels.
+        if "<main>" in text:
+            text = text.split("<main>", 1)[1]
         assert (
             text.index("Profiling Check In")
             < text.index("Active campaigns")
