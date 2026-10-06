@@ -118,3 +118,33 @@ def test_each_open_task_is_inside_its_campaign_and_links_are_separate():
         assert 'aria-label="Tasks for ' + html.escape(campaign["title"], quote=True) in page
         if campaign.get("evidence"):
             assert 'aria-label="Evidence for ' + html.escape(campaign["title"], quote=True) in page
+
+
+def test_shared_panel_keeps_owner_prompt_and_all_trusted_destinations():
+    import html
+    import re
+
+    links = [
+        {"label": "First project", "href": "https://github.com/example/first"},
+        {"label": "Second project", "href": "https://github.com/example/second"},
+    ]
+    page = campaigns.render_html(campaigns.load(), work_links=links)
+    preview = html.unescape(
+        re.search(r'data-orchestration-prompt readonly rows="8">(.*?)</textarea>', page, re.S)[1]
+    )
+    assert preview.startswith(campaigns.PROMPT + "\n\nWork on GitHub:\n")
+    for link in links:
+        assert f"- {link['label']}: {link['href']}" in preview
+    assert page.count("data-orchestration-panel") == 1
+    assert "data-orchestration-direction" in page
+    assert "orchestrationSync" in board.render_html([])
+
+
+def test_systematic_fix_remains_separate_from_general_panel():
+    import html
+
+    page = campaigns.render_html(campaigns.load())
+    assert html.escape(campaigns.FIX_PROMPT, quote=True) in page
+    assert 'data-field="fix-prompt"' in page
+    assert 'class="prompt-copy text"' in page
+    assert 'data-field="checkin-prompt"' not in page
