@@ -571,10 +571,16 @@ def render_html(views, now: str | None = None, campaign_data: dict | None = None
             ],
         )
         + "<main>"
-        + campaigns.render_html(campaign_data if campaign_data is not None else campaigns.load())
+        + campaigns.render_html(
+            campaign_data if campaign_data is not None else campaigns.load(),
+            work_links=[
+                {"label": "PyAutoPulse", "href": REPO_URL},
+                *({"label": v.instance.repo, "href": v.instance.github_url} for v in views),
+            ],
+        )
         + "".join(content)
         + "</main>"
-        + f"<script>{JS}\n{browser_js}</script></body></html>\n"
+        + f"<script>{shared.JS}\n{JS}\n{browser_js}</script></body></html>\n"
     )
 
 

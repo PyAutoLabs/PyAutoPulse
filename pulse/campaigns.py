@@ -143,13 +143,13 @@ def markdown(data: dict) -> str:
     return "\n".join(rows)
 
 
-def render_html(data: dict) -> str:
+def render_html(data: dict, work_links=()) -> str:
     def e(value):
         return html.escape(str(value), quote=True)
 
     def action(key, title, prompt, review=""):
         return (
-            f'<div class="prompt-action"><button type="button" class="copy text" data-field="{key}-prompt">{e(title)}</button>{review}'
+            f'<div class="prompt-action"><button type="button" class="prompt-copy text" data-field="{key}-prompt">{e(title)}</button>{review}'
             f'<details id="{key}-details"><summary>Full prompt</summary><label for="{key}-prompt">Edit before copying</label>'
             f'<textarea id="{key}-prompt" rows="7">{e(prompt)}</textarea></details></div>'
         )
@@ -158,10 +158,18 @@ def render_html(data: dict) -> str:
     review = f'<span class="review-meta" title="Ledger dates are review dates, not measurement freshness.">Last check-in: {e(reviewed[:10] if data.get("last_checkin") else reviewed)} · review date</span>'
     parts = [
         marker(data),
-        '<section class="controls" aria-label="Profiling actions">'
-        + theme().prompt_heading("pulse"),
+        theme().orchestration_panel(
+            "pulse",
+            "",
+            "",
+            PROMPT,
+            work_links=work_links,
+            copy_label="Profiling Check In",
+            organ="pulse",
+        ),
+        '<section class="controls" aria-label="Profiling actions">',
         action("fix", "Fix Profiling Systematically", FIX_PROMPT),
-        action("checkin", "Profiling Check In", PROMPT, review),
+        review,
         '<span id="copy-status" role="status" aria-live="polite"></span></section>',
         '<h2 id="campaigns">Active campaigns</h2><div class="campaign-table"><table><thead><tr><th>Campaign</th><th>Status</th><th>Links</th></tr></thead><tbody>',
     ]
