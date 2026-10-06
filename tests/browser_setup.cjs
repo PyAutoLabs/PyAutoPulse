@@ -92,14 +92,14 @@ const { execFileSync } = require("node:child_process");
         configurable: true,
       }),
     );
+    // The domain fix prompt keeps its own editable field and manual fallback.
+    await page.locator("#fix-details").evaluate((el) => (el.open = true));
+    await page.locator("#fix-prompt").fill("Edited fix prompt");
     await page
-      .locator("#checkin-details > summary")
-      .click()
-      .catch(() => {});
-    await page.locator("#checkin-details").evaluate((el) => (el.open = true));
-    await page.locator("#checkin-prompt").fill("Edited check-in direction");
-    await page
-      .getByRole("button", { name: "Profiling Check In", exact: true })
+      .getByRole("button", {
+        name: "Fix Profiling Systematically",
+        exact: true,
+      })
       .click();
     await page.waitForFunction(() =>
       document
@@ -107,10 +107,55 @@ const { execFileSync } = require("node:child_process");
         .textContent.includes("Select and copy"),
     );
     assert.equal(
-      await page.locator("#checkin-prompt").inputValue(),
-      "Edited check-in direction",
+      await page.locator("#fix-prompt").inputValue(),
+      "Edited fix prompt",
     );
-    await page.locator("#checkin-details").evaluate((el) => (el.open = false));
+    await page.locator("#fix-details").evaluate((el) => (el.open = false));
+    // The check-in prompt now lives in the shared orchestration panel: the
+    // user's direction is appended to the exact preview, and a rejected
+    // clipboard opens and selects that preview for manual copying.
+    const panel = page.locator("#orchestration-pulse");
+    assert.equal(
+      await panel.locator("[data-orchestration-preview][open]").count(),
+      0,
+    );
+    await panel
+      .locator("[data-orchestration-direction]")
+      .fill("Edited check-in direction");
+    await panel
+      .getByRole("button", { name: "Profiling Check In", exact: true })
+      .click();
+    await page.waitForFunction(
+      () =>
+        document.querySelector("#orchestration-pulse .orchestration-status")
+          .textContent !== "",
+    );
+    assert.equal(
+      await panel.locator("[data-orchestration-preview][open]").count(),
+      1,
+    );
+    const preview = await panel
+      .locator("[data-orchestration-prompt]")
+      .inputValue();
+    const owner = await panel
+      .locator("[data-orchestration-prompt]")
+      .evaluate((el) => el.defaultValue);
+    assert(owner.startsWith("Use PyAutoPulse as the home"), owner.slice(0, 80));
+    assert.equal(
+      preview,
+      owner +
+        "\n\nOptional direction (user context):\nEdited check-in direction",
+    );
+    assert(
+      await page.evaluate(
+        () =>
+          document.activeElement ===
+          document.querySelector("#orchestration-pulse-prompt"),
+      ),
+    );
+    await panel
+      .locator("[data-orchestration-preview]")
+      .evaluate((el) => (el.open = false));
     await page.locator("[data-open]").first().click();
     assert.equal(await page.locator(".campaign-detail[open]").count(), 1);
     await choose();
