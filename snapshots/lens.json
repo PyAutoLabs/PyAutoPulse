@@ -3,8 +3,8 @@
   "repo": "autolens_profiling",
   "github": "PyAutoLabs/autolens_profiling",
   "summary_path": "dashboard/catalogue.json",
-  "commit": "4832679a61121291ea581c61f3f187b9cf3e6776",
-  "fetched_at": "2026-10-05T12:29:18Z",
+  "commit": "a36590ac41f5708a546fd5e35e81f8124d646c5c",
+  "fetched_at": "2026-10-06T08:37:22Z",
   "summary": {
     "archive_record_count": 20709,
     "comparison_policy": {
@@ -15340,380 +15340,632 @@
       {
         "category": "scientific_entrypoint",
         "dataset": "cluster",
+        "legacy_paths": [
+          "scripts/cluster/likelihood_breakdown/image_plane.py"
+        ],
+        "measurement": "likelihood_breakdown",
         "model": "image_plane",
-        "path": "scripts/cluster/likelihood_breakdown/image_plane.py"
+        "path": "scripts/cluster/image_plane/likelihood_breakdown.py"
       },
       {
         "category": "scientific_entrypoint",
         "dataset": "cluster",
+        "legacy_paths": [
+          "scripts/cluster/likelihood_breakdown/source_plane.py"
+        ],
+        "measurement": "likelihood_breakdown",
         "model": "source_plane",
-        "path": "scripts/cluster/likelihood_breakdown/source_plane.py"
+        "path": "scripts/cluster/source_plane/likelihood_breakdown.py"
       },
       {
         "category": "scientific_entrypoint",
-        "dataset": "imaging",
-        "model": "mge",
-        "path": "scripts/imaging/hazards/mge_nnls_capture.py"
-      },
-      {
-        "category": "scientific_entrypoint",
-        "dataset": "imaging",
-        "model": "rectangular",
-        "path": "scripts/imaging/hazards/pixelization.py"
-      },
-      {
-        "category": "scientific_entrypoint",
-        "dataset": "imaging",
-        "model": "other",
-        "path": "scripts/imaging/latent/effective_einstein_radius.py"
-      },
-      {
-        "category": "scientific_entrypoint",
-        "dataset": "imaging",
-        "model": "other",
-        "path": "scripts/imaging/latent/magnification.py"
-      },
-      {
-        "category": "scientific_entrypoint",
-        "dataset": "imaging",
-        "model": "other",
-        "path": "scripts/imaging/latent/total_lens_flux_mujy.py"
-      },
-      {
-        "category": "scientific_entrypoint",
-        "dataset": "imaging",
-        "model": "other",
-        "path": "scripts/imaging/latent/total_lensed_source_flux_mujy.py"
-      },
-      {
-        "category": "scientific_entrypoint",
-        "dataset": "imaging",
-        "model": "other",
-        "path": "scripts/imaging/latent/total_source_flux_mujy.py"
-      },
-      {
-        "category": "scientific_entrypoint",
-        "dataset": "imaging",
+        "dataset": "datacube",
+        "legacy_paths": [
+          "scripts/interferometer/likelihood_breakdown/datacube/inversion_setup_decompose.py"
+        ],
+        "measurement": "inversion_setup_decompose",
         "model": "delaunay",
-        "path": "scripts/imaging/likelihood_breakdown/delaunay.py"
+        "path": "scripts/datacube/delaunay/inversion_setup_decompose.py"
+      },
+      {
+        "category": "scientific_entrypoint",
+        "dataset": "datacube",
+        "legacy_paths": [
+          "scripts/interferometer/likelihood_breakdown/datacube/delaunay.py"
+        ],
+        "measurement": "likelihood_breakdown",
+        "model": "delaunay",
+        "path": "scripts/datacube/delaunay/likelihood_breakdown.py"
+      },
+      {
+        "category": "scientific_entrypoint",
+        "dataset": "datacube",
+        "legacy_paths": [
+          "scripts/interferometer/likelihood_runtime/datacube/delaunay.py"
+        ],
+        "measurement": "likelihood_runtime",
+        "model": "delaunay",
+        "path": "scripts/datacube/delaunay/likelihood_runtime.py"
+      },
+      {
+        "category": "scientific_entrypoint",
+        "dataset": "datacube",
+        "legacy_paths": [
+          "scripts/interferometer/likelihood_runtime/datacube/shared_preloads.py"
+        ],
+        "measurement": "likelihood_runtime_shared_preloads",
+        "model": "delaunay",
+        "path": "scripts/datacube/delaunay/likelihood_runtime_shared_preloads.py"
       },
       {
         "category": "scientific_entrypoint",
         "dataset": "imaging",
+        "legacy_paths": [
+          "scripts/imaging/likelihood_breakdown/delaunay.py"
+        ],
+        "measurement": "likelihood_breakdown",
+        "model": "delaunay",
+        "path": "scripts/imaging/delaunay/likelihood_breakdown.py"
+      },
+      {
+        "category": "scientific_entrypoint",
+        "dataset": "imaging",
+        "legacy_paths": [
+          "scripts/imaging/likelihood_breakdown/delaunay_numba.py"
+        ],
+        "measurement": "likelihood_breakdown_numba",
+        "model": "delaunay",
+        "path": "scripts/imaging/delaunay/likelihood_breakdown_numba.py"
+      },
+      {
+        "category": "scientific_entrypoint",
+        "dataset": "imaging",
+        "legacy_paths": [
+          "scripts/imaging/likelihood_runtime/delaunay.py"
+        ],
+        "measurement": "likelihood_runtime",
+        "model": "delaunay",
+        "path": "scripts/imaging/delaunay/likelihood_runtime.py"
+      },
+      {
+        "category": "scientific_entrypoint",
+        "dataset": "imaging",
+        "legacy_paths": [
+          "scripts/imaging/likelihood_runtime/delaunay_numba.py"
+        ],
+        "measurement": "likelihood_runtime_numba",
+        "model": "delaunay",
+        "path": "scripts/imaging/delaunay/likelihood_runtime_numba.py"
+      },
+      {
+        "category": "scientific_entrypoint",
+        "dataset": "imaging",
+        "legacy_paths": [
+          "scripts/imaging/quick_update/delaunay.py"
+        ],
+        "measurement": "quick_update",
+        "model": "delaunay",
+        "path": "scripts/imaging/delaunay/quick_update.py"
+      },
+      {
+        "category": "scientific_entrypoint",
+        "dataset": "imaging",
+        "legacy_paths": [
+          "scripts/imaging/likelihood_breakdown/delaunay_nn.py"
+        ],
+        "measurement": "likelihood_breakdown",
         "model": "delaunay_nn",
-        "path": "scripts/imaging/likelihood_breakdown/delaunay_nn.py"
+        "path": "scripts/imaging/delaunay_nn/likelihood_breakdown.py"
       },
       {
         "category": "scientific_entrypoint",
         "dataset": "imaging",
-        "model": "delaunay",
-        "path": "scripts/imaging/likelihood_breakdown/delaunay_numba.py"
-      },
-      {
-        "category": "scientific_entrypoint",
-        "dataset": "imaging",
-        "model": "fixed_light",
-        "path": "scripts/imaging/likelihood_breakdown/fixed_light.py"
-      },
-      {
-        "category": "scientific_entrypoint",
-        "dataset": "imaging",
-        "model": "fixed_light",
-        "path": "scripts/imaging/likelihood_breakdown/fixed_light_cpu_kernels.py"
-      },
-      {
-        "category": "scientific_entrypoint",
-        "dataset": "imaging",
-        "model": "fixed_light",
-        "path": "scripts/imaging/likelihood_breakdown/fixed_light_draws.py"
-      },
-      {
-        "category": "scientific_entrypoint",
-        "dataset": "imaging",
-        "model": "fixed_light",
-        "path": "scripts/imaging/likelihood_breakdown/fixed_light_library.py"
-      },
-      {
-        "category": "scientific_entrypoint",
-        "dataset": "imaging",
-        "model": "fixed_light",
-        "path": "scripts/imaging/likelihood_breakdown/fixed_light_numba.py"
-      },
-      {
-        "category": "scientific_entrypoint",
-        "dataset": "imaging",
-        "model": "fixed_light",
-        "path": "scripts/imaging/likelihood_breakdown/fixed_light_numba_draws.py"
-      },
-      {
-        "category": "scientific_entrypoint",
-        "dataset": "imaging",
-        "model": "fixed_light",
-        "path": "scripts/imaging/likelihood_breakdown/fixed_light_numba_levers_l2_witness.py"
-      },
-      {
-        "category": "scientific_entrypoint",
-        "dataset": "imaging",
-        "model": "fixed_light",
-        "path": "scripts/imaging/likelihood_breakdown/fixed_light_numba_levers_l3_witness.py"
-      },
-      {
-        "category": "scientific_entrypoint",
-        "dataset": "imaging",
-        "model": "fixed_light",
-        "path": "scripts/imaging/likelihood_breakdown/fixed_light_numba_levers_witness.py"
-      },
-      {
-        "category": "scientific_entrypoint",
-        "dataset": "imaging",
-        "model": "fixed_light",
-        "path": "scripts/imaging/likelihood_breakdown/fixed_light_numba_memo_policy.py"
-      },
-      {
-        "category": "scientific_entrypoint",
-        "dataset": "imaging",
-        "model": "fixed_light",
-        "path": "scripts/imaging/likelihood_breakdown/fixed_light_numba_s4_witness.py"
-      },
-      {
-        "category": "scientific_entrypoint",
-        "dataset": "imaging",
-        "model": "fixed_light",
-        "path": "scripts/imaging/likelihood_breakdown/fixed_light_numba_s4b_witness.py"
-      },
-      {
-        "category": "scientific_entrypoint",
-        "dataset": "imaging",
-        "model": "fixed_light",
-        "path": "scripts/imaging/likelihood_breakdown/fixed_light_numba_scaling.py"
-      },
-      {
-        "category": "scientific_entrypoint",
-        "dataset": "imaging",
-        "model": "fixed_light",
-        "path": "scripts/imaging/likelihood_breakdown/fixed_light_numba_solvers.py"
-      },
-      {
-        "category": "scientific_entrypoint",
-        "dataset": "imaging",
-        "model": "fixed_light",
-        "path": "scripts/imaging/likelihood_breakdown/fixed_light_trace.py"
-      },
-      {
-        "category": "scientific_entrypoint",
-        "dataset": "imaging",
-        "model": "other",
-        "path": "scripts/imaging/likelihood_breakdown/matrix_free.py"
-      },
-      {
-        "category": "scientific_entrypoint",
-        "dataset": "imaging",
-        "model": "mge",
-        "path": "scripts/imaging/likelihood_breakdown/mge.py"
-      },
-      {
-        "category": "scientific_entrypoint",
-        "dataset": "imaging",
-        "model": "other",
-        "path": "scripts/imaging/likelihood_breakdown/nautilus_batch_capture.py"
-      },
-      {
-        "category": "scientific_entrypoint",
-        "dataset": "imaging",
-        "model": "rectangular",
-        "path": "scripts/imaging/likelihood_breakdown/pixelization.py"
-      },
-      {
-        "category": "scientific_entrypoint",
-        "dataset": "imaging",
-        "model": "rectangular",
-        "path": "scripts/imaging/likelihood_breakdown/pixelization_numba.py"
-      },
-      {
-        "category": "scientific_entrypoint",
-        "dataset": "imaging",
-        "model": "delaunay",
-        "path": "scripts/imaging/likelihood_runtime/delaunay.py"
-      },
-      {
-        "category": "scientific_entrypoint",
-        "dataset": "imaging",
+        "legacy_paths": [
+          "scripts/imaging/likelihood_runtime/delaunay_nn.py"
+        ],
+        "measurement": "likelihood_runtime",
         "model": "delaunay_nn",
-        "path": "scripts/imaging/likelihood_runtime/delaunay_nn.py"
+        "path": "scripts/imaging/delaunay_nn/likelihood_runtime.py"
       },
       {
         "category": "scientific_entrypoint",
         "dataset": "imaging",
-        "model": "delaunay",
-        "path": "scripts/imaging/likelihood_runtime/delaunay_numba.py"
-      },
-      {
-        "category": "scientific_entrypoint",
-        "dataset": "imaging",
+        "legacy_paths": [
+          "scripts/imaging/hazards/mge_nnls_capture.py"
+        ],
+        "measurement": "hazards_nnls_capture",
         "model": "mge",
-        "path": "scripts/imaging/likelihood_runtime/mge.py"
+        "path": "scripts/imaging/mge/hazards_nnls_capture.py"
       },
       {
         "category": "scientific_entrypoint",
         "dataset": "imaging",
+        "legacy_paths": [
+          "scripts/imaging/likelihood_breakdown/mge.py"
+        ],
+        "measurement": "likelihood_breakdown",
         "model": "mge",
-        "path": "scripts/imaging/likelihood_runtime/mge_mass_jax.py"
+        "path": "scripts/imaging/mge/likelihood_breakdown.py"
       },
       {
         "category": "scientific_entrypoint",
         "dataset": "imaging",
-        "model": "rectangular",
-        "path": "scripts/imaging/likelihood_runtime/pixelization.py"
-      },
-      {
-        "category": "scientific_entrypoint",
-        "dataset": "imaging",
-        "model": "rectangular",
-        "path": "scripts/imaging/likelihood_runtime/pixelization_numba.py"
-      },
-      {
-        "category": "scientific_entrypoint",
-        "dataset": "imaging",
-        "model": "rectangular",
-        "path": "scripts/imaging/likelihood_runtime/pixelization_numba_mge_mass.py"
-      },
-      {
-        "category": "scientific_entrypoint",
-        "dataset": "imaging",
-        "model": "rectangular",
-        "path": "scripts/imaging/parallel_scaling/pixelization_numba.py"
-      },
-      {
-        "category": "scientific_entrypoint",
-        "dataset": "imaging",
-        "model": "delaunay",
-        "path": "scripts/imaging/quick_update/delaunay.py"
-      },
-      {
-        "category": "scientific_entrypoint",
-        "dataset": "imaging",
+        "legacy_paths": [
+          "scripts/imaging/likelihood_runtime/mge.py"
+        ],
+        "measurement": "likelihood_runtime",
         "model": "mge",
-        "path": "scripts/imaging/quick_update/mge.py"
+        "path": "scripts/imaging/mge/likelihood_runtime.py"
       },
       {
         "category": "scientific_entrypoint",
-        "dataset": "interferometer",
-        "model": "delaunay",
-        "path": "scripts/interferometer/likelihood_breakdown/datacube/delaunay.py"
-      },
-      {
-        "category": "scientific_entrypoint",
-        "dataset": "interferometer",
-        "model": "other",
-        "path": "scripts/interferometer/likelihood_breakdown/datacube/inversion_setup_decompose.py"
-      },
-      {
-        "category": "scientific_entrypoint",
-        "dataset": "interferometer",
-        "model": "delaunay",
-        "path": "scripts/interferometer/likelihood_breakdown/delaunay.py"
-      },
-      {
-        "category": "scientific_entrypoint",
-        "dataset": "interferometer",
-        "model": "delaunay",
-        "path": "scripts/interferometer/likelihood_breakdown/delaunay_numba.py"
-      },
-      {
-        "category": "scientific_entrypoint",
-        "dataset": "interferometer",
+        "dataset": "imaging",
+        "legacy_paths": [
+          "scripts/imaging/quick_update/mge.py"
+        ],
+        "measurement": "quick_update",
         "model": "mge",
-        "path": "scripts/interferometer/likelihood_breakdown/mge.py"
+        "path": "scripts/imaging/mge/quick_update.py"
       },
       {
         "category": "scientific_entrypoint",
-        "dataset": "interferometer",
+        "dataset": "imaging",
+        "legacy_paths": [
+          "scripts/imaging/likelihood_runtime/mge_mass_jax.py"
+        ],
+        "measurement": "likelihood_runtime_jax",
+        "model": "mge_mass",
+        "path": "scripts/imaging/mge_mass/likelihood_runtime_jax.py"
+      },
+      {
+        "category": "scientific_entrypoint",
+        "dataset": "imaging",
+        "legacy_paths": [
+          "scripts/imaging/likelihood_breakdown/fixed_light.py"
+        ],
+        "measurement": "fixed_light",
+        "model": "pixelized",
+        "path": "scripts/imaging/pixelized/fixed_light.py"
+      },
+      {
+        "category": "scientific_entrypoint",
+        "dataset": "imaging",
+        "legacy_paths": [
+          "scripts/imaging/likelihood_breakdown/fixed_light_cpu_kernels.py"
+        ],
+        "measurement": "fixed_light_cpu_kernels",
+        "model": "pixelized",
+        "path": "scripts/imaging/pixelized/fixed_light_cpu_kernels.py"
+      },
+      {
+        "category": "scientific_entrypoint",
+        "dataset": "imaging",
+        "legacy_paths": [
+          "scripts/imaging/likelihood_breakdown/fixed_light_draws.py"
+        ],
+        "measurement": "fixed_light_draws",
+        "model": "pixelized",
+        "path": "scripts/imaging/pixelized/fixed_light_draws.py"
+      },
+      {
+        "category": "scientific_entrypoint",
+        "dataset": "imaging",
+        "legacy_paths": [
+          "scripts/imaging/likelihood_breakdown/fixed_light_library.py"
+        ],
+        "measurement": "fixed_light_library",
+        "model": "pixelized",
+        "path": "scripts/imaging/pixelized/fixed_light_library.py"
+      },
+      {
+        "category": "scientific_entrypoint",
+        "dataset": "imaging",
+        "legacy_paths": [
+          "scripts/imaging/likelihood_breakdown/fixed_light_numba.py"
+        ],
+        "measurement": "fixed_light_numba",
+        "model": "pixelized",
+        "path": "scripts/imaging/pixelized/fixed_light_numba.py"
+      },
+      {
+        "category": "scientific_entrypoint",
+        "dataset": "imaging",
+        "legacy_paths": [
+          "scripts/imaging/likelihood_breakdown/fixed_light_numba_draws.py"
+        ],
+        "measurement": "fixed_light_numba_draws",
+        "model": "pixelized",
+        "path": "scripts/imaging/pixelized/fixed_light_numba_draws.py"
+      },
+      {
+        "category": "scientific_entrypoint",
+        "dataset": "imaging",
+        "legacy_paths": [
+          "scripts/imaging/likelihood_breakdown/fixed_light_numba_levers_l2_witness.py"
+        ],
+        "measurement": "fixed_light_numba_levers_l2_witness",
+        "model": "pixelized",
+        "path": "scripts/imaging/pixelized/fixed_light_numba_levers_l2_witness.py"
+      },
+      {
+        "category": "scientific_entrypoint",
+        "dataset": "imaging",
+        "legacy_paths": [
+          "scripts/imaging/likelihood_breakdown/fixed_light_numba_levers_l3_witness.py"
+        ],
+        "measurement": "fixed_light_numba_levers_l3_witness",
+        "model": "pixelized",
+        "path": "scripts/imaging/pixelized/fixed_light_numba_levers_l3_witness.py"
+      },
+      {
+        "category": "scientific_entrypoint",
+        "dataset": "imaging",
+        "legacy_paths": [
+          "scripts/imaging/likelihood_breakdown/fixed_light_numba_levers_witness.py"
+        ],
+        "measurement": "fixed_light_numba_levers_witness",
+        "model": "pixelized",
+        "path": "scripts/imaging/pixelized/fixed_light_numba_levers_witness.py"
+      },
+      {
+        "category": "scientific_entrypoint",
+        "dataset": "imaging",
+        "legacy_paths": [
+          "scripts/imaging/likelihood_breakdown/fixed_light_numba_memo_policy.py"
+        ],
+        "measurement": "fixed_light_numba_memo_policy",
+        "model": "pixelized",
+        "path": "scripts/imaging/pixelized/fixed_light_numba_memo_policy.py"
+      },
+      {
+        "category": "scientific_entrypoint",
+        "dataset": "imaging",
+        "legacy_paths": [
+          "scripts/imaging/likelihood_breakdown/fixed_light_numba_s4_witness.py"
+        ],
+        "measurement": "fixed_light_numba_s4_witness",
+        "model": "pixelized",
+        "path": "scripts/imaging/pixelized/fixed_light_numba_s4_witness.py"
+      },
+      {
+        "category": "scientific_entrypoint",
+        "dataset": "imaging",
+        "legacy_paths": [
+          "scripts/imaging/likelihood_breakdown/fixed_light_numba_s4b_witness.py"
+        ],
+        "measurement": "fixed_light_numba_s4b_witness",
+        "model": "pixelized",
+        "path": "scripts/imaging/pixelized/fixed_light_numba_s4b_witness.py"
+      },
+      {
+        "category": "scientific_entrypoint",
+        "dataset": "imaging",
+        "legacy_paths": [
+          "scripts/imaging/likelihood_breakdown/fixed_light_numba_scaling.py"
+        ],
+        "measurement": "fixed_light_numba_scaling",
+        "model": "pixelized",
+        "path": "scripts/imaging/pixelized/fixed_light_numba_scaling.py"
+      },
+      {
+        "category": "scientific_entrypoint",
+        "dataset": "imaging",
+        "legacy_paths": [
+          "scripts/imaging/likelihood_breakdown/fixed_light_numba_solvers.py"
+        ],
+        "measurement": "fixed_light_numba_solvers",
+        "model": "pixelized",
+        "path": "scripts/imaging/pixelized/fixed_light_numba_solvers.py"
+      },
+      {
+        "category": "scientific_entrypoint",
+        "dataset": "imaging",
+        "legacy_paths": [
+          "scripts/imaging/likelihood_breakdown/fixed_light_trace.py"
+        ],
+        "measurement": "fixed_light_trace",
+        "model": "pixelized",
+        "path": "scripts/imaging/pixelized/fixed_light_trace.py"
+      },
+      {
+        "category": "scientific_entrypoint",
+        "dataset": "imaging",
+        "legacy_paths": [
+          "scripts/imaging/likelihood_breakdown/matrix_free.py"
+        ],
+        "measurement": "matrix_free",
+        "model": "pixelized",
+        "path": "scripts/imaging/pixelized/matrix_free.py"
+      },
+      {
+        "category": "scientific_entrypoint",
+        "dataset": "imaging",
+        "legacy_paths": [
+          "scripts/imaging/likelihood_breakdown/nautilus_batch_capture.py"
+        ],
+        "measurement": "nautilus_batch_capture",
+        "model": "pixelized",
+        "path": "scripts/imaging/pixelized/nautilus_batch_capture.py"
+      },
+      {
+        "category": "scientific_entrypoint",
+        "dataset": "imaging",
+        "legacy_paths": [
+          "scripts/imaging/hazards/pixelization.py"
+        ],
+        "measurement": "hazards",
         "model": "rectangular",
-        "path": "scripts/interferometer/likelihood_breakdown/pixelization.py"
+        "path": "scripts/imaging/rectangular/hazards.py"
       },
       {
         "category": "scientific_entrypoint",
-        "dataset": "interferometer",
+        "dataset": "imaging",
+        "legacy_paths": [
+          "scripts/imaging/likelihood_breakdown/pixelization.py"
+        ],
+        "measurement": "likelihood_breakdown",
         "model": "rectangular",
-        "path": "scripts/interferometer/likelihood_breakdown/pixelization_numba.py"
+        "path": "scripts/imaging/rectangular/likelihood_breakdown.py"
       },
       {
         "category": "scientific_entrypoint",
-        "dataset": "interferometer",
-        "model": "other",
-        "path": "scripts/interferometer/likelihood_breakdown/preload_numba.py"
+        "dataset": "imaging",
+        "legacy_paths": [
+          "scripts/imaging/likelihood_breakdown/pixelization_numba.py"
+        ],
+        "measurement": "likelihood_breakdown_numba",
+        "model": "rectangular",
+        "path": "scripts/imaging/rectangular/likelihood_breakdown_numba.py"
       },
       {
         "category": "scientific_entrypoint",
+        "dataset": "imaging",
+        "legacy_paths": [
+          "scripts/imaging/likelihood_runtime/pixelization.py"
+        ],
+        "measurement": "likelihood_runtime",
+        "model": "rectangular",
+        "path": "scripts/imaging/rectangular/likelihood_runtime.py"
+      },
+      {
+        "category": "scientific_entrypoint",
+        "dataset": "imaging",
+        "legacy_paths": [
+          "scripts/imaging/likelihood_runtime/pixelization_numba.py"
+        ],
+        "measurement": "likelihood_runtime_numba",
+        "model": "rectangular",
+        "path": "scripts/imaging/rectangular/likelihood_runtime_numba.py"
+      },
+      {
+        "category": "scientific_entrypoint",
+        "dataset": "imaging",
+        "legacy_paths": [
+          "scripts/imaging/likelihood_runtime/pixelization_numba_mge_mass.py"
+        ],
+        "measurement": "likelihood_runtime_numba_mge_mass",
+        "model": "rectangular",
+        "path": "scripts/imaging/rectangular/likelihood_runtime_numba_mge_mass.py"
+      },
+      {
+        "category": "scientific_entrypoint",
+        "dataset": "imaging",
+        "legacy_paths": [
+          "scripts/imaging/parallel_scaling/pixelization_numba.py"
+        ],
+        "measurement": "parallel_scaling_numba",
+        "model": "rectangular",
+        "path": "scripts/imaging/rectangular/parallel_scaling_numba.py"
+      },
+      {
+        "category": "scientific_entrypoint",
+        "dataset": "imaging",
+        "legacy_paths": [
+          "scripts/imaging/latent/effective_einstein_radius.py"
+        ],
+        "measurement": "latent_effective_einstein_radius",
+        "model": "sersic",
+        "path": "scripts/imaging/sersic/latent_effective_einstein_radius.py"
+      },
+      {
+        "category": "scientific_entrypoint",
+        "dataset": "imaging",
+        "legacy_paths": [
+          "scripts/imaging/latent/magnification.py"
+        ],
+        "measurement": "latent_magnification",
+        "model": "sersic",
+        "path": "scripts/imaging/sersic/latent_magnification.py"
+      },
+      {
+        "category": "scientific_entrypoint",
+        "dataset": "imaging",
+        "legacy_paths": [
+          "scripts/imaging/latent/total_lens_flux_mujy.py"
+        ],
+        "measurement": "latent_total_lens_flux_mujy",
+        "model": "sersic",
+        "path": "scripts/imaging/sersic/latent_total_lens_flux_mujy.py"
+      },
+      {
+        "category": "scientific_entrypoint",
+        "dataset": "imaging",
+        "legacy_paths": [
+          "scripts/imaging/latent/total_lensed_source_flux_mujy.py"
+        ],
+        "measurement": "latent_total_lensed_source_flux_mujy",
+        "model": "sersic",
+        "path": "scripts/imaging/sersic/latent_total_lensed_source_flux_mujy.py"
+      },
+      {
+        "category": "scientific_entrypoint",
+        "dataset": "imaging",
+        "legacy_paths": [
+          "scripts/imaging/latent/total_source_flux_mujy.py"
+        ],
+        "measurement": "latent_total_source_flux_mujy",
+        "model": "sersic",
+        "path": "scripts/imaging/sersic/latent_total_source_flux_mujy.py"
+      },
+      {
+        "category": "scientific_helper",
         "dataset": "interferometer",
+        "legacy_paths": [
+          "scripts/interferometer/streaming_scaling/_streaming.py"
+        ],
+        "measurement": "_streaming",
         "model": "delaunay",
-        "path": "scripts/interferometer/likelihood_runtime/datacube/delaunay.py"
+        "path": "scripts/interferometer/delaunay/_streaming.py"
       },
       {
         "category": "scientific_entrypoint",
         "dataset": "interferometer",
-        "model": "other",
-        "path": "scripts/interferometer/likelihood_runtime/datacube/shared_preloads.py"
-      },
-      {
-        "category": "scientific_entrypoint",
-        "dataset": "interferometer",
+        "legacy_paths": [
+          "scripts/interferometer/likelihood_breakdown/delaunay.py"
+        ],
+        "measurement": "likelihood_breakdown",
         "model": "delaunay",
-        "path": "scripts/interferometer/likelihood_runtime/delaunay.py"
+        "path": "scripts/interferometer/delaunay/likelihood_breakdown.py"
       },
       {
         "category": "scientific_entrypoint",
         "dataset": "interferometer",
+        "legacy_paths": [
+          "scripts/interferometer/likelihood_breakdown/delaunay_numba.py"
+        ],
+        "measurement": "likelihood_breakdown_numba",
+        "model": "delaunay",
+        "path": "scripts/interferometer/delaunay/likelihood_breakdown_numba.py"
+      },
+      {
+        "category": "scientific_entrypoint",
+        "dataset": "interferometer",
+        "legacy_paths": [
+          "scripts/interferometer/likelihood_runtime/delaunay.py"
+        ],
+        "measurement": "likelihood_runtime",
+        "model": "delaunay",
+        "path": "scripts/interferometer/delaunay/likelihood_runtime.py"
+      },
+      {
+        "category": "scientific_entrypoint",
+        "dataset": "interferometer",
+        "legacy_paths": [
+          "scripts/interferometer/quick_update/delaunay.py"
+        ],
+        "measurement": "quick_update",
+        "model": "delaunay",
+        "path": "scripts/interferometer/delaunay/quick_update.py"
+      },
+      {
+        "category": "scientific_entrypoint",
+        "dataset": "interferometer",
+        "legacy_paths": [
+          "scripts/interferometer/streaming_scaling/accumulate.py"
+        ],
+        "measurement": "streaming_accumulate",
+        "model": "delaunay",
+        "path": "scripts/interferometer/delaunay/streaming_accumulate.py"
+      },
+      {
+        "category": "scientific_entrypoint",
+        "dataset": "interferometer",
+        "legacy_paths": [
+          "scripts/interferometer/streaming_scaling/in_memory.py"
+        ],
+        "measurement": "streaming_in_memory",
+        "model": "delaunay",
+        "path": "scripts/interferometer/delaunay/streaming_in_memory.py"
+      },
+      {
+        "category": "scientific_entrypoint",
+        "dataset": "interferometer",
+        "legacy_paths": [
+          "scripts/interferometer/streaming_scaling/parity.py"
+        ],
+        "measurement": "streaming_parity",
+        "model": "delaunay",
+        "path": "scripts/interferometer/delaunay/streaming_parity.py"
+      },
+      {
+        "category": "scientific_entrypoint",
+        "dataset": "interferometer",
+        "legacy_paths": [
+          "scripts/interferometer/streaming_scaling/plot_scaling.py"
+        ],
+        "measurement": "streaming_plot_scaling",
+        "model": "delaunay",
+        "path": "scripts/interferometer/delaunay/streaming_plot_scaling.py"
+      },
+      {
+        "category": "scientific_entrypoint",
+        "dataset": "interferometer",
+        "legacy_paths": [
+          "scripts/interferometer/likelihood_breakdown/mge.py"
+        ],
+        "measurement": "likelihood_breakdown",
         "model": "mge",
-        "path": "scripts/interferometer/likelihood_runtime/mge.py"
+        "path": "scripts/interferometer/mge/likelihood_breakdown.py"
       },
       {
         "category": "scientific_entrypoint",
         "dataset": "interferometer",
-        "model": "rectangular",
-        "path": "scripts/interferometer/likelihood_runtime/pixelization.py"
-      },
-      {
-        "category": "scientific_entrypoint",
-        "dataset": "interferometer",
-        "model": "delaunay",
-        "path": "scripts/interferometer/quick_update/delaunay.py"
-      },
-      {
-        "category": "scientific_entrypoint",
-        "dataset": "interferometer",
+        "legacy_paths": [
+          "scripts/interferometer/likelihood_runtime/mge.py"
+        ],
+        "measurement": "likelihood_runtime",
         "model": "mge",
-        "path": "scripts/interferometer/quick_update/mge.py"
+        "path": "scripts/interferometer/mge/likelihood_runtime.py"
       },
       {
         "category": "scientific_entrypoint",
         "dataset": "interferometer",
-        "model": "other",
-        "path": "scripts/interferometer/streaming_scaling/_streaming.py"
+        "legacy_paths": [
+          "scripts/interferometer/quick_update/mge.py"
+        ],
+        "measurement": "quick_update",
+        "model": "mge",
+        "path": "scripts/interferometer/mge/quick_update.py"
       },
       {
         "category": "scientific_entrypoint",
         "dataset": "interferometer",
-        "model": "other",
-        "path": "scripts/interferometer/streaming_scaling/accumulate.py"
+        "legacy_paths": [
+          "scripts/interferometer/likelihood_breakdown/preload_numba.py"
+        ],
+        "measurement": "preload_numba",
+        "model": "pixelized",
+        "path": "scripts/interferometer/pixelized/preload_numba.py"
       },
       {
         "category": "scientific_entrypoint",
         "dataset": "interferometer",
-        "model": "other",
-        "path": "scripts/interferometer/streaming_scaling/in_memory.py"
+        "legacy_paths": [
+          "scripts/interferometer/likelihood_breakdown/pixelization.py"
+        ],
+        "measurement": "likelihood_breakdown",
+        "model": "rectangular",
+        "path": "scripts/interferometer/rectangular/likelihood_breakdown.py"
       },
       {
         "category": "scientific_entrypoint",
         "dataset": "interferometer",
-        "model": "other",
-        "path": "scripts/interferometer/streaming_scaling/parity.py"
+        "legacy_paths": [
+          "scripts/interferometer/likelihood_breakdown/pixelization_numba.py"
+        ],
+        "measurement": "likelihood_breakdown_numba",
+        "model": "rectangular",
+        "path": "scripts/interferometer/rectangular/likelihood_breakdown_numba.py"
       },
       {
         "category": "scientific_entrypoint",
         "dataset": "interferometer",
-        "model": "other",
-        "path": "scripts/interferometer/streaming_scaling/plot_scaling.py"
+        "legacy_paths": [
+          "scripts/interferometer/likelihood_runtime/pixelization.py"
+        ],
+        "measurement": "likelihood_runtime",
+        "model": "rectangular",
+        "path": "scripts/interferometer/rectangular/likelihood_runtime.py"
       },
       {
         "category": "scientific_entrypoint",
@@ -16336,104 +16588,172 @@
       {
         "category": "scientific_entrypoint",
         "dataset": "multi_dataset",
-        "model": "other",
-        "path": "scripts/multi_dataset/likelihood_runtime/shared_preloads.py"
+        "legacy_paths": [
+          "scripts/multi_dataset/likelihood_runtime/shared_preloads.py"
+        ],
+        "measurement": "likelihood_runtime_shared_preloads",
+        "model": "delaunay",
+        "path": "scripts/multi_dataset/delaunay/likelihood_runtime_shared_preloads.py"
       },
       {
-        "category": "scientific_entrypoint",
+        "category": "scientific_helper",
         "dataset": "point_source_image",
-        "model": "other",
-        "path": "scripts/point_source_image/likelihood_breakdown/_point_solver_stage_map.py"
-      },
-      {
-        "category": "scientific_entrypoint",
-        "dataset": "point_source_image",
-        "model": "other",
-        "path": "scripts/point_source_image/likelihood_breakdown/gpu_bottleneck_map.py"
-      },
-      {
-        "category": "scientific_entrypoint",
-        "dataset": "point_source_image",
+        "legacy_paths": [
+          "scripts/point_source_image/likelihood_breakdown/_point_solver_stage_map.py"
+        ],
+        "measurement": "_point_solver_stage_map",
         "model": "image_plane",
-        "path": "scripts/point_source_image/likelihood_breakdown/image_plane.py"
+        "path": "scripts/point_source_image/image_plane/_point_solver_stage_map.py"
       },
       {
         "category": "scientific_entrypoint",
         "dataset": "point_source_image",
-        "model": "other",
-        "path": "scripts/point_source_image/likelihood_breakdown/solver_config_sweep.py"
-      },
-      {
-        "category": "scientific_entrypoint",
-        "dataset": "point_source_image",
-        "model": "other",
-        "path": "scripts/point_source_image/likelihood_breakdown/static_lattice_ab.py"
-      },
-      {
-        "category": "scientific_entrypoint",
-        "dataset": "point_source_image",
-        "model": "other",
-        "path": "scripts/point_source_image/likelihood_breakdown/vertex_dedup_ab.py"
-      },
-      {
-        "category": "scientific_entrypoint",
-        "dataset": "point_source_image",
+        "legacy_paths": [
+          "scripts/point_source_image/likelihood_breakdown/gpu_bottleneck_map.py"
+        ],
+        "measurement": "gpu_bottleneck_map",
         "model": "image_plane",
-        "path": "scripts/point_source_image/likelihood_runtime/image_plane.py"
+        "path": "scripts/point_source_image/image_plane/gpu_bottleneck_map.py"
       },
       {
         "category": "scientific_entrypoint",
         "dataset": "point_source_image",
+        "legacy_paths": [
+          "scripts/point_source_image/likelihood_breakdown/image_plane.py"
+        ],
+        "measurement": "likelihood_breakdown",
         "model": "image_plane",
-        "path": "scripts/point_source_image/likelihood_runtime/image_plane_solved.py"
+        "path": "scripts/point_source_image/image_plane/likelihood_breakdown.py"
       },
       {
         "category": "scientific_entrypoint",
         "dataset": "point_source_image",
-        "model": "other",
-        "path": "scripts/point_source_image/quick_update/point_source.py"
+        "legacy_paths": [
+          "scripts/point_source_image/likelihood_runtime/image_plane.py"
+        ],
+        "measurement": "likelihood_runtime",
+        "model": "image_plane",
+        "path": "scripts/point_source_image/image_plane/likelihood_runtime.py"
+      },
+      {
+        "category": "scientific_entrypoint",
+        "dataset": "point_source_image",
+        "legacy_paths": [
+          "scripts/point_source_image/likelihood_runtime/image_plane_solved.py"
+        ],
+        "measurement": "likelihood_runtime_solved",
+        "model": "image_plane",
+        "path": "scripts/point_source_image/image_plane/likelihood_runtime_solved.py"
+      },
+      {
+        "category": "scientific_entrypoint",
+        "dataset": "point_source_image",
+        "legacy_paths": [
+          "scripts/point_source_image/quick_update/point_source.py"
+        ],
+        "measurement": "quick_update",
+        "model": "image_plane",
+        "path": "scripts/point_source_image/image_plane/quick_update.py"
+      },
+      {
+        "category": "scientific_entrypoint",
+        "dataset": "point_source_image",
+        "legacy_paths": [
+          "scripts/point_source_image/likelihood_breakdown/solver_config_sweep.py"
+        ],
+        "measurement": "solver_config_sweep",
+        "model": "image_plane",
+        "path": "scripts/point_source_image/image_plane/solver_config_sweep.py"
+      },
+      {
+        "category": "scientific_entrypoint",
+        "dataset": "point_source_image",
+        "legacy_paths": [
+          "scripts/point_source_image/likelihood_breakdown/static_lattice_ab.py"
+        ],
+        "measurement": "static_lattice_ab",
+        "model": "image_plane",
+        "path": "scripts/point_source_image/image_plane/static_lattice_ab.py"
+      },
+      {
+        "category": "scientific_entrypoint",
+        "dataset": "point_source_image",
+        "legacy_paths": [
+          "scripts/point_source_image/likelihood_breakdown/vertex_dedup_ab.py"
+        ],
+        "measurement": "vertex_dedup_ab",
+        "model": "image_plane",
+        "path": "scripts/point_source_image/image_plane/vertex_dedup_ab.py"
       },
       {
         "category": "scientific_entrypoint",
         "dataset": "point_source_source",
-        "model": "other",
-        "path": "scripts/point_source_source/likelihood_breakdown/backward_pass_ab.py"
-      },
-      {
-        "category": "scientific_entrypoint",
-        "dataset": "point_source_source",
-        "model": "other",
-        "path": "scripts/point_source_source/likelihood_breakdown/gradient_mode_crossover.py"
-      },
-      {
-        "category": "scientific_entrypoint",
-        "dataset": "point_source_source",
-        "model": "other",
-        "path": "scripts/point_source_source/likelihood_breakdown/gradient_mode_library_ab.py"
-      },
-      {
-        "category": "scientific_entrypoint",
-        "dataset": "point_source_source",
-        "model": "other",
-        "path": "scripts/point_source_source/likelihood_breakdown/pytree_input_ab.py"
-      },
-      {
-        "category": "scientific_entrypoint",
-        "dataset": "point_source_source",
+        "legacy_paths": [
+          "scripts/point_source_source/likelihood_breakdown/backward_pass_ab.py"
+        ],
+        "measurement": "backward_pass_ab",
         "model": "source_plane",
-        "path": "scripts/point_source_source/likelihood_breakdown/source_plane.py"
+        "path": "scripts/point_source_source/source_plane/backward_pass_ab.py"
       },
       {
         "category": "scientific_entrypoint",
         "dataset": "point_source_source",
+        "legacy_paths": [
+          "scripts/point_source_source/likelihood_breakdown/gradient_mode_crossover.py"
+        ],
+        "measurement": "gradient_mode_crossover",
         "model": "source_plane",
-        "path": "scripts/point_source_source/likelihood_runtime/source_plane.py"
+        "path": "scripts/point_source_source/source_plane/gradient_mode_crossover.py"
       },
       {
         "category": "scientific_entrypoint",
         "dataset": "point_source_source",
+        "legacy_paths": [
+          "scripts/point_source_source/likelihood_breakdown/gradient_mode_library_ab.py"
+        ],
+        "measurement": "gradient_mode_library_ab",
         "model": "source_plane",
-        "path": "scripts/point_source_source/likelihood_runtime/source_plane_solved.py"
+        "path": "scripts/point_source_source/source_plane/gradient_mode_library_ab.py"
+      },
+      {
+        "category": "scientific_entrypoint",
+        "dataset": "point_source_source",
+        "legacy_paths": [
+          "scripts/point_source_source/likelihood_breakdown/source_plane.py"
+        ],
+        "measurement": "likelihood_breakdown",
+        "model": "source_plane",
+        "path": "scripts/point_source_source/source_plane/likelihood_breakdown.py"
+      },
+      {
+        "category": "scientific_entrypoint",
+        "dataset": "point_source_source",
+        "legacy_paths": [
+          "scripts/point_source_source/likelihood_runtime/source_plane.py"
+        ],
+        "measurement": "likelihood_runtime",
+        "model": "source_plane",
+        "path": "scripts/point_source_source/source_plane/likelihood_runtime.py"
+      },
+      {
+        "category": "scientific_entrypoint",
+        "dataset": "point_source_source",
+        "legacy_paths": [
+          "scripts/point_source_source/likelihood_runtime/source_plane_solved.py"
+        ],
+        "measurement": "likelihood_runtime_solved",
+        "model": "source_plane",
+        "path": "scripts/point_source_source/source_plane/likelihood_runtime_solved.py"
+      },
+      {
+        "category": "scientific_entrypoint",
+        "dataset": "point_source_source",
+        "legacy_paths": [
+          "scripts/point_source_source/likelihood_breakdown/pytree_input_ab.py"
+        ],
+        "measurement": "pytree_input_ab",
+        "model": "source_plane",
+        "path": "scripts/point_source_source/source_plane/pytree_input_ab.py"
       }
     ],
     "planned_cells": [
@@ -27201,6 +27521,667 @@
     ],
     "schema": "profiling-summary",
     "scope": "setup-catalogue",
+    "script_routes": {
+      "compatibility": "Legacy paths remain until an explicitly approved removal after Brain and assistant migration; no automatic expiry.",
+      "compile_probe": {
+        "builder_status": "unavailable",
+        "path": "scripts/misc/jax_compile/probe.py",
+        "reason": "The retired searches._setup.build_for_cell has no replacement per-cell builder; archive coverage is not executable compile dispatch.",
+        "transforms": [
+          "jit",
+          "grad",
+          "vag",
+          "vmap",
+          "vmap_vag",
+          "laxmap_vag",
+          "pyloop_vag"
+        ]
+      },
+      "routes": [
+        {
+          "dataset": "cluster",
+          "legacy": "scripts/cluster/likelihood_breakdown/image_plane.py",
+          "measurement": "likelihood_breakdown",
+          "model": "image_plane",
+          "path": "scripts/cluster/image_plane/likelihood_breakdown.py"
+        },
+        {
+          "dataset": "cluster",
+          "legacy": "scripts/cluster/likelihood_breakdown/source_plane.py",
+          "measurement": "likelihood_breakdown",
+          "model": "source_plane",
+          "path": "scripts/cluster/source_plane/likelihood_breakdown.py"
+        },
+        {
+          "dataset": "imaging",
+          "legacy": "scripts/imaging/hazards/mge_nnls_capture.py",
+          "measurement": "hazards_nnls_capture",
+          "model": "mge",
+          "path": "scripts/imaging/mge/hazards_nnls_capture.py"
+        },
+        {
+          "dataset": "imaging",
+          "legacy": "scripts/imaging/hazards/pixelization.py",
+          "measurement": "hazards",
+          "model": "rectangular",
+          "path": "scripts/imaging/rectangular/hazards.py"
+        },
+        {
+          "dataset": "imaging",
+          "legacy": "scripts/imaging/latent/effective_einstein_radius.py",
+          "measurement": "latent_effective_einstein_radius",
+          "model": "sersic",
+          "path": "scripts/imaging/sersic/latent_effective_einstein_radius.py"
+        },
+        {
+          "dataset": "imaging",
+          "legacy": "scripts/imaging/latent/magnification.py",
+          "measurement": "latent_magnification",
+          "model": "sersic",
+          "path": "scripts/imaging/sersic/latent_magnification.py"
+        },
+        {
+          "dataset": "imaging",
+          "legacy": "scripts/imaging/latent/total_lens_flux_mujy.py",
+          "measurement": "latent_total_lens_flux_mujy",
+          "model": "sersic",
+          "path": "scripts/imaging/sersic/latent_total_lens_flux_mujy.py"
+        },
+        {
+          "dataset": "imaging",
+          "legacy": "scripts/imaging/latent/total_lensed_source_flux_mujy.py",
+          "measurement": "latent_total_lensed_source_flux_mujy",
+          "model": "sersic",
+          "path": "scripts/imaging/sersic/latent_total_lensed_source_flux_mujy.py"
+        },
+        {
+          "dataset": "imaging",
+          "legacy": "scripts/imaging/latent/total_source_flux_mujy.py",
+          "measurement": "latent_total_source_flux_mujy",
+          "model": "sersic",
+          "path": "scripts/imaging/sersic/latent_total_source_flux_mujy.py"
+        },
+        {
+          "dataset": "imaging",
+          "legacy": "scripts/imaging/likelihood_breakdown/delaunay.py",
+          "measurement": "likelihood_breakdown",
+          "model": "delaunay",
+          "path": "scripts/imaging/delaunay/likelihood_breakdown.py"
+        },
+        {
+          "dataset": "imaging",
+          "legacy": "scripts/imaging/likelihood_breakdown/delaunay_nn.py",
+          "measurement": "likelihood_breakdown",
+          "model": "delaunay_nn",
+          "path": "scripts/imaging/delaunay_nn/likelihood_breakdown.py"
+        },
+        {
+          "dataset": "imaging",
+          "legacy": "scripts/imaging/likelihood_breakdown/delaunay_numba.py",
+          "measurement": "likelihood_breakdown_numba",
+          "model": "delaunay",
+          "path": "scripts/imaging/delaunay/likelihood_breakdown_numba.py"
+        },
+        {
+          "dataset": "imaging",
+          "legacy": "scripts/imaging/likelihood_breakdown/fixed_light.py",
+          "measurement": "fixed_light",
+          "model": "pixelized",
+          "path": "scripts/imaging/pixelized/fixed_light.py"
+        },
+        {
+          "dataset": "imaging",
+          "legacy": "scripts/imaging/likelihood_breakdown/fixed_light_cpu_kernels.py",
+          "measurement": "fixed_light_cpu_kernels",
+          "model": "pixelized",
+          "path": "scripts/imaging/pixelized/fixed_light_cpu_kernels.py"
+        },
+        {
+          "dataset": "imaging",
+          "legacy": "scripts/imaging/likelihood_breakdown/fixed_light_draws.py",
+          "measurement": "fixed_light_draws",
+          "model": "pixelized",
+          "path": "scripts/imaging/pixelized/fixed_light_draws.py"
+        },
+        {
+          "dataset": "imaging",
+          "legacy": "scripts/imaging/likelihood_breakdown/fixed_light_library.py",
+          "measurement": "fixed_light_library",
+          "model": "pixelized",
+          "path": "scripts/imaging/pixelized/fixed_light_library.py"
+        },
+        {
+          "dataset": "imaging",
+          "legacy": "scripts/imaging/likelihood_breakdown/fixed_light_numba.py",
+          "measurement": "fixed_light_numba",
+          "model": "pixelized",
+          "path": "scripts/imaging/pixelized/fixed_light_numba.py"
+        },
+        {
+          "dataset": "imaging",
+          "legacy": "scripts/imaging/likelihood_breakdown/fixed_light_numba_draws.py",
+          "measurement": "fixed_light_numba_draws",
+          "model": "pixelized",
+          "path": "scripts/imaging/pixelized/fixed_light_numba_draws.py"
+        },
+        {
+          "dataset": "imaging",
+          "legacy": "scripts/imaging/likelihood_breakdown/fixed_light_numba_levers_l2_witness.py",
+          "measurement": "fixed_light_numba_levers_l2_witness",
+          "model": "pixelized",
+          "path": "scripts/imaging/pixelized/fixed_light_numba_levers_l2_witness.py"
+        },
+        {
+          "dataset": "imaging",
+          "legacy": "scripts/imaging/likelihood_breakdown/fixed_light_numba_levers_l3_witness.py",
+          "measurement": "fixed_light_numba_levers_l3_witness",
+          "model": "pixelized",
+          "path": "scripts/imaging/pixelized/fixed_light_numba_levers_l3_witness.py"
+        },
+        {
+          "dataset": "imaging",
+          "legacy": "scripts/imaging/likelihood_breakdown/fixed_light_numba_levers_witness.py",
+          "measurement": "fixed_light_numba_levers_witness",
+          "model": "pixelized",
+          "path": "scripts/imaging/pixelized/fixed_light_numba_levers_witness.py"
+        },
+        {
+          "dataset": "imaging",
+          "legacy": "scripts/imaging/likelihood_breakdown/fixed_light_numba_memo_policy.py",
+          "measurement": "fixed_light_numba_memo_policy",
+          "model": "pixelized",
+          "path": "scripts/imaging/pixelized/fixed_light_numba_memo_policy.py"
+        },
+        {
+          "dataset": "imaging",
+          "legacy": "scripts/imaging/likelihood_breakdown/fixed_light_numba_s4_witness.py",
+          "measurement": "fixed_light_numba_s4_witness",
+          "model": "pixelized",
+          "path": "scripts/imaging/pixelized/fixed_light_numba_s4_witness.py"
+        },
+        {
+          "dataset": "imaging",
+          "legacy": "scripts/imaging/likelihood_breakdown/fixed_light_numba_s4b_witness.py",
+          "measurement": "fixed_light_numba_s4b_witness",
+          "model": "pixelized",
+          "path": "scripts/imaging/pixelized/fixed_light_numba_s4b_witness.py"
+        },
+        {
+          "dataset": "imaging",
+          "legacy": "scripts/imaging/likelihood_breakdown/fixed_light_numba_scaling.py",
+          "measurement": "fixed_light_numba_scaling",
+          "model": "pixelized",
+          "path": "scripts/imaging/pixelized/fixed_light_numba_scaling.py"
+        },
+        {
+          "dataset": "imaging",
+          "legacy": "scripts/imaging/likelihood_breakdown/fixed_light_numba_solvers.py",
+          "measurement": "fixed_light_numba_solvers",
+          "model": "pixelized",
+          "path": "scripts/imaging/pixelized/fixed_light_numba_solvers.py"
+        },
+        {
+          "dataset": "imaging",
+          "legacy": "scripts/imaging/likelihood_breakdown/fixed_light_trace.py",
+          "measurement": "fixed_light_trace",
+          "model": "pixelized",
+          "path": "scripts/imaging/pixelized/fixed_light_trace.py"
+        },
+        {
+          "dataset": "imaging",
+          "legacy": "scripts/imaging/likelihood_breakdown/matrix_free.py",
+          "measurement": "matrix_free",
+          "model": "pixelized",
+          "path": "scripts/imaging/pixelized/matrix_free.py"
+        },
+        {
+          "dataset": "imaging",
+          "legacy": "scripts/imaging/likelihood_breakdown/mge.py",
+          "measurement": "likelihood_breakdown",
+          "model": "mge",
+          "path": "scripts/imaging/mge/likelihood_breakdown.py"
+        },
+        {
+          "dataset": "imaging",
+          "legacy": "scripts/imaging/likelihood_breakdown/nautilus_batch_capture.py",
+          "measurement": "nautilus_batch_capture",
+          "model": "pixelized",
+          "path": "scripts/imaging/pixelized/nautilus_batch_capture.py"
+        },
+        {
+          "dataset": "imaging",
+          "legacy": "scripts/imaging/likelihood_breakdown/pixelization.py",
+          "measurement": "likelihood_breakdown",
+          "model": "rectangular",
+          "path": "scripts/imaging/rectangular/likelihood_breakdown.py"
+        },
+        {
+          "dataset": "imaging",
+          "legacy": "scripts/imaging/likelihood_breakdown/pixelization_numba.py",
+          "measurement": "likelihood_breakdown_numba",
+          "model": "rectangular",
+          "path": "scripts/imaging/rectangular/likelihood_breakdown_numba.py"
+        },
+        {
+          "dataset": "imaging",
+          "legacy": "scripts/imaging/likelihood_runtime/delaunay.py",
+          "measurement": "likelihood_runtime",
+          "model": "delaunay",
+          "path": "scripts/imaging/delaunay/likelihood_runtime.py"
+        },
+        {
+          "dataset": "imaging",
+          "legacy": "scripts/imaging/likelihood_runtime/delaunay_nn.py",
+          "measurement": "likelihood_runtime",
+          "model": "delaunay_nn",
+          "path": "scripts/imaging/delaunay_nn/likelihood_runtime.py"
+        },
+        {
+          "dataset": "imaging",
+          "legacy": "scripts/imaging/likelihood_runtime/delaunay_numba.py",
+          "measurement": "likelihood_runtime_numba",
+          "model": "delaunay",
+          "path": "scripts/imaging/delaunay/likelihood_runtime_numba.py"
+        },
+        {
+          "dataset": "imaging",
+          "legacy": "scripts/imaging/likelihood_runtime/mge.py",
+          "measurement": "likelihood_runtime",
+          "model": "mge",
+          "path": "scripts/imaging/mge/likelihood_runtime.py"
+        },
+        {
+          "dataset": "imaging",
+          "legacy": "scripts/imaging/likelihood_runtime/mge_mass_jax.py",
+          "measurement": "likelihood_runtime_jax",
+          "model": "mge_mass",
+          "path": "scripts/imaging/mge_mass/likelihood_runtime_jax.py"
+        },
+        {
+          "dataset": "imaging",
+          "legacy": "scripts/imaging/likelihood_runtime/pixelization.py",
+          "measurement": "likelihood_runtime",
+          "model": "rectangular",
+          "path": "scripts/imaging/rectangular/likelihood_runtime.py"
+        },
+        {
+          "dataset": "imaging",
+          "legacy": "scripts/imaging/likelihood_runtime/pixelization_numba.py",
+          "measurement": "likelihood_runtime_numba",
+          "model": "rectangular",
+          "path": "scripts/imaging/rectangular/likelihood_runtime_numba.py"
+        },
+        {
+          "dataset": "imaging",
+          "legacy": "scripts/imaging/likelihood_runtime/pixelization_numba_mge_mass.py",
+          "measurement": "likelihood_runtime_numba_mge_mass",
+          "model": "rectangular",
+          "path": "scripts/imaging/rectangular/likelihood_runtime_numba_mge_mass.py"
+        },
+        {
+          "dataset": "imaging",
+          "legacy": "scripts/imaging/parallel_scaling/pixelization_numba.py",
+          "measurement": "parallel_scaling_numba",
+          "model": "rectangular",
+          "path": "scripts/imaging/rectangular/parallel_scaling_numba.py"
+        },
+        {
+          "dataset": "imaging",
+          "legacy": "scripts/imaging/quick_update/delaunay.py",
+          "measurement": "quick_update",
+          "model": "delaunay",
+          "path": "scripts/imaging/delaunay/quick_update.py"
+        },
+        {
+          "dataset": "imaging",
+          "legacy": "scripts/imaging/quick_update/mge.py",
+          "measurement": "quick_update",
+          "model": "mge",
+          "path": "scripts/imaging/mge/quick_update.py"
+        },
+        {
+          "dataset": "datacube",
+          "legacy": "scripts/interferometer/likelihood_breakdown/datacube/delaunay.py",
+          "measurement": "likelihood_breakdown",
+          "model": "delaunay",
+          "path": "scripts/datacube/delaunay/likelihood_breakdown.py"
+        },
+        {
+          "dataset": "datacube",
+          "legacy": "scripts/interferometer/likelihood_breakdown/datacube/inversion_setup_decompose.py",
+          "measurement": "inversion_setup_decompose",
+          "model": "delaunay",
+          "path": "scripts/datacube/delaunay/inversion_setup_decompose.py"
+        },
+        {
+          "dataset": "interferometer",
+          "legacy": "scripts/interferometer/likelihood_breakdown/delaunay.py",
+          "measurement": "likelihood_breakdown",
+          "model": "delaunay",
+          "path": "scripts/interferometer/delaunay/likelihood_breakdown.py"
+        },
+        {
+          "dataset": "interferometer",
+          "legacy": "scripts/interferometer/likelihood_breakdown/delaunay_numba.py",
+          "measurement": "likelihood_breakdown_numba",
+          "model": "delaunay",
+          "path": "scripts/interferometer/delaunay/likelihood_breakdown_numba.py"
+        },
+        {
+          "dataset": "interferometer",
+          "legacy": "scripts/interferometer/likelihood_breakdown/mge.py",
+          "measurement": "likelihood_breakdown",
+          "model": "mge",
+          "path": "scripts/interferometer/mge/likelihood_breakdown.py"
+        },
+        {
+          "dataset": "interferometer",
+          "legacy": "scripts/interferometer/likelihood_breakdown/pixelization.py",
+          "measurement": "likelihood_breakdown",
+          "model": "rectangular",
+          "path": "scripts/interferometer/rectangular/likelihood_breakdown.py"
+        },
+        {
+          "dataset": "interferometer",
+          "legacy": "scripts/interferometer/likelihood_breakdown/pixelization_numba.py",
+          "measurement": "likelihood_breakdown_numba",
+          "model": "rectangular",
+          "path": "scripts/interferometer/rectangular/likelihood_breakdown_numba.py"
+        },
+        {
+          "dataset": "interferometer",
+          "legacy": "scripts/interferometer/likelihood_breakdown/preload_numba.py",
+          "measurement": "preload_numba",
+          "model": "pixelized",
+          "path": "scripts/interferometer/pixelized/preload_numba.py"
+        },
+        {
+          "dataset": "datacube",
+          "legacy": "scripts/interferometer/likelihood_runtime/datacube/delaunay.py",
+          "measurement": "likelihood_runtime",
+          "model": "delaunay",
+          "path": "scripts/datacube/delaunay/likelihood_runtime.py"
+        },
+        {
+          "dataset": "datacube",
+          "legacy": "scripts/interferometer/likelihood_runtime/datacube/shared_preloads.py",
+          "measurement": "likelihood_runtime_shared_preloads",
+          "model": "delaunay",
+          "path": "scripts/datacube/delaunay/likelihood_runtime_shared_preloads.py"
+        },
+        {
+          "dataset": "interferometer",
+          "legacy": "scripts/interferometer/likelihood_runtime/delaunay.py",
+          "measurement": "likelihood_runtime",
+          "model": "delaunay",
+          "path": "scripts/interferometer/delaunay/likelihood_runtime.py"
+        },
+        {
+          "dataset": "interferometer",
+          "legacy": "scripts/interferometer/likelihood_runtime/mge.py",
+          "measurement": "likelihood_runtime",
+          "model": "mge",
+          "path": "scripts/interferometer/mge/likelihood_runtime.py"
+        },
+        {
+          "dataset": "interferometer",
+          "legacy": "scripts/interferometer/likelihood_runtime/pixelization.py",
+          "measurement": "likelihood_runtime",
+          "model": "rectangular",
+          "path": "scripts/interferometer/rectangular/likelihood_runtime.py"
+        },
+        {
+          "dataset": "interferometer",
+          "legacy": "scripts/interferometer/quick_update/delaunay.py",
+          "measurement": "quick_update",
+          "model": "delaunay",
+          "path": "scripts/interferometer/delaunay/quick_update.py"
+        },
+        {
+          "dataset": "interferometer",
+          "legacy": "scripts/interferometer/quick_update/mge.py",
+          "measurement": "quick_update",
+          "model": "mge",
+          "path": "scripts/interferometer/mge/quick_update.py"
+        },
+        {
+          "dataset": "interferometer",
+          "legacy": "scripts/interferometer/streaming_scaling/_streaming.py",
+          "measurement": "_streaming",
+          "model": "delaunay",
+          "path": "scripts/interferometer/delaunay/_streaming.py"
+        },
+        {
+          "dataset": "interferometer",
+          "legacy": "scripts/interferometer/streaming_scaling/accumulate.py",
+          "measurement": "streaming_accumulate",
+          "model": "delaunay",
+          "path": "scripts/interferometer/delaunay/streaming_accumulate.py"
+        },
+        {
+          "dataset": "interferometer",
+          "legacy": "scripts/interferometer/streaming_scaling/in_memory.py",
+          "measurement": "streaming_in_memory",
+          "model": "delaunay",
+          "path": "scripts/interferometer/delaunay/streaming_in_memory.py"
+        },
+        {
+          "dataset": "interferometer",
+          "legacy": "scripts/interferometer/streaming_scaling/parity.py",
+          "measurement": "streaming_parity",
+          "model": "delaunay",
+          "path": "scripts/interferometer/delaunay/streaming_parity.py"
+        },
+        {
+          "dataset": "interferometer",
+          "legacy": "scripts/interferometer/streaming_scaling/plot_scaling.py",
+          "measurement": "streaming_plot_scaling",
+          "model": "delaunay",
+          "path": "scripts/interferometer/delaunay/streaming_plot_scaling.py"
+        },
+        {
+          "dataset": "multi_dataset",
+          "legacy": "scripts/multi_dataset/likelihood_runtime/shared_preloads.py",
+          "measurement": "likelihood_runtime_shared_preloads",
+          "model": "delaunay",
+          "path": "scripts/multi_dataset/delaunay/likelihood_runtime_shared_preloads.py"
+        },
+        {
+          "dataset": "point_source_image",
+          "legacy": "scripts/point_source_image/likelihood_breakdown/_point_solver_stage_map.py",
+          "measurement": "_point_solver_stage_map",
+          "model": "image_plane",
+          "path": "scripts/point_source_image/image_plane/_point_solver_stage_map.py"
+        },
+        {
+          "dataset": "point_source_image",
+          "legacy": "scripts/point_source_image/likelihood_breakdown/gpu_bottleneck_map.py",
+          "measurement": "gpu_bottleneck_map",
+          "model": "image_plane",
+          "path": "scripts/point_source_image/image_plane/gpu_bottleneck_map.py"
+        },
+        {
+          "dataset": "point_source_image",
+          "legacy": "scripts/point_source_image/likelihood_breakdown/image_plane.py",
+          "measurement": "likelihood_breakdown",
+          "model": "image_plane",
+          "path": "scripts/point_source_image/image_plane/likelihood_breakdown.py"
+        },
+        {
+          "dataset": "point_source_image",
+          "legacy": "scripts/point_source_image/likelihood_breakdown/solver_config_sweep.py",
+          "measurement": "solver_config_sweep",
+          "model": "image_plane",
+          "path": "scripts/point_source_image/image_plane/solver_config_sweep.py"
+        },
+        {
+          "dataset": "point_source_image",
+          "legacy": "scripts/point_source_image/likelihood_breakdown/static_lattice_ab.py",
+          "measurement": "static_lattice_ab",
+          "model": "image_plane",
+          "path": "scripts/point_source_image/image_plane/static_lattice_ab.py"
+        },
+        {
+          "dataset": "point_source_image",
+          "legacy": "scripts/point_source_image/likelihood_breakdown/vertex_dedup_ab.py",
+          "measurement": "vertex_dedup_ab",
+          "model": "image_plane",
+          "path": "scripts/point_source_image/image_plane/vertex_dedup_ab.py"
+        },
+        {
+          "dataset": "point_source_image",
+          "legacy": "scripts/point_source_image/likelihood_runtime/image_plane.py",
+          "measurement": "likelihood_runtime",
+          "model": "image_plane",
+          "path": "scripts/point_source_image/image_plane/likelihood_runtime.py"
+        },
+        {
+          "dataset": "point_source_image",
+          "legacy": "scripts/point_source_image/likelihood_runtime/image_plane_solved.py",
+          "measurement": "likelihood_runtime_solved",
+          "model": "image_plane",
+          "path": "scripts/point_source_image/image_plane/likelihood_runtime_solved.py"
+        },
+        {
+          "dataset": "point_source_image",
+          "legacy": "scripts/point_source_image/quick_update/point_source.py",
+          "measurement": "quick_update",
+          "model": "image_plane",
+          "path": "scripts/point_source_image/image_plane/quick_update.py"
+        },
+        {
+          "dataset": "point_source_source",
+          "legacy": "scripts/point_source_source/likelihood_breakdown/backward_pass_ab.py",
+          "measurement": "backward_pass_ab",
+          "model": "source_plane",
+          "path": "scripts/point_source_source/source_plane/backward_pass_ab.py"
+        },
+        {
+          "dataset": "point_source_source",
+          "legacy": "scripts/point_source_source/likelihood_breakdown/gradient_mode_crossover.py",
+          "measurement": "gradient_mode_crossover",
+          "model": "source_plane",
+          "path": "scripts/point_source_source/source_plane/gradient_mode_crossover.py"
+        },
+        {
+          "dataset": "point_source_source",
+          "legacy": "scripts/point_source_source/likelihood_breakdown/gradient_mode_library_ab.py",
+          "measurement": "gradient_mode_library_ab",
+          "model": "source_plane",
+          "path": "scripts/point_source_source/source_plane/gradient_mode_library_ab.py"
+        },
+        {
+          "dataset": "point_source_source",
+          "legacy": "scripts/point_source_source/likelihood_breakdown/pytree_input_ab.py",
+          "measurement": "pytree_input_ab",
+          "model": "source_plane",
+          "path": "scripts/point_source_source/source_plane/pytree_input_ab.py"
+        },
+        {
+          "dataset": "point_source_source",
+          "legacy": "scripts/point_source_source/likelihood_breakdown/source_plane.py",
+          "measurement": "likelihood_breakdown",
+          "model": "source_plane",
+          "path": "scripts/point_source_source/source_plane/likelihood_breakdown.py"
+        },
+        {
+          "dataset": "point_source_source",
+          "legacy": "scripts/point_source_source/likelihood_runtime/source_plane.py",
+          "measurement": "likelihood_runtime",
+          "model": "source_plane",
+          "path": "scripts/point_source_source/source_plane/likelihood_runtime.py"
+        },
+        {
+          "dataset": "point_source_source",
+          "legacy": "scripts/point_source_source/likelihood_runtime/source_plane_solved.py",
+          "measurement": "likelihood_runtime_solved",
+          "model": "source_plane",
+          "path": "scripts/point_source_source/source_plane/likelihood_runtime_solved.py"
+        }
+      ],
+      "runtime_cells": [
+        {
+          "dataset": "imaging",
+          "instruments": [
+            "hst",
+            "jwst",
+            "ao"
+          ],
+          "model": "mge",
+          "path": "scripts/imaging/mge/likelihood_runtime.py"
+        },
+        {
+          "dataset": "imaging",
+          "instruments": [
+            "hst",
+            "jwst",
+            "ao"
+          ],
+          "model": "pixelization",
+          "path": "scripts/imaging/rectangular/likelihood_runtime.py"
+        },
+        {
+          "dataset": "imaging",
+          "instruments": [
+            "hst",
+            "jwst",
+            "ao"
+          ],
+          "model": "delaunay",
+          "path": "scripts/imaging/delaunay/likelihood_runtime.py"
+        },
+        {
+          "dataset": "imaging",
+          "instruments": [
+            "hst"
+          ],
+          "model": "delaunay_nn",
+          "path": "scripts/imaging/delaunay_nn/likelihood_runtime.py"
+        },
+        {
+          "dataset": "interferometer",
+          "instruments": [
+            "sma"
+          ],
+          "model": "mge",
+          "path": "scripts/interferometer/mge/likelihood_runtime.py"
+        },
+        {
+          "dataset": "interferometer",
+          "instruments": [
+            "sma",
+            "alma",
+            "alma_high",
+            "jvla"
+          ],
+          "model": "pixelization",
+          "path": "scripts/interferometer/rectangular/likelihood_runtime.py"
+        },
+        {
+          "dataset": "interferometer",
+          "instruments": [
+            "sma",
+            "alma",
+            "alma_high",
+            "jvla"
+          ],
+          "model": "delaunay",
+          "path": "scripts/interferometer/delaunay/likelihood_runtime.py"
+        },
+        {
+          "dataset": "datacube",
+          "instruments": [
+            "sma",
+            "alma",
+            "alma_high"
+          ],
+          "model": "delaunay",
+          "path": "scripts/datacube/delaunay/likelihood_runtime.py"
+        }
+      ],
+      "schema": "profiling-script-routes",
+      "version": 1
+    },
     "selections": [
       {
         "axis": "breakdown",
