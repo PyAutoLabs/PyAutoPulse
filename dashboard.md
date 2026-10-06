@@ -1,6 +1,6 @@
 # PyAutoPulse — profiling dashboard
 
-<!-- pulse-campaigns:77ca7c41ddc4b75d3a81b678afe72bb4a5d261fa62678fa94e5331b020b7b65c -->
+<!-- pulse-campaigns:cbea1eba629dc0064077ad5d1af613005d3a58f8a6d17b54b253eb6468e6d379 -->
 ## Profiling Check In
 
 <details><summary>Full check-in prompt</summary>
@@ -14,6 +14,18 @@ Use PyAutoPulse as the home for all profiling work in this chat. Read PyAutoPuls
 Last check-in: 2026-10-04T17:18:38Z (review date, not measurement freshness).
 
 ## Active campaigns
+
+<details><summary>Setup baseline collection and scientific acceptance — needs-decision</summary>
+
+Reviewed 2026-10-06. Specification is draft (autolens_profiling#384); no baseline collection or acceptance authorized. Resolve immutable software and dependency lock, dataset hashes/settings, hardware/threads/load and timing/cache/memory methodology/witnesses; freeze the manifest before separately authorizing collection. Compile probe builder remains unavailable; archived timings are context only.
+
+[Campaign evidence](https://github.com/PyAutoLabs/autolens_profiling/blob/62a6ad1e82735e360c7cf25be62253a286493b17/wiki/campaigns/setup_baseline.md)
+
+### Active tasks
+
+- [Freeze the setup baseline specification, then collect and review evidence](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/setup_baseline_campaign.md) — needs-decision: Human resolves draft manifest choices and freezes the specification; collection requires separate compute authorization. The report prepares evidence for human scientific review and never promotes baselines. CPU production arrays use ral only; compile capability gap remains open.
+
+</details>
 
 <details><summary>Point-source image plane · CPU — active</summary>
 
