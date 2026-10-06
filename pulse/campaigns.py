@@ -12,6 +12,7 @@ from urllib.parse import urlparse
 import yaml
 
 from pulse import ORGAN_ROOT
+from pulse.setup_browser import theme
 
 URL = "https://github.com/PyAutoLabs/PyAutoPulse/blob/main/"
 STATUSES = {
@@ -157,7 +158,8 @@ def render_html(data: dict) -> str:
     review = f'<span class="review-meta" title="Ledger dates are review dates, not measurement freshness.">Last check-in: {e(reviewed[:10] if data.get("last_checkin") else reviewed)} · review date</span>'
     parts = [
         marker(data),
-        '<section class="controls" aria-label="Profiling actions">',
+        '<section class="controls" aria-label="Profiling actions">'
+        + theme().prompt_heading("pulse"),
         action("fix", "Fix Profiling Systematically", FIX_PROMPT),
         action("checkin", "Profiling Check In", PROMPT, review),
         '<span id="copy-status" role="status" aria-live="polite"></span></section>',
