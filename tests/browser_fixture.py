@@ -49,6 +49,68 @@ def write(destination):
     inline.doc.pop("navigation")
     (destination / "inline.html").write_text(board.render_html([inline]))
 
+    headlines = copy.deepcopy(inline)
+    base_setup = headlines.doc["setups"][0]
+    base_setup["configuration"]["vmap_batch_size"] = {"value": 16, "unit": "count"}
+    base_row = headlines.doc["records"][0]
+    for metric, value, axis, unit in [
+        ("vmap.per_call", 0.005, "runtime", "s"),
+        ("device_peak_allocated", 2_000_000_000, "memory", "B"),
+    ]:
+        row = copy.deepcopy(base_row)
+        row.update(id=metric, metric=metric, axis=axis, unit=unit, measurement={metric: value})
+        headlines.doc["records"].append(row)
+    # Same configuration, different device: the selector must replace all values.
+    for original in list(headlines.doc["records"]):
+        row = copy.deepcopy(original)
+        row["id"] += "-gpu"
+        row["identity"]["device"] = "gpu"
+        row["measurement"][row["metric"]] *= 2
+        headlines.doc["records"].append(row)
+    # A distinct compile-only setup remains a distinct selectable configuration.
+    compile_setup = copy.deepcopy(base_setup)
+    compile_setup["id"] = "compile-only"
+    compile_setup["evidence"]["path"] = "results/compile/jax.json"
+    headlines.doc["setups"].append(compile_setup)
+    compile_row = copy.deepcopy(base_row)
+    compile_row.update(
+        id="compile-only-row",
+        setup_id="compile-only",
+        axis="compile",
+        metric="full_pipeline.compile",
+        measurement={"full_pipeline.compile": 7},
+    )
+    headlines.doc["records"].append(compile_row)
+    other_instrument = copy.deepcopy(base_setup)
+    other_instrument.update(id="euclid-fixture", instrument="euclid")
+    headlines.doc["setups"].append(other_instrument)
+    other_row = copy.deepcopy(base_row)
+    other_row.update(
+        id="euclid-runtime", setup_id=other_instrument["id"], measurement={"single_call": 0.25}
+    )
+    headlines.doc["records"].append(other_row)
+    (destination / "headlines.html").write_text(board.render_html([headlines]))
+
+    # Two verified shards with delayed transport exercise rapid selection changes.
+    async_headlines = copy.deepcopy(headlines)
+    async_headlines.doc["evidence_shards"] = []
+    for index, setup in enumerate(headlines.doc["setups"]):
+        detail = copy.deepcopy(headlines.doc)
+        detail["setups"] = [setup]
+        detail["records"] = [r for r in detail["records"] if r["setup_id"] == setup["id"]]
+        raw = json.dumps(detail).encode()
+        name = "catalogue/shards/" + str(index + 1) * 20 + ".json"
+        (destination / name).write_bytes(raw)
+        async_headlines.doc["evidence_shards"].append(
+            {
+                "setup_id": setup["id"],
+                "path": name,
+                "sha256": hashlib.sha256(raw).hexdigest(),
+                "records": len(detail["records"]),
+            }
+        )
+    (destination / "async-headlines.html").write_text(board.render_html([async_headlines]))
+
     grouped = copy.deepcopy(inline)
     record = grouped.doc["records"][0]
     grouped.doc["records"] = []
