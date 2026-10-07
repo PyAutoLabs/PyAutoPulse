@@ -1,5 +1,6 @@
 // npm install --no-save --no-package-lock playwright@1.63.0
 // npx playwright install chromium && node tests/browser_setup.cjs
+require("./measurement_presentation.cjs");
 const { chromium } = require("playwright");
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
@@ -325,6 +326,148 @@ const { execFileSync } = require("node:child_process");
       path: "tmp/browser/real-breakdown.png",
       fullPage: true,
     });
+    await page.goto(
+      base +
+        "/readable.html?view=model#instance=lens&dataset=imaging&model=delaunay&axis=breakdown",
+    );
+    await page.waitForSelector(".metric-value", { state: "attached" });
+    const mainRows = page.locator(
+      '[data-axis="breakdown"] > .metric-list > .metric-row',
+    );
+    assert.deepEqual(
+      await mainRows.evaluateAll((rows) => rows.map((r) => r.dataset.metric)),
+      [
+        "component_total",
+        "steps.Curvature matrix (F)",
+        "steps.Regularized reconstruction",
+        "steps.Data vector (D)",
+      ],
+    );
+    assert.deepEqual(
+      await mainRows
+        .locator(".bar")
+        .evaluateAll((bars) => bars.map((b) => b.style.width)),
+      ["100%", "50%", "30%", "10%"],
+    );
+    assert.equal(
+      await page.locator(".timing-diagnostics").getAttribute("open"),
+      null,
+    );
+    assert.equal(
+      await page.locator(".timing-diagnostics .metric-row").count(),
+      2,
+    );
+    assert(
+      (await mainRows.nth(2).textContent()).includes(
+        "Solve for the source brightness",
+      ),
+    );
+    assert.equal(
+      await page.locator('a[href*="likelihood_runtime_numba.py"]').count(),
+      0,
+    );
+    await page.reload();
+    assert(
+      (await page.locator('[data-axis="breakdown"]').getAttribute("open")) !==
+        null,
+    );
+    await page.goto(
+      base +
+        "/readable.html?view=model#instance=lens&dataset=imaging&model=delaunay&implementation=numba",
+    );
+    await page.waitForSelector(".metric-value", { state: "attached" });
+    assert(
+      (await page.locator('[data-id="results"] h2').textContent()).includes(
+        "Delaunay (Numba)",
+      ),
+    );
+    assert.equal(
+      await page.locator('[data-id="configuration"] option').count(),
+      1,
+    );
+    assert.equal(
+      await page.locator('[data-id="configuration"]').inputValue(),
+      "numba-cpu",
+    );
+    assert.equal(
+      await page.locator('a[href$="likelihood_runtime.py"]').count(),
+      0,
+    );
+    assert.equal(
+      await page.locator('a[href$="likelihood_runtime_numba.py"]').count(),
+      1,
+    );
+    assert.equal(
+      await page.locator(".metric-value").getAttribute("data-value"),
+      "0.4",
+    );
+    await page.goto(
+      base +
+        "/readable.html?view=model#instance=lens&dataset=imaging&model=delaunay&setup=numba-cpu",
+    );
+    await page.waitForSelector(".metric-value", { state: "attached" });
+    assert(
+      new URLSearchParams(new URL(page.url()).hash.slice(1)).get(
+        "implementation",
+      ) === "numba",
+    );
+    await page.goto(base + "/readable.html");
+    assert.equal(
+      await page.locator('a.model-choice[data-implementation="numba"]').count(),
+      1,
+    );
+    assert.equal(
+      await page.locator('a.model-choice[data-implementation="jax"]').count(),
+      1,
+    );
+    assert.equal(
+      await page
+        .locator('a.model-choice[data-implementation="numba"]')
+        .getAttribute("target"),
+      "_blank",
+    );
+    await page.goto(
+      base +
+        "/diagnostic-isolation.html?view=model#instance=lens&dataset=imaging&model=delaunay&axis=breakdown",
+    );
+    await page.waitForSelector(".metric-value", { state: "attached" });
+    assert.equal(
+      await page
+        .locator(
+          '[data-axis="breakdown"] > .metric-list [data-metric="component_total"]',
+        )
+        .count(),
+      0,
+    );
+    assert.equal(
+      await page
+        .locator(
+          '[data-axis="breakdown"] > .metric-list [data-metric="reconstruction.jit.steady_per_call_s"]',
+        )
+        .count(),
+      1,
+    );
+    assert(
+      (await page.locator('[data-axis="breakdown"]').textContent()).includes(
+        "Component total not recorded",
+      ),
+    );
+    await page
+      .locator('[data-metric="steps.Regularized reconstruction"] summary')
+      .click();
+    assert(
+      await page
+        .locator('[data-metric="steps.Regularized reconstruction"] code')
+        .isVisible(),
+    );
+    for (const width of [390, 1280]) {
+      await page.setViewportSize({ width, height: 1000 });
+      assert(
+        await page.evaluate(
+          () => document.documentElement.scrollWidth <= window.innerWidth,
+        ),
+      );
+    }
     assert.deepEqual(errors, []);
     console.log(
       "Browser checks passed: new tabs, filtering, scales, transport, navigation and responsive layout",

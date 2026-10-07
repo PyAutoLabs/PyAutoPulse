@@ -84,6 +84,55 @@ def write(destination):
     scaled.doc["records"].append(runtime)
     (destination / "scaling.html").write_text(board.render_html([scaled]))
 
+    readable = copy.deepcopy(inline)
+    readable.doc["records"] = []
+    original = inline.doc["records"][1]
+    for metric, value in [
+        ("steps.Regularized reconstruction", 0.03),
+        ("setup_prefix_8.jit.steady_per_call_s", 0.2),
+        ("steps.Data vector (D)", 0.01),
+        ("component_total", 0.1),
+        ("steps.Curvature matrix (F)", 0.05),
+        ("reconstruction.jit.steady_per_call_s", 0.03),
+    ]:
+        row = copy.deepcopy(original)
+        row.update(id=metric, metric=metric, measurement={metric: value})
+        row["identity"]["backend"] = "cpu"
+        readable.doc["records"].append(row)
+    readable.doc["navigation"] = [
+        {
+            "dataset": "imaging",
+            "model": "delaunay",
+            "category": "scientific_entrypoint",
+            "path": "scripts/imaging/delaunay/likelihood_runtime" + suffix + ".py",
+        }
+        for suffix in ("", "_numba")
+    ]
+    numba = copy.deepcopy(readable.doc["setups"][0])
+    numba["id"] = "numba-cpu"
+    numba["evidence"]["path"] = "results/delaunay_numba.json"
+    readable.doc["setups"].append(numba)
+    numba_row = copy.deepcopy(inline.doc["records"][0])
+    numba_row.update(
+        id="numba-runtime",
+        setup_id=numba["id"],
+        metric="direct_call",
+        measurement={"direct_call": 0.4},
+    )
+    numba_row["identity"]["backend"] = "cpu"
+    numba_row["evidence"] = numba["evidence"]
+    readable.doc["records"].append(numba_row)
+    (destination / "readable.html").write_text(board.render_html([readable]))
+
+    isolated = copy.deepcopy(readable)
+    isolated.doc["records"] = [
+        r for r in isolated.doc["records"] if r["metric"] != "component_total"
+    ]
+    for row in isolated.doc["records"]:
+        if row["metric"] == "reconstruction.jit.steady_per_call_s":
+            row["run_id"] = "independent-probe"
+    (destination / "diagnostic-isolation.html").write_text(board.render_html([isolated]))
+
     filtered = copy.deepcopy(inline)
     original_setup = filtered.doc["setups"][0]
     original_records = copy.deepcopy(filtered.doc["records"])
