@@ -65,7 +65,8 @@ def test_control_room_precedes_measurements_and_escapes():
     ):
         # Check content order independently of the section navigation labels.
         if "<main>" in text:
-            text = text.split("<main>", 1)[1]
+            assert text.index("Profiling Check In") < text.index('class="board-nav"')
+            text = "Profiling Check In" + text.split("<main>", 1)[1]
         assert (
             text.index("Profiling Check In")
             < text.index("Active campaigns")

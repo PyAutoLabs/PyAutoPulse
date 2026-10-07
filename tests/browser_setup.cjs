@@ -164,8 +164,28 @@ const { execFileSync } = require("node:child_process");
     await panel
       .locator("[data-orchestration-preview]")
       .evaluate((el) => (el.open = false));
+    // Major sections start collapsed (PyAutoBrain#490); nav cards reveal them.
+    assert.deepEqual(
+      await page
+        .locator("details.board-section")
+        .evaluateAll((nodes) => nodes.map((node) => node.open)),
+      [false, false],
+    );
+    assert.equal(await page.locator("[data-open]").first().isVisible(), false);
+    await page.locator('.board-nav-card[href="#campaigns"]').click();
+    await page.waitForFunction(
+      () =>
+        document.getElementById("campaigns").closest("details.board-section")
+          .open,
+    );
     await page.locator("[data-open]").first().click();
     assert.equal(await page.locator(".campaign-detail[open]").count(), 1);
+    await page.locator('.board-nav-card[href="#evidence"]').click();
+    await page.waitForFunction(
+      () =>
+        document.getElementById("evidence").closest("details.board-section")
+          .open,
+    );
     await choose();
     await root.locator(".metric-value").first().waitFor();
     assert.equal(
@@ -469,6 +489,10 @@ const { execFileSync } = require("node:child_process");
     const nojs = await browser.newContext({ javaScriptEnabled: false });
     const fallback = await nojs.newPage();
     await fallback.goto(base);
+    // Native disclosures still open without JavaScript.
+    await fallback
+      .locator("details.board-section:has(#evidence) > summary")
+      .click();
     await fallback
       .getByText("Original setup evidence (JavaScript disabled)", {
         exact: true,
