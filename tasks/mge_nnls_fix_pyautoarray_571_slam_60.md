@@ -23,6 +23,13 @@ The original task below is retained verbatim. Current scheduling state lives in 
 - Three later probes timed out: shared mirror /mnt/ral/jnightin/PyAuto HEAD/tag UNVERIFIED.
 - Human decision (same day, in chat): **never** HPCPullPyAuto the shared mirror while euclid_dr1 depends on it. Phase 3 runs from a private RAL checkout at tag 2026.10.7.1 (contains PyAutoArray#595) with its own environment; Nerves at that tag excludes jax 0.10.* and RAL has jax 0.10.2, so the private env needs a compliant jax. Status → `ready`; compute for the A100 rows still needs separate authorization.
 
+### Execution 2026-10-07 — phase 3a shipped
+
+- Human approved the phase-3a plan and the A100 job in chat; issue [autolens_profiling#393](https://github.com/PyAutoLabs/autolens_profiling/issues/393), PR [#394](https://github.com/PyAutoLabs/autolens_profiling/pull/394) merged 2026-10-07T21:18Z (`a55dcacb`).
+- Private base `/mnt/ral/jnightin/PyAuto_wt/linear-solver-p3/` at tag 2026.10.7.1 (Nerves c5ade605, Fit 710f4b34, Array ccddfba6, Galaxy b4946b8a, Lens b6bf543c); A100 job 397475 on euclid-ral-gpu-1, 1:04, jax/jaxlib 0.10.2; shared mirror untouched.
+- Parity (81 systems, fp64, vs stored fnnls references): released `pdip_raw` CPU vs A100 max |Δ flux_inactive_rel| 5.4e-14, max |Δ amp_rel_max_sig| 4.0e-10, iterations identical 81/81; inadmissible under the pre-registered rule on both devices (phase-2 reasons). `pdip_jacobi` diverges 29 (CPU) vs 19 (A100); `pdip_raw_tol_jaxnnls` flips one flag at the cap. Median warm wall (context only): 0.88 ms CPU, 3.96 ms A100 unbatched.
+- Record: PyAutoMind `complete/2026/10/linear-solver-p3a-a100-parity.md`. Phase 3b draft: `draft/research/autolens_profiling/linear_solver_phase3b_gpu_timing_cell.md`. Status → `active` (3b pending).
+
 ---
 
 # Linear-solver programme phase 3: GPU/vmap/A100 timing and parity rows for the solver corpus

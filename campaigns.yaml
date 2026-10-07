@@ -56,12 +56,12 @@ campaigns:
   evidence: https://github.com/PyAutoLabs/autolens_profiling/blob/719459fefb40c7e5be157f652818dbf923830557/wiki/campaigns/interferometer_likelihood.md
 - id: linear-solver
   title: Linear-solver accuracy and cost
-  status: ready
+  status: active
   updated: '2026-10-07'
-  next: 'Human decision 2026-10-07: the shared RAL mirror /mnt/ral/jnightin/PyAuto is NEVER synced (HPCPullPyAuto) while
-    euclid_dr1 depends on it. Phase 3 GPU/vmap parity and timing run from a PRIVATE checkout at tag 2026.10.7.1 (contains
-    PyAutoArray#595) with its own environment; note Nerves at that tag excludes jax 0.10.*, RAL has jax 0.10.2. Queue
-    was empty at ~18:40Z (one probe); mirror HEAD/tag unverified and no longer needed.'
+  next: 'Phase 3a SHIPPED 2026-10-07: autolens_profiling#394 merged 21:18Z (a55dcacb), issue #393 closed. A100 job 397475
+    from a PRIVATE 2026.10.7.1 checkout (shared mirror untouched, human rule): released pdip_raw CPU vs A100 parity
+    max |d flux_inactive_rel| 5.4e-14, iterations identical 81/81; still inadmissible under the pre-registered rule on
+    both devices. Next: phase 3b GPU/vmap timing cell (Mind draft linear_solver_phase3b_gpu_timing_cell.md) via start_dev.'
   evidence: https://github.com/PyAutoLabs/autolens_profiling/blob/719459fefb40c7e5be157f652818dbf923830557/wiki/campaigns/linear_solver_accuracy.md
 - id: imaging
   title: Production imaging and likelihood breakdown
@@ -199,13 +199,14 @@ tasks:
 - id: mge_nnls_fix_pyautoarray_571_slam_60
   campaign: linear-solver
   title: 'Linear-solver programme phase 3: GPU/vmap/A100 timing and parity rows for the solver corpus'
-  status: ready
+  status: active
   priority: medium
   path: tasks/mge_nnls_fix_pyautoarray_571_slam_60.md
   updated: '2026-10-07'
-  next: 'Human decision 2026-10-07: do not HPCPullPyAuto the shared mirror (euclid_dr1 needs it). Next bounded step:
-    plan the phase-3 A100 cells from a private RAL checkout at tag 2026.10.7.1 with a jax that satisfies Nerves
-    (jax 0.10.* excluded; RAL has 0.10.2), then request compute authorization for the parity/timing rows.'
+  issue: https://github.com/PyAutoLabs/autolens_profiling/issues/393
+  next: 'Phase 3a (parity) shipped 2026-10-07 in autolens_profiling#394; Mind record complete/2026/10/linear-solver-p3a-a100-parity.md.
+    Remaining: phase 3b timing cell (single/vmap16/vmap50, jacobi vs raw, compile separate) from the private RAL base
+    /mnt/ral/jnightin/PyAuto_wt/linear-solver-p3 — Mind draft filed, start_dev when prioritised; A100 rows need compute authorization.'
   evidence: https://github.com/PyAutoLabs/PyAutoArray/pull/595
 - id: autofit_profiling_bootstrap
   campaign: autofit
