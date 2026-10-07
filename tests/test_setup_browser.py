@@ -65,7 +65,7 @@ def test_legacy_and_failed_capture_remain_accessible():
     page = board.render_html(
         [replace(snapshot, outcome="unavailable", cached=True, errors=["offline"])]
     )
-    assert "capture, qualification and legacy diagnostics" in page
+    assert "capture, qualification and legacy diagnostics" not in page
     assert "cached" in page.lower()
     assert 'data-setup-browser="lens"' in page
     assert "Original setup evidence (JavaScript disabled)" in page

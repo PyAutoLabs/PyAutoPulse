@@ -65,7 +65,7 @@
 }
 .selectors {
   display: grid;
-  grid-template-columns: 1fr 2fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 2fr);
   gap: 0.8rem;
   margin: 1rem 0;
 }
@@ -113,7 +113,7 @@
   padding: 0;
 }
 .metric-row {
-  padding: 0.65rem 0;
+  padding: 0.25rem 0;
   border-bottom: 1px solid var(--line);
 }
 .metric-title {
@@ -131,8 +131,8 @@
   font-weight: 700;
 }
 .bar-track {
-  height: 0.45rem;
-  margin: 0.45rem 0;
+  height: 0.3rem;
+  margin: 0.2rem 0;
   border-radius: 4px;
   background: var(--line);
   overflow: hidden;
@@ -217,31 +217,33 @@ button.retry {
   padding-top: 0.8rem;
 }
 
-.measurement-choices {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
-  gap: 0.65rem;
+.model-choice {
+  box-sizing: border-box;
+  text-decoration: none;
 }
-.measurement-choice {
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  padding: 0.65rem;
+.selectors > label {
+  min-width: 0;
 }
-.measurement-choice p {
-  margin: 0.4rem 0 0;
+.scale-caption {
+  margin: 0.4rem 0;
 }
-.measurement-choice button {
-  width: 100%;
-  min-height: 2.75rem;
-  padding: 0.45rem;
-  font: inherit;
-  cursor: pointer;
-  color: var(--fg);
-  background: var(--bg);
-  border: 1px solid var(--line);
-  border-radius: 6px;
+.metric-list {
+  margin: 0.4rem 0;
 }
-.measurement-choice button[aria-pressed="true"] {
-  border-color: var(--accent);
-  font-weight: 700;
+.model-page header,
+.model-page .orchestration-panel,
+.model-page .board-nav,
+.model-page .board-section:not(.model-section),
+.model-page .model-section > summary,
+.model-page .model-section > h2,
+.model-page #orchestration-pulse {
+  display: none;
+}
+.model-page .model-section {
+  border: 0;
+  padding: 0;
+}
+.model-page [data-id="results"] {
+  border: 0;
+  margin-top: 0;
 }

@@ -204,7 +204,7 @@ def test_no_league_table_across_projects(lens, web, tmp_path):
     for word in ("fastest", "slowest", "league table", "winner", "verdict:", "release-ready"):
         assert word not in md
     html = board.render_html([s], NOW)
-    assert "<title>PyAutoPulse dashboard</title>" in html and "data-age-from=" in html
+    assert "<title>PyAutoPulse dashboard</title>" in html and "data-refreshed-at=" in html
 
 
 def test_capture_freshness_is_conservative(lens, web, tmp_path):

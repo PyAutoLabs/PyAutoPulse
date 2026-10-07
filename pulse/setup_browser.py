@@ -40,7 +40,7 @@ def render(snapshot):
     payload = {
         "catalogue": doc,
         "instance": instance.instance,
-        "label": instance.repo.removesuffix("_profiling").replace("autolens", "AutoLens"),
+        "label": instance.repo.removesuffix("_profiling").replace("autolens", "PyAutoLens"),
         "repo": instance.github_url,
         "commit": snapshot.commit,
         "shard_base": f"https://raw.githubusercontent.com/{instance.github}/{snapshot.commit}/{instance.summary_path.rsplit('/', 1)[0]}/",
