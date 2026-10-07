@@ -191,7 +191,137 @@
       return "diagnostic";
     return "main";
   }
-  const api = { implementation, describe, category };
+  // Explicit producer keys only: a component sum, first call, compiler memory
+  // estimate or total batch wall time is never a likelihood headline.
+  const headlineMetrics = [
+    {
+      id: "total",
+      label: "Likelihood Run Time Total",
+      axis: "runtime",
+      unit: "s",
+      keys: [
+        "single_jit_block",
+        "single_jit_median",
+        "cube_single_jit",
+        "single_call",
+        "direct_call",
+        "full_call.per_call_s",
+        "full_pipeline.per_call_s",
+        "full_call.mean_s",
+        "full_pipeline.mean_s",
+        "full_call.median_s",
+        "full_pipeline.median_s",
+      ],
+    },
+    {
+      id: "batched",
+      label: "Likelihood Run Time Batched",
+      axis: "runtime",
+      unit: "s",
+      keys: ["vmap.per_call", "batch_per_call"],
+    },
+    {
+      id: "compile",
+      label: "JAX Compile Time",
+      axis: "compile",
+      unit: "s",
+      keys: ["full_pipeline.compile", "cold_compile", "compile"],
+    },
+    {
+      id: "vram",
+      label: "VRAM Use",
+      axis: "memory",
+      unit: "GB",
+      keys: ["device_peak_allocated"],
+    },
+    {
+      id: "memory",
+      label: "Memory Use",
+      axis: "memory",
+      unit: "GB",
+      keys: ["host_peak_rss"],
+    },
+  ];
+  const memoryUnits = {
+    B: 1e-9,
+    bytes: 1e-9,
+    KiB: 1024 / 1e9,
+    MiB: 1024 ** 2 / 1e9,
+    GiB: 1024 ** 3 / 1e9,
+    kB: 1e-6,
+    MB: 1e-3,
+    GB: 1,
+  };
+  const canonical = (value) =>
+    JSON.stringify(value, (_, v) =>
+      v && typeof v === "object" && !Array.isArray(v)
+        ? Object.fromEntries(
+            Object.entries(v).sort(([a], [b]) => a.localeCompare(b)),
+          )
+        : v,
+    );
+  function headlines(setup, records, backend = implementation(setup, records)) {
+    const definitions = headlineMetrics.filter(
+      (d) => backend !== "numba" || !["compile", "vram"].includes(d.id),
+    );
+    const candidates = definitions.map((d) =>
+      records.filter(
+        (r) =>
+          r.setup_id === setup.id &&
+          r.axis === d.axis &&
+          d.keys.includes(r.metric) &&
+          (d.unit === "s"
+            ? r.unit === "s"
+            : Object.hasOwn(memoryUnits, r.unit)) &&
+          Number.isFinite(r.measurement?.[r.metric]) &&
+          r.measurement[r.metric] >= 0,
+      ),
+    );
+    // A headline must not silently assemble different runs or hardware/software
+    // identities into a synthetic result. Keep those observations in details.
+    const cohorts = new Set(
+      candidates
+        .flat()
+        .map((r) => canonical([r.run_id, r.identity, r.provenance?.host])),
+    );
+    return definitions.map((d, i) => {
+      const rows = candidates[i];
+      const result = { ...d, status: "Not measured yet" };
+      if (!rows.length) {
+        if (d.id === "batched" && backend === "numba")
+          result.status = "Not applicable";
+        return result;
+      }
+      if (cohorts.size > 1)
+        return { ...result, status: "Multiple runs — see details" };
+      const key = d.keys.find((key) => rows.some((r) => r.metric === key));
+      const selected = rows.filter((r) => r.metric === key);
+      if (selected.length !== 1)
+        return { ...result, status: "Multiple measurements — see details" };
+      const record = selected[0];
+      const value =
+        record.measurement[key] *
+        (d.unit === "GB" ? memoryUnits[record.unit] : 1);
+      const batch = ["vmap_batch", "vmap_batch_size", "batch_size"]
+        .map((key) => setup.configuration?.[key]?.value)
+        .find((n) => Number.isFinite(n) && n > 0);
+      const note =
+        d.id === "batched"
+          ? "Per likelihood" +
+            (batch ? ` · batch size ${batch}` : " · batch size not recorded")
+          : d.id === "memory"
+            ? "Peak host RSS"
+            : d.id === "vram"
+              ? "Peak device allocation"
+              : d.id === "compile" &&
+                  setup.configuration?.transform?.value === "vmap"
+                ? "Batched compilation" +
+                  (batch ? ` · batch size ${batch}` : "")
+                : record.method?.statistic || "";
+      return { ...result, status: null, value, record, note };
+    });
+  }
+  const api = { implementation, describe, category, headlines };
   globalThis.PulsePresentation = api;
   if (typeof module !== "undefined") module.exports = api;
 })();

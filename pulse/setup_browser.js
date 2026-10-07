@@ -195,17 +195,86 @@
       ];
     }
     function configurationLabel(s) {
-      const axisNames = axesFor(s)
-        .map((a) => axes[a])
-        .join(" + ");
       const pixels = s.configuration.source_pixels?.value;
-      return [
-        "float64",
-        pixels == null ? null : pixels + " source pixels",
-        axisNames,
-      ]
+      return [pixels == null ? null : pixels + " source pixels", "float64"]
         .filter(Boolean)
-        .join(" · ");
+        .join(" - ");
+    }
+    function configurationOptions(variants) {
+      const options = variants.map((s) => {
+        let text = configurationLabel(s);
+        if (
+          variants.filter((other) => configurationLabel(other) === text)
+            .length > 1
+        ) {
+          const detail = axesFor(s)
+            .filter((axis) => axis !== "runtime")
+            .map((axis) => axes[axis]);
+          for (const key of [
+            "transform",
+            "solver",
+            "vmap_batch_size",
+            "batch_size",
+          ]) {
+            const value = s.configuration[key]?.value;
+            if (
+              value != null &&
+              variants.some(
+                (other) => other.configuration[key]?.value !== value,
+              )
+            )
+              detail.push(`${label(key)}: ${value}`);
+          }
+          if (detail.length) text += " — " + detail.join(" · ");
+        }
+        return [s.id, text];
+      });
+      // Keep otherwise indistinguishable evidence choices selectable without
+      // changing their IDs or treating them as one configuration.
+      return options.map(([id, text]) => [
+        id,
+        options.filter(([, other]) => other === text).length > 1
+          ? text +
+            " — " +
+            variants
+              .find((s) => s.id === id)
+              .evidence.path.split("/")
+              .at(-1)
+          : text,
+      ]);
+    }
+    function headlinePanel(parent, setup, records, message) {
+      parent.replaceChildren();
+      const metrics = presentation.headlines(
+        setup || {},
+        records,
+        state.implementation,
+      );
+      const list = append(parent, "dl", "", "headline-list");
+      for (const metric of metrics) {
+        const row = append(list, "div", "", "headline-row");
+        row.dataset.headline = metric.id;
+        append(row, "dt", metric.label);
+        const cell = append(row, "dd");
+        const text = message || metric.status;
+        const value = append(
+          cell,
+          "strong",
+          text || Number(metric.value.toPrecision(4)) + " " + metric.unit,
+          "headline-value",
+        );
+        if (!text) {
+          value.dataset.value = String(metric.value);
+          value.dataset.unit = metric.unit;
+          value.title = `Recorded: ${metric.record.measurement[metric.record.metric]} ${metric.record.unit} · ${metric.record.metric} · Run: ${metric.record.run_id}`;
+          if (metric.note) append(cell, "span", metric.note, "headline-note");
+          const provenance = append(cell, "span", "", "headline-note");
+          if (metric.record.evidence?.path)
+            link(provenance, metric.record.evidence.path, "Source");
+          if (!metric.record.provenance?.qualified)
+            append(provenance, "span", " · Unqualified measurement");
+        }
+      }
     }
 
     async function verified(path, expected) {
@@ -856,7 +925,7 @@
             axis,
           }),
       );
-      const configOptions = variants.map((s) => [s.id, configurationLabel(s)]);
+      const configOptions = configurationOptions(variants);
       if (archived)
         configOptions.unshift([
           requested.id,
@@ -870,6 +939,10 @@
         setup?.id || "",
         (value) => route({ ...state, setup: value }),
       );
+      const headline = append(results, "section", "", "headline-metrics");
+      headline.setAttribute("aria-label", "Headline measurements");
+      headline.setAttribute("aria-live", "polite");
+      headlinePanel(headline, setup, [], setup ? "Loading…" : null);
       if (!setup) {
         append(
           results,
@@ -888,9 +961,11 @@
       const display = (allRecords) => {
         const records = allRecords.filter(
           (r) =>
+            r.setup_id === setup.id &&
             (!device || r.identity.device === device) &&
             (archived || r.identity.precision === "float64"),
         );
+        headlinePanel(headline, setup, records);
         panels(records, variants);
         advice(setup);
         evidence(setup, records);
@@ -941,6 +1016,7 @@
         if (ticket !== generation) return;
         status.textContent = "Evidence unavailable. " + error.message;
         status.className = "status-error";
+        headlinePanel(headline, setup, [], "Evidence unavailable");
         const retry = append(results, "button", "Retry evidence", "retry");
         retry.type = "button";
         retry.onclick = () => {

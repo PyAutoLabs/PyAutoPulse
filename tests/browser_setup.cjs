@@ -45,6 +45,7 @@ const { execFileSync } = require("node:child_process");
     );
     let corrupt = false,
       delay = false,
+      releaseDelayed,
       requests = [];
     await context.route(
       "https://raw.githubusercontent.com/**",
@@ -56,7 +57,10 @@ const { execFileSync } = require("node:child_process");
             url.includes("/" + commit + "/dashboard/catalogue/shards/"),
           ),
         );
-        if (delay) await new Promise((resolve) => setTimeout(resolve, 250));
+        if (delay && url.endsWith("/" + "1".repeat(20) + ".json"))
+          await new Promise((resolve) => {
+            releaseDelayed = resolve;
+          });
         await route.fulfill({
           contentType: "application/json",
           body: corrupt
@@ -86,6 +90,8 @@ const { execFileSync } = require("node:child_process");
         model: "delaunay",
         ...extra,
       });
+    const headlineValue = (target, id) =>
+      target.locator(`[data-headline="${id}"] .headline-value`);
     await page.goto(base);
     assert.equal(
       await page
@@ -123,6 +129,22 @@ const { execFileSync } = require("node:child_process");
         .locator(".selectors > label")
         .evaluateAll((els) => els.map((e) => e.firstChild.textContent)),
       ["Instrument", "Device", "Configuration"],
+    );
+    assert.equal(
+      await detail.locator(".selectors + .headline-metrics").count(),
+      1,
+    );
+    assert.equal(await headlineValue(detail, "total").textContent(), "0.05 s");
+    assert(await headlineValue(detail, "total").isVisible());
+    assert.equal(
+      await headlineValue(detail, "vram").textContent(),
+      "Not measured yet",
+    );
+    assert.equal(
+      await detail
+        .locator('[data-id="configuration"] option:checked')
+        .textContent(),
+      "1500 source pixels - float64",
     );
     assert.equal(
       await detail
@@ -237,14 +259,101 @@ const { execFileSync } = require("node:child_process");
         .evaluateAll((els) => els.map((e) => e.style.width)),
       ["40%", "20%"],
     );
+    assert.match(
+      await headlineValue(page, "total").textContent(),
+      /Multiple runs/,
+    );
+
+    // All headline fields are visible and are replaced when any selector changes.
+    await page.goto(modelURL("/headlines.html"));
+    assert.equal(await headlineValue(page, "total").textContent(), "0.05 s");
+    assert.equal(await headlineValue(page, "batched").textContent(), "0.005 s");
+    assert.match(
+      await page.locator('[data-headline="batched"]').textContent(),
+      /batch size 16/,
+    );
+    assert.equal(await headlineValue(page, "vram").textContent(), "2 GB");
+    assert.match(
+      await page.locator('[data-headline="memory"]').textContent(),
+      /Peak host RSS/,
+    );
+    assert(await page.locator('[data-headline="total"] a').isVisible());
+    await page.selectOption('[data-id="device"]', "gpu");
+    assert.equal(await headlineValue(page, "total").textContent(), "0.1 s");
+    assert.equal(await headlineValue(page, "vram").textContent(), "4 GB");
+    await page.selectOption('[data-id="device"]', "cpu");
+    const configLabels = await page
+      .locator('[data-id="configuration"] option')
+      .allTextContents();
+    assert.equal(new Set(configLabels).size, configLabels.length);
+    assert(configLabels.every((text) => !text.includes("Runtime")));
+    await page.selectOption('[data-id="configuration"]', "compile-only");
+    assert.equal(await headlineValue(page, "compile").textContent(), "7 s");
+    assert.equal(
+      await headlineValue(page, "total").textContent(),
+      "Not measured yet",
+    );
+    assert.equal(
+      await headlineValue(page, "memory").textContent(),
+      "Not measured yet",
+    );
+    await page.selectOption('[data-id="instrument"]', "euclid");
+    assert.equal(await headlineValue(page, "total").textContent(), "0.25 s");
+    assert.equal(
+      await headlineValue(page, "compile").textContent(),
+      "Not measured yet",
+    );
+    await page.goto(
+      modelURL("/headlines.html", {
+        model: "unmeasured",
+        implementation: "jax",
+      }),
+    );
+    assert.equal(await page.locator(".headline-row").count(), 5);
+    assert.equal(
+      await headlineValue(page, "total").textContent(),
+      "Not measured yet",
+    );
+
+    // A late response from the previous selection cannot overwrite a newer one.
+    delay = true;
+    await page.goto(modelURL("/async-headlines.html"));
+    assert.equal(await headlineValue(page, "total").textContent(), "Loading…");
+    await page.selectOption('[data-id="configuration"]', "compile-only");
+    await loaded();
+    assert.equal(await headlineValue(page, "compile").textContent(), "7 s");
+    assert.equal(
+      await headlineValue(page, "total").textContent(),
+      "Not measured yet",
+    );
+    const lateResponse = page.waitForResponse((response) =>
+      response.url().endsWith("/" + "1".repeat(20) + ".json"),
+    );
+    assert(releaseDelayed, "first shard request was held");
+    releaseDelayed();
+    await (await lateResponse).finished();
+    // Allow the obsolete response's digest and render continuation to finish.
+    await page.waitForTimeout(100);
+    assert.equal(await headlineValue(page, "compile").textContent(), "7 s");
+    assert.equal(
+      await headlineValue(page, "total").textContent(),
+      "Not measured yet",
+    );
+    delay = false;
     // Hash mismatch must never display measurements; retry re-verifies immutable bytes.
     corrupt = true;
     await page.goto(modelURL());
     await page.waitForSelector(".status-error");
     assert.equal(await page.locator(".metric-value").count(), 0);
+    assert.equal(
+      await headlineValue(page, "total").textContent(),
+      "Evidence unavailable",
+    );
+    assert.equal(await page.locator(".headline-value[data-value]").count(), 0);
     corrupt = false;
     await page.getByRole("button", { name: "Retry evidence" }).click();
     await page.waitForSelector(".metric-value", { state: "attached" });
+    assert.equal(await headlineValue(page, "total").textContent(), "0.05 s");
     assert(
       requests.every((url) => url.includes("/dashboard/catalogue/shards/")),
     );
@@ -267,6 +376,10 @@ const { execFileSync } = require("node:child_process");
     await page.selectOption('[data-id="device"]', "a100");
     await loaded();
     assert.equal(await page.locator(".metric-value").count(), 0);
+    assert.equal(
+      await headlineValue(page, "total").textContent(),
+      "Not measured yet",
+    );
     assert(
       (await page.locator(".empty").first().textContent()).includes(
         "No float64 results",
@@ -300,6 +413,14 @@ const { execFileSync } = require("node:child_process");
       (await page.locator('[data-id="configuration"] option').count()) <= 4,
     );
     const before = await page.locator('[data-id="configuration"]').inputValue();
+    assert.equal(
+      await headlineValue(page, "total").getAttribute("data-value"),
+      "0.11771118000033312",
+    );
+    assert.equal(
+      await headlineValue(page, "batched").getAttribute("data-unit"),
+      "s",
+    );
     await page.locator('[data-axis="breakdown"] > summary').click();
     await page.waitForFunction(
       (old) =>
@@ -307,6 +428,10 @@ const { execFileSync } = require("node:child_process");
       before,
     );
     await loaded();
+    assert.equal(
+      await headlineValue(page, "total").textContent(),
+      "Not measured yet",
+    );
     assert.equal(
       await page.locator('[data-axis="breakdown"] .metric-value').count(),
       1,
@@ -400,6 +525,17 @@ const { execFileSync } = require("node:child_process");
     assert.equal(
       await page.locator(".metric-value").getAttribute("data-value"),
       "0.4",
+    );
+    assert.equal(await headlineValue(page, "total").textContent(), "0.4 s");
+    assert.equal(
+      await headlineValue(page, "batched").textContent(),
+      "Not applicable",
+    );
+    assert.equal(
+      await page
+        .locator('[data-headline="compile"], [data-headline="vram"]')
+        .count(),
+      0,
     );
     await page.goto(
       base +
