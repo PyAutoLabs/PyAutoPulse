@@ -184,8 +184,18 @@ def test_render_is_deterministic(lens, web, tmp_path):
     s = _view(lens, web, tmp_path, "lens_summary_v1.json")
     board.write([s], tmp_path, now=NOW)
     first = {p.name: p.read_bytes() for p in tmp_path.glob("*.*") if p.is_file()}
-    board.write([ingest.ingest(lens, tmp_path, now="2026-10-03T00:00:00Z")], tmp_path, now=NOW)
+    board.write([s], tmp_path, now=NOW)
     assert {p.name: p.read_bytes() for p in tmp_path.glob("*.*") if p.is_file()} == first
+    fresh = ingest.ingest(lens, tmp_path, now="2026-10-03T00:00:00Z")
+    board.write([fresh], tmp_path, now=NOW)
+    after = {p.name: p.read_bytes() for p in tmp_path.glob("*.*") if p.is_file()}
+    assert after["state.json"] == first["state.json"]
+    assert after["dashboard.md"] == first["dashboard.md"]
+    assert after["dashboard.html"] != first["dashboard.html"]
+    normalize = board.setup_browser.theme().normalize_refresh_stamp
+    assert normalize(after["dashboard.html"].decode()) == normalize(
+        first["dashboard.html"].decode()
+    )
 
 
 def test_no_league_table_across_projects(lens, web, tmp_path):
@@ -195,3 +205,18 @@ def test_no_league_table_across_projects(lens, web, tmp_path):
         assert word not in md
     html = board.render_html([s], NOW)
     assert "<title>PyAutoPulse dashboard</title>" in html and "data-age-from=" in html
+
+
+def test_capture_freshness_is_conservative(lens, web, tmp_path):
+    s = _view(lens, web, tmp_path, "lens_summary_v1.json")
+    html = board.render_html([s])
+    assert 'data-refreshed-at="' + s.refreshed_at + '"' in html
+    assert (
+        "https://github.com/PyAutoLabs/PyAutoPulse/actions/workflows/dashboard_refresh.yml" in html
+    )
+    s.outcome = "unavailable"
+    s.cached = True
+    assert "Last updated unavailable" in board.render_html([s])
+    s.outcome = "ok"
+    s.refreshed_at = None
+    assert "Last updated unavailable" in board.render_html([s])

@@ -533,6 +533,17 @@ def _html_detail(s: Snapshot, now: str | None = None) -> str:
     return "".join(parts)
 
 
+def _captured_at(views):
+    """Oldest successful observation of displayed inputs; failed or missing inputs stay unknown.
+
+    Capture time is separate from producer evidence and content-only state.updated.
+    """
+    if not views or any(v.outcome != "ok" or not v.refreshed_at for v in views):
+        return None
+    times = [summary_mod.parse_utc(v.refreshed_at) for v in views]
+    return min(times) if all(times) else None
+
+
 def render_html(views, now: str | None = None, campaign_data: dict | None = None) -> str:
     now = now or _utc_now()
     shared = setup_browser.theme()
@@ -573,6 +584,7 @@ def render_html(views, now: str | None = None, campaign_data: dict | None = None
         + "<main>"
         + campaigns.render_html(
             campaign_data if campaign_data is not None else campaigns.load(),
+            refreshed_at=_captured_at(views),
             work_links=[
                 {"label": "PyAutoPulse", "href": REPO_URL},
                 *({"label": v.instance.repo, "href": v.instance.github_url} for v in views),
