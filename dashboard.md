@@ -1,6 +1,6 @@
 # PyAutoPulse — profiling dashboard
 
-<!-- pulse-campaigns:66e759935b06701d2728ff708e2b861c308811c049c6fde64c00e4b59ac5de2f -->
+<!-- pulse-campaigns:4e0f23962c43df5cbd5160664b545e7fa49d02359e5cc6aa5b67bb5320be8425 -->
 ## Profiling Check In
 
 <details><summary>Full check-in prompt</summary>
@@ -106,15 +106,15 @@ Reviewed 2026-10-07. Decision matrix complete: last cell merged (autolens_profil
 
 </details>
 
-<details><summary>Linear-solver accuracy and cost — needs-decision</summary>
+<details><summary>Linear-solver accuracy and cost — ready</summary>
 
-Reviewed 2026-10-07. Blocker condition met: squeue -u jnightin showed 0 running, 0 pending at ~18:40Z 2026-10-07 (one probe). The HPCPullPyAuto sync + jax reinstall is a human-authorized action (not done); shared mirror HEAD/tag unverified (later probes timed out). Phase 3 GPU/vmap parity and timing follow the sync.
+Reviewed 2026-10-07. Human decision 2026-10-07: the shared RAL mirror /mnt/ral/jnightin/PyAuto is NEVER synced (HPCPullPyAuto) while euclid_dr1 depends on it. Phase 3 GPU/vmap parity and timing run from a PRIVATE checkout at tag 2026.10.7.1 (contains PyAutoArray#595) with its own environment; note Nerves at that tag excludes jax 0.10.*, RAL has jax 0.10.2. Queue was empty at ~18:40Z (one probe); mirror HEAD/tag unverified and no longer needed.
 
 [Campaign evidence](https://github.com/PyAutoLabs/autolens_profiling/blob/719459fefb40c7e5be157f652818dbf923830557/wiki/campaigns/linear_solver_accuracy.md)
 
 ### Active tasks
 
-- [Linear-solver programme phase 3: GPU/vmap/A100 timing and parity rows for the solver corpus](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/mge_nnls_fix_pyautoarray_571_slam_60.md) — needs-decision: Blocker condition met 2026-10-07 ~18:40Z: squeue -u jnightin showed 0 running, 0 pending (verified once). Human authorizes the HPCPullPyAuto sync (pulls mains) + jax reinstall; mirror HEAD/tag unverified (later probes timed out). Then phase 3 GPU/vmap parity and timing rows.
+- [Linear-solver programme phase 3: GPU/vmap/A100 timing and parity rows for the solver corpus](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/mge_nnls_fix_pyautoarray_571_slam_60.md) — ready: Human decision 2026-10-07: do not HPCPullPyAuto the shared mirror (euclid_dr1 needs it). Next bounded step: plan the phase-3 A100 cells from a private RAL checkout at tag 2026.10.7.1 with a jax that satisfies Nerves (jax 0.10.* excluded; RAL has 0.10.2), then request compute authorization for the parity/timing rows.
 
 </details>
 

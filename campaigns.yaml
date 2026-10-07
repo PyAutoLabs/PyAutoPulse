@@ -56,11 +56,12 @@ campaigns:
   evidence: https://github.com/PyAutoLabs/autolens_profiling/blob/719459fefb40c7e5be157f652818dbf923830557/wiki/campaigns/interferometer_likelihood.md
 - id: linear-solver
   title: Linear-solver accuracy and cost
-  status: needs-decision
+  status: ready
   updated: '2026-10-07'
-  next: 'Blocker condition met: squeue -u jnightin showed 0 running, 0 pending at ~18:40Z 2026-10-07 (one probe).
-    The HPCPullPyAuto sync + jax reinstall is a human-authorized action (not done); shared mirror HEAD/tag unverified
-    (later probes timed out). Phase 3 GPU/vmap parity and timing follow the sync.'
+  next: 'Human decision 2026-10-07: the shared RAL mirror /mnt/ral/jnightin/PyAuto is NEVER synced (HPCPullPyAuto) while
+    euclid_dr1 depends on it. Phase 3 GPU/vmap parity and timing run from a PRIVATE checkout at tag 2026.10.7.1 (contains
+    PyAutoArray#595) with its own environment; note Nerves at that tag excludes jax 0.10.*, RAL has jax 0.10.2. Queue
+    was empty at ~18:40Z (one probe); mirror HEAD/tag unverified and no longer needed.'
   evidence: https://github.com/PyAutoLabs/autolens_profiling/blob/719459fefb40c7e5be157f652818dbf923830557/wiki/campaigns/linear_solver_accuracy.md
 - id: imaging
   title: Production imaging and likelihood breakdown
@@ -198,13 +199,13 @@ tasks:
 - id: mge_nnls_fix_pyautoarray_571_slam_60
   campaign: linear-solver
   title: 'Linear-solver programme phase 3: GPU/vmap/A100 timing and parity rows for the solver corpus'
-  status: needs-decision
+  status: ready
   priority: medium
   path: tasks/mge_nnls_fix_pyautoarray_571_slam_60.md
   updated: '2026-10-07'
-  next: 'Blocker condition met 2026-10-07 ~18:40Z: squeue -u jnightin showed 0 running, 0 pending (verified once).
-    Human authorizes the HPCPullPyAuto sync (pulls mains) + jax reinstall; mirror HEAD/tag unverified (later probes
-    timed out). Then phase 3 GPU/vmap parity and timing rows.'
+  next: 'Human decision 2026-10-07: do not HPCPullPyAuto the shared mirror (euclid_dr1 needs it). Next bounded step:
+    plan the phase-3 A100 cells from a private RAL checkout at tag 2026.10.7.1 with a jax that satisfies Nerves
+    (jax 0.10.* excluded; RAL has 0.10.2), then request compute authorization for the parity/timing rows.'
   evidence: https://github.com/PyAutoLabs/PyAutoArray/pull/595
 - id: autofit_profiling_bootstrap
   campaign: autofit
