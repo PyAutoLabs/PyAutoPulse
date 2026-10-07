@@ -216,3 +216,32 @@ button.retry {
   border-top: 1px solid var(--line);
   padding-top: 0.8rem;
 }
+
+.measurement-choices {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: 0.65rem;
+}
+.measurement-choice {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0.65rem;
+}
+.measurement-choice p {
+  margin: 0.4rem 0 0;
+}
+.measurement-choice button {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.45rem;
+  font: inherit;
+  cursor: pointer;
+  color: var(--fg);
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+.measurement-choice button[aria-pressed="true"] {
+  border-color: var(--accent);
+  font-weight: 700;
+}

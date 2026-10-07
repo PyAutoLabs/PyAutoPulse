@@ -16,6 +16,113 @@
       state = {},
       generation = 0;
     const cache = new Map();
+    const axes = {
+      runtime: "Runtime",
+      breakdown: "Breakdown",
+      compile: "Compilation",
+      memory: "Memory",
+    };
+    const manifestFor = (s) =>
+      (catalogue.evidence_shards || []).find((m) => m.setup_id === s.id);
+    const recordsFor = (s) => {
+      const manifest = manifestFor(s);
+      return (
+        cache.get(manifest?.sha256)?.records ||
+        catalogue.records.filter((r) => r.setup_id === s.id)
+      );
+    };
+    const axesFor = (s) =>
+      manifestFor(s)?.axes || [...new Set(recordsFor(s).map((r) => r.axis))];
+    const hasAxis = (s, axis) => axesFor(s).includes(axis);
+    const devicesFor = (s, axis) =>
+      manifestFor(s)?.axis_devices?.[axis] || [
+        ...new Set(
+          recordsFor(s)
+            .filter((r) => r.axis === axis)
+            .map((r) => r.identity.device || "unknown"),
+        ),
+      ];
+    function rank(s, axis) {
+      if (hasAxis(s, axis)) return s.role === "reference_candidate" ? 0 : 1;
+      return manifestFor(s) ? 2 : s.role === "planned_baseline" ? 4 : 3;
+    }
+    function ordered(setups, axis) {
+      return [...setups].sort(
+        (a, b) =>
+          rank(a, axis) - rank(b, axis) ||
+          configurationLabel(a).localeCompare(configurationLabel(b)) ||
+          a.id.localeCompare(b.id),
+      );
+    }
+    function chooseAxis(setup) {
+      return (
+        Object.keys(axes).find((axis) => hasAxis(setup, axis)) || "runtime"
+      );
+    }
+    function goAxis(axis, device = "") {
+      route({
+        dataset: state.dataset,
+        model: state.model,
+        instrument: state.instrument,
+        axis,
+        device,
+      });
+    }
+    function overview(setups) {
+      const section = append(
+        results,
+        "section",
+        undefined,
+        "measurement-overview",
+      );
+      append(section, "h3", "Available measurements");
+      append(
+        section,
+        "p",
+        "Browse recorded runs by measurement and device. Runs can have different settings and revisions; they are not a combined benchmark.",
+        "axis-note",
+      );
+      const unknown = setups.filter(
+        (s) => manifestFor(s) && !axesFor(s).length,
+      );
+      if (unknown.length)
+        append(
+          section,
+          "p",
+          `${unknown.length} recorded runs have no axis summary; open a run to inspect its evidence.`,
+          "metric-meta",
+        );
+      const grid = append(section, "div", undefined, "measurement-choices");
+      for (const [axis, title] of Object.entries(axes)) {
+        const matches = setups.filter((s) => hasAxis(s, axis));
+        const card = append(grid, "div", undefined, "measurement-choice");
+        const button = append(card, "button", title);
+        button.type = "button";
+        button.dataset.axis = axis;
+        button.setAttribute("aria-pressed", String(state.axis === axis));
+        button.onclick = () => goAxis(axis);
+        append(
+          card,
+          "p",
+          matches.length
+            ? `${matches.length} recorded runs`
+            : unknown.length
+              ? "Axis coverage not recorded"
+              : "No recorded measurements",
+          "metric-meta",
+        );
+        const devices = [
+          ...new Set(matches.flatMap((s) => devicesFor(s, axis))),
+        ].sort();
+        append(
+          card,
+          "p",
+          devices.map(label).join(" · ") ||
+            (matches.length ? "Device breakdown not recorded" : ""),
+          "metric-meta",
+        );
+      }
+    }
     const names = {
       imaging: "Imaging",
       interferometer: "Interferometer",
@@ -316,7 +423,7 @@
         append(d, "p", "Method: " + JSON.stringify(r.method), "metric-meta");
       }
     }
-    function panels(records) {
+    function panels(records, setups) {
       const axes = {
         runtime: [
           "Likelihood runtime",
@@ -338,11 +445,36 @@
       for (const [axis, [title, note]] of Object.entries(axes)) {
         const section = disclosure(results, title);
         section.className = "metric-panel";
-        section.open = axis === "runtime";
+        section.dataset.axis = axis;
+        section.open =
+          axis ===
+          (records.some((r) => r.axis === state.axis)
+            ? state.axis
+            : Object.keys(axes).find((a) => records.some((r) => r.axis === a)));
         append(section, "p", note, "axis-note");
         const rows = records.filter((r) => r.axis === axis);
         if (!rows.length) {
-          append(section, "p", "Not measured for this configuration.", "empty");
+          const available = setups.filter((s) => hasAxis(s, axis));
+          append(
+            section,
+            "p",
+            available.length
+              ? `Not recorded in this run. ${available.length} other runs contain ${label(axis)} measurements; settings may differ.`
+              : setups.some((s) => manifestFor(s) && !axesFor(s).length)
+                ? "Other runs have no axis summary; their measurement coverage is unknown."
+                : "No recorded measurements for this model and instrument.",
+            "empty",
+          );
+          if (available.length) {
+            const browse = append(
+              section,
+              "button",
+              `Browse ${label(axis)} runs`,
+              "retry",
+            );
+            browse.type = "button";
+            browse.onclick = () => goAxis(axis);
+          }
           continue;
         }
         const groups = new Map();
@@ -438,18 +570,55 @@
         );
         item.evidence.forEach((ev) => link(append(d, "p"), ev.path, ev.path));
       }
-      const unbound = (catalogue.unbound_findings || []).filter((f) =>
-        f.evidence.path.includes("/" + setup.dataset + "/"),
+      const findings = catalogue.unbound_findings || [];
+      const unbound = findings.filter((f) =>
+        (f.discovery?.models || []).some(
+          (m) => m.dataset === setup.dataset && m.model === setup.model,
+        ),
       );
+      function findingList(parent, entries) {
+        for (const f of entries) {
+          append(parent, "h4", f.title);
+          append(parent, "p", f.discovery.reason);
+          append(parent, "p", f.reason, "metric-meta");
+          link(append(parent, "p"), f.evidence.path, "Original finding");
+        }
+      }
       if (unbound.length) {
         const other = disclosure(
           d,
-          "Related findings · applicability unverified",
+          `Related model findings · applicability unverified (${unbound.length})`,
         );
-        unbound.forEach((f) => {
-          append(other, "p", f.title + " — " + f.reason);
-          link(append(other, "p"), f.evidence.path, f.evidence.path);
-        });
+        other.className = "related-hazards";
+        findingList(other, unbound);
+      }
+      const shared = findings.filter((f) => f.discovery?.shared);
+      if (shared.length) {
+        const other = disclosure(
+          d,
+          `Shared component and method findings (${shared.length})`,
+        );
+        other.className = "shared-hazards";
+        append(
+          other,
+          "p",
+          "These concern shared components or methods. Their presence here does not establish that this model uses them or that this run is affected.",
+        );
+        findingList(other, shared);
+      }
+      const uncategorized = findings.filter((f) => !f.discovery);
+      if (uncategorized.length) {
+        const other = disclosure(
+          d,
+          `Uncategorized findings (${uncategorized.length})`,
+        );
+        append(
+          other,
+          "p",
+          "Model association and applicability have not been established.",
+        );
+        for (const f of uncategorized)
+          link(append(other, "p"), f.evidence.path, f.title);
       }
       const estimates = (catalogue.static_memory_estimates || []).filter(
         (e) => setup.evidence && e.evidence.path === setup.evidence.path,
@@ -518,7 +687,8 @@
       const instruments = [...new Set(choices.map(instrument))].sort();
       if (
         (state.setup && !choices.some((s) => s.id === state.setup)) ||
-        (state.instrument && !instruments.includes(state.instrument))
+        (state.instrument && !instruments.includes(state.instrument)) ||
+        (state.axis && !Object.hasOwn(axes, state.axis))
       ) {
         append(
           results,
@@ -546,36 +716,83 @@
               choices.find((s) => s.role === "reference_candidate") ||
                 choices[0],
             );
-      const rank = (s) =>
-        s.role === "reference_candidate"
-          ? catalogue.records.some(
-              (r) => r.setup_id === s.id && r.axis === "runtime",
-            )
-            ? 0
-            : 1
-          : s.role === "planned_baseline"
-            ? 3
-            : 2;
-      const variants = choices
-        .filter((s) => instrument(s) === selectedInstrument)
-        .sort(
-          (a, b) =>
-            rank(a) - rank(b) ||
-            configurationLabel(a).localeCompare(configurationLabel(b)),
+      const instrumentSetups = choices.filter(
+        (s) => instrument(s) === selectedInstrument,
+      );
+      const axis =
+        state.axis ||
+        (requested
+          ? chooseAxis(requested)
+          : chooseAxis(ordered(instrumentSetups, "runtime")[0]));
+      const devices = [
+        ...new Set(instrumentSetups.flatMap((s) => devicesFor(s, axis))),
+      ].sort();
+      if (state.device && !devices.includes(state.device)) {
+        append(
+          results,
+          "p",
+          "No recorded device matches this link. Choose a measurement to browse available runs.",
+          "empty",
         );
-      // Baseline is a coverage placeholder, not a fallback claim that archive evidence is accepted.
+        state.instrument = selectedInstrument;
+        overview(instrumentSetups);
+        return;
+      }
+      const device = state.device || "";
+      if (
+        device &&
+        requested &&
+        manifestFor(requested) &&
+        !devicesFor(requested, axis).includes(device)
+      ) {
+        append(
+          results,
+          "p",
+          "The linked run does not record this measurement on the selected device. No substitute measurements are shown.",
+          "empty",
+        );
+        const reset = append(
+          results,
+          "button",
+          "Open the exact run without the device filter",
+          "retry",
+        );
+        reset.type = "button";
+        reset.onclick = () =>
+          route({ ...state, device: "", axis: chooseAxis(requested) });
+        return;
+      }
+      const matches = ordered(
+        instrumentSetups.filter(
+          (s) =>
+            hasAxis(s, axis) &&
+            (!device || devicesFor(s, axis).includes(device)),
+        ),
+        axis,
+      );
+      // Keep explicit baseline/failed selections reachable without calling them measurements.
+      const variants = [
+        ...matches,
+        ...instrumentSetups.filter(
+          (s) => !matches.includes(s) && !axesFor(s).length,
+        ),
+      ];
+      if (requested && !variants.some((s) => s.id === requested.id))
+        variants.unshift(requested);
       const setup = requested || variants[0];
       state = {
         instance: capture.instance,
         dataset: state.dataset,
         model: state.model,
         instrument: selectedInstrument,
-        setup: setup.id,
+        axis,
+        ...(device ? { device } : {}),
+        ...(setup ? { setup: setup.id } : {}),
       };
       history.replaceState(null, "", "#" + new URLSearchParams(state));
-      const fields = append(results, "div", "", "selectors");
+      const instrumentFields = append(results, "div", "", "selectors");
       selector(
-        fields,
+        instrumentFields,
         "instrument",
         "Instrument",
         instruments.map((i) => [
@@ -590,13 +807,47 @@
             instrument: value,
           }),
       );
+      overview(instrumentSetups);
+      const fields = append(results, "div", "", "selectors");
+      selector(
+        fields,
+        "device",
+        "Recorded device",
+        [["", "All recorded devices"], ...devices.map((d) => [d, label(d)])],
+        device,
+        (value) => goAxis(axis, value),
+      );
+      if (!setup) {
+        append(
+          results,
+          "p",
+          "No recorded runs for this measurement. Choose another measurement above.",
+          "empty",
+        );
+        advice({ dataset: state.dataset, model: state.model });
+        evidence({ dataset: state.dataset, model: state.model }, []);
+        return;
+      }
       selector(
         fields,
         "configuration",
         "Configuration / evidence run",
         variants.map((s) => [s.id, configurationLabel(s)]),
         setup.id,
-        (value) => route({ ...state, setup: value }),
+        (value) => {
+          const selected = variants.find((s) => s.id === value);
+          const nextAxis = hasAxis(selected, axis)
+            ? axis
+            : chooseAxis(selected);
+          route({
+            ...state,
+            setup: value,
+            axis: nextAxis,
+            device: devicesFor(selected, nextAxis).includes(device)
+              ? device
+              : "",
+          });
+        },
       );
       const context = append(results, "div", "", "context");
       append(
@@ -642,7 +893,7 @@
             slots.length +
             " measurement slots not measured.",
         );
-        panels([]);
+        panels([], instrumentSetups);
         metadata(setup);
         advice(setup);
         evidence(setup, []);
@@ -654,7 +905,7 @@
       if (!manifest) {
         const inline = catalogue.records.filter((r) => r.setup_id === setup.id);
         if (inline.length) {
-          panels(inline);
+          panels(inline, instrumentSetups);
           metadata(setup);
           qualification(inline);
           advice(setup);
@@ -671,7 +922,7 @@
           failed.map((s) => s.status + ": " + s.reason).join("; ") ||
             "No measured evidence is available.",
         );
-        panels([]);
+        panels([], instrumentSetups);
         metadata(setup);
         advice(setup);
         evidence(setup, []);
@@ -712,7 +963,7 @@
           )
         )
           throw Error("Evidence does not match the selected setup.");
-        panels(shard.records);
+        panels(shard.records, instrumentSetups);
         metadata(setup);
         qualification(shard.records);
         advice(setup);

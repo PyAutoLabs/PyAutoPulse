@@ -34,6 +34,9 @@ const { execFileSync } = require("node:child_process");
     const page = await context.newPage(),
       errors = [];
     page.on("pageerror", (error) => errors.push(error.message));
+    const real = JSON.parse(
+      fs.readFileSync("tests/fixtures/browser_measurements.json"),
+    );
     let corrupt = false,
       delay = false,
       requests = [];
@@ -43,7 +46,9 @@ const { execFileSync } = require("node:child_process");
         const url = route.request().url();
         requests.push(url);
         assert(
-          url.includes("/" + "b".repeat(40) + "/dashboard/catalogue/shards/"),
+          ["b".repeat(40), real.capture_commit].some((commit) =>
+            url.includes("/" + commit + "/dashboard/catalogue/shards/"),
+          ),
         );
         if (delay) await new Promise((resolve) => setTimeout(resolve, 250));
         await route.fulfill({
@@ -51,7 +56,10 @@ const { execFileSync } = require("node:child_process");
           body: corrupt
             ? "{}"
             : fs.readFileSync(
-                path.join(dir, "catalogue/shards/" + "a".repeat(20) + ".json"),
+                path.join(
+                  dir,
+                  "catalogue/shards/" + new URL(url).pathname.split("/").at(-1),
+                ),
               ),
         });
       },
@@ -224,6 +232,238 @@ const { execFileSync } = require("node:child_process");
           `overflow at ${width}/${colorScheme}`,
         );
       }
+    // Legacy batch semantics and different methods must retain separate bar scales.
+    await page.goto(base + "/grouping.html#" + new URL(selected).hash.slice(1));
+    await root.locator(".metric-value").first().waitFor();
+    const runtimePanel = root.locator('.metric-panel[data-axis="runtime"]');
+    assert.equal(await runtimePanel.locator(".metric-list").count(), 4);
+    assert.match(await runtimePanel.innerText(), /Batch wall time/);
+    assert.match(await runtimePanel.innerText(), /Per-replica batch cost/);
+    assert.equal(
+      await runtimePanel
+        .locator(".metric-meta")
+        .filter({ hasText: /Single-call observations/ })
+        .count(),
+      2,
+    );
+    assert.deepEqual(
+      await runtimePanel
+        .locator(".bar")
+        .evaluateAll((ns) => ns.map((n) => n.style.width)),
+      ["100%", "100%", "100%", "100%"],
+    );
+    await root
+      .locator('.measurement-choice button[data-axis="memory"]')
+      .click();
+    await root
+      .getByText("No recorded runs for this measurement.", { exact: false })
+      .waitFor();
+    assert.equal(await root.locator(".metric-value").count(), 0);
+    // Real captured evidence: no reference candidate must still show useful values.
+    const realURL = (params, file = "measurements.html") =>
+      base +
+      "/" +
+      file +
+      "#" +
+      new URLSearchParams({
+        instance: "lens",
+        dataset: "imaging",
+        instrument: "hst",
+        ...params,
+      });
+    const ready = async () =>
+      page.waitForFunction(() => {
+        const results = document.querySelector(
+          '[data-setup-browser="lens"] [data-id="results"]',
+        );
+        return (
+          results &&
+          results.querySelector('[data-id="configuration"]') &&
+          !results.hasAttribute("aria-busy")
+        );
+      });
+    for (const model of ["mge", "rectangular"]) {
+      await page.goto(realURL({ model }));
+      await ready();
+      assert(
+        await root
+          .locator('.metric-panel[data-axis="runtime"][open] .metric-value')
+          .count(),
+      );
+      assert.equal(await root.locator(".measurement-choice button").count(), 4);
+      for (const axis of ["breakdown", "compile", "memory", "runtime"]) {
+        await root
+          .locator('.measurement-choice button[data-axis="' + axis + '"]')
+          .click();
+        const available = real.catalogue.evidence_shards.some(
+          (m) =>
+            m.setup_id.startsWith("imaging/" + model + "/hst/") &&
+            m.axes.includes(axis),
+        );
+        if (!available) {
+          await root
+            .getByText("No recorded runs for this measurement.", {
+              exact: false,
+            })
+            .waitFor();
+          assert.equal(await root.locator(".metric-value").count(), 0);
+          continue;
+        }
+        await ready();
+        const id = await root.locator('[data-id="configuration"]').inputValue();
+        const manifest = real.catalogue.evidence_shards.find(
+          (m) => m.setup_id === id,
+        );
+        assert(manifest.axes.includes(axis));
+        assert(
+          await root
+            .locator(
+              '.metric-panel[data-axis="' + axis + '"][open] .metric-value',
+            )
+            .count(),
+        );
+        const shard = JSON.parse(real.shards[manifest.path]);
+        const values = await root
+          .locator(".metric-value")
+          .evaluateAll((nodes) =>
+            nodes.map((n) => n.dataset.value + " " + n.dataset.unit),
+          );
+        assert.deepEqual(
+          values.sort(),
+          shard.records
+            .map((r) => String(r.measurement[r.metric]) + " " + r.unit)
+            .sort(),
+        );
+      }
+      // Preserve a compatible device filter when choosing another run.
+      const device = await root
+        .locator('[data-id="device"] option')
+        .nth(1)
+        .getAttribute("value");
+      await root.locator('[data-id="device"]').selectOption(device);
+      await ready();
+      const options = await root
+        .locator('[data-id="configuration"] option')
+        .evaluateAll((ns) => ns.map((n) => n.value));
+      assert(options.length >= 2);
+      await root.locator('[data-id="configuration"]').selectOption(options[1]);
+      await ready();
+      assert.equal(
+        await root.locator('[data-id="device"]').inputValue(),
+        device,
+      );
+      assert.equal(new URL(page.url()).hash.includes("device=" + device), true);
+      assert.equal(
+        await root.locator(".related-hazards").count(),
+        model === "rectangular" ? 1 : 0,
+      );
+      assert.equal(await root.locator(".shared-hazards").count(), 1);
+      const guidance = root.locator("details").filter({
+        has: page.locator("summary", {
+          hasText: /^Hazards and setup guidance$/,
+        }),
+      });
+      await guidance.locator(":scope > summary").click();
+      assert.match(
+        await guidance.innerText(),
+        /not evidence that it is hazard-free/,
+      );
+      await root.locator(".shared-hazards > summary").click();
+      assert.match(
+        await root.locator(".shared-hazards").innerText(),
+        /does not establish/,
+      );
+      for (const width of [320, 390, 768, 1280]) {
+        await page.setViewportSize({ width, height: 1000 });
+        assert(
+          await page.evaluate(
+            () => document.documentElement.scrollWidth <= innerWidth + 1,
+          ),
+          `real ${model} overflow ${width}`,
+        );
+      }
+      const before = page.url();
+      await root
+        .locator('.measurement-choice button[data-axis="breakdown"]')
+        .focus();
+      await page.keyboard.press("Enter");
+      await ready();
+      await page.goBack();
+      await ready();
+      assert.equal(page.url(), before);
+    }
+    const breakdown = real.catalogue.evidence_shards.find(
+      (m) =>
+        m.setup_id.startsWith("imaging/mge/") &&
+        m.axes.includes("breakdown") &&
+        !m.axes.includes("runtime"),
+    );
+    await page.goto(realURL({ model: "mge", setup: breakdown.setup_id }));
+    await ready();
+    assert(
+      await root
+        .locator('.metric-panel[data-axis="breakdown"][open] .metric-value')
+        .count(),
+    );
+    assert.equal(
+      await root.locator('[data-id="configuration"]').inputValue(),
+      breakdown.setup_id,
+    );
+    await root.locator('.metric-panel[data-axis="runtime"] > summary').click();
+    assert.match(
+      await root.locator('.metric-panel[data-axis="runtime"]').innerText(),
+      /other runs contain/,
+    );
+    const cpuBreakdown = real.catalogue.evidence_shards.find(
+      (m) =>
+        m.setup_id.startsWith("imaging/rectangular/") &&
+        m.axis_devices.breakdown?.includes("cpu"),
+    );
+    await page.goto(
+      realURL({
+        model: "rectangular",
+        setup: cpuBreakdown.setup_id,
+        axis: "breakdown",
+        device: "a100",
+      }),
+    );
+    await root
+      .getByText("The linked run does not record this measurement", {
+        exact: false,
+      })
+      .waitFor();
+    assert.equal(await root.locator(".metric-value").count(), 0);
+    await root
+      .getByRole("button", {
+        name: "Open the exact run without the device filter",
+      })
+      .click();
+    await ready();
+    assert.equal(
+      await root.locator('[data-id="configuration"]').inputValue(),
+      cpuBreakdown.setup_id,
+    );
+    // Unknown device is never silently replaced with another run.
+    await page.goto(realURL({ model: "mge", device: "not-recorded" }));
+    await root
+      .getByText("No recorded device matches this link.", { exact: false })
+      .waitFor();
+    assert.equal(await root.locator(".metric-value").count(), 0);
+    await root
+      .locator('.measurement-choice button[data-axis="runtime"]')
+      .click();
+    await ready();
+    // Optional producer metadata: older captures retain working evidence navigation.
+    await page.goto(realURL({ model: "mge" }, "legacy-devices.html"));
+    await ready();
+    assert(await root.locator(".metric-panel[open] .metric-value").count());
+    await page.goto(realURL({ model: "mge" }, "unknown-axes.html"));
+    await ready();
+    assert(await root.locator(".metric-panel[open] .metric-value").count());
+    assert.match(
+      await root.locator(".measurement-overview").innerText(),
+      /no axis summary/,
+    );
     assert.deepEqual(errors, []);
     await context.close();
     const nojs = await browser.newContext({ javaScriptEnabled: false });
@@ -243,7 +483,7 @@ const { execFileSync } = require("node:child_process");
     );
     await nojs.close();
     console.log(
-      "PASS: pinned shards, hash refusal/retry, stale links, race, multi-project history, inline v2, clipboard, campaign routing, responsive light/dark, no-JS",
+      "PASS: real MGE/rectangular axis navigation, exact values, absent memory, device persistence, qualified hazards, exact-link recovery, older metadata; pinned shards, hash refusal/retry, stale links, race, multi-project history, inline v2, clipboard, campaign routing, responsive light/dark, no-JS",
     );
   } finally {
     if (browser) await browser.close();
