@@ -70,6 +70,41 @@ def write(destination):
         grouped.doc["records"].append(row)
     (destination / "grouping.html").write_text(board.render_html([grouped]))
 
+    scaled = copy.deepcopy(inline)
+    component = copy.deepcopy(scaled.doc["records"][1])
+    component["id"] = "second-component"
+    component["metric"] = "inversion.jit.steady_per_call_s"
+    component["measurement"] = {"inversion.jit.steady_per_call_s": 0.01}
+    component["method"]["id"] = "different-component-method-id"
+    scaled.doc["records"].append(component)
+    runtime = copy.deepcopy(scaled.doc["records"][0])
+    runtime["id"] = "runtime-second-observation"
+    runtime["run_id"] = "second-repeat"
+    runtime["measurement"] = {"single_call": 0.025}
+    scaled.doc["records"].append(runtime)
+    (destination / "scaling.html").write_text(board.render_html([scaled]))
+
+    filtered = copy.deepcopy(inline)
+    original_setup = filtered.doc["setups"][0]
+    original_records = copy.deepcopy(filtered.doc["records"])
+    for name, precision, pixels, device in [
+        ("archived-float32", "float32", 1500, "cpu"),
+        ("archived-3000", "float64", 3000, "cpu"),
+        ("archived-a100", "float32", 1500, "a100"),
+    ]:
+        setup = copy.deepcopy(original_setup)
+        setup["id"] = name
+        setup["configuration"]["source_pixels"]["value"] = pixels
+        filtered.doc["setups"].append(setup)
+        for original in original_records:
+            record = copy.deepcopy(original)
+            record["setup_id"] = name
+            record["id"] += name
+            record["identity"]["precision"] = precision
+            record["identity"]["device"] = device
+            filtered.doc["records"].append(record)
+    (destination / "filtering.html").write_text(board.render_html([filtered]))
+
     real = json.loads((Path(__file__).parent / "fixtures/browser_measurements.json").read_text())
     for name, text in real["shards"].items():
         target = destination / name

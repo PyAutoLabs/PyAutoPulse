@@ -187,7 +187,7 @@ Reviewed 2026-10-04. Parked by choice; wiki unchanged since ab1e4fd (2026-09-27)
 
 </details>
 
-## Profiling evidence
+## Profiling Results
 
 Choose a project, dataset and model on the interactive board.
 

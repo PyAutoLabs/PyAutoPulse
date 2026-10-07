@@ -71,7 +71,7 @@ def test_control_room_precedes_measurements_and_escapes():
             text.index("Profiling Check In")
             < text.index("Active campaigns")
             < text.index("Active tasks")
-            < text.index("Profiling evidence")
+            < text.index("Profiling Results")
         )
     page = board.render_html([], campaign_data=data)
     assert "<script>alert(1)</script>" not in page
@@ -141,11 +141,10 @@ def test_shared_panel_keeps_owner_prompt_and_all_trusted_destinations():
     assert "orchestrationSync" in board.render_html([])
 
 
-def test_systematic_fix_remains_separate_from_general_panel():
-    import html
-
+def test_removed_controls_leave_checkin_panel_available():
     page = campaigns.render_html(campaigns.load())
-    assert html.escape(campaigns.FIX_PROMPT, quote=True) in page
-    assert 'data-field="fix-prompt"' in page
-    assert 'class="prompt-copy text"' in page
-    assert 'data-field="checkin-prompt"' not in page
+    assert "Fix Profiling Systematically" not in page
+    assert "Last check-in:" not in page
+    assert "Choose a project, dataset and model" not in page
+    assert "Profiling Check In" in page
+    assert "data-orchestration-direction" in page

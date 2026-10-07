@@ -42,86 +42,10 @@
             .map((r) => r.identity.device || "unknown"),
         ),
       ];
-    function rank(s, axis) {
-      if (hasAxis(s, axis)) return s.role === "reference_candidate" ? 0 : 1;
-      return manifestFor(s) ? 2 : s.role === "planned_baseline" ? 4 : 3;
-    }
-    function ordered(setups, axis) {
-      return [...setups].sort(
-        (a, b) =>
-          rank(a, axis) - rank(b, axis) ||
-          configurationLabel(a).localeCompare(configurationLabel(b)) ||
-          a.id.localeCompare(b.id),
-      );
-    }
     function chooseAxis(setup) {
       return (
         Object.keys(axes).find((axis) => hasAxis(setup, axis)) || "runtime"
       );
-    }
-    function goAxis(axis, device = "") {
-      route({
-        dataset: state.dataset,
-        model: state.model,
-        instrument: state.instrument,
-        axis,
-        device,
-      });
-    }
-    function overview(setups) {
-      const section = append(
-        results,
-        "section",
-        undefined,
-        "measurement-overview",
-      );
-      append(section, "h3", "Available measurements");
-      append(
-        section,
-        "p",
-        "Browse recorded runs by measurement and device. Runs can have different settings and revisions; they are not a combined benchmark.",
-        "axis-note",
-      );
-      const unknown = setups.filter(
-        (s) => manifestFor(s) && !axesFor(s).length,
-      );
-      if (unknown.length)
-        append(
-          section,
-          "p",
-          `${unknown.length} recorded runs have no axis summary; open a run to inspect its evidence.`,
-          "metric-meta",
-        );
-      const grid = append(section, "div", undefined, "measurement-choices");
-      for (const [axis, title] of Object.entries(axes)) {
-        const matches = setups.filter((s) => hasAxis(s, axis));
-        const card = append(grid, "div", undefined, "measurement-choice");
-        const button = append(card, "button", title);
-        button.type = "button";
-        button.dataset.axis = axis;
-        button.setAttribute("aria-pressed", String(state.axis === axis));
-        button.onclick = () => goAxis(axis);
-        append(
-          card,
-          "p",
-          matches.length
-            ? `${matches.length} recorded runs`
-            : unknown.length
-              ? "Axis coverage not recorded"
-              : "No recorded measurements",
-          "metric-meta",
-        );
-        const devices = [
-          ...new Set(matches.flatMap((s) => devicesFor(s, axis))),
-        ].sort();
-        append(
-          card,
-          "p",
-          devices.map(label).join(" · ") ||
-            (matches.length ? "Device breakdown not recorded" : ""),
-          "metric-meta",
-        );
-      }
     }
     const names = {
       imaging: "Imaging",
@@ -138,10 +62,23 @@
       delaunay: "Delaunay",
       rectangular: "Rectangular",
       mge: "MGE",
-      delaunay_nn: "Delaunay natural neighbour",
+      delaunay_nn: "DelaunayNN",
+      delaunay_matern: "Delaunay Matern",
+      knn: "KNN",
+      mge_mass: "MGE Mass",
+      sersic: "Sersic",
     };
     const label = (value) =>
-      models[value] || names[value] || String(value).replaceAll("_", " ");
+      models[value] ||
+      names[value] ||
+      String(value)
+        .replaceAll("_", " ")
+        .replace(/\bpixelized\b/gi, "")
+        .trim()
+        .replace(/\b[a-z]/g, (c) => c.toUpperCase())
+        .replace(/\b(psf|cpu|gpu|jax|rss|nnls|jit|knn|mge)\b/gi, (word) =>
+          word.toUpperCase(),
+        );
     function node(tag, text, cls) {
       const el = document.createElement(tag);
       if (text !== undefined) el.textContent = text;
@@ -179,34 +116,72 @@
       return d;
     }
     const instrument = (s) => s.instrument || "unspecified";
-    function configurationLabel(s) {
-      if (s.role === "planned_baseline") return "Baseline · not measured";
-      const info = (catalogue.evidence_shards || []).find(
-        (item) => item.setup_id === s.id,
+    const precisionsFor = (s) =>
+      manifestFor(s)?.precisions || [
+        ...new Set(recordsFor(s).map((r) => r.identity.precision)),
+      ];
+    const allDevices = (s) =>
+      manifestFor(s)?.devices || [
+        ...new Set(recordsFor(s).map((r) => r.identity.device)),
+      ];
+    function eligible(s) {
+      const pixels = s.configuration.source_pixels?.value;
+      const pixelModel = /delaunay|rectangular|knn|pixelized/i.test(s.model);
+      return (
+        precisionsFor(s).includes("float64") &&
+        ((!pixelModel && pixels == null) || pixels === 1500)
       );
-      const axes = {
-        runtime: "Runtime",
-        breakdown: "Breakdown",
-        compile: "Compile",
-        memory: "Memory",
-      };
-      const recorded = catalogue.records.filter((r) => r.setup_id === s.id);
-      const axisNames = info?.axes || [...new Set(recorded.map((r) => r.axis))];
-      const devices = info?.devices || [
-        ...new Set(recorded.map((r) => r.identity.device).filter(Boolean)),
+    }
+    // Prefer the unmodified producer filenames over named experiments; retain
+    // one setup per measurement axis/device, with no cross-source record joins.
+    function defaultRank(s, axis) {
+      const filename = s.evidence?.path.split("/").at(-1) || "";
+      const experiment =
+        /autotune|constant_split|control|lever|thread|memo|experiment|no_|preload|chunk|stream/.test(
+          filename,
+        );
+      const purposeBuilt =
+        s.evidence?.path.includes(`/results/${axis}/`) ||
+        s.evidence?.path.startsWith(`results/${axis}/`);
+      return (
+        (purposeBuilt ? -1000 : 0) +
+        (s.role === "reference_candidate" ? -100 : 0) +
+        (experiment ? 100 : 0) +
+        filename.length
+      );
+    }
+    function curated(setups, device) {
+      const candidates = setups.filter(
+        (s) => eligible(s) && allDevices(s).includes(device),
+      );
+      return [
+        ...new Set(
+          Object.keys(axes)
+            .map((axis) =>
+              [...candidates]
+                .sort(
+                  (a, b) =>
+                    defaultRank(a, axis) - defaultRank(b, axis) ||
+                    a.id.localeCompare(b.id),
+                )
+                .find(
+                  (s) =>
+                    hasAxis(s, axis) && devicesFor(s, axis).includes(device),
+                ),
+            )
+            .filter(Boolean),
+        ),
       ];
-      const precisions = info?.precisions || [
-        ...new Set(recorded.map((r) => r.identity.precision).filter(Boolean)),
-      ];
+    }
+    function configurationLabel(s) {
+      const axisNames = axesFor(s)
+        .map((a) => axes[a])
+        .join(" + ");
       const pixels = s.configuration.source_pixels?.value;
       return [
-        s.role === "reference_candidate" ? "Reference candidate" : "Archive",
-        axisNames.map((a) => axes[a] || a).join(" + ") ||
-          "Recorded configuration",
-        devices.map((d) => d.toUpperCase()).join(" / "),
-        precisions.join(" / "),
+        "float64",
         pixels == null ? null : pixels + " source pixels",
-        (s.configuration_id || s.id).slice(-6),
+        axisNames,
       ]
         .filter(Boolean)
         .join(" · ");
@@ -291,16 +266,23 @@
               )
               .map((s) => s.model),
           ]),
-        ].sort();
+        ]
+          .filter((model) => model !== "pixelized")
+          .sort();
         for (const model of choices) {
-          const button = append(family, "button", label(model), "model-choice");
-          button.type = "button";
+          const button = append(family, "a", label(model), "model-choice");
           button.dataset.dataset = dataset;
           button.dataset.model = model;
-          button.onclick = () => {
-            route({ dataset, model });
-            $("results").scrollIntoView({ behavior: "smooth", block: "start" });
-          };
+          const url = new URL(location.href);
+          url.searchParams.set("view", "model");
+          url.hash = new URLSearchParams({
+            instance: capture.instance,
+            dataset,
+            model,
+          });
+          button.href = url.href;
+          button.target = "_blank";
+          button.rel = "noopener";
         }
       }
       const shared = disclosure(project, "Shared measurement tools");
@@ -375,11 +357,20 @@
       }
     }
     function evidence(setup, records) {
-      const details = disclosure(results, "Profiling evidence and scripts");
+      const details = disclosure(results, "Profiling Results");
       const ul = append(details, "ul", "", "evidence-list");
       const anchors = new Map();
       if (setup.evidence)
         anchors.set(JSON.stringify(setup.evidence), setup.evidence);
+      if (!setup.id)
+        catalogue.setups
+          .filter(
+            (s) =>
+              s.dataset === setup.dataset &&
+              s.model === setup.model &&
+              s.evidence,
+          )
+          .forEach((s) => anchors.set(JSON.stringify(s.evidence), s.evidence));
       records.forEach((r) =>
         anchors.set(JSON.stringify(r.evidence), r.evidence),
       );
@@ -391,128 +382,127 @@
       const scripts = (catalogue.navigation || []).filter(
         (s) => s.dataset === setup.dataset && s.model === setup.model,
       );
-      scripts.forEach((s) => link(append(ul, "li"), s.path, s.path));
-      if (!anchors.size && !scripts.length)
+      const scriptDetails = disclosure(results, "Profiling scripts");
+      const scriptList = append(scriptDetails, "ul", "", "evidence-list");
+      scripts.forEach((s) => link(append(scriptList, "li"), s.path, s.path));
+      if (!scripts.length)
+        append(scriptDetails, "p", "No scripts recorded for this model.");
+      if (!anchors.size)
         append(details, "p", "No evidence has been recorded for this setup.");
     }
-    function qualification(records) {
-      const heading = results.querySelector(".context .qualification");
-      if (heading)
-        heading.textContent =
-          "Evidence status: " +
-          [...new Set(records.map((r) => r.validation.status))].join(" / ");
-      const d = disclosure(results, "Qualification and measurement method");
-      for (const r of records) {
-        const p = append(d, "p");
-        append(p, "strong", r.metric + ": ");
-        append(
-          p,
-          "span",
-          "Exact recorded value: " +
-            r.measurement[r.metric] +
-            " " +
-            r.unit +
-            ". ",
-        );
-        append(p, "span", r.validation.status + " — " + r.validation.reason);
-        append(
-          d,
-          "p",
-          "Host: " +
-            (r.provenance.host || "not recorded") +
-            " · precision: " +
-            (r.identity.precision || "not recorded") +
-            " · software: " +
-            JSON.stringify(r.identity.software),
-          "metric-meta",
-        );
-        append(d, "p", "Method: " + JSON.stringify(r.method), "metric-meta");
-      }
+    function timingScope(r) {
+      if (/batch_time|batch_wall|vmap_batch/.test(r.metric))
+        return "Batch wall time";
+      if (/vmap.*per_call|batch_per_call/.test(r.metric))
+        return "Per-replica batch cost";
+      return r.axis === "runtime" ? "Single-call runtime" : "Component time";
+    }
+    function scaleKey(r) {
+      // Method IDs identify individual components in legacy captures. Compare
+      // their recorded timing semantics, never those opaque IDs.
+      const { id, unknowns, ...method } = r.method;
+      return JSON.stringify([
+        r.setup_id,
+        r.axis === "runtime" ? null : r.run_id,
+        r.identity,
+        r.provenance.host,
+        r.unit,
+        method,
+        timingScope(r),
+      ]);
     }
     function panels(records, setups) {
-      const axes = {
-        runtime: [
-          "Likelihood runtime",
-          "Full likelihood observations. Single-JIT blocks can include first-call effects; batch timings are not single-call latency.",
-        ],
-        breakdown: [
-          "Likelihood breakdown",
-          "Instrumented component costs are not the full compiled likelihood time. Bars compare values only within this setup and unit.",
-        ],
-        compile: [
-          "Compilation and setup",
-          "Trace, compile, first call and setup wall time are distinct measurements; do not add them together.",
-        ],
-        memory: [
-          "Memory",
-          "Observed host RSS is not GPU VRAM. Static compiler estimates are shown separately.",
-        ],
+      const titles = {
+        runtime: "Likelihood runtime",
+        breakdown: "Likelihood breakdown",
+        compile: "Compilation and setup",
+        memory: "Memory",
       };
-      for (const [axis, [title, note]] of Object.entries(axes)) {
+      for (const [axis, title] of Object.entries(titles)) {
         const section = disclosure(results, title);
         section.className = "metric-panel";
         section.dataset.axis = axis;
-        section.open =
-          axis ===
-          (records.some((r) => r.axis === state.axis)
-            ? state.axis
-            : Object.keys(axes).find((a) => records.some((r) => r.axis === a)));
-        append(section, "p", note, "axis-note");
+        section.open = axis === state.axis;
         const rows = records.filter((r) => r.axis === axis);
+        // Persist an opening synchronously with summary activation (including
+        // keyboard-generated clicks). Native toggle events are queued: reloading
+        // or copying the URL before delivery would otherwise lose this selection.
+        section.querySelector("summary").addEventListener("click", (event) => {
+          if (section.open) return;
+          event.preventDefault();
+          section.open = true;
+          state.axis = axis;
+          history.replaceState(null, "", "#" + new URLSearchParams(state));
+          if (!rows.length) {
+            const next = setups.find(
+              (s) =>
+                hasAxis(s, axis) && devicesFor(s, axis).includes(state.device),
+            );
+            if (next && next.id !== state.setup)
+              route({ ...state, setup: next.id, axis });
+          }
+        });
         if (!rows.length) {
-          const available = setups.filter((s) => hasAxis(s, axis));
           append(
             section,
             "p",
-            available.length
-              ? `Not recorded in this run. ${available.length} other runs contain ${label(axis)} measurements; settings may differ.`
-              : setups.some((s) => manifestFor(s) && !axesFor(s).length)
-                ? "Other runs have no axis summary; their measurement coverage is unknown."
-                : "No recorded measurements for this model and instrument.",
+            "No recorded measurements for this configuration.",
             "empty",
           );
-          if (available.length) {
-            const browse = append(
-              section,
-              "button",
-              `Browse ${label(axis)} runs`,
-              "retry",
-            );
-            browse.type = "button";
-            browse.onclick = () => goAxis(axis);
-          }
           continue;
         }
         const groups = new Map();
         for (const r of rows) {
-          const scope =
-            {
-              "vmap.batch_time": "Batch wall time",
-              batch_wall: "Batch wall time",
-              "vmap.per_call": "Per-replica batch cost",
-              batch_per_call: "Per-replica batch cost",
-              single_jit_block: "Single-call observations",
-              single_call: "Single-call observations",
-            }[r.metric] ||
-            (axis === "runtime"
-              ? label(r.metric) + " observations"
-              : "Component observations");
-          const caption = [
-            scope,
-            r.identity.device || "device unknown",
-            r.identity.backend || "backend unknown",
-            r.identity.precision || "precision unknown",
-            r.provenance.host || "host unknown",
-            r.unit,
-          ].join(" · ");
-          const key = JSON.stringify([caption, r.identity, r.method]);
-          if (!groups.has(key)) groups.set(key, { caption, rows: [] });
-          groups.get(key).rows.push(r);
+          const key = scaleKey(r);
+          if (!groups.has(key)) groups.set(key, []);
+          groups.get(key).push(r);
         }
-        for (const { caption, rows: group } of groups.values()) {
-          append(section, "p", caption, "metric-meta");
+        for (const group of groups.values()) {
+          const first = group[0];
+          // A component_total is instrumented component time, not a compiled
+          // likelihood. Prefer it for its own group; otherwise use a matching
+          // full single-call runtime, and finally the largest component.
+          let reference;
+          if (axis === "breakdown" && timingScope(first) === "Component time") {
+            reference = records.find(
+              (r) =>
+                r.axis === "runtime" &&
+                ["single_call", "single_jit_block"].includes(r.metric) &&
+                r.run_id === first.run_id &&
+                r.setup_id === first.setup_id &&
+                r.unit === first.unit &&
+                JSON.stringify(r.identity) === JSON.stringify(first.identity) &&
+                r.provenance.host === first.provenance.host &&
+                [
+                  "statistic",
+                  "repetitions",
+                  "warmup",
+                  "cache_state",
+                  "synchronization",
+                ].every((k) => r.method[k] === first.method[k]),
+            );
+          }
+          reference ||= group.find((r) => r.metric === "component_total");
+          const maximum = Math.max(
+            ...group.map((r) => r.measurement[r.metric]),
+          );
+          const denominator =
+            reference?.measurement[reference.metric] || maximum;
+          const scale = reference
+            ? reference.metric === "component_total"
+              ? "Component total"
+              : "Full likelihood"
+            : axis === "breakdown"
+              ? "Largest component"
+              : "Largest recorded value";
+          const caption = axis === "runtime" ? timingScope(first) : scale;
+          append(
+            section,
+            "p",
+            caption + " · " + first.unit,
+            "metric-meta scale-caption",
+          );
           const list = append(section, "ul", "", "metric-list");
-          const max = Math.max(...group.map((r) => r.measurement[r.metric]));
           for (const r of group) {
             const value = r.measurement[r.metric];
             const li = append(list, "li", "", "metric-row");
@@ -533,17 +523,13 @@
             const track = append(li, "div", "", "bar-track");
             track.setAttribute("aria-hidden", "true");
             const bar = append(track, "div", "", "bar");
-            bar.style.width = (max > 0 ? (100 * value) / max : 0) + "%";
-            append(
-              li,
-              "p",
-              (r.method.statistic || "Statistic not recorded") +
-                " · " +
-                (r.method.repetitions === null
-                  ? "repetitions not recorded"
-                  : r.method.repetitions + " repetitions"),
-              "metric-meta",
-            );
+            // Preserve the denominator even when a component exceeds its total;
+            // values stay visible and the tooltip reports the unclipped percentage.
+            const percent = denominator > 0 ? (100 * value) / denominator : 0;
+            bar.style.width = Math.min(100, percent) + "%";
+            bar.dataset.scale = scale;
+            bar.dataset.denominator = String(denominator);
+            li.title = `${percent.toFixed(1)}% of ${scale.toLowerCase()} (${denominator} ${r.unit})`;
           }
         }
       }
@@ -598,20 +584,6 @@
         other.className = "related-hazards";
         findingList(other, unbound);
       }
-      const shared = findings.filter((f) => f.discovery?.shared);
-      if (shared.length) {
-        const other = disclosure(
-          d,
-          `Shared component and method findings (${shared.length})`,
-        );
-        other.className = "shared-hazards";
-        append(
-          other,
-          "p",
-          "These concern shared components or methods. Their presence here does not establish that this model uses them or that this run is affected.",
-        );
-        findingList(other, shared);
-      }
       const uncategorized = findings.filter((f) => !f.discovery);
       if (uncategorized.length) {
         const other = disclosure(
@@ -646,53 +618,41 @@
       results.removeAttribute("aria-busy");
       status.textContent = "";
       status.className = "";
+      const detailPage =
+        new URLSearchParams(location.search).get("view") === "model";
+      const selected = Boolean(state.dataset && state.model);
+      if (detailPage) {
+        document.body.classList.add("model-page");
+        root.hidden = !selected;
+        if (selected) {
+          document.title = `${label(state.model)} · ${capture.label} profiling`;
+          root.closest("details.board-section")?.classList.add("model-section");
+        }
+      }
+      nav.hidden = detailPage;
+      results.hidden = !selected;
+      if (!selected) return;
+      const back = append(results, "a", "← Profiling Results", "back-link");
+      const home = new URL(location.href);
+      home.searchParams.delete("view");
+      home.hash = "evidence";
+      back.href = home.href;
+      append(
+        results,
+        "h2",
+        capture.label +
+          " / " +
+          label(state.dataset) +
+          " / " +
+          label(state.model),
+      );
       const choices = catalogue.setups.filter(
         (s) => s.dataset === state.dataset && s.model === state.model,
       );
-      nav
-        .querySelectorAll(".model-choice")
-        .forEach((b) =>
-          b.setAttribute(
-            "aria-current",
-            String(
-              b.dataset.dataset === state.dataset &&
-                b.dataset.model === state.model,
-            ),
-          ),
-        );
-      nav.querySelectorAll("[data-family]").forEach((d) => {
-        if (d.dataset.family === state.dataset) d.open = true;
-      });
-      if (!state.dataset || !state.model) {
-        results.hidden = true;
-        $("project-picker").querySelector("summary").textContent =
-          capture.label;
-        return;
-      }
-      results.hidden = false;
-      const picker = $("project-picker");
-      picker.open = false;
-      picker.querySelector("summary").textContent =
-        capture.label +
-        " / " +
-        label(state.dataset) +
-        " / " +
-        label(state.model) +
-        " · change setup";
-      append(results, "h2", label(state.dataset) + " / " + label(state.model));
-      if (!choices.length) {
-        append(
-          results,
-          "p",
-          "No catalogue measurements for this model yet.",
-          "empty",
-        );
-        evidence({ dataset: state.dataset, model: state.model }, []);
-        return;
-      }
       const instruments = [...new Set(choices.map(instrument))].sort();
+      const requested = choices.find((s) => s.id === state.setup);
       if (
-        (state.setup && !choices.some((s) => s.id === state.setup)) ||
+        (state.setup && !requested) ||
         (state.instrument && !instruments.includes(state.instrument)) ||
         (state.axis && !Object.hasOwn(axes, state.axis))
       ) {
@@ -702,103 +662,42 @@
           "This linked configuration is not in the published catalogue. No substitute measurements are shown.",
           "empty",
         );
-        const choose = append(
-          results,
-          "button",
-          "Choose an available configuration",
-          "retry",
-        );
-        choose.type = "button";
-        choose.onclick = () =>
-          route({ dataset: state.dataset, model: state.model });
         return;
       }
-      const requested = choices.find((s) => s.id === state.setup);
       const selectedInstrument = requested
         ? instrument(requested)
-        : instruments.includes(state.instrument)
-          ? state.instrument
-          : instrument(
-              choices.find((s) => s.role === "reference_candidate") ||
-                choices[0],
-            );
+        : state.instrument ||
+          (instruments.includes("hst") ? "hst" : instruments[0]);
       const instrumentSetups = choices.filter(
         (s) => instrument(s) === selectedInstrument,
       );
+      const devices = [...new Set(instrumentSetups.flatMap(allDevices))].sort();
+      const device =
+        state.device ||
+        (requested ? allDevices(requested)[0] : null) ||
+        (devices.includes("cpu") ? "cpu" : devices[0]);
+      const variants = curated(instrumentSetups, device);
       const axis =
-        state.axis ||
-        (requested
-          ? chooseAxis(requested)
-          : chooseAxis(ordered(instrumentSetups, "runtime")[0]));
-      const devices = [
-        ...new Set(instrumentSetups.flatMap((s) => devicesFor(s, axis))),
-      ].sort();
-      if (state.device && !devices.includes(state.device)) {
-        append(
-          results,
-          "p",
-          "No recorded device matches this link. Choose a measurement to browse available runs.",
-          "empty",
-        );
-        state.instrument = selectedInstrument;
-        overview(instrumentSetups);
-        return;
-      }
-      const device = state.device || "";
-      if (
-        device &&
-        requested &&
-        manifestFor(requested) &&
-        !devicesFor(requested, axis).includes(device)
-      ) {
-        append(
-          results,
-          "p",
-          "The linked run does not record this measurement on the selected device. No substitute measurements are shown.",
-          "empty",
-        );
-        const reset = append(
-          results,
-          "button",
-          "Open the exact run without the device filter",
-          "retry",
-        );
-        reset.type = "button";
-        reset.onclick = () =>
-          route({ ...state, device: "", axis: chooseAxis(requested) });
-        return;
-      }
-      const matches = ordered(
-        instrumentSetups.filter(
-          (s) =>
-            hasAxis(s, axis) &&
-            (!device || devicesFor(s, axis).includes(device)),
-        ),
-        axis,
-      );
-      // Keep explicit baseline/failed selections reachable without calling them measurements.
-      const variants = [
-        ...matches,
-        ...instrumentSetups.filter(
-          (s) => !matches.includes(s) && !axesFor(s).length,
-        ),
-      ];
-      if (requested && !variants.some((s) => s.id === requested.id))
-        variants.unshift(requested);
-      const setup = requested || variants[0];
+        state.axis || (variants[0] ? chooseAxis(variants[0]) : "runtime");
+      let setup =
+        requested || variants.find((s) => hasAxis(s, axis)) || variants[0];
+      // An archived deep link remains inspectable, but is never injected into the
+      // default selector. All other archived evidence remains linked at source.
+      const archived = requested && !variants.includes(requested);
+      if (state.device && !devices.includes(state.device)) setup = null;
       state = {
         instance: capture.instance,
         dataset: state.dataset,
         model: state.model,
-        instrument: selectedInstrument,
+        ...(selectedInstrument ? { instrument: selectedInstrument } : {}),
         axis,
         ...(device ? { device } : {}),
         ...(setup ? { setup: setup.id } : {}),
       };
       history.replaceState(null, "", "#" + new URLSearchParams(state));
-      const instrumentFields = append(results, "div", "", "selectors");
+      const fields = append(results, "div", "", "selectors");
       selector(
-        instrumentFields,
+        fields,
         "instrument",
         "Instrument",
         instruments.map((i) => [
@@ -813,125 +712,63 @@
             instrument: value,
           }),
       );
-      overview(instrumentSetups);
-      const fields = append(results, "div", "", "selectors");
       selector(
         fields,
         "device",
-        "Recorded device",
-        [["", "All recorded devices"], ...devices.map((d) => [d, label(d)])],
+        "Device",
+        devices.map((d) => [d, d.toUpperCase()]),
         device,
-        (value) => goAxis(axis, value),
+        (value) =>
+          route({
+            dataset: state.dataset,
+            model: state.model,
+            instrument: selectedInstrument,
+            device: value,
+            axis,
+          }),
+      );
+      const configOptions = variants.map((s) => [s.id, configurationLabel(s)]);
+      if (archived)
+        configOptions.unshift([
+          requested.id,
+          "Archived configuration (linked)",
+        ]);
+      selector(
+        fields,
+        "configuration",
+        "Configuration",
+        configOptions,
+        setup?.id || "",
+        (value) => route({ ...state, setup: value }),
       );
       if (!setup) {
         append(
           results,
           "p",
-          "No recorded runs for this measurement. Choose another measurement above.",
+          "No float64 results" +
+            (/delaunay|rectangular|knn|pixelized/i.test(state.model)
+              ? " with 1500 source pixels"
+              : "") +
+            " recorded for this instrument and device.",
           "empty",
         );
-        advice({ dataset: state.dataset, model: state.model });
         evidence({ dataset: state.dataset, model: state.model }, []);
         return;
       }
-      selector(
-        fields,
-        "configuration",
-        "Configuration / evidence run",
-        variants.map((s) => [s.id, configurationLabel(s)]),
-        setup.id,
-        (value) => {
-          const selected = variants.find((s) => s.id === value);
-          const nextAxis = hasAxis(selected, axis)
-            ? axis
-            : chooseAxis(selected);
-          route({
-            ...state,
-            setup: value,
-            axis: nextAxis,
-            device: devicesFor(selected, nextAxis).includes(device)
-              ? device
-              : "",
-          });
-        },
-      );
-      const context = append(results, "div", "", "context");
-      append(
-        context,
-        "p",
-        setup.role === "planned_baseline"
-          ? "Baseline pending · no accepted measurement"
-          : "Recorded evidence · inspect qualification below",
-        "qualification",
-      );
-      append(
-        context,
-        "p",
-        "Other devices or runs may have different settings. This view keeps each recorded configuration separate.",
-        "muted",
-      );
-      const keySettings = [
-        "source_pixels",
-        "psf_shape",
-        "image_pixels_masked",
-        "n_vis",
-      ];
-      const facts = append(context, "p", "", "metric-meta");
-      facts.textContent = keySettings
-        .map(
-          (k) =>
-            label(k) +
-            ": " +
-            (setup.configuration[k]?.value == null
-              ? "not recorded"
-              : JSON.stringify(setup.configuration[k].value)),
-        )
-        .join(" · ");
-      if (setup.role === "planned_baseline") {
-        const slots = (catalogue.planned_cells || []).filter(
-          (c) => c.setup_id === setup.id,
+      metadata(setup);
+      const display = (allRecords) => {
+        const records = allRecords.filter(
+          (r) =>
+            (!device || r.identity.device === device) &&
+            (archived || r.identity.precision === "float64"),
         );
-        append(
-          context,
-          "p",
-          [...new Set(slots.map((s) => s.device.toUpperCase()))].join(" / ") +
-            " · " +
-            slots.length +
-            " measurement slots not measured.",
-        );
-        panels([], instrumentSetups);
-        metadata(setup);
+        panels(records, variants);
         advice(setup);
-        evidence(setup, []);
-        return;
-      }
-      const manifest = (catalogue.evidence_shards || []).find(
-        (s) => s.setup_id === setup.id,
-      );
+        evidence(setup, records);
+      };
+      const manifest = manifestFor(setup);
       if (!manifest) {
-        const inline = catalogue.records.filter((r) => r.setup_id === setup.id);
-        if (inline.length) {
-          panels(inline, instrumentSetups);
-          metadata(setup);
-          qualification(inline);
-          advice(setup);
-          evidence(setup, inline);
-          return;
-        }
-
-        const failed = catalogue.selections.filter(
-          (s) => s.setup_id === setup.id,
-        );
-        append(
-          context,
-          "p",
-          failed.map((s) => s.status + ": " + s.reason).join("; ") ||
-            "No measured evidence is available.",
-        );
-        panels([], instrumentSetups);
-        metadata(setup);
-        advice(setup);
-        evidence(setup, []);
+        display(recordsFor(setup));
         return;
       }
       status.textContent = "Loading selected setup…";
@@ -969,11 +806,7 @@
           )
         )
           throw Error("Evidence does not match the selected setup.");
-        panels(shard.records, instrumentSetups);
-        metadata(setup);
-        qualification(shard.records);
-        advice(setup);
-        evidence(setup, shard.records);
+        display(shard.records);
         status.textContent = "";
       } catch (error) {
         if (ticket !== generation) return;
@@ -985,7 +818,6 @@
           cache.delete(manifest.sha256);
           render();
         };
-        metadata(setup);
         evidence(setup, []);
       } finally {
         if (ticket === generation) results.removeAttribute("aria-busy");

@@ -558,15 +558,8 @@ def render_html(views, now: str | None = None, campaign_data: dict | None = None
         content.append(setup_browser.render(snapshot))
         if (snapshot.doc or {}).get("version") != 2:
             content.append(
-                f"<p>{_e(name)}: setup catalogue unavailable; original project evidence remains below.</p>"
+                f"<p>{_e(name)}: setup catalogue unavailable; use the project dashboard for original evidence.</p>"
             )
-        content.append(
-            '<details class="capture-details"><summary>'
-            + _e(name)
-            + " · capture, qualification and legacy diagnostics</summary>"
-            + _html_detail(snapshot, now)
-            + "</details>"
-        )
     return shared.section_layout(
         '<!doctype html>\n<html lang="en"><head><meta charset="utf-8">'
         '<meta name="viewport" content="width=device-width,initial-scale=1">'
@@ -578,7 +571,7 @@ def render_html(views, now: str | None = None, campaign_data: dict | None = None
             "Profiling dashboard",
             navigation=[
                 {"href": "#campaigns", "label": "Active campaigns"},
-                {"href": "#evidence", "label": "Profiling evidence"},
+                {"href": "#evidence", "label": "Profiling Results"},
             ],
         )
         + "<main>"
