@@ -15,6 +15,12 @@ The original task below is retained verbatim. Current scheduling state lives in 
 - Local CPU witness: `single_jit` 0.417 ms vs median 0.388 ms (p10 0.320, p90 0.545).
 - Imaging cells not yet wired.
 
+## Check-in 2026-10-07
+
+- Option (a) merged: https://github.com/PyAutoLabs/autolens_profiling/pull/374 (issue #371, 2026-10-04). `full_pipeline_single_jit_median_ms` (p10/p90) sits beside the unchanged `single_jit`; the GPU headline is labelled "first block after compile" (https://github.com/PyAutoLabs/autolens_profiling/blob/719459fefb40c7e5be157f652818dbf923830557/scripts/point_source_source/source_plane/likelihood_runtime_solved.py).
+- Imaging release-sweep cells are not wired. `git log --since=2026-10-04 origin/main -- results/` shows only #375 streaming rows and a README layout refactor: no release sweep on main, so the new field has no sweep rows yet.
+- Stays `active`: wire imaging cells; the field appears at the next release sweep.
+
 ---
 
 # Runtime cells' A100 `single_jit` includes the post-compile warm-up — source-plane 0.642 ms vs a steady 0.267 ms on the same node

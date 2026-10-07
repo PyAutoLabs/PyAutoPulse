@@ -8,6 +8,11 @@ The original task below is retained verbatim. Current scheduling state lives in 
 - VERIFIED: `gh repo view PyAutoLabs/autofit_profiling` → does not exist; no local checkout. The Mind source draft was removed in Mind `dbbe5b22` (2026-10-03, move to Pulse); it is not in Mind complete/ or active.md, so this file is the live record.
 - Human decision still pending: the repo-creation question (Witness). No producer registration until the repo exists with ported baselines.
 
+## Check-in 2026-10-07
+
+- https://github.com/PyAutoLabs/autofit_profiling created 2026-10-07T11:38Z: one Initial commit with LICENSE only, no PRs. The repo-creation question is answered.
+- Status → `ready`: porting/bootstrap unstarted; no producer registration until baselines are ported.
+
 ---
 
 # autofit_profiling: bootstrap the repo + general PyAutoFit profiling epic

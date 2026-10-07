@@ -9,6 +9,11 @@ The original task below is retained verbatim. Current scheduling state lives in 
 - Adjacent but distinct: PyAutoHeart#276 / PR #277 (unit-timing distinct baseline) completed 2026-10-04; that is Heart unit-test timing, not profiling gates.
 - Next: start the audit (read-and-classify) phase via start_dev, reusing #362.
 
+## Check-in 2026-10-07
+
+- https://github.com/PyAutoLabs/autolens_profiling/issues/362 still open, 0 comments, unassigned, unchanged since 2026-10-02.
+- Related new Mind draft: `draft/bug/autolens_profiling/call_accounting_ci_timing_threshold.md` (2026-10-06).
+
 ---
 
 # Audit timing tests and profiling gates for measurement noise

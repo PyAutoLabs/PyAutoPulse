@@ -18,6 +18,10 @@ The original task below is retained verbatim. Current scheduling state lives in 
 - Finding for the human: no production stage qualifies as configured - interferometer SLaM `source_pix_2` fixes the mass but leaves `weight_power`/`weight_floor` free, which change the mapping. Phase 1 measures a regularization-only configuration; adopting such a stage is a science decision.
 - Later phases: search-side opt-in (`fixed_mapper=True`), JAX jit/vmap + compile size, A100/jvla rows, data-vector preload, SLaM regularization-only stage, mixed MGE+mapper, dense path.
 
+## Check-in 2026-10-07
+
+- Mind draft `draft/feature/autoarray/interferometer_curvature_preload_phase1.md` (2026-10-04) still unstarted.
+
 ---
 
 # Interferometer fixed-mapper searches: reuse the W~ curvature matrix across likelihood calls via `preloads.curvature_matrix`

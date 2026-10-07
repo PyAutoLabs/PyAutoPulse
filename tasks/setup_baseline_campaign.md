@@ -69,3 +69,9 @@ keeps its existing receipts and snapshots; this task creates no new measurements
 Until those steps are complete, retain `needs-decision`: no campaign is reported
 as running or accepted, and specification implementation remains distinct from
 the later collection and review deliverables.
+
+## Check-in 2026-10-07
+
+- Specification merged: https://github.com/PyAutoLabs/autolens_profiling/pull/385 (2026-10-06; issue #384 closed 2026-10-06; PyAutoPulse#17 closed 2026-10-06). `baseline/campaign.json` is status draft, version 1, with `baseline/README.md` readiness contract (https://github.com/PyAutoLabs/autolens_profiling/blob/719459fefb40c7e5be157f652818dbf923830557/baseline/campaign.json, https://github.com/PyAutoLabs/autolens_profiling/blob/719459fefb40c7e5be157f652818dbf923830557/wiki/campaigns/setup_baseline.md).
+- Six unknowns recorded verbatim: no frozen revisions/env lock; no collection authorization/window; hardware/affinity identity unselected; each cell needs complete settings, input hashes, witness + tolerances; compile per-cell builder unavailable; proposed fp64/mixed coverage is not evidence of support.
+- Status stays `needs-decision`: no collection or acceptance authorized; the check-in authorizes none.

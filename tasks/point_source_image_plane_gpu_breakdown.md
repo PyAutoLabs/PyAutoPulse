@@ -16,6 +16,11 @@ The original task below is retained verbatim. Current scheduling state lives in 
 - Forward-mode NaN bug issued: [PyAutoLens#767](https://github.com/PyAutoLabs/PyAutoLens/issues/767). Reproduced on CPU fp64: forward `[nan]x5`, reverse finite; stack 2026.10.4.1+3 `b695e57b6`. Mind registry commit `0112ccba`.
 - The autolens_inference image-plane fit measurement still awaits human authorisation.
 
+## Check-in 2026-10-07
+
+- https://github.com/PyAutoLabs/PyAutoLens/issues/767 closed; fixed by https://github.com/PyAutoLabs/PyAutoLens/pull/768 (merged 2026-10-04T20:41Z, 0659903d4), in tag 2026.10.7.1 (merge-base verified). Correctness only; no timing claim.
+- Stays `needs-decision`: the autolens_inference image-plane fit measurement still awaits human authorisation.
+
 ---
 
 # Point-source A100 speed-up campaign: profile and optimize with the shared breakdown

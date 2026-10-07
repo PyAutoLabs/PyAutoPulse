@@ -17,6 +17,12 @@ The original task below is retained verbatim. Current scheduling state lives in 
 - HPCPullPyAuto pulls MAINS, and Nerves main excludes jax 0.10.2 (installed on RAL and locally), so a sync also needs a jax reinstall.
 - Next: sync when `squeue -u jnightin -t R` shows no euclid_dr1 jobs on the shared base, or the human accepts the risk.
 
+## Check-in 2026-10-07
+
+- RAL 2026-10-07 ~18:40Z: `squeue -u jnightin` showed 0 RUNNING, 0 PENDING (one probe). The 2026-10-04 blocker condition (no euclid_dr1 jobs on the shared base) is met.
+- Three later probes timed out: shared mirror /mnt/ral/jnightin/PyAuto HEAD/tag UNVERIFIED.
+- Human decision (same day, in chat): **never** HPCPullPyAuto the shared mirror while euclid_dr1 depends on it. Phase 3 runs from a private RAL checkout at tag 2026.10.7.1 (contains PyAutoArray#595) with its own environment; Nerves at that tag excludes jax 0.10.* and RAL has jax 0.10.2, so the private env needs a compliant jax. Status → `ready`; compute for the A100 rows still needs separate authorization.
+
 ---
 
 # Linear-solver programme phase 3: GPU/vmap/A100 timing and parity rows for the solver corpus
