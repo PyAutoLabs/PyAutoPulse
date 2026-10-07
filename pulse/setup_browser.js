@@ -424,10 +424,15 @@
         section.dataset.axis = axis;
         section.open = axis === state.axis;
         const rows = records.filter((r) => r.axis === axis);
-        // The measurement disclosures are the only axis navigation. Opening an
-        // empty axis loads its default configuration directly, without a second click.
-        section.addEventListener("toggle", () => {
-          if (!section.isConnected || !section.open) return;
+        // Persist an opening synchronously with summary activation (including
+        // keyboard-generated clicks). Native toggle events are queued: reloading
+        // or copying the URL before delivery would otherwise lose this selection.
+        section.querySelector("summary").addEventListener("click", (event) => {
+          if (section.open) return;
+          event.preventDefault();
+          section.open = true;
+          state.axis = axis;
+          history.replaceState(null, "", "#" + new URLSearchParams(state));
           if (!rows.length) {
             const next = setups.find(
               (s) =>
@@ -435,9 +440,6 @@
             );
             if (next && next.id !== state.setup)
               route({ ...state, setup: next.id, axis });
-          } else {
-            state.axis = axis;
-            history.replaceState(null, "", "#" + new URLSearchParams(state));
           }
         });
         if (!rows.length) {

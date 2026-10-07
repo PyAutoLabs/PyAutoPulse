@@ -147,7 +147,18 @@ const { execFileSync } = require("node:child_process");
         detailText.includes("Profiling scripts"),
     );
     assert.equal(await detail.locator(".measurement-choices").count(), 0);
-    await detail.locator('[data-axis="breakdown"] > summary').click();
+    // Capture URL state in the same task as activation: a user can reload or
+    // copy the link before the browser delivers its queued details toggle event.
+    const activated = await detail
+      .locator('[data-axis="breakdown"] > summary')
+      .evaluate((summary) => {
+        summary.click();
+        return {
+          open: summary.parentElement.open,
+          axis: new URLSearchParams(location.hash.slice(1)).get("axis"),
+        };
+      });
+    assert.deepEqual(activated, { open: true, axis: "breakdown" });
     const componentBar = detail.locator('[data-axis="breakdown"] .bar').first();
     assert.equal(
       await componentBar.getAttribute("data-scale"),
@@ -159,6 +170,30 @@ const { execFileSync } = require("node:child_process");
     assert.equal(
       await detail.locator('[data-axis="breakdown"]').getAttribute("open"),
       "",
+    );
+    // Native summary keyboard activation must persist the same route too.
+    const memorySummary = detail.locator('[data-axis="memory"] > summary');
+    await memorySummary.focus();
+    await detail.keyboard.press("Enter");
+    assert.equal(
+      new URLSearchParams(new URL(detail.url()).hash.slice(1)).get("axis"),
+      "memory",
+    );
+    await memorySummary.focus();
+    await detail.keyboard.press("Enter");
+    assert.equal(
+      await detail.locator('[data-axis="memory"]').getAttribute("open"),
+      null,
+    );
+    const breakdownSummary = detail.locator(
+      '[data-axis="breakdown"] > summary',
+    );
+    await breakdownSummary.focus();
+    await detail.keyboard.press("Enter");
+    await detail.keyboard.press("Enter");
+    assert.equal(
+      new URLSearchParams(new URL(detail.url()).hash.slice(1)).get("axis"),
+      "breakdown",
     );
     // Narrow view and desktop, light and dark, must keep controls inside the viewport.
     for (const width of [390, 768, 820, 1024, 1440]) {
