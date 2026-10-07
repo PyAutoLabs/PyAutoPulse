@@ -28,7 +28,9 @@ def theme():
 def assets():
     return (
         (ORGAN_ROOT / "pulse/setup_browser.css").read_text(),
-        (ORGAN_ROOT / "pulse/setup_browser.js").read_text(),
+        (ORGAN_ROOT / "pulse/measurement_presentation.js").read_text()
+        + "\n"
+        + (ORGAN_ROOT / "pulse/setup_browser.js").read_text(),
     )
 
 

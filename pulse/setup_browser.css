@@ -247,3 +247,35 @@ button.retry {
   border: 0;
   margin-top: 0;
 }
+
+.measurement-details {
+  font-size: 0.75rem;
+  overflow-wrap: anywhere;
+}
+[data-id="results"] .measurement-details {
+  margin: 0;
+}
+[data-id="results"] .measurement-details > summary {
+  padding: 0;
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: var(--fg);
+}
+.measurement-details > summary::before {
+  content: "▸";
+  color: var(--accent);
+}
+.measurement-details[open] > summary::before {
+  content: "▾";
+}
+.measurement-details > summary > span {
+  flex: 1;
+}
+.metric-row[data-kind="total"] {
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 0.6rem;
+  margin-bottom: 0.6rem;
+}
+.timing-diagnostics {
+  margin-top: 0.8rem;
+}

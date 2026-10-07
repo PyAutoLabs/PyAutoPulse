@@ -16,6 +16,27 @@
       state = {},
       generation = 0;
     const cache = new Map();
+    const presentation = globalThis.PulsePresentation;
+    // Use captured index evidence so loading a shard cannot move a setup into
+    // another implementation or change the available navigation.
+    const implementations = new Map(
+      catalogue.setups.map((setup) => [
+        setup.id,
+        presentation.implementation(
+          setup,
+          catalogue.records.filter((r) => r.setup_id === setup.id),
+        ),
+      ]),
+    );
+    const implementationFor = (s) =>
+      implementations.get(s.id) || presentation.implementation(s);
+    const modelLabel = (model, implementation) =>
+      label(model) +
+      (implementation === "numba"
+        ? " (Numba)"
+        : implementation === "unknown"
+          ? " (implementation unspecified)"
+          : "");
     const axes = {
       runtime: "Runtime",
       breakdown: "Breakdown",
@@ -257,20 +278,27 @@
           ...new Set([
             ...catalogue.setups
               .filter((s) => s.dataset === dataset)
-              .map((s) => s.model),
+              .map((s) => `${s.model}|${implementationFor(s)}`),
             ...(catalogue.navigation || [])
               .filter(
                 (s) =>
                   s.category === "scientific_entrypoint" &&
                   s.dataset === dataset,
               )
-              .map((s) => s.model),
+              .map((s) => `${s.model}|${implementationFor(s)}`),
           ]),
         ]
-          .filter((model) => model !== "pixelized")
+          .filter((choice) => !choice.startsWith("pixelized|"))
           .sort();
-        for (const model of choices) {
-          const button = append(family, "a", label(model), "model-choice");
+        for (const choice of choices) {
+          const [model, implementation] = choice.split("|");
+          const button = append(
+            family,
+            "a",
+            modelLabel(model, implementation),
+            "model-choice",
+          );
+          button.dataset.implementation = implementation;
           button.dataset.dataset = dataset;
           button.dataset.model = model;
           const url = new URL(location.href);
@@ -279,6 +307,7 @@
             instance: capture.instance,
             dataset,
             model,
+            implementation,
           });
           button.href = url.href;
           button.target = "_blank";
@@ -368,6 +397,7 @@
             (s) =>
               s.dataset === setup.dataset &&
               s.model === setup.model &&
+              implementationFor(s) === state.implementation &&
               s.evidence,
           )
           .forEach((s) => anchors.set(JSON.stringify(s.evidence), s.evidence));
@@ -380,7 +410,10 @@
         if (ev.fragment) append(li, "code", " · " + ev.fragment);
       }
       const scripts = (catalogue.navigation || []).filter(
-        (s) => s.dataset === setup.dataset && s.model === setup.model,
+        (s) =>
+          s.dataset === setup.dataset &&
+          s.model === setup.model &&
+          implementationFor(s) === state.implementation,
       );
       const scriptDetails = disclosure(results, "Profiling scripts");
       const scriptList = append(scriptDetails, "ul", "", "evidence-list");
@@ -453,17 +486,54 @@
         }
         const groups = new Map();
         for (const r of rows) {
-          const key = scaleKey(r);
+          const key =
+            scaleKey(r) +
+            ":" +
+            (presentation.category(
+              r,
+              rows.filter((other) => scaleKey(other) === scaleKey(r)),
+            ) === "diagnostic"
+              ? "diagnostic"
+              : "main");
           if (!groups.has(key)) groups.set(key, []);
           groups.get(key).push(r);
         }
+        let diagnostics;
         for (const group of groups.values()) {
           const first = group[0];
+          const diagnostic =
+            presentation.category(
+              first,
+              rows.filter((r) => scaleKey(r) === scaleKey(first)),
+            ) === "diagnostic";
+          if (diagnostic && !diagnostics) {
+            diagnostics = disclosure(section, "Timing diagnostics");
+            diagnostics.className = "timing-diagnostics";
+            append(
+              diagnostics,
+              "p",
+              "Cumulative prefixes and overlapping probes; these are not additional likelihood steps.",
+              "metric-meta",
+            );
+          }
+          const target = diagnostic ? diagnostics : section;
+          group.sort((a, b) => {
+            const total = (r) =>
+              presentation.category(r, group) === "total" ? 1 : 0;
+            return (
+              total(b) - total(a) ||
+              b.measurement[b.metric] - a.measurement[a.metric]
+            );
+          });
           // A component_total is instrumented component time, not a compiled
           // likelihood. Prefer it for its own group; otherwise use a matching
           // full single-call runtime, and finally the largest component.
           let reference;
-          if (axis === "breakdown" && timingScope(first) === "Component time") {
+          if (
+            !diagnostic &&
+            axis === "breakdown" &&
+            timingScope(first) === "Component time"
+          ) {
             reference = records.find(
               (r) =>
                 r.axis === "runtime" &&
@@ -482,14 +552,16 @@
                 ].every((k) => r.method[k] === first.method[k]),
             );
           }
-          reference ||= group.find((r) => r.metric === "component_total");
+          reference =
+            group.find((r) => /^(?:cube_)?component_total$/.test(r.metric)) ||
+            reference;
           const maximum = Math.max(
             ...group.map((r) => r.measurement[r.metric]),
           );
           const denominator =
-            reference?.measurement[reference.metric] || maximum;
+            reference?.measurement[reference.metric] ?? maximum;
           const scale = reference
-            ? reference.metric === "component_total"
+            ? /^(?:cube_)?component_total$/.test(reference.metric)
               ? "Component total"
               : "Full likelihood"
             : axis === "breakdown"
@@ -497,17 +569,37 @@
               : "Largest recorded value";
           const caption = axis === "runtime" ? timingScope(first) : scale;
           append(
-            section,
+            target,
             "p",
             caption + " · " + first.unit,
             "metric-meta scale-caption",
           );
-          const list = append(section, "ul", "", "metric-list");
+          if (
+            axis === "breakdown" &&
+            !diagnostic &&
+            !group.some((r) => /^(?:cube_)?component_total$/.test(r.metric))
+          )
+            append(
+              target,
+              "p",
+              "Component total not recorded for these measurements.",
+              "metric-meta",
+            );
+          const list = append(target, "ul", "", "metric-list");
           for (const r of group) {
             const value = r.measurement[r.metric];
             const li = append(list, "li", "", "metric-row");
-            const line = append(li, "div", "", "metric-title");
-            append(line, "span", label(r.metric));
+            const detail = append(
+              li,
+              "details",
+              undefined,
+              "measurement-details",
+            );
+            const line = append(detail, "summary", undefined, "metric-title");
+            line.title = "Show measurement details and original source";
+            li.dataset.metric = r.metric;
+            li.dataset.kind = presentation.category(r, group);
+            append(line, "span", presentation.describe(r));
             const displayUnit =
               r.unit === "s" && value > 0 && value < 1 ? "ms" : r.unit;
             const displayValue = displayUnit === "ms" ? value * 1000 : value;
@@ -530,8 +622,26 @@
             bar.dataset.scale = scale;
             bar.dataset.denominator = String(denominator);
             li.title = `${percent.toFixed(1)}% of ${scale.toLowerCase()} (${denominator} ${r.unit})`;
+
+            append(detail, "code", r.metric);
+            const setup = catalogue.setups.find((s) => s.id === r.setup_id);
+            const batch =
+              setup?.configuration?.vmap_batch?.value ||
+              setup?.configuration?.vmap_batch_size?.value ||
+              setup?.configuration?.batch_size?.value;
+            const semantics = [
+              r.method.statistic,
+              r.method.repetitions == null
+                ? null
+                : `${r.method.repetitions} repetitions`,
+              batch == null ? null : `Batch size: ${batch}`,
+            ].filter(Boolean);
+            if (semantics.length) append(detail, "p", semantics.join(" · "));
+            if (r.evidence?.path)
+              link(detail, r.evidence.path, "Original measurement");
           }
         }
+        if (diagnostics) section.append(diagnostics);
       }
     }
     function advice(setup) {
@@ -621,11 +731,24 @@
       const detailPage =
         new URLSearchParams(location.search).get("view") === "model";
       const selected = Boolean(state.dataset && state.model);
+      if (selected && !state.implementation) {
+        const linked = catalogue.setups.find((s) => s.id === state.setup);
+        state.implementation = linked
+          ? implementationFor(linked)
+          : catalogue.setups.some(
+                (s) =>
+                  s.dataset === state.dataset &&
+                  s.model === state.model &&
+                  implementationFor(s) === "jax",
+              )
+            ? "jax"
+            : "unknown";
+      }
       if (detailPage) {
         document.body.classList.add("model-page");
         root.hidden = !selected;
         if (selected) {
-          document.title = `${label(state.model)} · ${capture.label} profiling`;
+          document.title = `${modelLabel(state.model, state.implementation)} · ${capture.label} profiling`;
           root.closest("details.board-section")?.classList.add("model-section");
         }
       }
@@ -644,10 +767,13 @@
           " / " +
           label(state.dataset) +
           " / " +
-          label(state.model),
+          modelLabel(state.model, state.implementation),
       );
       const choices = catalogue.setups.filter(
-        (s) => s.dataset === state.dataset && s.model === state.model,
+        (s) =>
+          s.dataset === state.dataset &&
+          s.model === state.model &&
+          implementationFor(s) === state.implementation,
       );
       const instruments = [...new Set(choices.map(instrument))].sort();
       const requested = choices.find((s) => s.id === state.setup);
@@ -689,6 +815,7 @@
         instance: capture.instance,
         dataset: state.dataset,
         model: state.model,
+        implementation: state.implementation,
         ...(selectedInstrument ? { instrument: selectedInstrument } : {}),
         axis,
         ...(device ? { device } : {}),
@@ -709,6 +836,7 @@
           route({
             dataset: state.dataset,
             model: state.model,
+            implementation: state.implementation,
             instrument: value,
           }),
       );
@@ -722,6 +850,7 @@
           route({
             dataset: state.dataset,
             model: state.model,
+            implementation: state.implementation,
             instrument: selectedInstrument,
             device: value,
             axis,
