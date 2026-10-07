@@ -266,9 +266,9 @@ Choose a project, dataset and model on the interactive board.
 
 ## lens
 
-<!-- pulse:instance name=lens receipt=002238552624370e86b396a65b686691bb4edd23 outcome=ok shown=002238552624370e86b396a65b686691bb4edd23 -->
+<!-- pulse:instance name=lens receipt=125bf0468c56e5376fdf2cdd5c92e8177cb26e55 outcome=ok shown=125bf0468c56e5376fdf2cdd5c92e8177cb26e55 -->
 
-Project `autolens_profiling`, scope `setup-catalogue`, read from [PyAutoLabs/autolens_profiling](https://github.com/PyAutoLabs/autolens_profiling) `dashboard/catalogue.json` at [`00223855`](https://github.com/PyAutoLabs/autolens_profiling/tree/002238552624370e86b396a65b686691bb4edd23); producer revision `fef5f28d`; generated 2026-10-07T07:00:40Z; comparison policy `no-temporal-comparisons`. [Project dashboard](https://pyautolabs.github.io/autolens_profiling/) · [receipt](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/receipts/lens.json).
+Project `autolens_profiling`, scope `setup-catalogue`, read from [PyAutoLabs/autolens_profiling](https://github.com/PyAutoLabs/autolens_profiling) `dashboard/catalogue.json` at [`125bf046`](https://github.com/PyAutoLabs/autolens_profiling/tree/125bf0468c56e5376fdf2cdd5c92e8177cb26e55); producer revision `fef5f28d`; generated 2026-10-07T07:00:40Z; comparison policy `no-temporal-comparisons`. [Project dashboard](https://pyautolabs.github.io/autolens_profiling/) · [receipt](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/receipts/lens.json).
 
 - **Integrity:** ok
 - **Freshness:** freshness policy unspecified · evidence time unknown (evidence unknown (No common measurement wall-clock across legacy evidence; inspect each record.))
