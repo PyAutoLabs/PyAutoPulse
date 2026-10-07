@@ -8,6 +8,12 @@ The original task below is retained verbatim. Current scheduling state lives in 
 - VERIFIED 2026-10-04: no PR, issue, branch or results on GitHub; unstarted. No Mind active claim.
 - Next: select one bounded step when the interferometer campaign prioritises it.
 
+## Check-in 2026-10-07
+
+- Correction: the 2026-10-04 "unstarted" was superseded. https://github.com/PyAutoLabs/PyAutoArray/pull/615 (closes PyAutoArray#613) "back off the fnnls warm-start memo on scattered evaluation streams" merged 2026-10-06 (58bdda0a), released in 2026.10.7.1. Mind record complete/2026/10/nnls-memo-scattered-backoff.md.
+- Local witness (n=576, solver-only, min of 3, 3 seeds, 64 solves): iid memo on/off 1.49x → 1.17x; walk 0.18x unchanged.
+- Status → `active`: the autolens_profiling#332 ALMA Delaunay 2.17x after-measurement was not re-run and needs compute authorization.
+
 ---
 
 # fnnls warm-start memo: stop it slowing scattered evaluation streams (interferometer CPU, autolens_profiling#332)

@@ -15,6 +15,12 @@ The original task below is retained verbatim. Current scheduling state lives in 
 - Issue: [autolens_profiling#370](https://github.com/PyAutoLabs/autolens_profiling/issues/370). Branch `feature/point-source-wiki-reconcile` @`0560284`, parked at Heart RED.
 - Still owed: RAL cleanup, register_model grad-zero prompt, test move, CI smoke cells, `nopad` deletion.
 
+## Check-in 2026-10-07
+
+- https://github.com/PyAutoLabs/autolens_profiling/pull/373 (issue #370) merged 2026-10-04T20:49Z: wiki reconcile + completion evidence (https://github.com/PyAutoLabs/autolens_profiling/blob/719459fefb40c7e5be157f652818dbf923830557/results/notes/point_source_cpu_campaign.md#campaign-completion-evidence-2026-10-04).
+- Still owed (unchanged), now tracked by Mind draft `draft/maintenance/autolens/point_source_cpu_campaign_owed_leftovers.md` (2026-10-04): RAL cleanup, test move, register_model grad-zero prompt, CI smoke cells, constant_folding A/B, nopad deletion, quiet re-runs.
+- RAL leftover folders not re-listed 2026-10-07 (unverified).
+
 ---
 
 # Point-source (single-source) CPU campaign — carried leftovers and completion evidence

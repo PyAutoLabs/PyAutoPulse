@@ -9,6 +9,10 @@ Original task retained verbatim below. Current scheduling state: `campaigns.yaml
 - Context: jax-version policy changes (Mind `complete/2026/10/jax-lapack-compatibility-repair.md`) merged to library mains 2026-10-04, unreleased.
 - Next: select one bounded step when prioritised.
 
+## Check-in 2026-10-07
+
+- Context: the jax-version policy is now released; all 2026.10.7.1 libraries require Nerves with the JAX deadlock exclusions. Unissued.
+
 ---
 
 # Pair JAX/XLA env vars with measured compile and run times, per backend

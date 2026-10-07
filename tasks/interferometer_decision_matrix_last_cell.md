@@ -18,6 +18,12 @@ The original task below is retained verbatim. Current scheduling state lives in 
 - Caveat (executing agent): the A100 row's own A/B shows certified solver = PDIP to 0.0 nat, so the gap may come from F/D on older revisions rather than the solver. Not verified.
 - Correction: PyAutoArray#582 was first released in 2026.9.27.2.
 
+## Check-in 2026-10-07
+
+- https://github.com/PyAutoLabs/autolens_profiling/pull/372 (issue #369) merged 2026-10-04T20:40Z: CPU rect 39² alma_high r5.0 from RAL 375978_3; the human accepted the 1.59e-3 nat CPU/A100 gap on 2026-10-04.
+- Wiki Next line confirms every decision-matrix cell is measured, blocked or not measured with a citation (https://github.com/PyAutoLabs/autolens_profiling/blob/719459fefb40c7e5be157f652818dbf923830557/wiki/campaigns/interferometer_likelihood.md).
+- Status → `complete`.
+
 ---
 
 # Interferometer decision matrix — fill the last cell (CPU rect 39² at alma_high r5.0) and flip the wiki row to shipped

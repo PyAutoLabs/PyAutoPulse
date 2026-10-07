@@ -8,6 +8,10 @@ The original task below is retained verbatim. Current scheduling state lives in 
 - VERIFIED: [autolens_workspace_developer#117](https://github.com/PyAutoLabs/autolens_workspace_developer/issues/117) closed 2026-07-28; no change since the pin. The Mind source draft was removed in Mind `dbbe5b22` (2026-10-03, move to Pulse); it is not in Mind complete/ or active.md, so this file is the live record.
 - Next: select one bounded step when prioritised.
 
+## Check-in 2026-10-07
+
+- Context: Heart unit-test timing (PyAutoLens py3.13, 2026-10-07) flagged test__forward_gradient_matches_reverse_through_fitness 5.03→12.60 s and test__multi_start_gradient_point_source_fit_runs_in_forward_mode 15.51→30.38 s. https://github.com/PyAutoLabs/PyAutoLens/pull/768 rewrote that test file, so this is not a controlled library-cost comparison; this probe is the right instrument. Unissued.
+
 ---
 
 # A gradient-cost probe: forward vs `value_and_grad` ms/eval and a strict FD check, on any registry cell

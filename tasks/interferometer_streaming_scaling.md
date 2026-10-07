@@ -19,6 +19,11 @@ The original task below is retained verbatim. Current scheduling state lives in 
 - Parity 1.2e-9 nats at 5e5. The 1e8 row was skipped (budget).
 - Go/no-go overtaken; recorded as release evidence for 2026.10.4.1.
 
+## Check-in 2026-10-07
+
+- https://github.com/PyAutoLabs/autolens_profiling/pull/375 (issue #368) merged 2026-10-04T20:49Z: phase 1 CPU cells + results/streaming_scaling rows; https://github.com/PyAutoLabs/autolens_profiling/blob/719459fefb40c7e5be157f652818dbf923830557/wiki/campaigns/interferometer_streaming.md.
+- Optional next: 1e8 CPU row and A100 rows (compute authorization). Library candidate still unfiled: chunk transformer.image_from in apply_sparse_operator.
+
 ---
 
 # Campaign: interferometer streaming (array-free) vs in-memory — memory and time scaling to 2e8 visibilities
