@@ -13,6 +13,12 @@ The original task below is retained verbatim. Current scheduling state lives in 
 - https://github.com/PyAutoLabs/autofit_profiling created 2026-10-07T11:38Z: one Initial commit with LICENSE only, no PRs. The repo-creation question is answered.
 - Status → `ready`: porting/bootstrap unstarted; no producer registration until baselines are ported.
 
+## Check-in 2026-10-07 (adopted by search-extensibility)
+
+- Repo created 2026-10-07 (human gate); its lint-green skeleton PR is filed via PyAutoMind#492, phase B1 of the `search-extensibility` epic, which also registers the repo in Mind `repos.yaml` (`fit/autofit_profiling`), Heart `excluded:` and the org profile, and clones it on RAL.
+- This task is adopted by the epic: **B4a** = the `search.fit` breakdown exporter, the Pulse `fit` instance row and epic 1's measured bottleneck table; **B4b** = the EP / graphical baseline port. Epic ledger: `PyAutoMind/draft/research/autofit/search_extensibility_epic.md`.
+- No producer registration (`registry.yaml` row) until `profiling-summary@2` is published from the repo in B4a.
+
 ---
 
 # autofit_profiling: bootstrap the repo + general PyAutoFit profiling epic

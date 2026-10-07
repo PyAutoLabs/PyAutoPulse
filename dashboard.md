@@ -1,6 +1,6 @@
 # PyAutoPulse — profiling dashboard
 
-<!-- pulse-campaigns:021587f27bf5586055e44b0849446143b796e6cc18bb74421b8941aa0a5f423e -->
+<!-- pulse-campaigns:8279308885a28d52bb0b8fc902842f10be59ef60cd192077b86500bb0a372c32 -->
 ## Profiling Check In
 
 <details><summary>Full check-in prompt</summary>
@@ -160,7 +160,7 @@ Reviewed 2026-10-07. PyAutoLabs/autofit_profiling created 2026-10-07 (one Initia
 
 ### Active tasks
 
-- [autofit_profiling: bootstrap the repo + general PyAutoFit profiling epic](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/autofit_profiling_bootstrap.md) — ready: PyAutoLabs/autofit_profiling created 2026-10-07 (LICENSE-only Initial commit, no PRs). Bootstrap/porting unstarted; start the first bounded phase via start_dev. No producer registration until baselines are ported.
+- [autofit_profiling: bootstrap the repo + general PyAutoFit profiling epic](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/autofit_profiling_bootstrap.md) — ready: Adopted by the search-extensibility epic (Mind draft/research/autofit/search_extensibility_epic.md); skeleton + registration via PyAutoMind#492 (B1). Next is B4a (search.fit breakdown exporter, Pulse fit row, epic-1 bottleneck table), then B4b (EP/graphical baseline port). No producer registration until profiling-summary@2 is published (B4a).
 
 </details>
 

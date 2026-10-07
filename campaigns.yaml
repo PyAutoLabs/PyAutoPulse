@@ -215,8 +215,10 @@ tasks:
   priority: normal
   path: tasks/autofit_profiling_bootstrap.md
   updated: '2026-10-07'
-  next: PyAutoLabs/autofit_profiling created 2026-10-07 (LICENSE-only Initial commit, no PRs). Bootstrap/porting
-    unstarted; start the first bounded phase via start_dev. No producer registration until baselines are ported.
+  next: Adopted by the search-extensibility epic (Mind draft/research/autofit/search_extensibility_epic.md);
+    skeleton + registration via PyAutoMind#492 (B1). Next is B4a (search.fit breakdown exporter, Pulse fit row, epic-1
+    bottleneck table), then B4b (EP/graphical baseline port). No producer registration until profiling-summary@2
+    is published (B4a).
   evidence: https://github.com/PyAutoLabs/autofit_profiling
 - id: cluster_pointsolver_speed
   campaign: cluster-pointsolver
