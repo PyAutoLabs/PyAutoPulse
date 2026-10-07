@@ -965,7 +965,13 @@ window.addEventListener('hashchange',openCampaign);openCampaign();
       const incoming = Object.fromEntries(
         new URLSearchParams(location.hash.slice(1)),
       );
-      route(incoming.instance === capture.instance ? incoming : {}, false);
+      const linked = incoming.instance === capture.instance;
+      // A setup deep link is not an element ID, so reveal the collapsed
+      // board sections around this browser itself (PyAutoBrain#490).
+      if (linked)
+        for (let p = root.parentElement; p; p = p.parentElement)
+          if (p.tagName === "DETAILS") p.open = true;
+      route(linked ? incoming : {}, false);
     }
     function navigation() {
       nav.replaceChildren();
