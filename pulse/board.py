@@ -567,7 +567,7 @@ def render_html(views, now: str | None = None, campaign_data: dict | None = None
             + _html_detail(snapshot, now)
             + "</details>"
         )
-    return (
+    return shared.section_layout(
         '<!doctype html>\n<html lang="en"><head><meta charset="utf-8">'
         '<meta name="viewport" content="width=device-width,initial-scale=1">'
         "<title>PyAutoPulse dashboard</title>"
