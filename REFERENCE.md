@@ -109,8 +109,7 @@ IDs are non-empty and unique within each list; references resolve within the
 same document and project. `comparisons` must be `[]`: this catalogue presents
 selected results, not release trends. Keep `comparison_policy.id` explicitly
 labelled, e.g. `no-temporal-comparisons`, for common receipt/board compatibility.
-The existing board can ingest/render v2 metadata; the interactive setup browser
-is a subsequent phase. Historical v1 feeds and their comparison rules remain
+The board provides an interactive setup browser over captured v2 evidence. Historical v1 feeds and their comparison rules remain
 supported without rewriting measurements, pins, or policy.
 
 ### Setups
@@ -290,3 +289,33 @@ candidate's evidence at the captured commit.
   Main writers share the concurrency group `pulse-main-writers`.
 - `pages_dashboard.yml` — publishes `dashboard.html` as `index.html` with `badge.json`
   and `state.json`, after validating the feed with `PyAutoBrain/board/_state.py`.
+
+
+### Browsing measurement availability
+
+The setup browser lists runtime, breakdown, compilation and memory availability
+per model/instrument, then selects one exact evidence run. Runtime evidence is
+the deterministic default when available; exact run links open a populated axis
+without substituting a different setup. Selecting a device narrows recorded runs,
+and a compatible filter persists when changing runs. Counts describe availability,
+not scientific comparability or acceptance.
+
+Optional shard `axes` and `axis_devices` metadata supplies the overview. Older
+captures fall back to their inline or verified loaded records; device-wide lists
+are never treated as an axis/device cross-product. Missing axis summaries remain
+explicit and their runs can still be opened. No recorded memory is displayed as
+missing evidence, never estimated from another axis.
+
+Optional unbound-finding `discovery.models` entries identify related model
+findings; `discovery.shared` identifies shared component/method findings. Both
+remain applicability-unverified and separate from exact setup/version bindings.
+Findings without discovery metadata remain accessible as uncategorized evidence.
+Original evidence links and shard fetches retain the captured commit; local
+checkout captures cannot silently fetch remote details.
+
+The browser regression fixture `tests/fixtures/browser_measurements.json` is a
+seven-setup subset captured from autolens_profiling commit
+`16471e3f6cb7acc1ebe8392af3934821bc254dea`. Its embedded shard bytes and hashes
+are unchanged; the catalogue is scoped to those setups for hermetic browser tests.
+It includes MGE/rectangular HST runs without reference candidates and without
+memory measurements, so empty-memory and useful-runtime behavior are both tested.

@@ -75,3 +75,23 @@ def test_markdown_keeps_diagnostics_collapsed():
     page = board.render_markdown([capture()])
     assert "<details><summary>Capture, qualification and legacy diagnostics" in page
     assert "| Where | Count |" not in page
+
+
+def test_real_browser_fixture_preserves_capture_hashes_and_setup_identity():
+    import hashlib
+    from pathlib import Path
+
+    from pulse import catalogue
+
+    fixture = json.loads((Path(__file__).parent / "fixtures/browser_measurements.json").read_text())
+    assert len(fixture["capture_commit"]) == 40
+    assert catalogue.validate(fixture["catalogue"]) == []
+    for manifest in fixture["catalogue"]["evidence_shards"]:
+        raw = fixture["shards"][manifest["path"]]
+        assert hashlib.sha256(raw.encode()).hexdigest() == manifest["sha256"]
+        shard = json.loads(raw)
+        assert catalogue.validate(shard) == []
+        assert len(shard["records"]) == manifest["records"]
+        assert shard["setups"] == [
+            setup for setup in fixture["catalogue"]["setups"] if setup["id"] == manifest["setup_id"]
+        ]

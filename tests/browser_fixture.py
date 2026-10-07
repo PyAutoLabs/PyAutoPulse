@@ -49,6 +49,45 @@ def write(destination):
     inline.doc.pop("navigation")
     (destination / "inline.html").write_text(board.render_html([inline]))
 
+    grouped = copy.deepcopy(inline)
+    record = grouped.doc["records"][0]
+    grouped.doc["records"] = []
+    for metric, value, statistic in [
+        ("single_call", 1, "median"),
+        ("single_call", 2, "mean"),
+        ("batch_wall", 10, "median"),
+        ("batch_per_call", 0.5, "median"),
+    ]:
+        row = copy.deepcopy(record)
+        row.update(
+            id=metric + statistic,
+            axis="runtime",
+            metric=metric,
+            unit="s",
+            measurement={metric: value},
+        )
+        row["method"]["statistic"] = statistic
+        grouped.doc["records"].append(row)
+    (destination / "grouping.html").write_text(board.render_html([grouped]))
+
+    real = json.loads((Path(__file__).parent / "fixtures/browser_measurements.json").read_text())
+    for name, text in real["shards"].items():
+        target = destination / name
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(text)
+    captured = copy.deepcopy(snapshots[0])
+    captured.doc = real["catalogue"]
+    captured.commit = real["capture_commit"]
+    (destination / "measurements.html").write_text(board.render_html([captured]))
+    legacy = copy.deepcopy(captured)
+    for manifest in legacy.doc["evidence_shards"]:
+        manifest.pop("axis_devices", None)
+    (destination / "legacy-devices.html").write_text(board.render_html([legacy]))
+    for manifest in legacy.doc["evidence_shards"]:
+        manifest.pop("axes", None)
+    legacy.doc["records"] = []
+    (destination / "unknown-axes.html").write_text(board.render_html([legacy]))
+
 
 if __name__ == "__main__":
     write(Path(sys.argv[1]))

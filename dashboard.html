@@ -485,6 +485,35 @@ button.retry {
   border-top: 1px solid var(--line);
   padding-top: 0.8rem;
 }
+
+.measurement-choices {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: 0.65rem;
+}
+.measurement-choice {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0.65rem;
+}
+.measurement-choice p {
+  margin: 0.4rem 0 0;
+}
+.measurement-choice button {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.45rem;
+  font: inherit;
+  cursor: pointer;
+  color: var(--fg);
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+.measurement-choice button[aria-pressed="true"] {
+  border-color: var(--accent);
+  font-weight: 700;
+}
 </style></head><body><header class="hero"><span class="orb"><svg class="mark" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="24" cy="25.6" r="18.8"/><path d="M21.2,4.2 L26.8,4.2 M24,4.2 L24,6.8"/><path d="M8.4,27.2 L17.0,27.2 L19.6,22.4 L22.6,35.0 L26.4,14.8 L29.4,27.2 L39.6,27.2"/><g fill="currentColor" stroke="none"><circle cx="26.4" cy="14.8" r="1.5"/><circle cx="24" cy="4.2" r="1.3"/></g></svg></span><h1>PyAuto<b>Pulse</b><span class="kind">Profiling dashboard</span></h1><div class="rule"></div><p class="tag">Measure. Trace. Compare.</p></header><nav class="board-nav" aria-label="Board sections"><a class="board-nav-card" href="#campaigns"><span class="board-nav-label">Active campaigns</span></a><a class="board-nav-card" href="#evidence"><span class="board-nav-label">Profiling evidence</span></a></nav><main><!-- pulse-campaigns:cbea1eba629dc0064077ad5d1af613005d3a58f8a6d17b54b253eb6468e6d379 --><section class="orchestration-panel" id="orchestration-pulse" aria-labelledby="orchestration-pulse-heading" data-orchestration-panel><div class="orchestration-head"><div><h2 class="prompt-heading" id="orchestration-pulse-heading">Check your <strong>Pulse</strong></h2></div><nav class="orchestration-links" aria-label="Work on GitHub"><a href="https://github.com/PyAutoLabs/PyAutoPulse">PyAutoPulse</a><a href="https://github.com/PyAutoLabs/autolens_profiling">autolens_profiling</a></nav></div><div class="orchestration-controls"><div class="orchestration-direction"><label for="orchestration-pulse-direction">Optional direction</label><textarea id="orchestration-pulse-direction" rows="2" data-orchestration-direction placeholder="Focus on a task, project or question"></textarea></div><button type="button" class="orchestration-copy" data-orchestration-copy>Profiling Check In</button></div><details data-orchestration-preview><summary>Read the prompt</summary><label class="sr-only" for="orchestration-pulse-prompt">Exact prompt to copy</label><textarea id="orchestration-pulse-prompt" data-orchestration-prompt readonly rows="8">Use PyAutoPulse as the home for profiling work in this ongoing chat. Read PyAutoPulse/AGENTS.md and CHECKIN.md, then the campaign ledger, relevant tasks and registered project evidence. Use Brain’s profiling conductor for profiling analysis and planning, and project-owned drivers for execution.
 
 When I give no particular direction, review every open campaign and task for changes since the last check-in: measurements, jobs, PRs, releases, blockers and recorded next steps. Give me a concise campaign-by-campaign summary and a proposed priority order. Distinguish verified updates from stale, missing or unavailable evidence.
@@ -617,6 +646,113 @@ window.addEventListener('hashchange',openCampaign);openCampaign();
       state = {},
       generation = 0;
     const cache = new Map();
+    const axes = {
+      runtime: "Runtime",
+      breakdown: "Breakdown",
+      compile: "Compilation",
+      memory: "Memory",
+    };
+    const manifestFor = (s) =>
+      (catalogue.evidence_shards || []).find((m) => m.setup_id === s.id);
+    const recordsFor = (s) => {
+      const manifest = manifestFor(s);
+      return (
+        cache.get(manifest?.sha256)?.records ||
+        catalogue.records.filter((r) => r.setup_id === s.id)
+      );
+    };
+    const axesFor = (s) =>
+      manifestFor(s)?.axes || [...new Set(recordsFor(s).map((r) => r.axis))];
+    const hasAxis = (s, axis) => axesFor(s).includes(axis);
+    const devicesFor = (s, axis) =>
+      manifestFor(s)?.axis_devices?.[axis] || [
+        ...new Set(
+          recordsFor(s)
+            .filter((r) => r.axis === axis)
+            .map((r) => r.identity.device || "unknown"),
+        ),
+      ];
+    function rank(s, axis) {
+      if (hasAxis(s, axis)) return s.role === "reference_candidate" ? 0 : 1;
+      return manifestFor(s) ? 2 : s.role === "planned_baseline" ? 4 : 3;
+    }
+    function ordered(setups, axis) {
+      return [...setups].sort(
+        (a, b) =>
+          rank(a, axis) - rank(b, axis) ||
+          configurationLabel(a).localeCompare(configurationLabel(b)) ||
+          a.id.localeCompare(b.id),
+      );
+    }
+    function chooseAxis(setup) {
+      return (
+        Object.keys(axes).find((axis) => hasAxis(setup, axis)) || "runtime"
+      );
+    }
+    function goAxis(axis, device = "") {
+      route({
+        dataset: state.dataset,
+        model: state.model,
+        instrument: state.instrument,
+        axis,
+        device,
+      });
+    }
+    function overview(setups) {
+      const section = append(
+        results,
+        "section",
+        undefined,
+        "measurement-overview",
+      );
+      append(section, "h3", "Available measurements");
+      append(
+        section,
+        "p",
+        "Browse recorded runs by measurement and device. Runs can have different settings and revisions; they are not a combined benchmark.",
+        "axis-note",
+      );
+      const unknown = setups.filter(
+        (s) => manifestFor(s) && !axesFor(s).length,
+      );
+      if (unknown.length)
+        append(
+          section,
+          "p",
+          `${unknown.length} recorded runs have no axis summary; open a run to inspect its evidence.`,
+          "metric-meta",
+        );
+      const grid = append(section, "div", undefined, "measurement-choices");
+      for (const [axis, title] of Object.entries(axes)) {
+        const matches = setups.filter((s) => hasAxis(s, axis));
+        const card = append(grid, "div", undefined, "measurement-choice");
+        const button = append(card, "button", title);
+        button.type = "button";
+        button.dataset.axis = axis;
+        button.setAttribute("aria-pressed", String(state.axis === axis));
+        button.onclick = () => goAxis(axis);
+        append(
+          card,
+          "p",
+          matches.length
+            ? `${matches.length} recorded runs`
+            : unknown.length
+              ? "Axis coverage not recorded"
+              : "No recorded measurements",
+          "metric-meta",
+        );
+        const devices = [
+          ...new Set(matches.flatMap((s) => devicesFor(s, axis))),
+        ].sort();
+        append(
+          card,
+          "p",
+          devices.map(label).join(" · ") ||
+            (matches.length ? "Device breakdown not recorded" : ""),
+          "metric-meta",
+        );
+      }
+    }
     const names = {
       imaging: "Imaging",
       interferometer: "Interferometer",
@@ -917,7 +1053,7 @@ window.addEventListener('hashchange',openCampaign);openCampaign();
         append(d, "p", "Method: " + JSON.stringify(r.method), "metric-meta");
       }
     }
-    function panels(records) {
+    function panels(records, setups) {
       const axes = {
         runtime: [
           "Likelihood runtime",
@@ -939,11 +1075,36 @@ window.addEventListener('hashchange',openCampaign);openCampaign();
       for (const [axis, [title, note]] of Object.entries(axes)) {
         const section = disclosure(results, title);
         section.className = "metric-panel";
-        section.open = axis === "runtime";
+        section.dataset.axis = axis;
+        section.open =
+          axis ===
+          (records.some((r) => r.axis === state.axis)
+            ? state.axis
+            : Object.keys(axes).find((a) => records.some((r) => r.axis === a)));
         append(section, "p", note, "axis-note");
         const rows = records.filter((r) => r.axis === axis);
         if (!rows.length) {
-          append(section, "p", "Not measured for this configuration.", "empty");
+          const available = setups.filter((s) => hasAxis(s, axis));
+          append(
+            section,
+            "p",
+            available.length
+              ? `Not recorded in this run. ${available.length} other runs contain ${label(axis)} measurements; settings may differ.`
+              : setups.some((s) => manifestFor(s) && !axesFor(s).length)
+                ? "Other runs have no axis summary; their measurement coverage is unknown."
+                : "No recorded measurements for this model and instrument.",
+            "empty",
+          );
+          if (available.length) {
+            const browse = append(
+              section,
+              "button",
+              `Browse ${label(axis)} runs`,
+              "retry",
+            );
+            browse.type = "button";
+            browse.onclick = () => goAxis(axis);
+          }
           continue;
         }
         const groups = new Map();
@@ -1039,18 +1200,55 @@ window.addEventListener('hashchange',openCampaign);openCampaign();
         );
         item.evidence.forEach((ev) => link(append(d, "p"), ev.path, ev.path));
       }
-      const unbound = (catalogue.unbound_findings || []).filter((f) =>
-        f.evidence.path.includes("/" + setup.dataset + "/"),
+      const findings = catalogue.unbound_findings || [];
+      const unbound = findings.filter((f) =>
+        (f.discovery?.models || []).some(
+          (m) => m.dataset === setup.dataset && m.model === setup.model,
+        ),
       );
+      function findingList(parent, entries) {
+        for (const f of entries) {
+          append(parent, "h4", f.title);
+          append(parent, "p", f.discovery.reason);
+          append(parent, "p", f.reason, "metric-meta");
+          link(append(parent, "p"), f.evidence.path, "Original finding");
+        }
+      }
       if (unbound.length) {
         const other = disclosure(
           d,
-          "Related findings · applicability unverified",
+          `Related model findings · applicability unverified (${unbound.length})`,
         );
-        unbound.forEach((f) => {
-          append(other, "p", f.title + " — " + f.reason);
-          link(append(other, "p"), f.evidence.path, f.evidence.path);
-        });
+        other.className = "related-hazards";
+        findingList(other, unbound);
+      }
+      const shared = findings.filter((f) => f.discovery?.shared);
+      if (shared.length) {
+        const other = disclosure(
+          d,
+          `Shared component and method findings (${shared.length})`,
+        );
+        other.className = "shared-hazards";
+        append(
+          other,
+          "p",
+          "These concern shared components or methods. Their presence here does not establish that this model uses them or that this run is affected.",
+        );
+        findingList(other, shared);
+      }
+      const uncategorized = findings.filter((f) => !f.discovery);
+      if (uncategorized.length) {
+        const other = disclosure(
+          d,
+          `Uncategorized findings (${uncategorized.length})`,
+        );
+        append(
+          other,
+          "p",
+          "Model association and applicability have not been established.",
+        );
+        for (const f of uncategorized)
+          link(append(other, "p"), f.evidence.path, f.title);
       }
       const estimates = (catalogue.static_memory_estimates || []).filter(
         (e) => setup.evidence && e.evidence.path === setup.evidence.path,
@@ -1119,7 +1317,8 @@ window.addEventListener('hashchange',openCampaign);openCampaign();
       const instruments = [...new Set(choices.map(instrument))].sort();
       if (
         (state.setup && !choices.some((s) => s.id === state.setup)) ||
-        (state.instrument && !instruments.includes(state.instrument))
+        (state.instrument && !instruments.includes(state.instrument)) ||
+        (state.axis && !Object.hasOwn(axes, state.axis))
       ) {
         append(
           results,
@@ -1147,36 +1346,83 @@ window.addEventListener('hashchange',openCampaign);openCampaign();
               choices.find((s) => s.role === "reference_candidate") ||
                 choices[0],
             );
-      const rank = (s) =>
-        s.role === "reference_candidate"
-          ? catalogue.records.some(
-              (r) => r.setup_id === s.id && r.axis === "runtime",
-            )
-            ? 0
-            : 1
-          : s.role === "planned_baseline"
-            ? 3
-            : 2;
-      const variants = choices
-        .filter((s) => instrument(s) === selectedInstrument)
-        .sort(
-          (a, b) =>
-            rank(a) - rank(b) ||
-            configurationLabel(a).localeCompare(configurationLabel(b)),
+      const instrumentSetups = choices.filter(
+        (s) => instrument(s) === selectedInstrument,
+      );
+      const axis =
+        state.axis ||
+        (requested
+          ? chooseAxis(requested)
+          : chooseAxis(ordered(instrumentSetups, "runtime")[0]));
+      const devices = [
+        ...new Set(instrumentSetups.flatMap((s) => devicesFor(s, axis))),
+      ].sort();
+      if (state.device && !devices.includes(state.device)) {
+        append(
+          results,
+          "p",
+          "No recorded device matches this link. Choose a measurement to browse available runs.",
+          "empty",
         );
-      // Baseline is a coverage placeholder, not a fallback claim that archive evidence is accepted.
+        state.instrument = selectedInstrument;
+        overview(instrumentSetups);
+        return;
+      }
+      const device = state.device || "";
+      if (
+        device &&
+        requested &&
+        manifestFor(requested) &&
+        !devicesFor(requested, axis).includes(device)
+      ) {
+        append(
+          results,
+          "p",
+          "The linked run does not record this measurement on the selected device. No substitute measurements are shown.",
+          "empty",
+        );
+        const reset = append(
+          results,
+          "button",
+          "Open the exact run without the device filter",
+          "retry",
+        );
+        reset.type = "button";
+        reset.onclick = () =>
+          route({ ...state, device: "", axis: chooseAxis(requested) });
+        return;
+      }
+      const matches = ordered(
+        instrumentSetups.filter(
+          (s) =>
+            hasAxis(s, axis) &&
+            (!device || devicesFor(s, axis).includes(device)),
+        ),
+        axis,
+      );
+      // Keep explicit baseline/failed selections reachable without calling them measurements.
+      const variants = [
+        ...matches,
+        ...instrumentSetups.filter(
+          (s) => !matches.includes(s) && !axesFor(s).length,
+        ),
+      ];
+      if (requested && !variants.some((s) => s.id === requested.id))
+        variants.unshift(requested);
       const setup = requested || variants[0];
       state = {
         instance: capture.instance,
         dataset: state.dataset,
         model: state.model,
         instrument: selectedInstrument,
-        setup: setup.id,
+        axis,
+        ...(device ? { device } : {}),
+        ...(setup ? { setup: setup.id } : {}),
       };
       history.replaceState(null, "", "#" + new URLSearchParams(state));
-      const fields = append(results, "div", "", "selectors");
+      const instrumentFields = append(results, "div", "", "selectors");
       selector(
-        fields,
+        instrumentFields,
         "instrument",
         "Instrument",
         instruments.map((i) => [
@@ -1191,13 +1437,47 @@ window.addEventListener('hashchange',openCampaign);openCampaign();
             instrument: value,
           }),
       );
+      overview(instrumentSetups);
+      const fields = append(results, "div", "", "selectors");
+      selector(
+        fields,
+        "device",
+        "Recorded device",
+        [["", "All recorded devices"], ...devices.map((d) => [d, label(d)])],
+        device,
+        (value) => goAxis(axis, value),
+      );
+      if (!setup) {
+        append(
+          results,
+          "p",
+          "No recorded runs for this measurement. Choose another measurement above.",
+          "empty",
+        );
+        advice({ dataset: state.dataset, model: state.model });
+        evidence({ dataset: state.dataset, model: state.model }, []);
+        return;
+      }
       selector(
         fields,
         "configuration",
         "Configuration / evidence run",
         variants.map((s) => [s.id, configurationLabel(s)]),
         setup.id,
-        (value) => route({ ...state, setup: value }),
+        (value) => {
+          const selected = variants.find((s) => s.id === value);
+          const nextAxis = hasAxis(selected, axis)
+            ? axis
+            : chooseAxis(selected);
+          route({
+            ...state,
+            setup: value,
+            axis: nextAxis,
+            device: devicesFor(selected, nextAxis).includes(device)
+              ? device
+              : "",
+          });
+        },
       );
       const context = append(results, "div", "", "context");
       append(
@@ -1243,7 +1523,7 @@ window.addEventListener('hashchange',openCampaign);openCampaign();
             slots.length +
             " measurement slots not measured.",
         );
-        panels([]);
+        panels([], instrumentSetups);
         metadata(setup);
         advice(setup);
         evidence(setup, []);
@@ -1255,7 +1535,7 @@ window.addEventListener('hashchange',openCampaign);openCampaign();
       if (!manifest) {
         const inline = catalogue.records.filter((r) => r.setup_id === setup.id);
         if (inline.length) {
-          panels(inline);
+          panels(inline, instrumentSetups);
           metadata(setup);
           qualification(inline);
           advice(setup);
@@ -1272,7 +1552,7 @@ window.addEventListener('hashchange',openCampaign);openCampaign();
           failed.map((s) => s.status + ": " + s.reason).join("; ") ||
             "No measured evidence is available.",
         );
-        panels([]);
+        panels([], instrumentSetups);
         metadata(setup);
         advice(setup);
         evidence(setup, []);
@@ -1313,7 +1593,7 @@ window.addEventListener('hashchange',openCampaign);openCampaign();
           )
         )
           throw Error("Evidence does not match the selected setup.");
-        panels(shard.records);
+        panels(shard.records, instrumentSetups);
         metadata(setup);
         qualification(shard.records);
         advice(setup);
