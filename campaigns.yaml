@@ -139,16 +139,14 @@ tasks:
   priority: high
   path: tasks/timing_noise_audit.md
   updated: '2026-10-08'
-  next: 'Phase 1 (inventory) MERGED 2026-10-08 as autolens_profiling#402 (main un-reddened first by #403, a Brain theme
-    drift); Mind record complete/2026/10/timing-noise-audit-p1-inventory.md. 31 gates: 11 SOUND / 10 FRAGILE / 10 UNSAFE-SILENT;
-    worst is dashboard qualify() (laptop / no-loadavg / no-host rows qualify, and Pulse accepts evidence on that flag).
-    Phase 2 STARTED 2026-10-08 (human: "do the next step"): fix (1) shared ABBA overhead verdict for the #361 test and the
-    fixed-light numba cell, budget in ms of excess, t-interval vs budget, visible INCONCLUSIVE; Mind
-    active/timing_noise_audit_phase2_overhead_verdict.md, worktree timing-noise-audit-p2-overhead-verdict, Opus executing;
-    superseded "relax it a bit" draft retired. Next: /prm on its PR; then fix (2) dashboard qualification + drift wording
-    (profiling-summary contract change, Pulse coordination).'
+  next: 'Phase 2 MERGED 2026-10-08 as autolens_profiling#404: one abba_overhead_verdict (excess ms vs the 12 ms budget,
+    t-interval, PASS/FAIL/FAIL_GROSS/INCONCLUSIVE) serves the CI test and the fixed-light numba cell; promotion requires
+    PASS; 6/17 published RAL rows re-judge INCONCLUSIVE (recorded, no JSON rewritten). Human decision: the ~16 ms CI
+    fixture cannot resolve 12 ms, so the CI test is the coverage + gross-breakage guard. Inventory now 13 SOUND / 9 FRAGILE /
+    9 UNSAFE-SILENT. Next: fix phase (2) dashboard qualify()/drift wording - a profiling-summary contract change that needs
+    a paired PyAutoPulse reader change (plan as a two-repo task); then (3) INCONCLUSIVE for go/lever rules.'
   issue: https://github.com/PyAutoLabs/autolens_profiling/issues/362
-  evidence: https://github.com/PyAutoLabs/autolens_profiling/blob/main/results/notes/timing_noise_audit_2026_10.md
+  evidence: https://github.com/PyAutoLabs/autolens_profiling/pull/404
 - id: mge_likelihood_breakdown_steps_are_cumulative_an
   campaign: measurement-tools
   title: MGE likelihood_breakdown steps are cumulative and `linear_gaussians` is reported as 0
