@@ -43,6 +43,17 @@ The original task below is retained verbatim. Current scheduling state lives in 
 - Human decision: on the ~15–17 ms CI fixture the shared 12 ms budget can only fail through the gross guard; the CI test is documented as the coverage + cached-site-count + gross-breakage guard, and the ms budget is judged on the 225–415 ms production rows.
 - Next: fix phase (2) — `build_dashboard.qualify`/`drift` wording. This changes the `profiling-summary` contract Pulse ingests; plan it as a two-repo task (autolens_profiling producer + PyAutoPulse reader/fixtures) before any producer change lands.
 
+
+## Execution 2026-10-08 — phase 3 (fix phase 2: dashboard qualification + drift wording)
+
+- Human: "continue … --auto" after the plan was presented in the Pulse chat; issue #362 reused (plan comment https://github.com/PyAutoLabs/autolens_profiling/issues/362#issuecomment-6067418030). Mind `active/timing_noise_audit_phase3_qualify_drift.md` (f27988f1); branch `feature/timing-noise-audit-p3-qualify-drift`; Opus executes.
+- **Correction to the phase 1/2 notes above:** Pulse's live `lens` registry reads `dashboard/catalogue.json` (`profiling-summary@2`) since 2026-10-05 (3c7bed2). That producer (`build_catalogue.py`) hard-codes `qualified: false` on every record, and its comparisons list is empty. `build_dashboard.qualify()`/`drift()` feed only the v1 `summary.json` (project dashboard and badge). The P6 gap therefore never reached Pulse live, and fix (2) is a single-repo change: no Pulse reader change was needed.
+- Human decision 2026-10-08: `drifted` / `improved` keep their status and carry a "single-sample endpoint(s)" caveat; only the within-band case changes (`flat` only with repeat summaries on both endpoints, else `insufficient`).
+- Heart readiness was YELLOW (8 organism-wide manifest-drift reasons + "no rehearsal for current source"); the human acknowledged that list for this PR on 2026-10-08.
+- PR [autolens_profiling#405](https://github.com/PyAutoLabs/autolens_profiling/pull/405) opened 2026-10-08. Verified on the branch: 1169 passed / 6 skipped; independent review CLEAN; Pulse v1 `validate()` returns [] before and after. `summary.json` effect: 159 records, qualified 2 → 2 (no record changed), `flat` 4 → 0, `insufficient` 135 → 139, `improved` 6 → 6 with the caveat. Audit counts now 15 SOUND / 8 FRAGILE / 8 UNSAFE-SILENT.
+- Carry-forward: when the v2 catalogue starts qualifying records (setup-baseline reference-host decision), it must reuse the producer's `is_reference_host_class` rule rather than a separate one.
+- Next: /prm the PR (judge tier, human merge); then fix phase (3) — INCONCLUSIVE for go / lever rules, tie sets instead of argmax.
+
 ---
 
 # Audit timing tests and profiling gates for measurement noise
