@@ -54,6 +54,16 @@ The original task below is retained verbatim. Current scheduling state lives in 
 - Carry-forward: when the v2 catalogue starts qualifying records (setup-baseline reference-host decision), it must reuse the producer's `is_reference_host_class` rule rather than a separate one.
 - Next: /prm the PR (judge tier, human merge); then fix phase (3) — INCONCLUSIVE for go / lever rules, tie sets instead of argmax.
 
+
+### Phases 3–5 merged 2026-10-08 (fix phases 2–4)
+
+- [autolens_profiling#405](https://github.com/PyAutoLabs/autolens_profiling/pull/405) merged 19:46Z (f6e6982); Mind record `complete/2026/10/timing-noise-audit-p3-qualify-drift.md` (d774cbb1).
+- [autolens_profiling#406](https://github.com/PyAutoLabs/autolens_profiling/pull/406) merged 20:19Z (94861700): shared `ab_verdict.py` (`ab_rule_verdict`, `tie_set`, `paired_block_ratio_interval`) wired into C6, C7, P2, C10. Re-judged committed rows: no go / no-go / NO_LEVER call changed; 7 of 9 committed C10 "best" picks are tie sets (IP-4a's 2.37x leader ties with four others; the human decision not to ship it stands). Flagged decision: C10 vmap rows measured for the tie set's `point_leader` only. Mind record f55f220e.
+- [autolens_profiling#407](https://github.com/PyAutoLabs/autolens_profiling/pull/407) merged 20:43Z (8be806cc): shared `round_bootstrap.py` (paired whole-round resampling, `effective_n = n_rounds`) in seven cells. Witness: iid CI 0.14–0.39x as wide as the round CI; 40-seed coverage 0.85 vs 0.33 at nominal 0.90. RAL CPU / A100 calls unchanged; laptop C6 solved `rev_analytic` GO -> INCONCLUSIVE ([0.805, 0.854] vs 0.85). The review returned FINDINGS (label strings); the fix commit 63642d52 was re-reviewed by the main session before merge.
+- Heart was YELLOW throughout with an organism-wide manifest-drift + no-rehearsal set; the human acknowledged that set for these PRs on 2026-10-08.
+- #407 close-out: Mind record `complete/2026/10/timing-noise-audit-p5-round-bootstrap.md` (a9eb5864). Fix phases (5) and (6) NOT started at session end (no branch, Mind entry or plan comment); resume at start_dev with slug `timing-noise-audit-p6-median-headline-gpu-marker` from main 8be806c.
+- Leftovers recorded in the audit note: phase 3b (C1/C3/C4/C5 have no interval), multiple-comparison policy (Holm/Bonferroni), `gpu_bottleneck_map` still per-call. Next: fix phase (5) P8/P9, then (6) P3/P5 (human authorized both under --auto 2026-10-08).
+
 ---
 
 # Audit timing tests and profiling gates for measurement noise

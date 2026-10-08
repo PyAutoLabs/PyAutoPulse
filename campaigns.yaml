@@ -77,10 +77,10 @@ campaigns:
   title: Measurement reliability and profiling tools
   status: active
   updated: '2026-10-08'
-  next: 'timing_noise_audit fix phases (1) and (2) done (autolens_profiling#404 merged; #405 open, awaiting /prm). Correction
-    2026-10-08: the live Pulse lens feed is dashboard/catalogue.json (profiling-summary@2, registry switched 2026-10-05
-    in 3c7bed2), whose producer hard-codes qualified: false, so the v1 qualify() gap never reached Pulse live and fix (2)
-    needed no Pulse change. Next: fix phase (3) INCONCLUSIVE for go/lever rules. Other tasks unchanged and unissued.'
+  next: 'timing_noise_audit fix phases (1)-(4) MERGED 2026-10-08 (autolens_profiling#404, #405, #406, #407). The live Pulse
+    lens feed is the v2 catalogue.json (qualified hard-false), so none needed a Pulse change. Next: fix phase (5) median
+    headline + GPU-only marker, then (6) warm-up flag + witness band; leftovers phase 3b (C1/C3/C4/C5), Holm/Bonferroni
+    policy, gpu_bottleneck_map round bootstrap. Other tasks unchanged and unissued.'
   evidence: https://github.com/PyAutoLabs/autolens_profiling/blob/main/wiki/campaigns/measurement_tools.md
 - id: autofit
   title: PyAutoFit profiling bootstrap
@@ -139,14 +139,14 @@ tasks:
   priority: high
   path: tasks/timing_noise_audit.md
   updated: '2026-10-08'
-  next: 'Fix phase (2) PR OPEN 2026-10-08 as autolens_profiling#405 (awaiting /prm; Heart YELLOW reasons human-acknowledged):
-    dashboard qualify() leaves laptop rows, rows without a load average and hpc rows without a host unqualified with a
-    reason; a within-2x comparison is flat only when both endpoints carry a repeat summary (none do yet), else insufficient;
-    drifted/improved keep status with a single-sample caveat (human decision 2026-10-08). Effect on summary.json: qualified
-    2 -> 2, flat 4 -> 0, insufficient 135 -> 139. Not a Pulse contract change (live feed is v2 catalogue.json, qualified
-    hard-false). Next after merge: fix phase (3) INCONCLUSIVE for go/lever rules, tie sets instead of argmax.'
+  next: 'Fix phases (2)-(4) MERGED 2026-10-08 under human /prm: #405 dashboard qualification + drift wording; #406 A/B go/lever
+    rules gain INCONCLUSIVE + tie sets (shared ab_verdict.py; no published go/no-go/NO_LEVER changed; 7 of 9 committed C10
+    sweeps are tie sets); #407 paired whole-round bootstrap (shared round_bootstrap.py; RAL CPU/A100 calls unchanged; one
+    laptop C6 row GO -> INCONCLUSIVE). Issue #362 stays open. Next: fix phase (5) P8/P9 (median headline, GPU-only marker),
+    then (6) P3/P5 (authorized --auto; not started at session end); leftovers phase 3b (C1/C3/C4/C5 lack intervals),
+    multiple-comparison policy, gpu_bottleneck_map.'
   issue: https://github.com/PyAutoLabs/autolens_profiling/issues/362
-  evidence: https://github.com/PyAutoLabs/autolens_profiling/pull/405
+  evidence: https://github.com/PyAutoLabs/autolens_profiling/pull/407
 - id: mge_likelihood_breakdown_steps_are_cumulative_an
   campaign: measurement-tools
   title: MGE likelihood_breakdown steps are cumulative and `linear_gaussians` is reported as 0
