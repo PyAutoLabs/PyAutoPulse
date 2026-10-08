@@ -58,6 +58,13 @@ The original task below is retained verbatim. Current scheduling state lives in 
 - Finding (A100 job 399050, default + deterministic-ops; CPU control from tag worktrees): the batched/unbatched jacobi difference is deterministic, batch-shape-dependent Cholesky rounding (batched `cho_factor`/`cho_solve` differ from the single solve on 50/50 lanes from `initialize`, 1.1–2.1e-15 relative), amplified to order one within 1–2 iterations on 24 Jacobi-unstable lanes (⊇ all 20 of the 3a divergence set); 26 quiet lanes ≤ 8.2e-13 with identical flags; controls pdip_raw ≤ 1.3e-13, certified ≤ 3.4e-12; cond(Q) uninformative (AUC ~0.6). Decision table in `wiki/research/jacobi_a100_batched_divergence.md`: B ruled out, C unlikely to help, A/D need a Mapper corpus, E bit-parity only. Caveat: committed A100 ulp fields rounded (probe bug fixed post-run); relative norms exact.
 - Human decision (chat 2026-10-08, "option 2"): one bounded evidence step before any default decision — a Mapper corpus. Issued as [autolens_profiling#399](https://github.com/PyAutoLabs/autolens_profiling/issues/399): capture `delaunay_hst`, `rectangular_hst`, `slam_mixed_hst` (lens MGE + Delaunay source, the production case), optional `interferometer_delaunay`; run accuracy, timing and divergence cells over them (CPU + one authorized A100 job); judge raw+polish admissibility and Jacobi stability under the phase-1 rule stated as extended; recommendation table in the wiki. Mind `active/linear_solver_phase5_mapper_corpus.md`, worktree `linear-solver-p5-mapper-corpus`.
 
+
+### Decision 2026-10-08 — Mapper default stays Jacobi
+
+- Phase 5 delivered (autolens_profiling PR #400, A100 job 399225, 6:20; three Mapper groups of 8 near-truth systems, n 1369–1540): `pdip_jacobi` converged 24/24 with 0/24 A100 batch-sensitive lanes; `pdip_raw` admissible (rule stated as extended) on Delaunay and mixed, both PDIP modes fail criterion 2 on rectangular; raw costs 1.05× / 1.62× / 1.15× Jacobi at A100 batch 8, compile separate. Interferometer group skipped (no capture harness); vectors are near-truth only.
+- Human decision: keep Jacobi as the Mapper default and raw+polish for MGE-only; no library change. Canonical record `decisions/linear-solver-mapper-default-jacobi.md` (indexed in `decisions.yaml`, Decision History on the board).
+- Human decision (engineering, not a Pulse decision record): the three 50–56 MB corpus files stay out of git — external copies on RAL and the laptop, sha256 + regenerate command in the manifest; PR #400 to be re-landed from a fresh branch, never by rewriting the pushed one.
+
 ---
 
 # Linear-solver programme phase 3: GPU/vmap/A100 timing and parity rows for the solver corpus
