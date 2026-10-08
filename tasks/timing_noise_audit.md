@@ -20,6 +20,14 @@ The original task below is retained verbatim. Current scheduling state lives in 
 - Human direction (Pulse check-in, after the linear-solver programme closed): "move on to the next Pulse task"; phase 1 plan approved in chat. Issue #362 reused (plan comment posted 2026-10-08); Mind `active/timing_noise_audit_phase1_inventory.md` (a6e8aa1a); worktree `timing-noise-audit-p1-inventory`, branch `feature/timing-noise-audit-p1-inventory`; Opus executes.
 - Scope: inventory of every timing assertion and production gate with estimator, samples, warm-up, pairing, clock, host qualification, cutoff, noise model, FP/FN risk and owner; PASS/FAIL/INCONCLUSIVE semantics; ranked fix phases with synthetic witnesses; read-only lister with `--check`. No gate or tolerance changes.
 
+
+### Phase 1 shipped 2026-10-08
+
+- [autolens_profiling#402](https://github.com/PyAutoLabs/autolens_profiling/pull/402) merged 2026-10-08 (lint green after main was un-reddened by #403, a PyAutoBrain theme drift). Mind record `complete/2026/10/timing-noise-audit-p1-inventory.md`. Issue #362 stays open for the fix phases.
+- Inventory `results/notes/timing_noise_audit_2026_10.md`: 31 rows, 11 SOUND / 10 FRAGILE / 10 UNSAFE-SILENT. UNSAFE-SILENT includes dashboard `qualify()` (laptop rows with provenance, rows without load average and HPC rows without a host all qualify) — **Pulse-relevant**: `pulse/catalogue.py` accepts evidence on that flag, so today's "qualified" counts on the board are not a measurement-quality statement. The #361 trigger test is FRAGILE (near-zero power; INCONCLUSIVE silent under `pytest -q`; passed at a ratio of 0.79).
+- Lister `scripts/misc/tooling/list_timing_assertions.py --check` is in lint.yml; campaign page `wiki/campaigns/measurement_tools.md` created.
+- Proposed fix phases: (1) shared overhead verdict (test + cell, interval vs excess over budget, visible INCONCLUSIVE); (2) dashboard qualification + drift wording (contract change → Pulse coordination); (3) INCONCLUSIVE for go / lever rules, tie sets instead of argmax. Next: file phase 2 = fix (1) from this task, reusing #362; retire the subsumed Mind draft `call_accounting_ci_timing_threshold.md` when it is filed.
+
 ---
 
 # Audit timing tests and profiling gates for measurement noise
