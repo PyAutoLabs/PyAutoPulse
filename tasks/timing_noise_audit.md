@@ -14,6 +14,12 @@ The original task below is retained verbatim. Current scheduling state lives in 
 - https://github.com/PyAutoLabs/autolens_profiling/issues/362 still open, 0 comments, unassigned, unchanged since 2026-10-02.
 - Related new Mind draft: `draft/bug/autolens_profiling/call_accounting_ci_timing_threshold.md` (2026-10-06).
 
+
+## Execution 2026-10-08 — phase 1 started
+
+- Human direction (Pulse check-in, after the linear-solver programme closed): "move on to the next Pulse task"; phase 1 plan approved in chat. Issue #362 reused (plan comment posted 2026-10-08); Mind `active/timing_noise_audit_phase1_inventory.md` (a6e8aa1a); worktree `timing-noise-audit-p1-inventory`, branch `feature/timing-noise-audit-p1-inventory`; Opus executes.
+- Scope: inventory of every timing assertion and production gate with estimator, samples, warm-up, pairing, clock, host qualification, cutoff, noise model, FP/FN risk and owner; PASS/FAIL/INCONCLUSIVE semantics; ranked fix phases with synthetic witnesses; read-only lister with `--check`. No gate or tolerance changes.
+
 ---
 
 # Audit timing tests and profiling gates for measurement noise

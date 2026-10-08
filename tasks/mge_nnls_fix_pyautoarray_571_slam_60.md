@@ -71,6 +71,11 @@ The original task below is retained verbatim. Current scheduling state lives in 
 - Phase 5 merged as [autolens_profiling#401](https://github.com/PyAutoLabs/autolens_profiling/pull/401) (`766f8202`, lint green; #400 closed as superseded and its branch deleted on the human's instruction); issue #399 closed; Mind record `complete/2026/10/linear-solver-p5-mapper-corpus.md` (d77a7dea); worktree removed. Corpus copies verified by sha256 on RAL `/mnt/ral/jnightin/autolens_profiling_corpus/` and the laptop canonical checkout.
 - Task status → complete. The programme's open question is closed by the decision record; the solver cells re-run on each release as the standing `scripts/lens/solver/` section.
 
+
+### Housekeeping 2026-10-08
+
+- Gut: the superseded branch `feature/linear-solver-p5-mapper-corpus` (tip 70e8a9f, carries the large corpus files) archived as `refs/heads/archive/condemned/autolens-profiling-linear-solver-p5-mapper-corpus-large-npz` on autolens_profiling origin, local copy deleted, Mind `condemned.md` entry (sweep-after 2026-11-07); voiding is the human's `void:` issue. Job logs for 398249 / 399050 / 399225 copied to the laptop pull root `logs/linear_solver_phase3_5/`. RAL profiling worktrees `linear-solver-p{3,3b,4a,5}` removal requested (see the check-in that verifies it). The private library base `/mnt/ral/jnightin/PyAuto_wt/linear-solver-p3` and the corpus store are kept.
+
 ---
 
 # Linear-solver programme phase 3: GPU/vmap/A100 timing and parity rows for the solver corpus

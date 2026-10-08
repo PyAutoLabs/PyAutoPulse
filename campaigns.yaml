@@ -76,10 +76,10 @@ campaigns:
 - id: measurement-tools
   title: Measurement reliability and profiling tools
   status: active
-  updated: '2026-10-07'
-  next: 'Only timing_noise_audit is issued (autolens_profiling#362: open, 0 comments, unassigned, unchanged since
-    2026-10-02); start its audit phase via start_dev. New related Mind draft draft/bug/autolens_profiling/call_accounting_ci_timing_threshold.md
-    (2026-10-06). Other tasks unchanged and unissued.'
+  updated: '2026-10-08'
+  next: 'timing_noise_audit phase 1 (inventory) started 2026-10-08 against autolens_profiling#362 (worktree
+    timing-noise-audit-p1-inventory); related Mind draft call_accounting_ci_timing_threshold.md becomes a fix phase the
+    inventory ranks. Other tasks unchanged and unissued.'
   evidence: https://github.com/PyAutoLabs/autolens_profiling/issues/362
 - id: autofit
   title: PyAutoFit profiling bootstrap
@@ -134,13 +134,14 @@ tasks:
 - id: timing_noise_audit
   campaign: measurement-tools
   title: Audit timing tests and profiling gates for measurement noise
-  status: ready
+  status: active
   priority: high
   path: tasks/timing_noise_audit.md
-  updated: '2026-10-07'
-  next: 'Issued as autolens_profiling#362 (open, 0 comments, unassigned, unchanged since 2026-10-02). Related new
-    Mind draft draft/bug/autolens_profiling/call_accounting_ci_timing_threshold.md (2026-10-06). Start the read-and-classify
-    audit phase via start_dev.'
+  updated: '2026-10-08'
+  next: 'Phase 1 (inventory, audit only) STARTED 2026-10-08 on the human''s direction after the linear-solver programme
+    closed: issue autolens_profiling#362 reused (plan comment posted), Mind active/timing_noise_audit_phase1_inventory.md,
+    worktree timing-noise-audit-p1-inventory, Opus executing. Deliverable: results/notes/timing_noise_audit_2026_10.md
+    (inventory + PASS/FAIL/INCONCLUSIVE semantics + fix phases) and a read-only assertion lister. Next: /prm on its PR.'
   issue: https://github.com/PyAutoLabs/autolens_profiling/issues/362
 - id: mge_likelihood_breakdown_steps_are_cumulative_an
   campaign: measurement-tools
