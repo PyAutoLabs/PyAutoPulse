@@ -56,3 +56,25 @@ policy. Pulse scheduling metadata never changes measurement qualification or
 Heart readiness. Migration preserves original text and provenance; historical
 headers inside those texts are not a live queue. Resolve old Mind paths via
 `migration.yaml`; use the pinned source commit for unmigrated historical paths.
+
+## Record a key decision
+
+When the user says "record this decision" or explicitly flags a key campaign
+decision, use `decisions/README.md` to produce a high-level campaign summary.
+Read the relevant campaign/task history and cited project/Cortex evidence;
+preserve hardware, dataset, model and cold/warm-start distinctions. Summarize
+the evidence, alternatives, the human's choice and its implications, with
+source links and limitations. Do not infer an accepted choice from timings,
+a passing run, or an agent recommendation. If the user is still deciding,
+prepare a draft and ask for the missing choice before adding a history entry.
+
+Write one canonical Markdown record in the campaign-leading organ and link it
+from `decisions.yaml` on each relevant board. Do not categorize by repository
+or dataset and do not duplicate the prose. Explicit direction to record a
+stated decision authorizes the capture; ask only about genuinely missing facts.
+Keep scientific sources authoritative and cite them. Preserve old decisions;
+a changed choice receives a new dated record with supersession links.
+Publish the owning record before adding its cross-dashboard link, verify the
+GitHub destination, regenerate and check both affected boards through the
+normal development workflow. Recording a decision does not authorize its
+implementation or compute. Never turn an illustrative title into a decision.

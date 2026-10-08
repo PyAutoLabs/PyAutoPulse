@@ -280,3 +280,9 @@ Project `autolens_profiling`, scope `setup-catalogue`, read from [PyAutoLabs/aut
 - The v1 production feed remains published during migration; this is the companion v2 catalogue.
 - Indexed-only evidence and static estimates are not successful measurements or measured peak VRAM.
 </details>
+
+
+<!-- decision-history:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945 -->
+## Decision History
+
+No decisions recorded yet.

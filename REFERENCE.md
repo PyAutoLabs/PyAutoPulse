@@ -327,3 +327,12 @@ Rectangular, MGE, KNN, MGE Mass, Sersic, then other families alphabetically.
 
 Sersic retains one plain menu entry when only unclassified latent tools exist;
 this does not assign a backend. Known Sersic variants replace that fallback.
+
+## Decision History
+
+`decisions.yaml` indexes human-authored campaign summaries; `decisions/README.md`
+defines capture, ownership, record format and supersession. The flat list follows
+Results in HTML and Markdown. Both boards can link to one canonical record.
+The reader validates IDs, dates, GitHub destinations and owned record metadata;
+it never makes a scientific decision. Remote record existence is checked when
+publishing the cross-dashboard link, not by offline rendering.

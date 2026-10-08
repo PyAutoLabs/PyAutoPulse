@@ -97,3 +97,27 @@ def test_board_from_a_local_file_is_labelled_local(argv, tmp_path, capsys):
 def test_unknown_instance_is_a_clean_error(argv, capsys):
     assert cli.main(argv("fetch", "--instance", "nope")) == 1
     assert "no instance 'nope'" in capsys.readouterr().err
+
+
+def test_decision_only_change_requires_regeneration(argv, web, monkeypatch, capsys):
+    from pulse import decisions
+
+    web.publish(GH, SHA_A, PATH, fixture_doc("lens_summary_v1.json"))
+    monkeypatch.setattr(decisions, "load", lambda: [])
+    assert cli.main(argv("board")) == 0
+    monkeypatch.setattr(
+        decisions,
+        "load",
+        lambda: [
+            {
+                "id": "solver",
+                "title": "Solver choice",
+                "date": "2026-10-08",
+                "url": "https://github.com/PyAutoLabs/PyAutoInsight/blob/main/decisions/solver.md",
+            }
+        ],
+    )
+    assert cli.main(argv("check", "--offline")) == 1
+    assert "FAIL decisions" in capsys.readouterr().out
+    assert cli.main(argv("board", "--offline")) == 0
+    assert cli.main(argv("check", "--offline")) == 0

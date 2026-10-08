@@ -5,6 +5,7 @@ import hashlib
 import json
 import sys
 from pathlib import Path
+from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from pulse import board  # noqa: E402
@@ -185,6 +186,18 @@ def write(destination):
     numba_row["evidence"] = numba["evidence"]
     readable.doc["records"].append(numba_row)
     (destination / "readable.html").write_text(board.render_html([readable]))
+    with patch(
+        "pulse.decisions.load",
+        return_value=[
+            {
+                "id": "solver",
+                "title": "NNLS Solver Setup",
+                "date": "2026-10-08",
+                "url": "https://github.com/PyAutoLabs/PyAutoInsight/blob/main/decisions/solver.md",
+            }
+        ],
+    ):
+        (destination / "decision-history.html").write_text(board.render_html([readable]))
 
     menu = copy.deepcopy(readable)
     for model in ("mge_mass", "knn", "mge", "rectangular"):

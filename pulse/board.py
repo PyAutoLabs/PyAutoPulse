@@ -31,7 +31,7 @@ from collections import OrderedDict
 from datetime import UTC, datetime
 from pathlib import Path
 
-from pulse import ORGAN_ROOT, campaigns, setup_browser
+from pulse import ORGAN_ROOT, campaigns, decisions, setup_browser
 from pulse import summary as summary_mod
 from pulse.ingest import Snapshot
 
@@ -359,6 +359,7 @@ def render_markdown(views, now: str | None = None, campaign_data: dict | None = 
                 "</details>",
                 "",
             ]
+        out += ["", decisions.markdown()]
         return "\n".join(out).rstrip("\n") + "\n"
     out = [
         "# PyAutoPulse — profiling dashboard",
@@ -392,6 +393,7 @@ def render_markdown(views, now: str | None = None, campaign_data: dict | None = 
     out += ["", NOTIONS]
     for s in views:
         out += _md_detail(s, now)
+    out += ["", decisions.markdown()]
     return "\n".join(out).rstrip("\n") + "\n"
 
 
@@ -572,6 +574,7 @@ def render_html(views, now: str | None = None, campaign_data: dict | None = None
             navigation=[
                 {"href": "#campaigns", "label": "Active campaigns"},
                 {"href": "#evidence", "label": "Profiling Results"},
+                {"href": "#decision-history", "label": "Decision History"},
             ],
         )
         + "<main>"
@@ -584,6 +587,7 @@ def render_html(views, now: str | None = None, campaign_data: dict | None = None
             ],
         )
         + "".join(content)
+        + decisions.render_html()
         + "</main>"
         + f"<script>{shared.JS}\n{JS}\n{browser_js}</script></body></html>\n"
     )
