@@ -188,7 +188,6 @@ def render_html(data: dict, work_links=(), refreshed_at=None) -> str:
             "",
             PROMPT,
             work_links=work_links,
-            copy_label="Profiling Check In",
             organ="pulse",
             refreshed_at=refreshed_at,
             refresh_url="https://github.com/PyAutoLabs/PyAutoPulse/actions/workflows/dashboard_refresh.yml",
