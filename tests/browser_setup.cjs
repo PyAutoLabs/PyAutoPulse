@@ -547,6 +547,14 @@ const { execFileSync } = require("node:child_process");
         "implementation",
       ) === "numba",
     );
+    await page.goto(base + "/menu-order.html");
+    assert.deepEqual(
+      await page.locator('[data-family="imaging"] .model-choice').allTextContents(),
+      ["Delaunay (JAX)", "Delaunay (Numba)", "Rectangular (JAX)", "Rectangular (Numba)",
+       "MGE (JAX)", "MGE (Numba)", "KNN (JAX)", "KNN (Numba)",
+       "MGE Mass (JAX)", "MGE Mass (Numba)", "Sersic"],
+    );
+    assert.equal(await page.locator('.model-choice[data-implementation="unknown"]').count(), 1);
     await page.goto(base + "/readable.html");
     assert.equal(
       await page.locator('a.model-choice[data-implementation="numba"]').count(),
