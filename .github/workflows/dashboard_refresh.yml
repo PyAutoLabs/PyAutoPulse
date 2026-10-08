@@ -36,6 +36,8 @@ on:
     branches: [main]
     paths:
       - "registry.yaml"
+      - "decisions.yaml"
+      - "decisions/**"
       - "pulse/**"
   pull_request:
 
