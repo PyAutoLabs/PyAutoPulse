@@ -65,7 +65,7 @@ def test_control_room_precedes_measurements_and_escapes():
     ):
         # Check content order independently of the section navigation labels.
         if "<main>" in text:
-            assert text.index("Profiling Check In") < text.index('class="board-nav"')
+            assert text.index("Copy check-in prompt") < text.index('class="board-nav"')
             text = "Profiling Check In" + text.split("<main>", 1)[1]
         assert (
             text.index("Profiling Check In")
@@ -146,5 +146,5 @@ def test_removed_controls_leave_checkin_panel_available():
     assert "Fix Profiling Systematically" not in page
     assert "Last check-in:" not in page
     assert "Choose a project, dataset and model" not in page
-    assert "Profiling Check In" in page
+    assert "Copy check-in prompt" in page
     assert "data-orchestration-direction" in page

@@ -547,6 +547,17 @@ const { execFileSync } = require("node:child_process");
         "implementation",
       ) === "numba",
     );
+    await page.goto(base + "/decision-history.html");
+    const history = page.locator("#decision-history");
+    const historyDetails = history.locator("xpath=ancestor-or-self::details[1]");
+    assert.equal(await historyDetails.getAttribute("open"), null);
+    await historyDetails.locator("summary").first().click();
+    const decisionLink = history.getByRole("link", {name: "NNLS Solver Setup", exact: true});
+    assert.equal(await decisionLink.getAttribute("target"), "_blank");
+    assert.equal(await decisionLink.getAttribute("href"), "https://github.com/PyAutoLabs/PyAutoInsight/blob/main/decisions/solver.md");
+    assert(await decisionLink.isVisible());
+    await page.setViewportSize({width: 390, height: 844});
+    assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
     await page.goto(base + "/menu-order.html");
     assert.deepEqual(
       await page.locator('[data-family="imaging"] .model-choice').allTextContents(),
