@@ -1,6 +1,6 @@
 # PyAutoPulse — profiling dashboard
 
-<!-- pulse-campaigns:ff3d243f508375d08397bf6b7392f3d4541d3d6aac5945ae7d005910b852d09f -->
+<!-- pulse-campaigns:ef8f9f7b3e8c8d71d8d9b57e5afc8f9293665f9c7c18c1e471989fcbc60b3215 -->
 ## Profiling Check In
 
 <details><summary>Full check-in prompt</summary>
@@ -108,13 +108,13 @@ Reviewed 2026-10-07. Decision matrix complete: last cell merged (autolens_profil
 
 <details><summary>Linear-solver accuracy and cost — active</summary>
 
-Reviewed 2026-10-08. Phase 3a SHIPPED 2026-10-07: autolens_profiling#394 merged 21:18Z (a55dcacb), issue #393 closed. A100 job 397475 from a PRIVATE 2026.10.7.1 checkout (shared mirror untouched, human rule): released pdip_raw CPU vs A100 parity max \|d flux_inactive_rel\| 5.4e-14, iterations identical 81/81; still inadmissible under the pre-registered rule on both devices. Next: phase 3b GPU/vmap timing cell (Mind draft linear_solver_phase3b_gpu_timing_cell.md, committed 208bac7b) via start_dev; awaits plan approval and A100 compute authorization. 2026-10-08: RAL euclid_dr1 arrays running again on the shared base (397467/397469-74), so phase 3b stays on the private checkout.
+Reviewed 2026-10-08. Phase 3a SHIPPED 2026-10-07: autolens_profiling#394 merged 21:18Z (a55dcacb), issue #393 closed. A100 job 397475 from a PRIVATE 2026.10.7.1 checkout (shared mirror untouched, human rule): released pdip_raw CPU vs A100 parity max \|d flux_inactive_rel\| 5.4e-14, iterations identical 81/81; still inadmissible under the pre-registered rule on both devices. Phase 3b PR OPEN 2026-10-08: autolens_profiling#396 (issue #395), A100 job 398249 (euclid-ral-gpu-2, 0:38) from the private base; pdip_raw per-eval min ms CPU 1.35/0.88/0.68 vs A100 3.95/0.58/0.19 at B=1/16/50 (SLaM distinct lanes); jacobi 1.94x pdip_raw at A100 B=50 because one diverging lane holds the batch at the 50 cap; compile 0.3-1.2 s separate. New: jacobi batched vs unbatched trajectories differ on the A100 (19/50 lanes), not on CPU. Timing is not admissibility; no pin moves. Next: human /prm on #396, then decide whether phase 3 closes the programme.
 
 [Campaign evidence](https://github.com/PyAutoLabs/autolens_profiling/blob/719459fefb40c7e5be157f652818dbf923830557/wiki/campaigns/linear_solver_accuracy.md)
 
 ### Active tasks
 
-- [Linear-solver programme phase 3: GPU/vmap/A100 timing and parity rows for the solver corpus](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/mge_nnls_fix_pyautoarray_571_slam_60.md) — active: Phase 3a (parity) shipped 2026-10-07 in autolens_profiling#394; Mind record complete/2026/10/linear-solver-p3a-a100-parity.md. Remaining: phase 3b timing cell (single/vmap16/vmap50, jacobi vs raw, compile separate) from the private RAL base /mnt/ral/jnightin/PyAuto_wt/linear-solver-p3 (five library clones present 2026-10-08) — Mind draft committed 208bac7b; start_dev awaits plan approval; A100 rows need compute authorization. Pulse ledger PR #34 open, green, unmerged.
+- [Linear-solver programme phase 3: GPU/vmap/A100 timing and parity rows for the solver corpus](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/mge_nnls_fix_pyautoarray_571_slam_60.md) — active: Phase 3a shipped (autolens_profiling#394). Phase 3b issued 2026-10-08 as #395 and delivered as PR #396 (CPU rows from tag worktrees + A100 job 398249 from the private base, RAL worktree autolens_profiling_wt/linear-solver-p3b); lint pending at review time. Remaining: human /prm on #396; Mind record; then a programme-level decision (phase 3 was the last filed phase).
 
 </details>
 
