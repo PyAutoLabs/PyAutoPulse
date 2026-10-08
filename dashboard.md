@@ -1,6 +1,6 @@
 # PyAutoPulse — profiling dashboard
 
-<!-- pulse-campaigns:b107d1ea3891e22310fa4166cceda6f8b6e68fe163928ce2d9ba11d5727aac8b -->
+<!-- pulse-campaigns:ff3d243f508375d08397bf6b7392f3d4541d3d6aac5945ae7d005910b852d09f -->
 ## Profiling Check In
 
 <details><summary>Full check-in prompt</summary>
@@ -25,7 +25,7 @@ After taking action, report what changed, what the evidence supports and what re
 
 </details>
 
-Last check-in: 2026-10-07T18:43:45Z (review date, not measurement freshness).
+Last check-in: 2026-10-08T06:59:54Z (review date, not measurement freshness).
 
 ## Active campaigns
 
@@ -106,15 +106,15 @@ Reviewed 2026-10-07. Decision matrix complete: last cell merged (autolens_profil
 
 </details>
 
-<details><summary>Linear-solver accuracy and cost — ready</summary>
+<details><summary>Linear-solver accuracy and cost — active</summary>
 
-Reviewed 2026-10-07. Human decision 2026-10-07: the shared RAL mirror /mnt/ral/jnightin/PyAuto is NEVER synced (HPCPullPyAuto) while euclid_dr1 depends on it. Phase 3 GPU/vmap parity and timing run from a PRIVATE checkout at tag 2026.10.7.1 (contains PyAutoArray#595) with its own environment; note Nerves at that tag excludes jax 0.10.*, RAL has jax 0.10.2. Queue was empty at ~18:40Z (one probe); mirror HEAD/tag unverified and no longer needed.
+Reviewed 2026-10-08. Phase 3a SHIPPED 2026-10-07: autolens_profiling#394 merged 21:18Z (a55dcacb), issue #393 closed. A100 job 397475 from a PRIVATE 2026.10.7.1 checkout (shared mirror untouched, human rule): released pdip_raw CPU vs A100 parity max \|d flux_inactive_rel\| 5.4e-14, iterations identical 81/81; still inadmissible under the pre-registered rule on both devices. Next: phase 3b GPU/vmap timing cell (Mind draft linear_solver_phase3b_gpu_timing_cell.md, committed 208bac7b) via start_dev; awaits plan approval and A100 compute authorization. 2026-10-08: RAL euclid_dr1 arrays running again on the shared base (397467/397469-74), so phase 3b stays on the private checkout.
 
 [Campaign evidence](https://github.com/PyAutoLabs/autolens_profiling/blob/719459fefb40c7e5be157f652818dbf923830557/wiki/campaigns/linear_solver_accuracy.md)
 
 ### Active tasks
 
-- [Linear-solver programme phase 3: GPU/vmap/A100 timing and parity rows for the solver corpus](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/mge_nnls_fix_pyautoarray_571_slam_60.md) — ready: Human decision 2026-10-07: do not HPCPullPyAuto the shared mirror (euclid_dr1 needs it). Next bounded step: plan the phase-3 A100 cells from a private RAL checkout at tag 2026.10.7.1 with a jax that satisfies Nerves (jax 0.10.* excluded; RAL has 0.10.2), then request compute authorization for the parity/timing rows.
+- [Linear-solver programme phase 3: GPU/vmap/A100 timing and parity rows for the solver corpus](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/mge_nnls_fix_pyautoarray_571_slam_60.md) — active: Phase 3a (parity) shipped 2026-10-07 in autolens_profiling#394; Mind record complete/2026/10/linear-solver-p3a-a100-parity.md. Remaining: phase 3b timing cell (single/vmap16/vmap50, jacobi vs raw, compile separate) from the private RAL base /mnt/ral/jnightin/PyAuto_wt/linear-solver-p3 (five library clones present 2026-10-08) — Mind draft committed 208bac7b; start_dev awaits plan approval; A100 rows need compute authorization. Pulse ledger PR #34 open, green, unmerged.
 
 </details>
 
@@ -154,13 +154,13 @@ Reviewed 2026-10-07. Only timing_noise_audit is issued (autolens_profiling#362: 
 
 <details><summary>PyAutoFit profiling bootstrap — ready</summary>
 
-Reviewed 2026-10-07. PyAutoLabs/autofit_profiling created 2026-10-07 (one Initial commit, LICENSE only, no PRs); the repo-creation decision is answered. Porting/bootstrap unstarted; no producer registration until baselines are ported.
+Reviewed 2026-10-08. Skeleton merged: autofit_profiling#1 (86c77345, 2026-10-07T21:17Z; AGENTS, hooks, hpc/sync, lint) under search-extensibility B1 (PyAutoMind#492). B1 docs legs PyAutoHeart#292 and .github#34 still open 2026-10-08. Porting unstarted; no producer registration until profiling-summary@2 is published (B4a).
 
-[Campaign evidence](https://github.com/PyAutoLabs/autofit_profiling)
+[Campaign evidence](https://github.com/PyAutoLabs/autofit_profiling/pull/1)
 
 ### Active tasks
 
-- [autofit_profiling: bootstrap the repo + general PyAutoFit profiling epic](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/autofit_profiling_bootstrap.md) — ready: Adopted by the search-extensibility epic (Mind draft/research/autofit/search_extensibility_epic.md); skeleton + registration via PyAutoMind#492 (B1). Next is B4a (search.fit breakdown exporter, Pulse fit row, epic-1 bottleneck table), then B4b (EP/graphical baseline port). No producer registration until profiling-summary@2 is published (B4a).
+- [autofit_profiling: bootstrap the repo + general PyAutoFit profiling epic](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/autofit_profiling_bootstrap.md) — ready: Adopted by the search-extensibility epic (Mind draft/research/autofit/search_extensibility_epic.md); skeleton merged as autofit_profiling#1 (2026-10-07T21:17Z) under PyAutoMind#492 (B1). Next is B4a (search.fit breakdown exporter, Pulse fit row, epic-1 bottleneck table), then B4b (EP/graphical baseline port). No producer registration until profiling-summary@2 is published (B4a).
 
 </details>
 

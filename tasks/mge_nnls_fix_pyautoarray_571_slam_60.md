@@ -23,6 +23,20 @@ The original task below is retained verbatim. Current scheduling state lives in 
 - Three later probes timed out: shared mirror /mnt/ral/jnightin/PyAuto HEAD/tag UNVERIFIED.
 - Human decision (same day, in chat): **never** HPCPullPyAuto the shared mirror while euclid_dr1 depends on it. Phase 3 runs from a private RAL checkout at tag 2026.10.7.1 (contains PyAutoArray#595) with its own environment; Nerves at that tag excludes jax 0.10.* and RAL has jax 0.10.2, so the private env needs a compliant jax. Status → `ready`; compute for the A100 rows still needs separate authorization.
 
+### Execution 2026-10-07 — phase 3a shipped
+
+- Human approved the phase-3a plan and the A100 job in chat; issue [autolens_profiling#393](https://github.com/PyAutoLabs/autolens_profiling/issues/393), PR [#394](https://github.com/PyAutoLabs/autolens_profiling/pull/394) merged 2026-10-07T21:18Z (`a55dcacb`).
+- Private base `/mnt/ral/jnightin/PyAuto_wt/linear-solver-p3/` at tag 2026.10.7.1 (Nerves c5ade605, Fit 710f4b34, Array ccddfba6, Galaxy b4946b8a, Lens b6bf543c); A100 job 397475 on euclid-ral-gpu-1, 1:04, jax/jaxlib 0.10.2; shared mirror untouched.
+- Parity (81 systems, fp64, vs stored fnnls references): released `pdip_raw` CPU vs A100 max |Δ flux_inactive_rel| 5.4e-14, max |Δ amp_rel_max_sig| 4.0e-10, iterations identical 81/81; inadmissible under the pre-registered rule on both devices (phase-2 reasons). `pdip_jacobi` diverges 29 (CPU) vs 19 (A100); `pdip_raw_tol_jaxnnls` flips one flag at the cap. Median warm wall (context only): 0.88 ms CPU, 3.96 ms A100 unbatched.
+- Record: PyAutoMind `complete/2026/10/linear-solver-p3a-a100-parity.md`. Phase 3b draft: `draft/research/autolens_profiling/linear_solver_phase3b_gpu_timing_cell.md`. Status → `active` (3b pending).
+
+## Check-in 2026-10-08
+
+- VERIFIED: autolens_profiling main at `a55dcacb` (#394 merge); no later commits, PRs or issues touching the solver corpus. Pulse ledger PR #34 open, lint + refresh green, mergeable, unmerged.
+- VERIFIED: Mind draft `draft/research/autolens_profiling/linear_solver_phase3b_gpu_timing_cell.md` committed in `208bac7b` (2026-10-07 22:20 +0100) with the phase-3a record. Phase 3b not yet through start_dev; no issue, branch or claim exists.
+- RAL (one probe, 2026-10-08): euclid_dr1 arrays 397467 and 397469–397474 RUNNING/PENDING on `ral` against the shared base, so the 2026-10-07 "0 jobs" window has closed; the private base `/mnt/ral/jnightin/PyAuto_wt/linear-solver-p3/` still holds the five library clones. `/mnt/ral/jnightin/autolens_profiling/results/lens/solver/` does not exist — where job 397475 wrote its JSON on RAL is unverified (the rows are committed in #394).
+- Next (unchanged): start_dev for phase 3b; A100 rows need separate compute authorization. Nothing here authorizes a submit.
+
 ---
 
 # Linear-solver programme phase 3: GPU/vmap/A100 timing and parity rows for the solver corpus
