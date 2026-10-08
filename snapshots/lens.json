@@ -3,8 +3,8 @@
   "repo": "autolens_profiling",
   "github": "PyAutoLabs/autolens_profiling",
   "summary_path": "dashboard/catalogue.json",
-  "commit": "a55dcacba5ecf966278e6f414a2d4e4d07d7a5ce",
-  "fetched_at": "2026-10-07T21:18:50Z",
+  "commit": "86cb146055ca96f0de171cc67b3bc09feb24de81",
+  "fetched_at": "2026-10-08T08:26:53Z",
   "summary": {
     "archive_record_count": 20709,
     "comparison_policy": {
@@ -18143,6 +18143,26 @@
       },
       {
         "adapter": "profile",
+        "path": "results/lens/solver/timing_summary_all_gpu_v2026.10.7.1.json",
+        "reasons": [
+          "No supported measured fields; retained as experimental/auxiliary evidence, not silently dropped."
+        ],
+        "record_count": 0,
+        "sha256": "c7ac4b750280a502df4672f25f4596063394d19a09e510b461a7b6c1e0f9ac5b",
+        "status": "indexed_only"
+      },
+      {
+        "adapter": "profile",
+        "path": "results/lens/solver/timing_summary_all_v2026.10.7.1.json",
+        "reasons": [
+          "No supported measured fields; retained as experimental/auxiliary evidence, not silently dropped."
+        ],
+        "record_count": 0,
+        "sha256": "c67138a93825b5bc14d856a114f617c198d905b1882c14137e026f2e2860c458",
+        "status": "indexed_only"
+      },
+      {
+        "adapter": "profile",
         "path": "results/misc/fixed_light_probe/delaunay_1500.json",
         "reasons": [
           "No supported measured fields; retained as experimental/auxiliary evidence, not silently dropped."
@@ -20296,6 +20316,12 @@
         "dataset": "lens",
         "model": "solver",
         "path": "scripts/lens/solver/euclid_latent.py"
+      },
+      {
+        "category": "scientific_entrypoint",
+        "dataset": "lens",
+        "model": "solver",
+        "path": "scripts/lens/solver/timing.py"
       },
       {
         "category": "shared_measurement_tools",
