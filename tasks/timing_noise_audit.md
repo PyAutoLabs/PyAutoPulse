@@ -34,6 +34,15 @@ The original task below is retained verbatim. Current scheduling state lives in 
 - Human: "do the next step" → fix phase (1) of the audit note, plan approved in chat; issue #362 reused (plan comment posted); Mind `active/timing_noise_audit_phase2_overhead_verdict.md` (3a3d4fc6); worktree `timing-noise-audit-p2-overhead-verdict`; Opus executes. The superseded Mind draft `call_accounting_ci_timing_threshold.md` ("increase it a bit so merge goes through") was retired on the human's approval — the guard is fixed, not relaxed.
 - Scope: one `abba_overhead_verdict` used by both the CI test and `fixed_light_numba.py`; budget 12 ms of excess over the clean call; one-sided small-sample t-interval of the excess vs budget → PASS / FAIL / FAIL_GROSS / INCONCLUSIVE; n < 3 and below-1 ratios INCONCLUSIVE; cell raises only on FAIL/FAIL_GROSS and keeps the JSON otherwise; promotion requires PASS; the test warns visibly on INCONCLUSIVE; the 1.031 ratio constant goes. No budget raised.
 
+
+### Phase 2 shipped 2026-10-08
+
+- [autolens_profiling#404](https://github.com/PyAutoLabs/autolens_profiling/pull/404) merged 2026-10-08 (lint green after a catalogue/dashboard stamp refresh). Mind record `complete/2026/10/timing-noise-audit-p2-overhead-verdict.md`. Issue #362 stays open.
+- Rule as built (`scripts/misc/likelihood_breakdown/overhead_verdict.py`): excess ms = (ratio − 1) × clean mean; one-sided 95 % t-bounds; invalid → ValueError; mean ratio > 1.5 → FAIL_GROSS; n < 3 → INCONCLUSIVE; upper bound < 0 → INCONCLUSIVE (host-noise signature); upper ≤ budget → PASS; lower > budget → FAIL; else INCONCLUSIVE. Cell raises only on FAIL/FAIL_GROSS; promotion requires PASS on both arms; CI INCONCLUSIVE is a visible warning; no budget raised.
+- Exposed facts (no JSON rewritten): 6 of 17 published RAL rows, including the pinned 413 ms row ([−7.3, +19.4] ms), are INCONCLUSIVE on their own blocks rather than PASS.
+- Human decision: on the ~15–17 ms CI fixture the shared 12 ms budget can only fail through the gross guard; the CI test is documented as the coverage + cached-site-count + gross-breakage guard, and the ms budget is judged on the 225–415 ms production rows.
+- Next: fix phase (2) — `build_dashboard.qualify`/`drift` wording. This changes the `profiling-summary` contract Pulse ingests; plan it as a two-repo task (autolens_profiling producer + PyAutoPulse reader/fixtures) before any producer change lands.
+
 ---
 
 # Audit timing tests and profiling gates for measurement noise
