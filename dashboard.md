@@ -1,6 +1,6 @@
 # PyAutoPulse — profiling dashboard
 
-<!-- pulse-campaigns:652e6582f3ead66f68ae1120a79f68f1c18219dbc4ffee221291672133f5fc79 -->
+<!-- pulse-campaigns:885c41acf471ee25bdaad4bb819d702e5d3e8e19f7b3662b9e9f46a04b538c6d -->
 ## Profiling Check In
 
 <details><summary>Full check-in prompt</summary>
@@ -133,13 +133,13 @@ Reviewed 2026-10-04. No new results since the pin. Over-sampling phase 1: add --
 
 <details><summary>Measurement reliability and profiling tools — active</summary>
 
-Reviewed 2026-10-08. timing_noise_audit fix phases (1) and (2) done (autolens_profiling#404 merged; #405 open, awaiting /prm). Correction 2026-10-08: the live Pulse lens feed is dashboard/catalogue.json (profiling-summary@2, registry switched 2026-10-05 in 3c7bed2), whose producer hard-codes qualified: false, so the v1 qualify() gap never reached Pulse live and fix (2) needed no Pulse change. Next: fix phase (3) INCONCLUSIVE for go/lever rules. Other tasks unchanged and unissued.
+Reviewed 2026-10-08. timing_noise_audit fix phases (1)-(4) MERGED 2026-10-08 (autolens_profiling#404, #405, #406, #407). The live Pulse lens feed is the v2 catalogue.json (qualified hard-false), so none needed a Pulse change. Next: fix phase (5) median headline + GPU-only marker, then (6) warm-up flag + witness band; leftovers phase 3b (C1/C3/C4/C5), Holm/Bonferroni policy, gpu_bottleneck_map round bootstrap. Other tasks unchanged and unissued.
 
 [Campaign evidence](https://github.com/PyAutoLabs/autolens_profiling/blob/main/wiki/campaigns/measurement_tools.md)
 
 ### Active tasks
 
-- [Audit timing tests and profiling gates for measurement noise](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/timing_noise_audit.md) — active: Fix phase (2) PR OPEN 2026-10-08 as autolens_profiling#405 (awaiting /prm; Heart YELLOW reasons human-acknowledged): dashboard qualify() leaves laptop rows, rows without a load average and hpc rows without a host unqualified with a reason; a within-2x comparison is flat only when both endpoints carry a repeat summary (none do yet), else insufficient; drifted/improved keep status with a single-sample caveat (human decision 2026-10-08). Effect on summary.json: qualified 2 -&gt; 2, flat 4 -&gt; 0, insufficient 135 -&gt; 139. Not a Pulse contract change (live feed is v2 catalogue.json, qualified hard-false). Next after merge: fix phase (3) INCONCLUSIVE for go/lever rules, tie sets instead of argmax.
+- [Audit timing tests and profiling gates for measurement noise](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/timing_noise_audit.md) — active: Fix phases (2)-(4) MERGED 2026-10-08 under human /prm: #405 dashboard qualification + drift wording; #406 A/B go/lever rules gain INCONCLUSIVE + tie sets (shared ab_verdict.py; no published go/no-go/NO_LEVER changed; 7 of 9 committed C10 sweeps are tie sets); #407 paired whole-round bootstrap (shared round_bootstrap.py; RAL CPU/A100 calls unchanged; one laptop C6 row GO -&gt; INCONCLUSIVE). Issue #362 stays open. Next: fix phase (5) P8/P9 (median headline, GPU-only marker), then (6) P3/P5 (authorized --auto; not started at session end); leftovers phase 3b (C1/C3/C4/C5 lack intervals), multiple-comparison policy, gpu_bottleneck_map.
 - [MGE likelihood_breakdown steps are cumulative and `linear_gaussians` is reported as 0](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/mge_likelihood_breakdown_steps_are_cumulative_an.md) — ready: Unchanged and unissued (no GitHub refs, 2026-10-04). Select one bounded step when measurement-tools is prioritised.
 - [A gradient-cost probe: forward vs `value_and_grad` ms/eval and a strict FD check, on any registry cell](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/gradient_cost_probe.md) — ready: Unissued. New context 2026-10-07: Heart unit-test timing flagged PyAutoLens forward-gradient tests +150%/+96% after PyAutoLens#768 rewrote that test file; not a controlled comparison, and this probe is the right instrument. Select one bounded step when prioritised.
 - [Numba breakdown harness: perturb the instance so the operated-matrix memo cannot hide a step](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/numba_breakdown_harness_memo_blind.md) — ready: Unchanged and unissued (PyAutoArray#496 closed 2026-08-27). Select one bounded step when prioritised.
