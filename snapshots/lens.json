@@ -3,8 +3,8 @@
   "repo": "autolens_profiling",
   "github": "PyAutoLabs/autolens_profiling",
   "summary_path": "dashboard/catalogue.json",
-  "commit": "293d97d689004102c820f07efa7a2185ca5e0d0d",
-  "fetched_at": "2026-10-08T14:08:13Z",
+  "commit": "10f110a36e922b7ef17083e99b5535e37cc19c67",
+  "fetched_at": "2026-10-08T17:28:55Z",
   "summary": {
     "archive_record_count": 20709,
     "comparison_policy": {
@@ -20886,6 +20886,12 @@
         "dataset": "experiments",
         "model": "other",
         "path": "scripts/misc/likelihood_breakdown/nautilus_batches.py"
+      },
+      {
+        "category": "shared_measurement_tools",
+        "dataset": "experiments",
+        "model": "other",
+        "path": "scripts/misc/likelihood_breakdown/overhead_verdict.py"
       },
       {
         "category": "shared_measurement_tools",
