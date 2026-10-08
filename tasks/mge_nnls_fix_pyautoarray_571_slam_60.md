@@ -46,6 +46,11 @@ The original task below is retained verbatim. Current scheduling state lives in 
 - Caveats: euclid lanes tiled (throughput only); A100 used the warm shared JAX compile cache; laptop under background load (loadavg ~1.9); CPU batched run on jax 0.10.2 (Nerves-excluded, no deadlock seen). Verdict in the ledger: a timing is not admissibility; no pin moves.
 - Next: human /prm on #396 → Mind completion record → Pulse task status; then the programme-level decision.
 
+### Close-out 2026-10-08 — phase 3b merged, phase 4a issued
+
+- autolens_profiling#396 merged 2026-10-08T08:26Z (`86cb1460`), every CI leg green; issue #395 closed; Mind record `complete/2026/10/linear-solver-p3b-gpu-timing.md` (Mind d43d3864); laptop worktree removed; Pulse ledger PR #35 merged.
+- Human decision (chat 2026-10-08): run phase 4 as research and keep the write-up in the wiki for a future decision. Filed and issued as [autolens_profiling#397](https://github.com/PyAutoLabs/autolens_profiling/issues/397) (phase 4a: localise the A100-only jacobi batched/unbatched divergence — determinism, vmap lowering vs lane count, tiled lanes, first-differing iteration via `max_iter=k`, cond(Q) join; wiki/research page with a decision table; one A100 job authorized). Mind `active/linear_solver_phase4_jacobi_a100_batched_divergence.md` (cff6e8e6), worktree `linear-solver-p4a-jacobi-a100-divergence`. 4b (corpus widening, kernel-selection probes, flag experiments) deferred unless 4a leaves it open.
+
 ---
 
 # Linear-solver programme phase 3: GPU/vmap/A100 timing and parity rows for the solver corpus
