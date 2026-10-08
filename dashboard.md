@@ -1,6 +1,6 @@
 # PyAutoPulse — profiling dashboard
 
-<!-- pulse-campaigns:bce1ae813dcdc2d614bbd30393760ee6b5dc2cff55b2444b1c3e62ef817fefb9 -->
+<!-- pulse-campaigns:938f09acacf48ab93bf2de5c0e3ef4f84a61f526f0466765a8e579ca80210082 -->
 ## Profiling Check In
 
 <details><summary>Full check-in prompt</summary>
@@ -133,13 +133,13 @@ Reviewed 2026-10-04. No new results since the pin. Over-sampling phase 1: add --
 
 <details><summary>Measurement reliability and profiling tools — active</summary>
 
-Reviewed 2026-10-07. Only timing_noise_audit is issued (autolens_profiling#362: open, 0 comments, unassigned, unchanged since 2026-10-02); start its audit phase via start_dev. New related Mind draft draft/bug/autolens_profiling/call_accounting_ci_timing_threshold.md (2026-10-06). Other tasks unchanged and unissued.
+Reviewed 2026-10-08. timing_noise_audit phase 1 (inventory) started 2026-10-08 against autolens_profiling#362 (worktree timing-noise-audit-p1-inventory); related Mind draft call_accounting_ci_timing_threshold.md becomes a fix phase the inventory ranks. Other tasks unchanged and unissued.
 
 [Campaign evidence](https://github.com/PyAutoLabs/autolens_profiling/issues/362)
 
 ### Active tasks
 
-- [Audit timing tests and profiling gates for measurement noise](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/timing_noise_audit.md) — ready: Issued as autolens_profiling#362 (open, 0 comments, unassigned, unchanged since 2026-10-02). Related new Mind draft draft/bug/autolens_profiling/call_accounting_ci_timing_threshold.md (2026-10-06). Start the read-and-classify audit phase via start_dev.
+- [Audit timing tests and profiling gates for measurement noise](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/timing_noise_audit.md) — active: Phase 1 (inventory, audit only) STARTED 2026-10-08 on the human&#x27;s direction after the linear-solver programme closed: issue autolens_profiling#362 reused (plan comment posted), Mind active/timing_noise_audit_phase1_inventory.md, worktree timing-noise-audit-p1-inventory, Opus executing. Deliverable: results/notes/timing_noise_audit_2026_10.md (inventory + PASS/FAIL/INCONCLUSIVE semantics + fix phases) and a read-only assertion lister. Next: /prm on its PR.
 - [MGE likelihood_breakdown steps are cumulative and `linear_gaussians` is reported as 0](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/mge_likelihood_breakdown_steps_are_cumulative_an.md) — ready: Unchanged and unissued (no GitHub refs, 2026-10-04). Select one bounded step when measurement-tools is prioritised.
 - [A gradient-cost probe: forward vs `value_and_grad` ms/eval and a strict FD check, on any registry cell](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/gradient_cost_probe.md) — ready: Unissued. New context 2026-10-07: Heart unit-test timing flagged PyAutoLens forward-gradient tests +150%/+96% after PyAutoLens#768 rewrote that test file; not a controlled comparison, and this probe is the right instrument. Select one bounded step when prioritised.
 - [Numba breakdown harness: perturb the instance so the operated-matrix memo cannot hide a step](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/numba_breakdown_harness_memo_blind.md) — ready: Unchanged and unissued (PyAutoArray#496 closed 2026-08-27). Select one bounded step when prioritised.
