@@ -1,6 +1,6 @@
 # PyAutoPulse — profiling dashboard
 
-<!-- pulse-campaigns:38baea2335f2ea205320d7ae48f2a51e5c48a9d632a5525a17082c23829f86dd -->
+<!-- pulse-campaigns:ee0943eb29ac671276a96811cf83a263267b07544895ec954af77e90e9f3bb63 -->
 ## Profiling Check In
 
 <details><summary>Full check-in prompt</summary>
@@ -108,13 +108,13 @@ Reviewed 2026-10-07. Decision matrix complete: last cell merged (autolens_profil
 
 <details><summary>Linear-solver accuracy and cost — active</summary>
 
-Reviewed 2026-10-08. Phase 3b MERGED 2026-10-08: autolens_profiling#396 (86cb1460), issue #395 closed, Mind record complete/2026/10/linear-solver-p3b-gpu-timing.md. A100 job 398249: pdip_raw per-eval min ms CPU 1.35/0.88/0.68 vs A100 3.95/0.58/0.19 at B=1/16/50 (SLaM distinct lanes), compile 0.3-1.2 s separate; jacobi 1.94x at A100 B=50 because one diverging lane pins the batch at the 50 cap. Timing is not admissibility; no pin moves. Phase 4a ISSUED 2026-10-08 (autolens_profiling#397, research): why jacobi batched vs unbatched trajectories differ on the A100 only (19/50 lanes; CPU identical) - Jacobi is the Mapper default, so this feeds a future GPU-default decision; wiki research page + decision table, one authorized A100 job. Next: /prm on the phase-4a PR when open.
+Reviewed 2026-10-08. Phase 4a MERGED 2026-10-08 (autolens_profiling#398, fe9ca472; issue #397 closed; A100 job 399050): the A100-only jacobi batched/unbatched difference is deterministic batch-shape-dependent Cholesky rounding (cho_factor/cho_solve differ on 50/50 lanes from initialize at ~1e-15), amplified to order one within 1-2 iterations on the 24 Jacobi-unstable lanes (all 20 of the 3a divergence set); not nondeterminism (deterministic-ops flag bit-identical), not a vmap defect; controls pdip_raw &lt;= 1.3e-13, certified &lt;= 3.4e-12. Wiki wiki/research/jacobi_a100_batched_divergence.md with the decision table (B ruled out, C unlikely, A or D need a Mapper corpus). Human chose option 2 (bounded evidence step): phase 5 Mapper corpus ISSUED as #399 (delaunay_hst, rectangular_hst, slam_mixed_hst, optional interferometer_delaunay; accuracy, timing and divergence cells; one authorized A100 job). Next: /prm on the phase-5 PR; then the Mapper GPU-default decision.
 
-[Campaign evidence](https://github.com/PyAutoLabs/autolens_profiling/blob/86cb1460/results/notes/linear_solver_accuracy_2026_09.md)
+[Campaign evidence](https://github.com/PyAutoLabs/autolens_profiling/blob/fe9ca472/wiki/research/jacobi_a100_batched_divergence.md)
 
 ### Active tasks
 
-- [Linear-solver programme phase 3: GPU/vmap/A100 timing and parity rows for the solver corpus](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/mge_nnls_fix_pyautoarray_571_slam_60.md) — active: Phase 3 COMPLETE: 3a #394 (parity) and 3b #396 (vmap timing) merged; Mind records complete/2026/10/linear-solver-p3a-a100-parity.md and linear-solver-p3b-gpu-timing.md. Phase 4a research issued as #397 (Mind active/linear_solver_phase4_jacobi_a100_batched_divergence.md, worktree linear-solver-p4a-jacobi-a100-divergence, Opus executing). Task stays active until the 4a PR is merged and the human reads the decision table.
+- [Linear-solver programme phase 3: GPU/vmap/A100 timing and parity rows for the solver corpus](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/mge_nnls_fix_pyautoarray_571_slam_60.md) — active: Phases 3a/3b/4a merged (#394, #396, #398; Mind records complete/2026/10/linear-solver-p3a-a100-parity.md, linear-solver-p3b-gpu-timing.md, linear-solver-p4a-jacobi-a100-divergence.md). Phase 5 Mapper corpus issued as #399 (Mind active/linear_solver_phase5_mapper_corpus.md, worktree linear-solver-p5-mapper-corpus, Opus executing). Task stays active until the phase-5 PR is merged and the human takes the Mapper GPU-default decision from the wiki table.
 
 </details>
 
