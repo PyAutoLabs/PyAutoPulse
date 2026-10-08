@@ -3,8 +3,8 @@
   "repo": "autolens_profiling",
   "github": "PyAutoLabs/autolens_profiling",
   "summary_path": "dashboard/catalogue.json",
-  "commit": "fe9ca4725c6b95345078cf89a266318c3ebda464",
-  "fetched_at": "2026-10-08T09:38:21Z",
+  "commit": "766f82029b2a10984f3f15e4be2f82a40b099c0e",
+  "fetched_at": "2026-10-08T12:50:11Z",
   "summary": {
     "archive_record_count": 20709,
     "comparison_policy": {
@@ -18093,12 +18093,72 @@
       },
       {
         "adapter": "profile",
+        "path": "results/lens/solver/accuracy_summary_delaunay_hst_gpu_v2026.10.7.1.json",
+        "reasons": [
+          "No supported measured fields; retained as experimental/auxiliary evidence, not silently dropped."
+        ],
+        "record_count": 0,
+        "sha256": "ca9250d7cedd5b2b1c06df83be0e3145070f761844297a74d80cfb23bc0ad570",
+        "status": "indexed_only"
+      },
+      {
+        "adapter": "profile",
+        "path": "results/lens/solver/accuracy_summary_delaunay_hst_v2026.10.7.1.json",
+        "reasons": [
+          "No supported measured fields; retained as experimental/auxiliary evidence, not silently dropped."
+        ],
+        "record_count": 0,
+        "sha256": "c4d1ed5c6317c8559e49a5323292ab696fb8dbfbfb6e753ed2d75be8ed695f2c",
+        "status": "indexed_only"
+      },
+      {
+        "adapter": "profile",
+        "path": "results/lens/solver/accuracy_summary_rectangular_hst_gpu_v2026.10.7.1.json",
+        "reasons": [
+          "No supported measured fields; retained as experimental/auxiliary evidence, not silently dropped."
+        ],
+        "record_count": 0,
+        "sha256": "d1fe4c6101ab907f30354f573818966d7727a3fed55b4c1f9ed68638b9dbaec9",
+        "status": "indexed_only"
+      },
+      {
+        "adapter": "profile",
+        "path": "results/lens/solver/accuracy_summary_rectangular_hst_v2026.10.7.1.json",
+        "reasons": [
+          "No supported measured fields; retained as experimental/auxiliary evidence, not silently dropped."
+        ],
+        "record_count": 0,
+        "sha256": "e00c52db280989c3d5ba0795e17ba5eb6d90cc908e68ffffe2157cfc329168b0",
+        "status": "indexed_only"
+      },
+      {
+        "adapter": "profile",
         "path": "results/lens/solver/accuracy_summary_slam_fixture_571_v2026.8.17.1.json",
         "reasons": [
           "No supported measured fields; retained as experimental/auxiliary evidence, not silently dropped."
         ],
         "record_count": 0,
         "sha256": "ec97ba483fc27b50d21501bcbf54c25f083eabae81a226751476d4eb31dd25d8",
+        "status": "indexed_only"
+      },
+      {
+        "adapter": "profile",
+        "path": "results/lens/solver/accuracy_summary_slam_mixed_hst_gpu_v2026.10.7.1.json",
+        "reasons": [
+          "No supported measured fields; retained as experimental/auxiliary evidence, not silently dropped."
+        ],
+        "record_count": 0,
+        "sha256": "ba025dc0fc26f63a35f2af3423c238edc34398a5b20b869be3e3600fba5ecc69",
+        "status": "indexed_only"
+      },
+      {
+        "adapter": "profile",
+        "path": "results/lens/solver/accuracy_summary_slam_mixed_hst_v2026.10.7.1.json",
+        "reasons": [
+          "No supported measured fields; retained as experimental/auxiliary evidence, not silently dropped."
+        ],
+        "record_count": 0,
+        "sha256": "1d12823f16d5fed7e6d4a8af6b62fd7eb2fa29f52af1844c62bc0a668e25de15",
         "status": "indexed_only"
       },
       {
@@ -18133,12 +18193,72 @@
       },
       {
         "adapter": "profile",
+        "path": "results/lens/solver/batched_divergence_summary_delaunay_hst_gpu_v2026.10.7.1.json",
+        "reasons": [
+          "No supported measured fields; retained as experimental/auxiliary evidence, not silently dropped."
+        ],
+        "record_count": 0,
+        "sha256": "e38cd93d05dbf1e2643a953c318afecd00117fcaaca5b09007caf0fb55b09aff",
+        "status": "indexed_only"
+      },
+      {
+        "adapter": "profile",
+        "path": "results/lens/solver/batched_divergence_summary_delaunay_hst_v2026.10.7.1.json",
+        "reasons": [
+          "No supported measured fields; retained as experimental/auxiliary evidence, not silently dropped."
+        ],
+        "record_count": 0,
+        "sha256": "e91e68f15458e2ea0a8b5ecc08cdcf45abf953ff7c036730b44622a0edc8536b",
+        "status": "indexed_only"
+      },
+      {
+        "adapter": "profile",
+        "path": "results/lens/solver/batched_divergence_summary_rectangular_hst_gpu_v2026.10.7.1.json",
+        "reasons": [
+          "No supported measured fields; retained as experimental/auxiliary evidence, not silently dropped."
+        ],
+        "record_count": 0,
+        "sha256": "1982178b18fbcb1f7dcec09f57c0224be4a54c10f384dc955a4627b57c8b8efe",
+        "status": "indexed_only"
+      },
+      {
+        "adapter": "profile",
+        "path": "results/lens/solver/batched_divergence_summary_rectangular_hst_v2026.10.7.1.json",
+        "reasons": [
+          "No supported measured fields; retained as experimental/auxiliary evidence, not silently dropped."
+        ],
+        "record_count": 0,
+        "sha256": "38fdecc88c4e78f363344c91bf9a824bbecd57a695364e7321d04bc66efb523e",
+        "status": "indexed_only"
+      },
+      {
+        "adapter": "profile",
+        "path": "results/lens/solver/batched_divergence_summary_slam_mixed_hst_gpu_v2026.10.7.1.json",
+        "reasons": [
+          "No supported measured fields; retained as experimental/auxiliary evidence, not silently dropped."
+        ],
+        "record_count": 0,
+        "sha256": "4e2483c7a32bbfd9564b2a41d9e3f216029c9204fc4e33f0ae8dc8e88c66421a",
+        "status": "indexed_only"
+      },
+      {
+        "adapter": "profile",
+        "path": "results/lens/solver/batched_divergence_summary_slam_mixed_hst_v2026.10.7.1.json",
+        "reasons": [
+          "No supported measured fields; retained as experimental/auxiliary evidence, not silently dropped."
+        ],
+        "record_count": 0,
+        "sha256": "de1f37fe5235e9262713f183182f1af35d66757492cd34b59f7dff945b7683e3",
+        "status": "indexed_only"
+      },
+      {
+        "adapter": "profile",
         "path": "results/lens/solver/corpus/manifest.json",
         "reasons": [
           "No supported measured fields; retained as experimental/auxiliary evidence, not silently dropped."
         ],
         "record_count": 0,
-        "sha256": "9713e30d9b231d478666a4ebaf9d8f6eb2336ca3a34f1c7308c9d58ee1f7e232",
+        "sha256": "8fbb652a54ad034b58592605c66485448d49174b7bcb681e331acc80a1c759c0",
         "status": "indexed_only"
       },
       {
@@ -18189,6 +18309,66 @@
         ],
         "record_count": 0,
         "sha256": "c67138a93825b5bc14d856a114f617c198d905b1882c14137e026f2e2860c458",
+        "status": "indexed_only"
+      },
+      {
+        "adapter": "profile",
+        "path": "results/lens/solver/timing_summary_delaunay_hst_gpu_v2026.10.7.1.json",
+        "reasons": [
+          "No supported measured fields; retained as experimental/auxiliary evidence, not silently dropped."
+        ],
+        "record_count": 0,
+        "sha256": "b08ee774ff5af76f8633884b5d8df7d7bc685c50751535edd679e6b07f4cfea9",
+        "status": "indexed_only"
+      },
+      {
+        "adapter": "profile",
+        "path": "results/lens/solver/timing_summary_delaunay_hst_v2026.10.7.1.json",
+        "reasons": [
+          "No supported measured fields; retained as experimental/auxiliary evidence, not silently dropped."
+        ],
+        "record_count": 0,
+        "sha256": "ef1ba6f6dfe76dbe6bcf52434482bc39e73335ce5ba814a62957349d4ffe5996",
+        "status": "indexed_only"
+      },
+      {
+        "adapter": "profile",
+        "path": "results/lens/solver/timing_summary_rectangular_hst_gpu_v2026.10.7.1.json",
+        "reasons": [
+          "No supported measured fields; retained as experimental/auxiliary evidence, not silently dropped."
+        ],
+        "record_count": 0,
+        "sha256": "4dd2351035558376ded3474dbeb36cceb0184a4b6dbd1c0d173a1eca76c97da2",
+        "status": "indexed_only"
+      },
+      {
+        "adapter": "profile",
+        "path": "results/lens/solver/timing_summary_rectangular_hst_v2026.10.7.1.json",
+        "reasons": [
+          "No supported measured fields; retained as experimental/auxiliary evidence, not silently dropped."
+        ],
+        "record_count": 0,
+        "sha256": "51c85d6c642a38620259d9bfdc0c9d61890d49b0d8be9709d5e7485643f3f5ba",
+        "status": "indexed_only"
+      },
+      {
+        "adapter": "profile",
+        "path": "results/lens/solver/timing_summary_slam_mixed_hst_gpu_v2026.10.7.1.json",
+        "reasons": [
+          "No supported measured fields; retained as experimental/auxiliary evidence, not silently dropped."
+        ],
+        "record_count": 0,
+        "sha256": "a9f9344878d4266701d247ab1b1171f19664c8d897bb7efa08499a85727652e7",
+        "status": "indexed_only"
+      },
+      {
+        "adapter": "profile",
+        "path": "results/lens/solver/timing_summary_slam_mixed_hst_v2026.10.7.1.json",
+        "reasons": [
+          "No supported measured fields; retained as experimental/auxiliary evidence, not silently dropped."
+        ],
+        "record_count": 0,
+        "sha256": "403ffd27ea637a47f46c012c46f03adc545de671140cc7b9d9668a5902411769",
         "status": "indexed_only"
       },
       {
