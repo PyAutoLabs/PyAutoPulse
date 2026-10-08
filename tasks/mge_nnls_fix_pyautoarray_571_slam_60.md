@@ -37,6 +37,15 @@ The original task below is retained verbatim. Current scheduling state lives in 
 - RAL (one probe, 2026-10-08): euclid_dr1 arrays 397467 and 397469–397474 RUNNING/PENDING on `ral` against the shared base, so the 2026-10-07 "0 jobs" window has closed; the private base `/mnt/ral/jnightin/PyAuto_wt/linear-solver-p3/` still holds the five library clones. `/mnt/ral/jnightin/autolens_profiling/results/lens/solver/` does not exist — where job 397475 wrote its JSON on RAL is unverified (the rows are committed in #394).
 - Next (unchanged): start_dev for phase 3b; A100 rows need separate compute authorization. Nothing here authorizes a submit.
 
+### Execution 2026-10-08 — phase 3b delivered (PR open)
+
+- Human approved the plan and one A100 submit in chat. Issue [autolens_profiling#395](https://github.com/PyAutoLabs/autolens_profiling/issues/395); PR [#396](https://github.com/PyAutoLabs/autolens_profiling/pull/396) open (commits b8911d8, e68448c, d7b6e1e), lint pending at review time. Mind `active/linear_solver_phase3b_gpu_timing_cell.md`, worktree `linear-solver-p3b-gpu-timing`.
+- New cell `scripts/lens/solver/timing.py` (jit(vmap) over `_solvers.batched_kernel`; SLaM batches = distinct fixture+slam48 systems, euclid lanes tiled). A100 job 398249 on euclid-ral-gpu-2 (0:38) from the private base; RAL sibling worktree `/mnt/ral/jnightin/autolens_profiling_wt/linear-solver-p3b` created because the p3 one held untracked (byte-identical) 3a artefacts. Shared mirror untouched.
+- Per-evaluation min ms (7 interleaved rounds, fp64, tag 2026.10.7.1 SHAs verified in both JSONs): pdip_raw SLaM CPU 1.353/0.881/0.682, A100 3.948/0.581/0.190 at B=1/16/50; pdip_jacobi SLaM CPU 2.488/1.630/1.396, A100 6.715/1.149/0.369. Compile walls 0.3–1.2 s recorded separately. Batched pdip_raw matches unbatched on every lane (|Δ flux_inactive_rel| ≤ 1.4e-14).
+- Slowest-lane mechanism confirmed: jacobi batch max iterations sit at the 50 cap when any lane diverges (A100 B=16/50), costing 1.94x pdip_raw at A100 B=50. New, unexplained: jacobi batched vs unbatched trajectories differ on the A100 (19/50 lanes iterations, 13/50 flags), identical on CPU.
+- Caveats: euclid lanes tiled (throughput only); A100 used the warm shared JAX compile cache; laptop under background load (loadavg ~1.9); CPU batched run on jax 0.10.2 (Nerves-excluded, no deadlock seen). Verdict in the ledger: a timing is not admissibility; no pin moves.
+- Next: human /prm on #396 → Mind completion record → Pulse task status; then the programme-level decision.
+
 ---
 
 # Linear-solver programme phase 3: GPU/vmap/A100 timing and parity rows for the solver corpus
