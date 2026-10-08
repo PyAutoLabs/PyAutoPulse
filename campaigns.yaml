@@ -142,8 +142,11 @@ tasks:
   next: 'Phase 1 (inventory) MERGED 2026-10-08 as autolens_profiling#402 (main un-reddened first by #403, a Brain theme
     drift); Mind record complete/2026/10/timing-noise-audit-p1-inventory.md. 31 gates: 11 SOUND / 10 FRAGILE / 10 UNSAFE-SILENT;
     worst is dashboard qualify() (laptop / no-loadavg / no-host rows qualify, and Pulse accepts evidence on that flag).
-    Next: file phase 2 = fix (1) shared overhead verdict for the #361 test + production cell (reuse #362); then fix (2)
-    dashboard qualification + drift wording, which changes profiling-summary and needs Pulse coordination.'
+    Phase 2 STARTED 2026-10-08 (human: "do the next step"): fix (1) shared ABBA overhead verdict for the #361 test and the
+    fixed-light numba cell, budget in ms of excess, t-interval vs budget, visible INCONCLUSIVE; Mind
+    active/timing_noise_audit_phase2_overhead_verdict.md, worktree timing-noise-audit-p2-overhead-verdict, Opus executing;
+    superseded "relax it a bit" draft retired. Next: /prm on its PR; then fix (2) dashboard qualification + drift wording
+    (profiling-summary contract change, Pulse coordination).'
   issue: https://github.com/PyAutoLabs/autolens_profiling/issues/362
   evidence: https://github.com/PyAutoLabs/autolens_profiling/blob/main/results/notes/timing_noise_audit_2026_10.md
 - id: mge_likelihood_breakdown_steps_are_cumulative_an

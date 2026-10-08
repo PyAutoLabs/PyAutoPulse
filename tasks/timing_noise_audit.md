@@ -28,6 +28,12 @@ The original task below is retained verbatim. Current scheduling state lives in 
 - Lister `scripts/misc/tooling/list_timing_assertions.py --check` is in lint.yml; campaign page `wiki/campaigns/measurement_tools.md` created.
 - Proposed fix phases: (1) shared overhead verdict (test + cell, interval vs excess over budget, visible INCONCLUSIVE); (2) dashboard qualification + drift wording (contract change → Pulse coordination); (3) INCONCLUSIVE for go / lever rules, tie sets instead of argmax. Next: file phase 2 = fix (1) from this task, reusing #362; retire the subsumed Mind draft `call_accounting_ci_timing_threshold.md` when it is filed.
 
+
+### Phase 2 started 2026-10-08
+
+- Human: "do the next step" → fix phase (1) of the audit note, plan approved in chat; issue #362 reused (plan comment posted); Mind `active/timing_noise_audit_phase2_overhead_verdict.md` (3a3d4fc6); worktree `timing-noise-audit-p2-overhead-verdict`; Opus executes. The superseded Mind draft `call_accounting_ci_timing_threshold.md` ("increase it a bit so merge goes through") was retired on the human's approval — the guard is fixed, not relaxed.
+- Scope: one `abba_overhead_verdict` used by both the CI test and `fixed_light_numba.py`; budget 12 ms of excess over the clean call; one-sided small-sample t-interval of the excess vs budget → PASS / FAIL / FAIL_GROSS / INCONCLUSIVE; n < 3 and below-1 ratios INCONCLUSIVE; cell raises only on FAIL/FAIL_GROSS and keeps the JSON otherwise; promotion requires PASS; the test warns visibly on INCONCLUSIVE; the 1.031 ratio constant goes. No budget raised.
+
 ---
 
 # Audit timing tests and profiling gates for measurement noise
