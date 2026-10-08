@@ -65,6 +65,12 @@ The original task below is retained verbatim. Current scheduling state lives in 
 - Human decision: keep Jacobi as the Mapper default and raw+polish for MGE-only; no library change. Canonical record `decisions/linear-solver-mapper-default-jacobi.md` (indexed in `decisions.yaml`, Decision History on the board).
 - Human decision (engineering, not a Pulse decision record): the three 50–56 MB corpus files stay out of git — external copies on RAL and the laptop, sha256 + regenerate command in the manifest; PR #400 to be re-landed from a fresh branch, never by rewriting the pushed one.
 
+
+### Complete 2026-10-08
+
+- Phase 5 merged as [autolens_profiling#401](https://github.com/PyAutoLabs/autolens_profiling/pull/401) (`766f8202`, lint green; #400 closed as superseded and its branch deleted on the human's instruction); issue #399 closed; Mind record `complete/2026/10/linear-solver-p5-mapper-corpus.md` (d77a7dea); worktree removed. Corpus copies verified by sha256 on RAL `/mnt/ral/jnightin/autolens_profiling_corpus/` and the laptop canonical checkout.
+- Task status → complete. The programme's open question is closed by the decision record; the solver cells re-run on each release as the standing `scripts/lens/solver/` section.
+
 ---
 
 # Linear-solver programme phase 3: GPU/vmap/A100 timing and parity rows for the solver corpus
