@@ -77,10 +77,10 @@ campaigns:
   title: Measurement reliability and profiling tools
   status: active
   updated: '2026-10-08'
-  next: 'timing_noise_audit phase 1 merged (autolens_profiling#402): inventory of 31 timing assertions/gates, 10 UNSAFE-SILENT
-    including the dashboard qualify() flag Pulse relies on (pulse/catalogue.py requires qualified: true). Fix phase (2)
-    will change the profiling-summary contract - Pulse must coordinate. New campaign page wiki/campaigns/measurement_tools.md.
-    Other tasks unchanged and unissued.'
+  next: 'timing_noise_audit fix phases (1) and (2) done (autolens_profiling#404 merged; #405 open, awaiting /prm). Correction
+    2026-10-08: the live Pulse lens feed is dashboard/catalogue.json (profiling-summary@2, registry switched 2026-10-05
+    in 3c7bed2), whose producer hard-codes qualified: false, so the v1 qualify() gap never reached Pulse live and fix (2)
+    needed no Pulse change. Next: fix phase (3) INCONCLUSIVE for go/lever rules. Other tasks unchanged and unissued.'
   evidence: https://github.com/PyAutoLabs/autolens_profiling/blob/main/wiki/campaigns/measurement_tools.md
 - id: autofit
   title: PyAutoFit profiling bootstrap
@@ -139,14 +139,14 @@ tasks:
   priority: high
   path: tasks/timing_noise_audit.md
   updated: '2026-10-08'
-  next: 'Phase 2 MERGED 2026-10-08 as autolens_profiling#404: one abba_overhead_verdict (excess ms vs the 12 ms budget,
-    t-interval, PASS/FAIL/FAIL_GROSS/INCONCLUSIVE) serves the CI test and the fixed-light numba cell; promotion requires
-    PASS; 6/17 published RAL rows re-judge INCONCLUSIVE (recorded, no JSON rewritten). Human decision: the ~16 ms CI
-    fixture cannot resolve 12 ms, so the CI test is the coverage + gross-breakage guard. Inventory now 13 SOUND / 9 FRAGILE /
-    9 UNSAFE-SILENT. Next: fix phase (2) dashboard qualify()/drift wording - a profiling-summary contract change that needs
-    a paired PyAutoPulse reader change (plan as a two-repo task); then (3) INCONCLUSIVE for go/lever rules.'
+  next: 'Fix phase (2) PR OPEN 2026-10-08 as autolens_profiling#405 (awaiting /prm; Heart YELLOW reasons human-acknowledged):
+    dashboard qualify() leaves laptop rows, rows without a load average and hpc rows without a host unqualified with a
+    reason; a within-2x comparison is flat only when both endpoints carry a repeat summary (none do yet), else insufficient;
+    drifted/improved keep status with a single-sample caveat (human decision 2026-10-08). Effect on summary.json: qualified
+    2 -> 2, flat 4 -> 0, insufficient 135 -> 139. Not a Pulse contract change (live feed is v2 catalogue.json, qualified
+    hard-false). Next after merge: fix phase (3) INCONCLUSIVE for go/lever rules, tie sets instead of argmax.'
   issue: https://github.com/PyAutoLabs/autolens_profiling/issues/362
-  evidence: https://github.com/PyAutoLabs/autolens_profiling/pull/404
+  evidence: https://github.com/PyAutoLabs/autolens_profiling/pull/405
 - id: mge_likelihood_breakdown_steps_are_cumulative_an
   campaign: measurement-tools
   title: MGE likelihood_breakdown steps are cumulative and `linear_gaussians` is reported as 0

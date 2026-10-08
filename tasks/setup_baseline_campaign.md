@@ -75,3 +75,7 @@ the later collection and review deliverables.
 - Specification merged: https://github.com/PyAutoLabs/autolens_profiling/pull/385 (2026-10-06; issue #384 closed 2026-10-06; PyAutoPulse#17 closed 2026-10-06). `baseline/campaign.json` is status draft, version 1, with `baseline/README.md` readiness contract (https://github.com/PyAutoLabs/autolens_profiling/blob/719459fefb40c7e5be157f652818dbf923830557/baseline/campaign.json, https://github.com/PyAutoLabs/autolens_profiling/blob/719459fefb40c7e5be157f652818dbf923830557/wiki/campaigns/setup_baseline.md).
 - Six unknowns recorded verbatim: no frozen revisions/env lock; no collection authorization/window; hardware/affinity identity unselected; each cell needs complete settings, input hashes, witness + tolerances; compile per-cell builder unavailable; proposed fp64/mixed coverage is not evidence of support.
 - Status stays `needs-decision`: no collection or acceptance authorized; the check-in authorizes none.
+
+## Note 2026-10-08 (from timing_noise_audit fix phase 2)
+
+- When the frozen specification names a reference host and the v2 catalogue starts writing `qualified: true`, reuse autolens_profiling's `build_dashboard.is_reference_host_class` rule (laptop rows never qualify; a missing load average or host is unqualified with a reason) so the v1 and v2 qualification cannot drift apart. Source: autolens_profiling#405.
