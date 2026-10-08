@@ -3,8 +3,8 @@
   "repo": "autolens_profiling",
   "github": "PyAutoLabs/autolens_profiling",
   "summary_path": "dashboard/catalogue.json",
-  "commit": "86cb146055ca96f0de171cc67b3bc09feb24de81",
-  "fetched_at": "2026-10-08T08:26:53Z",
+  "commit": "fe9ca4725c6b95345078cf89a266318c3ebda464",
+  "fetched_at": "2026-10-08T09:38:21Z",
   "summary": {
     "archive_record_count": 20709,
     "comparison_policy": {
@@ -18103,6 +18103,36 @@
       },
       {
         "adapter": "profile",
+        "path": "results/lens/solver/batched_divergence_summary_all_gpu_det_v2026.10.7.1.json",
+        "reasons": [
+          "No supported measured fields; retained as experimental/auxiliary evidence, not silently dropped."
+        ],
+        "record_count": 0,
+        "sha256": "e68ed4f7af4632b3455ae5f0deab5492d03569385acfcfa6594848232975bbbb",
+        "status": "indexed_only"
+      },
+      {
+        "adapter": "profile",
+        "path": "results/lens/solver/batched_divergence_summary_all_gpu_v2026.10.7.1.json",
+        "reasons": [
+          "No supported measured fields; retained as experimental/auxiliary evidence, not silently dropped."
+        ],
+        "record_count": 0,
+        "sha256": "e74e9eb78bf6ab8295b518277546f9a47cf2b8ab39e4f4b6d8b767e8c3a28fa0",
+        "status": "indexed_only"
+      },
+      {
+        "adapter": "profile",
+        "path": "results/lens/solver/batched_divergence_summary_all_v2026.10.7.1.json",
+        "reasons": [
+          "No supported measured fields; retained as experimental/auxiliary evidence, not silently dropped."
+        ],
+        "record_count": 0,
+        "sha256": "49563713f9ce00cb79c482c5a13fe02f16e2f7bc6914f8799cd2e431a54fd948",
+        "status": "indexed_only"
+      },
+      {
+        "adapter": "profile",
         "path": "results/lens/solver/corpus/manifest.json",
         "reasons": [
           "No supported measured fields; retained as experimental/auxiliary evidence, not silently dropped."
@@ -20298,6 +20328,12 @@
         "dataset": "lens",
         "model": "solver",
         "path": "scripts/lens/solver/accuracy.py"
+      },
+      {
+        "category": "scientific_entrypoint",
+        "dataset": "lens",
+        "model": "solver",
+        "path": "scripts/lens/solver/batched_divergence.py"
       },
       {
         "category": "scientific_entrypoint",
