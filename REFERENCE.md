@@ -319,3 +319,11 @@ seven-setup subset captured from autolens_profiling commit
 are unchanged; the catalogue is scoped to those setups for hermetic browser tests.
 It includes MGE/rectangular HST runs without reference candidates and without
 memory measurements, so empty-memory and useful-runtime behavior are both tested.
+
+Likelihood navigation labels known implementations explicitly as (JAX) or (Numba).
+Unspecified implementation variants are omitted from the menu without relabelling
+their evidence; existing direct links remain supported. Menu priority is Delaunay,
+Rectangular, MGE, KNN, MGE Mass, Sersic, then other families alphabetically.
+
+Sersic retains one plain menu entry when only unclassified latent tools exist;
+this does not assign a backend. Known Sersic variants replace that fallback.

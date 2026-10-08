@@ -34,9 +34,11 @@
       label(model) +
       (implementation === "numba"
         ? " (Numba)"
-        : implementation === "unknown"
-          ? " (implementation unspecified)"
-          : "");
+        : implementation === "jax"
+          ? " (JAX)"
+          : model === "sersic"
+            ? ""
+            : " (implementation unspecified)");
     const axes = {
       runtime: "Runtime",
       breakdown: "Breakdown",
@@ -357,8 +359,20 @@
               .map((s) => `${s.model}|${implementationFor(s)}`),
           ]),
         ]
-          .filter((choice) => !choice.startsWith("pixelized|"))
-          .sort();
+          .filter((choice, _, all) =>
+            !choice.startsWith("pixelized|") &&
+            (!choice.endsWith("|unknown") ||
+              (choice === "sersic|unknown" && !all.some((other) =>
+                other.startsWith("sersic|") && other !== choice))),
+          )
+          .sort((a, b) => {
+            const priority = ["delaunay", "rectangular", "mge", "knn", "mge_mass", "sersic"];
+            const rank = (choice) => {
+              const index = priority.indexOf(choice.split("|")[0]);
+              return index < 0 ? priority.length : index;
+            };
+            return rank(a) - rank(b) || a.localeCompare(b);
+          });
         for (const choice of choices) {
           const [model, implementation] = choice.split("|");
           const button = append(

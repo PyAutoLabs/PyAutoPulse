@@ -186,6 +186,35 @@ def write(destination):
     readable.doc["records"].append(numba_row)
     (destination / "readable.html").write_text(board.render_html([readable]))
 
+    menu = copy.deepcopy(readable)
+    for model in ("mge_mass", "knn", "mge", "rectangular"):
+        for suffix in ("", "_numba"):
+            menu.doc["navigation"].append(
+                {
+                    "dataset": "imaging",
+                    "model": model,
+                    "category": "scientific_entrypoint",
+                    "path": f"scripts/imaging/{model}/likelihood_runtime{suffix}.py",
+                }
+            )
+    menu.doc["navigation"].append(
+        {
+            "dataset": "imaging",
+            "model": "delaunay",
+            "category": "scientific_entrypoint",
+            "path": "scripts/imaging/delaunay/unknown.py",
+        }
+    )
+    menu.doc["navigation"].append(
+        {
+            "dataset": "imaging",
+            "model": "sersic",
+            "category": "scientific_entrypoint",
+            "path": "scripts/imaging/sersic/latent_magnification.py",
+        }
+    )
+    (destination / "menu-order.html").write_text(board.render_html([menu]))
+
     isolated = copy.deepcopy(readable)
     isolated.doc["records"] = [
         r for r in isolated.doc["records"] if r["metric"] != "component_total"
