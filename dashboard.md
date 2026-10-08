@@ -1,6 +1,6 @@
 # PyAutoPulse — profiling dashboard
 
-<!-- pulse-campaigns:38baea2335f2ea205320d7ae48f2a51e5c48a9d632a5525a17082c23829f86dd -->
+<!-- pulse-campaigns:5561dbba1d4ce4ed1c8800f397a77dd99346300db80e0872771e47492295f923 -->
 ## Profiling Check In
 
 <details><summary>Full check-in prompt</summary>
@@ -108,13 +108,13 @@ Reviewed 2026-10-07. Decision matrix complete: last cell merged (autolens_profil
 
 <details><summary>Linear-solver accuracy and cost — active</summary>
 
-Reviewed 2026-10-08. Phase 3b MERGED 2026-10-08: autolens_profiling#396 (86cb1460), issue #395 closed, Mind record complete/2026/10/linear-solver-p3b-gpu-timing.md. A100 job 398249: pdip_raw per-eval min ms CPU 1.35/0.88/0.68 vs A100 3.95/0.58/0.19 at B=1/16/50 (SLaM distinct lanes), compile 0.3-1.2 s separate; jacobi 1.94x at A100 B=50 because one diverging lane pins the batch at the 50 cap. Timing is not admissibility; no pin moves. Phase 4a ISSUED 2026-10-08 (autolens_profiling#397, research): why jacobi batched vs unbatched trajectories differ on the A100 only (19/50 lanes; CPU identical) - Jacobi is the Mapper default, so this feeds a future GPU-default decision; wiki research page + decision table, one authorized A100 job. Next: /prm on the phase-4a PR when open.
+Reviewed 2026-10-08. Phase 4a MERGED 2026-10-08 (autolens_profiling#398, fe9ca472; issue #397 closed; A100 job 399050): the A100-only jacobi batched/unbatched difference is deterministic batch-shape-dependent Cholesky rounding (cho_factor/cho_solve differ on 50/50 lanes from initialize at ~1e-15), amplified to order one within 1-2 iterations on the 24 Jacobi-unstable lanes (all 20 of the 3a divergence set); not nondeterminism (deterministic-ops flag bit-identical), not a vmap defect; controls pdip_raw &lt;= 1.3e-13, certified &lt;= 3.4e-12. Wiki wiki/research/jacobi_a100_batched_divergence.md with the decision table (B ruled out, C unlikely, A or D need a Mapper corpus). Human chose option 2 (bounded evidence step): phase 5 Mapper corpus ISSUED as #399 (delaunay_hst, rectangular_hst, slam_mixed_hst, optional interferometer_delaunay; accuracy, timing and divergence cells; one authorized A100 job). Phase 5 delivered (PR #400, A100 job 399225): Jacobi converged 24/24 Mapper/mixed systems, 0 batch-sensitive lanes; raw+polish 1.05-1.62x Jacobi cost. DECISION 2026-10-08 (decisions/linear-solver-mapper-default-jacobi.md): keep Jacobi as the Mapper default, raw+polish for MGE-only, no library change. Next: /prm on the re-landed phase-5 PR (corpus out of git, human choice); then close the programme in the task.
 
-[Campaign evidence](https://github.com/PyAutoLabs/autolens_profiling/blob/86cb1460/results/notes/linear_solver_accuracy_2026_09.md)
+[Campaign evidence](https://github.com/PyAutoLabs/autolens_profiling/blob/fe9ca472/wiki/research/jacobi_a100_batched_divergence.md)
 
 ### Active tasks
 
-- [Linear-solver programme phase 3: GPU/vmap/A100 timing and parity rows for the solver corpus](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/mge_nnls_fix_pyautoarray_571_slam_60.md) — active: Phase 3 COMPLETE: 3a #394 (parity) and 3b #396 (vmap timing) merged; Mind records complete/2026/10/linear-solver-p3a-a100-parity.md and linear-solver-p3b-gpu-timing.md. Phase 4a research issued as #397 (Mind active/linear_solver_phase4_jacobi_a100_batched_divergence.md, worktree linear-solver-p4a-jacobi-a100-divergence, Opus executing). Task stays active until the 4a PR is merged and the human reads the decision table.
+- [Linear-solver programme phase 3: GPU/vmap/A100 timing and parity rows for the solver corpus](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/mge_nnls_fix_pyautoarray_571_slam_60.md) — active: Phases 3a/3b/4a merged (#394, #396, #398; Mind records complete/2026/10/linear-solver-p3a-a100-parity.md, linear-solver-p3b-gpu-timing.md, linear-solver-p4a-jacobi-a100-divergence.md). Phase 5 Mapper corpus issued as #399 (Mind active/linear_solver_phase5_mapper_corpus.md, worktree linear-solver-p5-mapper-corpus, Opus executing). Task stays active until the re-landed phase-5 PR is merged. Decision taken 2026-10-08: keep Jacobi for Mapper, raw+polish for MGE-only (decisions/linear-solver-mapper-default-jacobi.md).
 
 </details>
 
@@ -282,7 +282,7 @@ Project `autolens_profiling`, scope `setup-catalogue`, read from [PyAutoLabs/aut
 </details>
 
 
-<!-- decision-history:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945 -->
+<!-- decision-history:8f1840916151d6a62b1cb1cd473edede0a3647c198fe8ef2371ce31a66c873a5 -->
 ## Decision History
 
-No decisions recorded yet.
+- <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/linear-solver-mapper-default-jacobi.md">Keep Jacobi PDIP as the Mapper default and raw+polish as the MGE-only default</a>

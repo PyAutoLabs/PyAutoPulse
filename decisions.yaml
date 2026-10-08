@@ -1,2 +1,6 @@
 # Human decisions only; see decisions/README.md for capture and record format.
-decisions: []
+decisions:
+- id: linear-solver-mapper-default-jacobi
+  title: Keep Jacobi PDIP as the Mapper default and raw+polish as the MGE-only default
+  date: '2026-10-08'
+  url: https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/linear-solver-mapper-default-jacobi.md
