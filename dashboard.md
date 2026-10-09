@@ -1,6 +1,6 @@
 # PyAutoPulse — profiling dashboard
 
-<!-- pulse-campaigns:885c41acf471ee25bdaad4bb819d702e5d3e8e19f7b3662b9e9f46a04b538c6d -->
+<!-- pulse-campaigns:6c55cba56c29f68e3bdebe6d2f2e9bdb8a17a5897748687d1ece25e8a0058485 -->
 ## Profiling Check In
 
 <details><summary>Full check-in prompt</summary>
@@ -133,13 +133,13 @@ Reviewed 2026-10-04. No new results since the pin. Over-sampling phase 1: add --
 
 <details><summary>Measurement reliability and profiling tools — active</summary>
 
-Reviewed 2026-10-08. timing_noise_audit fix phases (1)-(4) MERGED 2026-10-08 (autolens_profiling#404, #405, #406, #407). The live Pulse lens feed is the v2 catalogue.json (qualified hard-false), so none needed a Pulse change. Next: fix phase (5) median headline + GPU-only marker, then (6) warm-up flag + witness band; leftovers phase 3b (C1/C3/C4/C5), Holm/Bonferroni policy, gpu_bottleneck_map round bootstrap. Other tasks unchanged and unissued.
+Reviewed 2026-10-09. timing_noise_audit: fix phases (5)-(6) MERGED 2026-10-09 (autolens_profiling#408, #409); phase 3b + leftovers open as stacked PRs #410 -&gt; #411 -&gt; #412 awaiting human /prm in that order (#412 under a Heart-RED development override). No Pulse v2 field changed except one latent additive metric in #412. After merge: close #362; open human decisions flagged in #410/#411/#412. Other tasks unchanged and unissued.
 
 [Campaign evidence](https://github.com/PyAutoLabs/autolens_profiling/blob/main/wiki/campaigns/measurement_tools.md)
 
 ### Active tasks
 
-- [Audit timing tests and profiling gates for measurement noise](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/timing_noise_audit.md) — active: Fix phases (2)-(4) MERGED 2026-10-08 under human /prm: #405 dashboard qualification + drift wording; #406 A/B go/lever rules gain INCONCLUSIVE + tie sets (shared ab_verdict.py; no published go/no-go/NO_LEVER changed; 7 of 9 committed C10 sweeps are tie sets); #407 paired whole-round bootstrap (shared round_bootstrap.py; RAL CPU/A100 calls unchanged; one laptop C6 row GO -&gt; INCONCLUSIVE). Issue #362 stays open. Next: fix phase (5) P8/P9 (median headline, GPU-only marker), then (6) P3/P5 (authorized --auto; not started at session end); leftovers phase 3b (C1/C3/C4/C5 lack intervals), multiple-comparison policy, gpu_bottleneck_map.
+- [Audit timing tests and profiling gates for measurement noise](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/timing_noise_audit.md) — active: Fix phases (5) #408 (median headline, qualified GPU-only marker) and (6) #409 (unsettled warm-up / off-reference witness -&gt; INCONCLUSIVE) MERGED 2026-10-09 (3ce8d789, 4db4d988). Wrap-up open as stacked PRs awaiting human /prm in order: #410 phase 3b intervals C1/C3/C4/C5 + Holm helper; #411 family-wise policy C6/C10/C11, C12 round bootstrap, P2 drift; #412 headline completion, wall basis, repeat-summary support (Heart-RED dev override 2026-10-09). No published decision reversed; support withdrawn (dated notes) for memo-policy C1 flags, numba-interferometer kill &quot;passed&quot;, GPU memo MDI readings. Then close #362. Open human decisions: C1 n=4 rule, C5 both-estimators rule, C11 4-round rule, GPU memo readings, phase-10 flags; v2 qualification waits on the setup-baseline reference-host decision.
 - [MGE likelihood_breakdown steps are cumulative and `linear_gaussians` is reported as 0](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/mge_likelihood_breakdown_steps_are_cumulative_an.md) — ready: Unchanged and unissued (no GitHub refs, 2026-10-04). Select one bounded step when measurement-tools is prioritised.
 - [A gradient-cost probe: forward vs `value_and_grad` ms/eval and a strict FD check, on any registry cell](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/gradient_cost_probe.md) — ready: Unissued. New context 2026-10-07: Heart unit-test timing flagged PyAutoLens forward-gradient tests +150%/+96% after PyAutoLens#768 rewrote that test file; not a controlled comparison, and this probe is the right instrument. Select one bounded step when prioritised.
 - [Numba breakdown harness: perturb the instance so the operated-matrix memo cannot hide a step](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/numba_breakdown_harness_memo_blind.md) — ready: Unchanged and unissued (PyAutoArray#496 closed 2026-08-27). Select one bounded step when prioritised.
