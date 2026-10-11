@@ -588,6 +588,9 @@ def render_html(views, now: str | None = None, campaign_data: dict | None = None
         )
         + "".join(content)
         + decisions.render_html()
+        + shared.boards_footer(
+            shared.board_links(PAGES_URL.rstrip("/").rsplit("/", 1)[0], "pulse"), "pulse"
+        )
         + "</main>"
         + f"<script>{shared.JS}\n{JS}\n{browser_js}</script></body></html>\n"
     )
