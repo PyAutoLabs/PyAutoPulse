@@ -17,6 +17,52 @@ The original task below is retained verbatim. Current scheduling state lives in 
 - Evidence: [project main reviewed at 4db4d988](https://github.com/PyAutoLabs/autolens_profiling/blob/4db4d988e520a82219152743748c3188d485a4ba/wiki/campaigns/measurement_tools.md), [Mind claims at 35281b1d](https://github.com/PyAutoLabs/PyAutoMind/blob/35281b1d/active.md), [full dated review](../checkins/2026-10-13.md). Review date does not refresh measurement dates.
 - Availability: project `hpc/sync jobs` returned an empty current queue; `hpc/sync status` timed out after 25 seconds during the output preview. Historical job outcomes, unpulled results and RAL cleanup contents are unverified; no collection or compute was performed.
 
+
+## Approved bounded phase — 2026-10-13
+
+- Human approved the HST/MGE current-runtime builder plan in this conversation;
+  [implementation issue #413](https://github.com/PyAutoLabs/autolens_profiling/issues/413)
+  is active in Mind as `compile-builder-hst-mge`. This supersedes the earlier
+  "unissued" next step, without completing the broader domain task.
+- The original witness below is incompatible with current evidence: `--cell`
+  is not a supported CLI flag, and the retired flat-vector posterior differs
+  from the current model-instance-pytree runtime likelihood. Its pinned timings
+  cannot validate this restoration. The approved phase instead checks small
+  deterministic CPU objective parity and preserves historical results and pins.
+- Phase scope: imaging/MGE/HST, fp64, `jit`, existing data only; explicit objective
+  identity and isolated output. No gradient/batch/general-cell support, baseline
+  acceptance, production measurements or RAL/GPU submissions are authorized.
+- Verified locally: tiny CPU compiled/eager objective parity and unsupported-path,
+  import, output-isolation and legacy-consumer checks pass. These are implementation
+  tests, not campaign measurements. Brain's compile conductor still emits an empty
+  dispatch plan because the global builder capability remains unavailable.
+- Implementation: [PR #414](https://github.com/PyAutoLabs/autolens_profiling/pull/414),
+  head `05c5c49a514db1c3dc2b92d1126cf39d7f4cd68a`, is OPEN, not merged. Shared
+  builder [source](https://github.com/PyAutoLabs/autolens_profiling/blob/18b1ee4/scripts/misc/cell_builders/imaging_mge.py)
+  and [instrument contract](https://github.com/PyAutoLabs/autolens_profiling/blob/18b1ee4/scripts/misc/jax_compile/README.md)
+  were verified 2026-10-13. No production timing was collected.
+- Validation: 19 targeted tests; full suite 1,378 passed / 6 skipped, with all 45
+  baseline-only failures passing after reverting an inventory-hash-changing route
+  description edit. The registry and baseline remain byte-for-byte unchanged.
+  Project import smoke, lint, generated catalogue/dashboard and contract checks pass.
+  Exact-head [project CI](https://github.com/PyAutoLabs/autolens_profiling/actions/runs/38426218793)
+  passed 2026-10-13: 1,424 tests passed / 6 skipped, plus browser, link, smoke and
+  generated-contract checks. Pulse head `685e1b8` passed both
+  [lint](https://github.com/PyAutoLabs/PyAutoPulse/actions/runs/38426360330) and
+  [refresh dry run](https://github.com/PyAutoLabs/PyAutoPulse/actions/runs/38426360116).
+  Independent review was CLEAN at project `05c5c49` and Pulse `a76a769` on
+  2026-10-13: 40 focused tests passed; the real tiny-FITS CPU CLI path with a
+  3×3 PSF passed within the 60-second verification cap; baseline, registry and
+  historical files were unchanged. Temporary verification artifacts were removed.
+  These checks establish implementation validation, not timing improvement or
+  scientific acceptance. Both PRs still require the judge-tier human merge command.
+- Plan adjustment: partial capability is documented in the instrument and campaign
+  journal; the machine-readable global route reason is retained because the baseline
+  draft pins the registry's exact bytes. No re-freeze was authorized or performed.
+- Next: review and merge the implementation PR when authorized and green, then discuss
+  the next bounded experiment and resource request. Broader coverage and compatible
+  baselines remain pending. Review date does not refresh measurement freshness.
+
 ---
 
 # jax_compile/probe.py lost its cell builder with the searches tier — give profiling its own
