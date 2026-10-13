@@ -8,6 +8,14 @@ Original task retained verbatim below. Current scheduling state: `campaigns.yaml
 - VERIFIED: targets PyAutoLens/PyAutoGalaxy, not autolens_profiling; [PyAutoLens#680](https://github.com/PyAutoLabs/PyAutoLens/issues/680) closed 2026-07-31; no follow-up issue; no Mind claim.
 - Next: select one bounded step when prioritised.
 
+
+## Check-in 2026-10-13
+
+- Campaign review: No new production-over-sampling or post-certified measurements. #408 now adds median headline fields to runtime cells; #412 extends remaining surfaces but is unmerged. Production presets, memo-blind harness, cumulative MGE steps and quick-update costs remain separate pending work. Scope production-preset phase 1 (CPU smoke only); A100 measurement separately authorized.
+- Task next step: Unchanged; targets PyAutoLens/PyAutoGalaxy (PyAutoLens#680 closed 2026-07-31, no follow-up issue). Select one bounded step when prioritised.
+- Evidence: [project main reviewed at 4db4d988](https://github.com/PyAutoLabs/autolens_profiling/blob/4db4d988e520a82219152743748c3188d485a4ba/wiki/campaigns/measurement_tools.md), [Mind claims at 35281b1d](https://github.com/PyAutoLabs/PyAutoMind/blob/35281b1d/active.md), [full dated review](../checkins/2026-10-13.md). Review date does not refresh measurement dates.
+- Availability: project `hpc/sync jobs` returned an empty current queue; `hpc/sync status` timed out after 25 seconds during the output preview. Historical job outcomes, unpulled results and RAL cleanup contents are unverified; no collection or compute was performed.
+
 ---
 
 # Quick-update plotting cost — minutes per update, and it is not JAX compile

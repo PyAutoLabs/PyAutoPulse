@@ -24,6 +24,14 @@ The original task below is retained verbatim. Current scheduling state lives in 
 - https://github.com/PyAutoLabs/autolens_profiling/pull/375 (issue #368) merged 2026-10-04T20:49Z: phase 1 CPU cells + results/streaming_scaling rows; https://github.com/PyAutoLabs/autolens_profiling/blob/719459fefb40c7e5be157f652818dbf923830557/wiki/campaigns/interferometer_streaming.md.
 - Optional next: 1e8 CPU row and A100 rows (compute authorization). Library candidate still unfiled: chunk transformer.image_from in apply_sparse_operator.
 
+
+## Check-in 2026-10-13
+
+- Campaign review: No new committed measurements. Decision matrix remains filled; streaming 1e8 CPU/A100 rows and the #332 memo after-measurement still need authorization. #411 proposes making the historical numba kill gate INCONCLUSIVE (four rounds); it is unmerged. Curvature preload needs the fixed-mapper science decision; FFT levers remain unstarted.
+- Task next step: Phase 1 CPU cells + results/streaming_scaling rows merged (autolens_profiling#375, 2026-10-04); wiki/campaigns/interferometer_streaming.md. Optional: 1e8 CPU row and A100 rows (compute authorization). Library candidate unfiled: chunk transformer.image_from in apply_sparse_operator (memory).
+- Evidence: [project main reviewed at 4db4d988](https://github.com/PyAutoLabs/autolens_profiling/blob/4db4d988e520a82219152743748c3188d485a4ba/wiki/campaigns/measurement_tools.md), [Mind claims at 35281b1d](https://github.com/PyAutoLabs/PyAutoMind/blob/35281b1d/active.md), [full dated review](../checkins/2026-10-13.md). Review date does not refresh measurement dates.
+- Availability: project `hpc/sync jobs` returned an empty current queue; `hpc/sync status` timed out after 25 seconds during the output preview. Historical job outcomes, unpulled results and RAL cleanup contents are unverified; no collection or compute was performed.
+
 ---
 
 # Campaign: interferometer streaming (array-free) vs in-memory — memory and time scaling to 2e8 visibilities

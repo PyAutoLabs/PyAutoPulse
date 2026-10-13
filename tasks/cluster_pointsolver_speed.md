@@ -9,6 +9,14 @@ The original task below is retained verbatim. Current scheduling state lives in 
 - VERIFIED: Mind epics.md now links this file as the cluster epic ledger; no new task issued since the human expansion of 2026-10-01; no open issue/PR or Mind claim.
 - Next: pick one bounded phase: observable-overflow invalid-result policy + CI witness (autolens_workspace_test), or a representative-data baseline cell.
 
+
+## Check-in 2026-10-13
+
+- Campaign review: No campaign wiki/results change or new matching implementation claim found. Representative cluster baseline and observable-overflow policy remain unstarted. Choose one bounded phase; inherited single-source results do not qualify a representative cluster baseline.
+- Task next step: Unissued, no claim. Pick one bounded phase per Mind epics.md: observable-overflow invalid-result policy + CI witness, or a representative-data baseline cell.
+- Evidence: [project main reviewed at 4db4d988](https://github.com/PyAutoLabs/autolens_profiling/blob/4db4d988e520a82219152743748c3188d485a4ba/wiki/campaigns/measurement_tools.md), [Mind claims at 35281b1d](https://github.com/PyAutoLabs/PyAutoMind/blob/35281b1d/active.md), [full dated review](../checkins/2026-10-13.md). Review date does not refresh measurement dates.
+- Availability: project `hpc/sync jobs` returned an empty current queue; `hpc/sync status` timed out after 25 seconds during the output preview. Historical job outcomes, unpulled results and RAL cleanup contents are unverified; no collection or compute was performed.
+
 ---
 
 # Cluster PointSolver — robustness, analysis settings and performance

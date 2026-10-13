@@ -22,6 +22,14 @@ The original task below is retained verbatim. Current scheduling state lives in 
 
 - Mind draft `draft/feature/autoarray/interferometer_curvature_preload_phase1.md` (2026-10-04) still unstarted.
 
+
+## Check-in 2026-10-13
+
+- Campaign review: No new committed measurements. Decision matrix remains filled; streaming 1e8 CPU/A100 rows and the #332 memo after-measurement still need authorization. #411 proposes making the historical numba kill gate INCONCLUSIVE (four rounds); it is unmerged. Curvature preload needs the fixed-mapper science decision; FFT levers remain unstarted.
+- Task next step: Phase 1 Mind draft (2026-10-04) still unstarted; run it through start_dev. Human science call first - no production SLaM stage holds the mapper fixed today.
+- Evidence: [project main reviewed at 4db4d988](https://github.com/PyAutoLabs/autolens_profiling/blob/4db4d988e520a82219152743748c3188d485a4ba/wiki/campaigns/measurement_tools.md), [Mind claims at 35281b1d](https://github.com/PyAutoLabs/PyAutoMind/blob/35281b1d/active.md), [full dated review](../checkins/2026-10-13.md). Review date does not refresh measurement dates.
+- Availability: project `hpc/sync jobs` returned an empty current queue; `hpc/sync status` timed out after 25 seconds during the output preview. Historical job outcomes, unpulled results and RAL cleanup contents are unverified; no collection or compute was performed.
+
 ---
 
 # Interferometer fixed-mapper searches: reuse the W~ curvature matrix across likelihood calls via `preloads.curvature_matrix`

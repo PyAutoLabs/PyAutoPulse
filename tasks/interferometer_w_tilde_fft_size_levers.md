@@ -8,6 +8,14 @@ The original task below is retained verbatim. Current scheduling state lives in 
 - VERIFIED 2026-10-04: no PR, issue, branch or results on GitHub; unstarted. No Mind active claim.
 - Next: select one bounded step when the interferometer campaign prioritises it.
 
+
+## Check-in 2026-10-13
+
+- Campaign review: No new committed measurements. Decision matrix remains filled; streaming 1e8 CPU/A100 rows and the #332 memo after-measurement still need authorization. #411 proposes making the historical numba kill gate INCONCLUSIVE (four rounds); it is unmerged. Curvature preload needs the fixed-mapper science decision; FFT levers remain unstarted.
+- Task next step: Unstarted (no PR/issue/branch/results, 2026-10-04). Select one bounded step when prioritised.
+- Evidence: [project main reviewed at 4db4d988](https://github.com/PyAutoLabs/autolens_profiling/blob/4db4d988e520a82219152743748c3188d485a4ba/wiki/campaigns/measurement_tools.md), [Mind claims at 35281b1d](https://github.com/PyAutoLabs/PyAutoMind/blob/35281b1d/active.md), [full dated review](../checkins/2026-10-13.md). Review date does not refresh measurement dates.
+- Availability: project `hpc/sync jobs` returned an empty current queue; `hpc/sync status` timed out after 25 seconds during the output preview. Historical job outcomes, unpulled results and RAL cleanup contents are unverified; no collection or compute was performed.
+
 ---
 
 # Interferometer W~ curvature matrix is FFT-bound on the mask extent: pruned padded FFT and real-space pixel scale on the A100

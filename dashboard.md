@@ -1,6 +1,6 @@
 # PyAutoPulse — profiling dashboard
 
-<!-- pulse-campaigns:6c55cba56c29f68e3bdebe6d2f2e9bdb8a17a5897748687d1ece25e8a0058485 -->
+<!-- pulse-campaigns:16d2a553915666858fbe183c91feb485eb748b120f1a4093452b1d638de9fd7a -->
 ## Profiling Check In
 
 <details><summary>Full check-in prompt</summary>
@@ -25,15 +25,15 @@ After taking action, report what changed, what the evidence supports and what re
 
 </details>
 
-Last check-in: 2026-10-08T06:59:54Z (review date, not measurement freshness).
+Last check-in: 2026-10-13T14:47:44Z (review date, not measurement freshness).
 
 ## Active campaigns
 
 <details><summary>Setup baseline collection and scientific acceptance — needs-decision</summary>
 
-Reviewed 2026-10-07. Specification merged as draft v1 (autolens_profiling#385, 2026-10-06; issue #384 closed). Six unknowns remain: no frozen revisions/env lock; no collection authorization/window; hardware/affinity identity unselected; each cell needs complete settings, input hashes, witness + tolerances; compile per-cell builder unavailable; proposed fp64/mixed coverage is not evidence of support. Human freezes the manifest before separately authorizing collection.
+Reviewed 2026-10-13. Draft unchanged; no frozen revisions/environment lock, selected hardware/affinity, complete per-cell settings/input hashes/witness tolerances or collection authorization. Compile builder remains explicitly unavailable. Resolve the manifest choices, then request separate collection authorization.
 
-[Campaign evidence](https://github.com/PyAutoLabs/autolens_profiling/blob/719459fefb40c7e5be157f652818dbf923830557/wiki/campaigns/setup_baseline.md)
+[Campaign evidence](https://github.com/PyAutoLabs/autolens_profiling/blob/4db4d988e520a82219152743748c3188d485a4ba/wiki/campaigns/setup_baseline.md)
 
 ### Active tasks
 
@@ -43,46 +43,46 @@ Reviewed 2026-10-07. Specification merged as draft v1 (autolens_profiling#385, 2
 
 <details><summary>Point-source image plane · CPU — active</summary>
 
-Reviewed 2026-10-07. Phases 1–4 shipped; completion evidence merged (autolens_profiling#373, 2026-10-04). Closing the epic is the human&#x27;s call. Owed leftovers (RAL cleanup, test move, register_model grad-zero prompt, CI smoke cells, constant_folding A/B, nopad deletion, quiet re-runs) are in the Mind draft point_source_cpu_campaign_owed_leftovers.md. RAL leftover folders not re-listed 2026-10-07 (unverified).
+Reviewed 2026-10-13. No new committed campaign measurements. Phases 1–4 remain shipped; epic closure is a human decision. Carried leftovers remain pending. RAL queue empty at review, but transfer preview timed out: cleanup folders and unpulled results unverified. Select one owed cleanup/measurement phase only after review.
 
-[Campaign evidence](https://github.com/PyAutoLabs/autolens_profiling/blob/719459fefb40c7e5be157f652818dbf923830557/results/notes/point_source_cpu_campaign.md#campaign-completion-evidence-2026-10-04)
+[Campaign evidence](https://github.com/PyAutoLabs/autolens_profiling/blob/4db4d988e520a82219152743748c3188d485a4ba/results/notes/point_source_cpu_campaign.md#campaign-completion-evidence-2026-10-04)
 
 ### Active tasks
 
-- [Point-source (single-source) CPU campaign — carried leftovers and completion evidence](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/pointsolver_cpu_speed_campaign_remainder.md) — ready: Completion evidence merged (autolens_profiling#373, 2026-10-04). Still owed, via Mind draft draft/maintenance/autolens/point_source_cpu_campaign_owed_leftovers.md: RAL cleanup, test move, register_model grad-zero prompt, CI smoke cells, constant_folding A/B, nopad deletion, quiet re-runs.
+- [Point-source (single-source) CPU campaign — carried leftovers and completion evidence](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/pointsolver_cpu_speed_campaign_remainder.md) — ready: No new committed campaign measurements. Phases 1–4 remain shipped; epic closure is a human decision. Carried leftovers remain pending. RAL queue empty at review, but transfer preview timed out: cleanup folders and unpulled results unverified. Select one owed cleanup/measurement phase only after review.
 
 </details>
 
 <details><summary>Point-source image plane · A100 — needs-decision</summary>
 
-Reviewed 2026-10-07. Phase 0+1 shipped. Forward-mode gradient NaN (PyAutoLens#767) fixed by PyAutoLens#768 (merged 2026-10-04) and released in 2026.10.7.1 (correctness). Remaining human decision: authorize the autolens_inference image-plane fit measurement. Heart unit-test timing rose on the rewritten #768 test file; not a controlled cost comparison (gradient_cost_probe is the instrument).
+Reviewed 2026-10-13. No new image-plane fit measurement found. Correctness fix #768 remains shipped; current libraries now have release 2026.10.12.1, not a measured performance baseline. Image-plane admission measurement still needs authorization. #411 proposes reinterpreting the old GPU memo MDI evidence; it remains unmerged.
 
-[Campaign evidence](https://github.com/PyAutoLabs/autolens_profiling/blob/719459fefb40c7e5be157f652818dbf923830557/wiki/campaigns/point_source_gpu_breakdown.md)
+[Campaign evidence](https://github.com/PyAutoLabs/autolens_profiling/blob/4db4d988e520a82219152743748c3188d485a4ba/wiki/campaigns/point_source_gpu_breakdown.md)
 
 ### Active tasks
 
-- [Point-source A100 speed-up campaign: profile and optimize with the shared breakdown](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/point_source_image_plane_gpu_breakdown.md) — needs-decision: Forward-mode NaN (PyAutoLens#767) closed: fixed by PyAutoLens#768 (merged 2026-10-04, 0659903d4), released in 2026.10.7.1. The autolens_inference image-plane fit measurement still awaits human authorisation.
+- [Point-source A100 speed-up campaign: profile and optimize with the shared breakdown](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/point_source_image_plane_gpu_breakdown.md) — needs-decision: No new image-plane fit measurement found. Correctness fix #768 remains shipped; current libraries now have release 2026.10.12.1, not a measured performance baseline. Image-plane admission measurement still needs authorization. #411 proposes reinterpreting the old GPU memo MDI evidence; it remains unmerged.
 
 </details>
 
 <details><summary>Point-source source plane — parked</summary>
 
-Reviewed 2026-10-07. Core complete; parked. Nautilus leaf autolens_inference#17 merged 2026-10-02; no gradient-sampler leaf yet, so Blackjax stays parked (admission not met). Warm-up task option (a) merged as autolens_profiling#374 (2026-10-04); imaging cells and a release sweep remain.
+Reviewed 2026-10-13. Core remains parked; autolens_inference#21 reorganized setup evidence but added no point-source gradient admission measurement. #408 merged median fields into 11 runtime cells; #412 completes remaining headline/repeat support but is open. No new runtime sweep; keep Blackjax parked.
 
-[Campaign evidence](https://github.com/PyAutoLabs/autolens_profiling/blob/719459fefb40c7e5be157f652818dbf923830557/wiki/campaigns/point_source_source_plane.md)
+[Campaign evidence](https://github.com/PyAutoLabs/autolens_profiling/blob/4db4d988e520a82219152743748c3188d485a4ba/wiki/campaigns/point_source_source_plane.md)
 
 ### Active tasks
 
-- [Runtime cells&#x27; A100 `single_jit` includes the post-compile warm-up — source-plane 0.642 ms vs a steady 0.267 ms on the same node](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/runtime_cell_single_jit_gpu_warmup.md) — active: Option (a) merged (autolens_profiling#374, 2026-10-04): full_pipeline_single_jit_median_ms (p10/p90) beside unchanged single_jit; GPU headline labelled &quot;first block after compile&quot;. Imaging release-sweep cells not wired. No release sweep on main yet (results/ commits since 2026-10-04: #375 streaming rows, a README refactor), so the new field has no sweep rows.
-- [Point-source source-plane chi-squared speed-up campaign — remaining candidates (phases 1–2e shipped)](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/point_source_source_plane_chi_squared_speed.md) — blocked: Still blocked: gradient-sampler admission not met (autolens_inference has only the Nautilus source-plane leaf, #17 merged 2026-10-02). Blackjax stays parked.
+- [Runtime cells&#x27; A100 `single_jit` includes the post-compile warm-up — source-plane 0.642 ms vs a steady 0.267 ms on the same node](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/runtime_cell_single_jit_gpu_warmup.md) — active: #408 merged 2026-10-09: median headline fields now wired into 11 runtime cells, superseding the old imaging-not-wired note. #412 remains open for remaining headline/repeat support. No new runtime sweep; fresh median evidence still missing.
+- [Point-source source-plane chi-squared speed-up campaign — remaining candidates (phases 1–2e shipped)](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/point_source_source_plane_chi_squared_speed.md) — blocked: Still blocked on a point-source gradient-sampler admission measurement. Inference #21 is setup organization, not that measurement. Keep parked.
 
 </details>
 
 <details><summary>Cluster PointSolver robustness and performance — active</summary>
 
-Reviewed 2026-10-04. Unchanged since 2026-09-27; nothing issued or claimed. Wiki still points at the removed Mind draft (now Pulse tasks/). Pick one bounded phase: observable-overflow invalid-result policy + CI witness, or a representative-data baseline cell.
+Reviewed 2026-10-13. No campaign wiki/results change or new matching implementation claim found. Representative cluster baseline and observable-overflow policy remain unstarted. Choose one bounded phase; inherited single-source results do not qualify a representative cluster baseline.
 
-[Campaign evidence](https://github.com/PyAutoLabs/autolens_profiling/blob/a93f37a7ade16fcb7673a7777dfde505183728ed/wiki/campaigns/cluster_pointsolver.md)
+[Campaign evidence](https://github.com/PyAutoLabs/autolens_profiling/blob/4db4d988e520a82219152743748c3188d485a4ba/wiki/campaigns/cluster_pointsolver.md)
 
 ### Active tasks
 
@@ -93,9 +93,9 @@ Reviewed 2026-10-04. Unchanged since 2026-09-27; nothing issued or claimed. Wiki
 
 <details><summary>Interferometer likelihood and streaming — active</summary>
 
-Reviewed 2026-10-07. Decision matrix complete: last cell merged (autolens_profiling#372, 2026-10-04; 1.59e-3 nat CPU/A100 gap accepted by the human). Streaming scaling phase 1 CPU rows merged (#375); 1e8 CPU and A100 rows need compute authorization. fnnls memo back-off released in 2026.10.7.1 (PyAutoArray#615); the #332 after-measurement is owed. Curvature preload and W~ FFT tasks unstarted.
+Reviewed 2026-10-13. No new committed measurements. Decision matrix remains filled; streaming 1e8 CPU/A100 rows and the #332 memo after-measurement still need authorization. #411 proposes making the historical numba kill gate INCONCLUSIVE (four rounds); it is unmerged. Curvature preload needs the fixed-mapper science decision; FFT levers remain unstarted.
 
-[Campaign evidence](https://github.com/PyAutoLabs/autolens_profiling/blob/719459fefb40c7e5be157f652818dbf923830557/wiki/campaigns/interferometer_likelihood.md)
+[Campaign evidence](https://github.com/PyAutoLabs/autolens_profiling/blob/4db4d988e520a82219152743748c3188d485a4ba/wiki/campaigns/interferometer_likelihood.md)
 
 ### Active tasks
 
@@ -108,7 +108,7 @@ Reviewed 2026-10-07. Decision matrix complete: last cell merged (autolens_profil
 
 <details><summary>Linear-solver accuracy and cost — active</summary>
 
-Reviewed 2026-10-08. Programme question CLOSED by decision 2026-10-08 (decisions/linear-solver-mapper-default-jacobi.md): keep Jacobi as the Mapper default, raw+polish for MGE-only, no library change. Phase 5 merged as autolens_profiling#401 (766f8202; #400 superseded, corpus files out of git with sha256 + regenerate in the manifest, copies on RAL and the laptop); phases 3a/3b/4a merged earlier (#394, #396, #398). Open evidence gaps, not tasks: wide-prior Mapper vectors, an interferometer corpus, the n~1500 CPU batched/unbatched 4e-13 difference, rectangular criterion-2 failures. Campaign stays active for the release re-runs of the solver cells; nothing issued.
+Reviewed 2026-10-13. Retain the 2026-10-08 human decision: Jacobi for Mapper, raw+polish for MGE-only, no default change. Project wiki still says decision pending (stale). No new solver measurements after the recorded phase-5 results; release 2026.10.12.1 does not supply a rerun. Wide-prior/interferometer gaps remain evidence gaps, not authorized tasks.
 
 [Campaign evidence](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/linear-solver-mapper-default-jacobi.md)
 
@@ -119,9 +119,9 @@ Reviewed 2026-10-08. Programme question CLOSED by decision 2026-10-08 (decisions
 
 <details><summary>Production imaging and likelihood breakdown — active</summary>
 
-Reviewed 2026-10-04. No new results since the pin. Over-sampling phase 1: add --instrument production presets to the JAX Delaunay cells (CPU smoke only); PyAutoArray#606 S/N over-sampling helper (in 2026.10.4.1) is new context. Post-certified Blocked-by is stale (resolved 2026-09-27).
+Reviewed 2026-10-13. No new production-over-sampling or post-certified measurements. #408 now adds median headline fields to runtime cells; #412 extends remaining surfaces but is unmerged. Production presets, memo-blind harness, cumulative MGE steps and quick-update costs remain separate pending work. Scope production-preset phase 1 (CPU smoke only); A100 measurement separately authorized.
 
-[Campaign evidence](https://github.com/PyAutoLabs/autolens_profiling/blob/a93f37a7ade16fcb7673a7777dfde505183728ed/wiki/campaigns/post_certified_breakdown.md)
+[Campaign evidence](https://github.com/PyAutoLabs/autolens_profiling/blob/4db4d988e520a82219152743748c3188d485a4ba/wiki/campaigns/post_certified_breakdown.md)
 
 ### Active tasks
 
@@ -133,13 +133,13 @@ Reviewed 2026-10-04. No new results since the pin. Over-sampling phase 1: add --
 
 <details><summary>Measurement reliability and profiling tools — active</summary>
 
-Reviewed 2026-10-09. timing_noise_audit: fix phases (5)-(6) MERGED 2026-10-09 (autolens_profiling#408, #409); phase 3b + leftovers open as stacked PRs #410 -&gt; #411 -&gt; #412 awaiting human /prm in that order (#412 under a Heart-RED development override). No Pulse v2 field changed except one latent additive metric in #412. After merge: close #362; open human decisions flagged in #410/#411/#412. Other tasks unchanged and unissued.
+Reviewed 2026-10-13. #408/#409 merged 2026-10-09. #410 -&gt; #411 -&gt; #412 remain OPEN, lint SUCCESS at reviewed heads ffddf755/a5de4d49/9ce9a132; Mind claims all three awaiting merge. Review flagged statistical/estimator decisions, then human /prm in order. Issue #362 stays open. No new measurement JSON; v2 catalogue remains 0 qualified / 112 records, 0 comparisons.
 
-[Campaign evidence](https://github.com/PyAutoLabs/autolens_profiling/blob/main/wiki/campaigns/measurement_tools.md)
+[Campaign evidence](https://github.com/PyAutoLabs/autolens_profiling/blob/4db4d988e520a82219152743748c3188d485a4ba/wiki/campaigns/measurement_tools.md)
 
 ### Active tasks
 
-- [Audit timing tests and profiling gates for measurement noise](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/timing_noise_audit.md) — active: Fix phases (5) #408 (median headline, qualified GPU-only marker) and (6) #409 (unsettled warm-up / off-reference witness -&gt; INCONCLUSIVE) MERGED 2026-10-09 (3ce8d789, 4db4d988). Wrap-up open as stacked PRs awaiting human /prm in order: #410 phase 3b intervals C1/C3/C4/C5 + Holm helper; #411 family-wise policy C6/C10/C11, C12 round bootstrap, P2 drift; #412 headline completion, wall basis, repeat-summary support (Heart-RED dev override 2026-10-09). No published decision reversed; support withdrawn (dated notes) for memo-policy C1 flags, numba-interferometer kill &quot;passed&quot;, GPU memo MDI readings. Then close #362. Open human decisions: C1 n=4 rule, C5 both-estimators rule, C11 4-round rule, GPU memo readings, phase-10 flags; v2 qualification waits on the setup-baseline reference-host decision.
+- [Audit timing tests and profiling gates for measurement noise](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/timing_noise_audit.md) — active: #408/#409 merged 2026-10-09. #410 -&gt; #411 -&gt; #412 remain OPEN, lint SUCCESS at reviewed heads ffddf755/a5de4d49/9ce9a132; Mind claims all three awaiting merge. Review flagged statistical/estimator decisions, then human /prm in order. Issue #362 stays open. No new measurement JSON; v2 catalogue remains 0 qualified / 112 records, 0 comparisons.
 - [MGE likelihood_breakdown steps are cumulative and `linear_gaussians` is reported as 0](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/mge_likelihood_breakdown_steps_are_cumulative_an.md) — ready: Unchanged and unissued (no GitHub refs, 2026-10-04). Select one bounded step when measurement-tools is prioritised.
 - [A gradient-cost probe: forward vs `value_and_grad` ms/eval and a strict FD check, on any registry cell](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/gradient_cost_probe.md) — ready: Unissued. New context 2026-10-07: Heart unit-test timing flagged PyAutoLens forward-gradient tests +150%/+96% after PyAutoLens#768 rewrote that test file; not a controlled comparison, and this probe is the right instrument. Select one bounded step when prioritised.
 - [Numba breakdown harness: perturb the instance so the operated-matrix memo cannot hide a step](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/numba_breakdown_harness_memo_blind.md) — ready: Unchanged and unissued (PyAutoArray#496 closed 2026-08-27). Select one bounded step when prioritised.
@@ -153,21 +153,21 @@ Reviewed 2026-10-09. timing_noise_audit: fix phases (5)-(6) MERGED 2026-10-09 (a
 
 <details><summary>PyAutoFit profiling bootstrap — ready</summary>
 
-Reviewed 2026-10-08. Skeleton merged: autofit_profiling#1 (86c77345, 2026-10-07T21:17Z; AGENTS, hooks, hpc/sync, lint) under search-extensibility B1 (PyAutoMind#492). B1 docs legs PyAutoHeart#292 and .github#34 still open 2026-10-08. Porting unstarted; no producer registration until profiling-summary@2 is published (B4a).
+Reviewed 2026-10-13. B1 registration is complete: Heart#292 and .github#34 merged 2026-10-08. autofit_profiling main remains skeleton 86c77345: no exporter, harness or measurements, no Pulse fit registration. B4a remains next profiling phase, subject to the search-extensibility epic handoff/review findings; then B4b. Do not restart the separate B3 inference pilot.
 
 [Campaign evidence](https://github.com/PyAutoLabs/autofit_profiling/pull/1)
 
 ### Active tasks
 
-- [autofit_profiling: bootstrap the repo + general PyAutoFit profiling epic](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/autofit_profiling_bootstrap.md) — ready: Adopted by the search-extensibility epic (Mind draft/research/autofit/search_extensibility_epic.md); skeleton merged as autofit_profiling#1 (2026-10-07T21:17Z) under PyAutoMind#492 (B1). Next is B4a (search.fit breakdown exporter, Pulse fit row, epic-1 bottleneck table), then B4b (EP/graphical baseline port). No producer registration until profiling-summary@2 is published (B4a).
+- [autofit_profiling: bootstrap the repo + general PyAutoFit profiling epic](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/autofit_profiling_bootstrap.md) — ready: B1 registration is complete: Heart#292 and .github#34 merged 2026-10-08. autofit_profiling main remains skeleton 86c77345: no exporter, harness or measurements, no Pulse fit registration. B4a remains next profiling phase, subject to the search-extensibility epic handoff/review findings; then B4b. Do not restart the separate B3 inference pilot.
 
 </details>
 
 <details><summary>Critical curves and evaluation grids — needs-decision</summary>
 
-Reviewed 2026-10-07. Phase 3b cap fix shipped: PyAutoGalaxy#646 released in 2026.10.4.1 and autolens_workspace_test#343 merged 2026-10-04. Remaining per the wiki Next line: investigate seed coverage/path completion before cluster engine selection (human picks whether to scope it). Wiki page itself is stale (last edited 2026-10-02, still says #646 open).
+Reviewed 2026-10-13. No new campaign measurement. Phase 3b cap fix remains shipped; project wiki still incorrectly says #646 awaits merge/release. Seed coverage and path completion remain unresolved; retain marching-squares decision and ask the human whether to scope the next phase.
 
-[Campaign evidence](https://github.com/PyAutoLabs/autolens_profiling/blob/719459fefb40c7e5be157f652818dbf923830557/wiki/campaigns/critical_curves.md)
+[Campaign evidence](https://github.com/PyAutoLabs/autolens_profiling/blob/4db4d988e520a82219152743748c3188d485a4ba/wiki/campaigns/critical_curves.md)
 
 ### Active tasks
 
@@ -176,9 +176,9 @@ Reviewed 2026-10-07. Phase 3b cap fix shipped: PyAutoGalaxy#646 released in 2026
 
 <details><summary>Certified positive solver — parked</summary>
 
-Reviewed 2026-10-04. Parked by choice; wiki unchanged since ab1e4fd (2026-09-27). Its three library/workspace Mind drafts remain in Mind. Retain parked; read the project ledger before proposing new work.
+Reviewed 2026-10-13. Parked unchanged. No new campaign evidence; existing C2/library/workspace drafts remain pending. Do not infer admission from solver timing, and do not change default or restart the campaign.
 
-[Campaign evidence](https://github.com/PyAutoLabs/autolens_profiling/blob/a93f37a7ade16fcb7673a7777dfde505183728ed/wiki/campaigns/certified_positive_solver.md)
+[Campaign evidence](https://github.com/PyAutoLabs/autolens_profiling/blob/4db4d988e520a82219152743748c3188d485a4ba/wiki/campaigns/certified_positive_solver.md)
 
 ### Active tasks
 

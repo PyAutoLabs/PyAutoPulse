@@ -19,6 +19,14 @@ The original task below is retained verbatim. Current scheduling state lives in 
 - This task is adopted by the epic: **B4a** = the `search.fit` breakdown exporter, the Pulse `fit` instance row and epic 1's measured bottleneck table; **B4b** = the EP / graphical baseline port. Epic ledger: `PyAutoMind/draft/research/autofit/search_extensibility_epic.md`.
 - No producer registration (`registry.yaml` row) until `profiling-summary@2` is published from the repo in B4a.
 
+
+## Check-in 2026-10-13
+
+- Campaign review: B1 registration is complete: Heart#292 and .github#34 merged 2026-10-08. autofit_profiling main remains skeleton 86c77345: no exporter, harness or measurements, no Pulse fit registration. B4a remains next profiling phase, subject to the search-extensibility epic handoff/review findings; then B4b. Do not restart the separate B3 inference pilot.
+- Task next step: B1 registration is complete: Heart#292 and .github#34 merged 2026-10-08. autofit_profiling main remains skeleton 86c77345: no exporter, harness or measurements, no Pulse fit registration. B4a remains next profiling phase, subject to the search-extensibility epic handoff/review findings; then B4b. Do not restart the separate B3 inference pilot.
+- Evidence: [project main reviewed at 4db4d988](https://github.com/PyAutoLabs/autolens_profiling/blob/4db4d988e520a82219152743748c3188d485a4ba/wiki/campaigns/measurement_tools.md), [Mind claims at 35281b1d](https://github.com/PyAutoLabs/PyAutoMind/blob/35281b1d/active.md), [full dated review](../checkins/2026-10-13.md). Review date does not refresh measurement dates.
+- Availability: project `hpc/sync jobs` returned an empty current queue; `hpc/sync status` timed out after 25 seconds during the output preview. Historical job outcomes, unpulled results and RAL cleanup contents are unverified; no collection or compute was performed.
+
 ---
 
 # autofit_profiling: bootstrap the repo + general PyAutoFit profiling epic

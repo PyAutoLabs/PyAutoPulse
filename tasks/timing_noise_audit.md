@@ -77,6 +77,14 @@ The original task below is retained verbatim. Current scheduling state lives in 
 - Open human decisions (none blocks merge): C1 n=4 rule or re-run ≥5 repeats; C5 "both estimators" rule; C11 4-round rule or re-run `--reps` ≥ 6; GPU memo "below MDI" readings at 0.94 %; #412's flagged choices. v2 catalogue qualification waits on the setup-baseline reference-host decision. Brain compile-drift follow-up filed as Mind `draft/bug/pyautobrain/profiling_compile_drift_point_vs_point.md`. Measuring repeats needs compute (not authorized).
 - Next: human `/prm` #410 -> #411 -> #412, then close #362 and set this task complete. Completion is not inferred from PR-open.
 
+
+## Check-in 2026-10-13
+
+- Campaign review: #408/#409 merged 2026-10-09. #410 -> #411 -> #412 remain OPEN, lint SUCCESS at reviewed heads ffddf755/a5de4d49/9ce9a132; Mind claims all three awaiting merge. Review flagged statistical/estimator decisions, then human /prm in order. Issue #362 stays open. No new measurement JSON; v2 catalogue remains 0 qualified / 112 records, 0 comparisons.
+- Task next step: #408/#409 merged 2026-10-09. #410 -> #411 -> #412 remain OPEN, lint SUCCESS at reviewed heads ffddf755/a5de4d49/9ce9a132; Mind claims all three awaiting merge. Review flagged statistical/estimator decisions, then human /prm in order. Issue #362 stays open. No new measurement JSON; v2 catalogue remains 0 qualified / 112 records, 0 comparisons.
+- Evidence: [project main reviewed at 4db4d988](https://github.com/PyAutoLabs/autolens_profiling/blob/4db4d988e520a82219152743748c3188d485a4ba/wiki/campaigns/measurement_tools.md), [Mind claims at 35281b1d](https://github.com/PyAutoLabs/PyAutoMind/blob/35281b1d/active.md), [full dated review](../checkins/2026-10-13.md). Review date does not refresh measurement dates.
+- Availability: project `hpc/sync jobs` returned an empty current queue; `hpc/sync status` timed out after 25 seconds during the output preview. Historical job outcomes, unpulled results and RAL cleanup contents are unverified; no collection or compute was performed.
+
 ---
 
 # Audit timing tests and profiling gates for measurement noise

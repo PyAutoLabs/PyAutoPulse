@@ -21,6 +21,14 @@ The original task below is retained verbatim. Current scheduling state lives in 
 - Imaging release-sweep cells are not wired. `git log --since=2026-10-04 origin/main -- results/` shows only #375 streaming rows and a README layout refactor: no release sweep on main, so the new field has no sweep rows yet.
 - Stays `active`: wire imaging cells; the field appears at the next release sweep.
 
+
+## Check-in 2026-10-13
+
+- Campaign review: Core remains parked; autolens_inference#21 reorganized setup evidence but added no point-source gradient admission measurement. #408 merged median fields into 11 runtime cells; #412 completes remaining headline/repeat support but is open. No new runtime sweep; keep Blackjax parked.
+- Task next step: #408 merged 2026-10-09: median headline fields now wired into 11 runtime cells, superseding the old imaging-not-wired note. #412 remains open for remaining headline/repeat support. No new runtime sweep; fresh median evidence still missing.
+- Evidence: [project main reviewed at 4db4d988](https://github.com/PyAutoLabs/autolens_profiling/blob/4db4d988e520a82219152743748c3188d485a4ba/wiki/campaigns/measurement_tools.md), [Mind claims at 35281b1d](https://github.com/PyAutoLabs/PyAutoMind/blob/35281b1d/active.md), [full dated review](../checkins/2026-10-13.md). Review date does not refresh measurement dates.
+- Availability: project `hpc/sync jobs` returned an empty current queue; `hpc/sync status` timed out after 25 seconds during the output preview. Historical job outcomes, unpulled results and RAL cleanup contents are unverified; no collection or compute was performed.
+
 ---
 
 # Runtime cells' A100 `single_jit` includes the post-compile warm-up — source-plane 0.642 ms vs a steady 0.267 ms on the same node
