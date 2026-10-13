@@ -85,6 +85,30 @@ The original task below is retained verbatim. Current scheduling state lives in 
 - Evidence: [project main reviewed at 4db4d988](https://github.com/PyAutoLabs/autolens_profiling/blob/4db4d988e520a82219152743748c3188d485a4ba/wiki/campaigns/measurement_tools.md), [Mind claims at 35281b1d](https://github.com/PyAutoLabs/PyAutoMind/blob/35281b1d/active.md), [full dated review](../checkins/2026-10-13.md). Review date does not refresh measurement dates.
 - Availability: project `hpc/sync jobs` returned an empty current queue; `hpc/sync status` timed out after 25 seconds during the output preview. Historical job outcomes, unpulled results and RAL cleanup contents are unverified; no collection or compute was performed.
 
+
+## Implementation close-out 2026-10-13
+
+Human authorization: “Merge all four when green” (#410 → #411 → #412 and Pulse #48).
+All three profiling PRs merged at unchanged reviewed heads after every Actions
+run/job passed. Merge commits: #410 `4abe4226`, #411 `3cf6b2ce`, #412 `6108d029`.
+Git confirms every head is in main. [Issue #362 closed](https://github.com/PyAutoLabs/autolens_profiling/issues/362#issuecomment-6148464632).
+
+The implementation task is complete: 38 inventoried rows, 35 SOUND including
+caveats, 3 FRAGILE descriptive rows and 0 UNSAFE-SILENT. Existing independent
+shipping reviews are CLEAN; this close-out did not repeat a full code review.
+No measured JSON was rewritten, no compute launched and no baseline/default changed.
+
+Mind completion records:
+- [Phase 8](https://github.com/PyAutoLabs/PyAutoMind/blob/main/complete/2026/10/timing-noise-audit-p8-phase3b-intervals.md)
+- [Phase 9](https://github.com/PyAutoLabs/PyAutoMind/blob/main/complete/2026/10/timing-noise-audit-p9-familywise-policy.md)
+- [Phase 10](https://github.com/PyAutoLabs/PyAutoMind/blob/main/complete/2026/10/timing-noise-audit-p10-headline-completion.md)
+
+Preserve the unresolved domain choices: C1/C11 repeat minima, C5's two-estimator
+rule, GPU memo interpretation under paired-round MDI, v2 reference-host qualification,
+new repeat measurements and the separate Brain compile-drift draft. Nothing here
+relaxes a gate or turns an INCONCLUSIVE row into scientific acceptance.
+Next priority agreed by the human: compile capability and setup-baseline specification.
+
 ---
 
 # Audit timing tests and profiling gates for measurement noise

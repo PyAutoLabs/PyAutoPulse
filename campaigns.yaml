@@ -23,15 +23,15 @@ campaigns:
   updated: '2026-10-13'
   next: 'No new image-plane fit measurement found. Correctness fix #768 remains shipped; current libraries
     now have release 2026.10.12.1, not a measured performance baseline. Image-plane admission measurement still
-    needs authorization. #411 proposes reinterpreting the old GPU memo MDI evidence; it remains unmerged.'
+    needs authorization. #411 merged 2026-10-13, recording the paired-round MDI reinterpretation; no new measurement.'
   evidence: https://github.com/PyAutoLabs/autolens_profiling/blob/4db4d988e520a82219152743748c3188d485a4ba/wiki/campaigns/point_source_gpu_breakdown.md
 - id: point-source-source
   title: Point-source source plane
   status: parked
   updated: '2026-10-13'
   next: 'Core remains parked; autolens_inference#21 reorganized setup evidence but added no point-source gradient
-    admission measurement. #408 merged median fields into 11 runtime cells; #412 completes remaining headline/repeat
-    support but is open. No new runtime sweep; keep Blackjax parked.'
+    admission measurement. #408 merged median fields into 11 runtime cells; #412 merged 2026-10-13, completing
+    headline/repeat support. No new runtime sweep; keep Blackjax parked.'
   evidence: https://github.com/PyAutoLabs/autolens_profiling/blob/4db4d988e520a82219152743748c3188d485a4ba/wiki/campaigns/point_source_source_plane.md
 - id: cluster-pointsolver
   title: Cluster PointSolver robustness and performance
@@ -46,9 +46,9 @@ campaigns:
   status: active
   updated: '2026-10-13'
   next: 'No new committed measurements. Decision matrix remains filled; streaming 1e8 CPU/A100 rows and the
-    #332 memo after-measurement still need authorization. #411 proposes making the historical numba kill gate
-    INCONCLUSIVE (four rounds); it is unmerged. Curvature preload needs the fixed-mapper science decision;
-    FFT levers remain unstarted.'
+    #332 memo after-measurement still need authorization. #411 merged 2026-10-13: the historical numba kill
+    gate is INCONCLUSIVE (four rounds). Curvature preload needs the fixed-mapper science decision; FFT levers
+    remain unstarted.'
   evidence: https://github.com/PyAutoLabs/autolens_profiling/blob/4db4d988e520a82219152743748c3188d485a4ba/wiki/campaigns/interferometer_likelihood.md
 - id: linear-solver
   title: Linear-solver accuracy and cost
@@ -64,19 +64,20 @@ campaigns:
   status: active
   updated: '2026-10-13'
   next: 'No new production-over-sampling or post-certified measurements. #408 now adds median headline fields
-    to runtime cells; #412 extends remaining surfaces but is unmerged. Production presets, memo-blind harness,
-    cumulative MGE steps and quick-update costs remain separate pending work. Scope production-preset phase
-    1 (CPU smoke only); A100 measurement separately authorized.'
+    to runtime cells; #412 merged 2026-10-13 and extends remaining headline surfaces. Production presets, memo-blind
+    harness, cumulative MGE steps and quick-update costs remain separate pending work. Scope production-preset
+    phase 1 (CPU smoke only); A100 measurement separately authorized.'
   evidence: https://github.com/PyAutoLabs/autolens_profiling/blob/4db4d988e520a82219152743748c3188d485a4ba/wiki/campaigns/post_certified_breakdown.md
 - id: measurement-tools
   title: Measurement reliability and profiling tools
   status: active
   updated: '2026-10-13'
-  next: '#408/#409 merged 2026-10-09. #410 -> #411 -> #412 remain OPEN, lint SUCCESS at reviewed heads ffddf755/a5de4d49/9ce9a132;
-    Mind claims all three awaiting merge. Review flagged statistical/estimator decisions, then human /prm in
-    order. Issue #362 stays open. No new measurement JSON; v2 catalogue remains 0 qualified / 112 records,
-    0 comparisons.'
-  evidence: https://github.com/PyAutoLabs/autolens_profiling/blob/4db4d988e520a82219152743748c3188d485a4ba/wiki/campaigns/measurement_tools.md
+  next: 'Timing-noise audit implementation complete: #410, #411, #412 merged 2026-10-13 in order (4abe4226,
+    3cf6b2ce, 6108d029); issue #362 closed. Final inventory 35 SOUND including caveats / 3 FRAGILE / 0 UNSAFE-SILENT.
+    No fresh measurements or scientific acceptance. Next priority: resolve compile-builder capability and freeze
+    setup-baseline choices. C1/C11 sample counts, C5 estimators, GPU memo interpretation and fresh repeats
+    remain explicit domain follow-ups.'
+  evidence: https://github.com/PyAutoLabs/autolens_profiling/pull/412
 - id: autofit
   title: PyAutoFit profiling bootstrap
   status: ready
@@ -124,21 +125,22 @@ tasks:
   path: tasks/runtime_cell_single_jit_gpu_warmup.md
   updated: '2026-10-13'
   next: '#408 merged 2026-10-09: median headline fields now wired into 11 runtime cells, superseding the old
-    imaging-not-wired note. #412 remains open for remaining headline/repeat support. No new runtime sweep;
+    imaging-not-wired note. #412 merged 2026-10-13 with remaining headline/repeat support. No new runtime sweep;
     fresh median evidence still missing.'
   issue: https://github.com/PyAutoLabs/autolens_profiling/issues/371
   evidence: https://github.com/PyAutoLabs/autolens_profiling/blob/719459fefb40c7e5be157f652818dbf923830557/scripts/point_source_source/source_plane/likelihood_runtime_solved.py
 - id: timing_noise_audit
   campaign: measurement-tools
   title: Audit timing tests and profiling gates for measurement noise
-  status: active
+  status: complete
   priority: high
   path: tasks/timing_noise_audit.md
   updated: '2026-10-13'
-  next: '#408/#409 merged 2026-10-09. #410 -> #411 -> #412 remain OPEN, lint SUCCESS at reviewed heads ffddf755/a5de4d49/9ce9a132;
-    Mind claims all three awaiting merge. Review flagged statistical/estimator decisions, then human /prm in
-    order. Issue #362 stays open. No new measurement JSON; v2 catalogue remains 0 qualified / 112 records,
-    0 comparisons.'
+  next: 'Timing-noise audit implementation complete: #410, #411, #412 merged 2026-10-13 in order (4abe4226,
+    3cf6b2ce, 6108d029); issue #362 closed. Final inventory 35 SOUND including caveats / 3 FRAGILE / 0 UNSAFE-SILENT.
+    No fresh measurements or scientific acceptance. Next priority: resolve compile-builder capability and freeze
+    setup-baseline choices. C1/C11 sample counts, C5 estimators, GPU memo interpretation and fresh repeats
+    remain explicit domain follow-ups.'
   issue: https://github.com/PyAutoLabs/autolens_profiling/issues/362
   evidence: https://github.com/PyAutoLabs/autolens_profiling/pull/412
 - id: mge_likelihood_breakdown_steps_are_cumulative_an
@@ -317,7 +319,7 @@ tasks:
   updated: '2026-10-13'
   next: 'No new image-plane fit measurement found. Correctness fix #768 remains shipped; current libraries
     now have release 2026.10.12.1, not a measured performance baseline. Image-plane admission measurement still
-    needs authorization. #411 proposes reinterpreting the old GPU memo MDI evidence; it remains unmerged.'
+    needs authorization. #411 merged 2026-10-13, recording the paired-round MDI reinterpretation; no new measurement.'
   issue: https://github.com/PyAutoLabs/PyAutoLens/issues/767
   evidence: https://github.com/PyAutoLabs/PyAutoLens/pull/768
 - id: point_source_source_plane_chi_squared_speed
