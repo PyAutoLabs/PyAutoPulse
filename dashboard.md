@@ -1,6 +1,6 @@
 # PyAutoPulse — profiling dashboard
 
-<!-- pulse-campaigns:b22a787746f3dc695099e748c7d1bb4ca52c932cb99185bf625878506ca73f04 -->
+<!-- pulse-campaigns:087d07eeb8a1b75b8ed430161548d93c3d73d8be8d9b8db6981565b5f86ddcc0 -->
 ## Profiling Check In
 
 <details><summary>Full check-in prompt</summary>
@@ -38,7 +38,7 @@ Reviewed 2026-10-13. HST/MGE fp64 CPU pilot preparation approved; review its dra
 ### Active tasks
 
 - [Freeze the setup baseline specification, then collect and review evidence](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/setup_baseline_campaign.md) — needs-decision: Prepare the HST/MGE CPU pilot first; review its protocol/resource proposal and resolve exact host/stack/data/witness choices. Manual HST builder shipped, but collection producer remains pending. Wider specification stays draft; collection, scientific acceptance and baseline promotion are separate.
-- [Prepare and review the HST/MGE fp64 CPU pilot](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/hst_mge_cpu_pilot.md) — needs-decision: Review the draft pilot, resolve host/stack/data/witness choices and plan the bounded project producer. Proposed maximum 32 sequential processes, 16 CPU-hours; compute and freeze remain unauthorized.
+- [Prepare and review the HST/MGE fp64 CPU pilot](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/hst_mge_cpu_pilot.md) — needs-decision: Preparation merged (#54); raw fixed-parameter runner implementation approved and tracked in autolens_profiling#415. Review producer evidence, then resolve exact host/stack/data/witness choices. No inference, production compute, baseline freeze or scientific acceptance authorized.
 
 </details>
 

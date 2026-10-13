@@ -157,3 +157,35 @@ Reviewed 2026-10-13 at project merge `b8b3b23`; source review does not refresh m
 - [Baseline procedure](https://github.com/PyAutoLabs/autolens_profiling/blob/b8b3b23cd1f0aabc2d7d4ce1cd297f7420b14f76/baseline/README.md)
 - [Draft baseline manifest](https://github.com/PyAutoLabs/autolens_profiling/blob/b8b3b23cd1f0aabc2d7d4ce1cd297f7420b14f76/baseline/campaign.json)
 - [Global route registry](https://github.com/PyAutoLabs/autolens_profiling/blob/b8b3b23cd1f0aabc2d7d4ce1cd297f7420b14f76/catalogue/script_routes.json)
+
+
+## Implementation handoff — 2026-10-13
+
+Preparation [Pulse #54](https://github.com/PyAutoLabs/PyAutoPulse/pull/54) merged
+at `71c93fc285a081ffb1f0f506694c043a15ad4e22`; bounded implementation approved by
+the human ("ok continue"). [Project #415](https://github.com/PyAutoLabs/autolens_profiling/issues/415)
+owns a separate raw pilot runner: fixed parameters, fresh processes, unrounded
+phase timings, target-specific cache diagnostics and actual-context checks.
+No inference is performed. The runner's records will remain `accepted: false`;
+independent scientific correctness and validated background-load methodology
+remain prerequisites for collection qualification, not inferred implementation
+successes. The full baseline reader/manifest stays unchanged.
+
+The producer moved to [Mind active work](https://github.com/PyAutoLabs/PyAutoMind/blob/main/active/hst_mge_pilot_observations.md).
+Production compute, campaign freeze and scientific acceptance remain unauthorized.
+
+
+### Development evidence — 2026-10-13
+
+At project commit `b5b8160b23d9a59bb9cb712c1d7bdd35198fbad1`, a local CPU development
+fixture (11x11 synthetic image, 3x3 PSF, fp64, one repetition, 60-second per-worker
+cap) completed cold, seed, warm and runtime in four distinct processes. The warm
+worker reported the target executable's cache hit with the seed's matching key;
+the runtime worker retained ten individual synchronized samples. All records
+remained `accepted: false`. This verifies producer mechanics only: it supplies no
+production timing comparison, independent scientific witness or accepted baseline.
+The 32 protocol tests passed and independent code review was CLEAN after rejecting
+dirty/unknown source identities. Project #415 retains the implementation and PR
+validation record; full scientific qualification remains pending here.
+
+Implementation PR: [autolens_profiling #416](https://github.com/PyAutoLabs/autolens_profiling/pull/416), opened 2026-10-13; pending CI/merge.
