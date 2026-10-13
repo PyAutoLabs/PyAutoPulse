@@ -63,6 +63,25 @@ The original task below is retained verbatim. Current scheduling state lives in 
   the next bounded experiment and resource request. Broader coverage and compatible
   baselines remain pending. Review date does not refresh measurement freshness.
 
+
+## Bounded phase merged — 2026-10-13
+
+- [autolens_profiling #414](https://github.com/PyAutoLabs/autolens_profiling/pull/414)
+  merged as `b8b3b23cd1f0aabc2d7d4ce1cd297f7420b14f76`;
+  [Pulse #51](https://github.com/PyAutoLabs/PyAutoPulse/pull/51) merged as
+  `4544365e9b28f837c7331438c8058e9cf275e62a`. The earlier OPEN/review handoff
+  above is historical and is superseded by this receipt.
+- [Issue #413](https://github.com/PyAutoLabs/autolens_profiling/issues/413) is
+  closed; the [Mind completion record](https://github.com/PyAutoLabs/PyAutoMind/blob/main/complete/2026/10/compile-builder-hst-mge.md)
+  closes only the approved bounded implementation. Independent review was CLEAN;
+  project CI and both final Pulse jobs passed before merge.
+- The broader task and measurement-tools campaign remain active. Next: discuss
+  the next capability or a production experiment with explicit resource approval.
+  Global compile dispatch remains unavailable; no baseline has been frozen and no
+  production measurement or performance improvement is established by these merges.
+- Review/merge date does not refresh measurement freshness. No background follow-up.
+
+
 ---
 
 # jax_compile/probe.py lost its cell builder with the searches tier — give profiling its own
