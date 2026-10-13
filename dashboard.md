@@ -1,6 +1,6 @@
 # PyAutoPulse — profiling dashboard
 
-<!-- pulse-campaigns:e64626fe7153e68337cbc03ac09f26b3b0090c1f7ae885c38ddc562c69bc5955 -->
+<!-- pulse-campaigns:d8efc62d1a732130b7e9d811d2dcbca904868b18f86c31cf0db632b1e473e27e -->
 ## Profiling Check In
 
 <details><summary>Full check-in prompt</summary>
@@ -133,7 +133,7 @@ Reviewed 2026-10-13. No new production-over-sampling or post-certified measureme
 
 <details><summary>Measurement reliability and profiling tools — active</summary>
 
-Reviewed 2026-10-13. Timing-noise audit implementation complete: #410, #411, #412 merged 2026-10-13 in order (4abe4226, 3cf6b2ce, 6108d029); issue #362 closed. Final inventory 35 SOUND including caveats / 3 FRAGILE / 0 UNSAFE-SILENT. No fresh measurements or scientific acceptance. Next priority: resolve compile-builder capability and freeze setup-baseline choices. C1/C11 sample counts, C5 estimators, GPU memo interpretation and fresh repeats remain explicit domain follow-ups.
+Reviewed 2026-10-13. Timing-noise audit implementation complete: #410, #411, #412 merged 2026-10-13 in order (4abe4226, 3cf6b2ce, 6108d029); issue #362 closed. Final inventory 35 SOUND including caveats / 3 FRAGILE / 0 UNSAFE-SILENT. No fresh measurements or scientific acceptance. Compile-builder phase #413 is implemented in open PR #414; setup-baseline choices remain unfrozen. C1/C11 sample counts, C5 estimators, GPU memo interpretation and fresh repeats remain explicit domain follow-ups.
 
 [Campaign evidence](https://github.com/PyAutoLabs/autolens_profiling/pull/412)
 
@@ -143,7 +143,7 @@ Reviewed 2026-10-13. Timing-noise audit implementation complete: #410, #411, #41
 - [A gradient-cost probe: forward vs `value_and_grad` ms/eval and a strict FD check, on any registry cell](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/gradient_cost_probe.md) — ready: Unissued. New context 2026-10-07: Heart unit-test timing flagged PyAutoLens forward-gradient tests +150%/+96% after PyAutoLens#768 rewrote that test file; not a controlled comparison, and this probe is the right instrument. Select one bounded step when prioritised.
 - [Numba breakdown harness: perturb the instance so the operated-matrix memo cannot hide a step](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/numba_breakdown_harness_memo_blind.md) — ready: Unchanged and unissued (PyAutoArray#496 closed 2026-08-27). Select one bounded step when prioritised.
 - [Search settings-estimation + profiling infrastructure (n_starts / batch_size / n_batch)](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/search_settings_estimation_infrastructure.md) — ready: Unchanged and unissued (autolens_profiling#82 closed 2026-08-18). Select one bounded step when prioritised.
-- [jax_compile/probe.py lost its cell builder with the searches tier — give profiling its own](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/jax_compile_probe_needs_own_cell_builder.md) — ready: Unchanged and unissued; scripts/misc/jax_compile/probe.py still on main (run state unverified). Select one bounded step when prioritised.
+- [jax_compile/probe.py lost its cell builder with the searches tier — give profiling its own](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/jax_compile_probe_needs_own_cell_builder.md) — active: Bounded phase approved and issued as autolens_profiling#413: explicit current-runtime imaging/MGE/HST fp64 jit workload with isolated output, no historical-pin equivalence. PR #414 is open for review; local validation passed, GitHub checks pending. No production compute authorized. After review, agree a separate measurement plan or next capability; global compile dispatch and broader builder coverage remain unavailable.
 - [profile_lens_aggregator.py cannot run from the autolens_workspace_developer root: no config/ directory](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/profile_lens_aggregator_needs_config_dir.md) — ready: Unchanged: workspace_developer main still has no root config/ (bug presumed live, not re-run). Select one bounded step when prioritised.
 - [jax_profiling/gradient/imaging/pixelization.py: 3.2% of its pin move is unattributed](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/gradient_pixelization_pin_residual_drift.md) — ready: Unchanged and unissued (PyAutoArray#490 merged 2026-08-26). Select one bounded step when prioritised.
 - [Pair JAX/XLA env vars with measured compile and run times, per backend](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/pair_jax_xla_env_vars_with_measured.md) — ready: Unchanged and unissued. Context: the jax-version policy is now released (2026.10.7.1 libraries require Nerves with the JAX deadlock exclusions). Select one bounded step when prioritised.
