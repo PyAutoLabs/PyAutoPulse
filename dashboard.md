@@ -1,6 +1,6 @@
 # PyAutoPulse — profiling dashboard
 
-<!-- pulse-campaigns:087d07eeb8a1b75b8ed430161548d93c3d73d8be8d9b8db6981565b5f86ddcc0 -->
+<!-- pulse-campaigns:fed2012227f4b2e256c8788553e72329af859ee4b89aaf71bf85337ed475948c -->
 ## Profiling Check In
 
 <details><summary>Full check-in prompt</summary>
@@ -25,20 +25,20 @@ After taking action, report what changed, what the evidence supports and what re
 
 </details>
 
-Last check-in: 2026-10-13T14:47:44Z (review date, not measurement freshness).
+Last check-in: 2026-10-13T17:51:40Z (review date, not measurement freshness).
 
 ## Active campaigns
 
 <details><summary>Setup baseline collection and scientific acceptance — needs-decision</summary>
 
-Reviewed 2026-10-13. HST/MGE fp64 CPU pilot preparation approved; review its draft protocol, resource ceiling and open freeze choices. Manual HST jit builder merged (#414); global compile dispatch remains unavailable. Producer gaps, exact host/stack/data and correctness witness remain unresolved. No compute authorized.
+Reviewed 2026-10-13. HST/MGE raw fixed-parameter CPU runner merged in #416; Pulse handoff #55 merged and Mind implementation closed. Resolve exact production host/stack/data, full settings, independent correctness witness/tolerances and background-load method. No collection, campaign freeze or acceptance authorized; global compile dispatch remains unavailable.
 
-[Campaign evidence](https://github.com/PyAutoLabs/autolens_profiling/blob/b8b3b23cd1f0aabc2d7d4ce1cd297f7420b14f76/baseline/campaign.json)
+[Campaign evidence](https://github.com/PyAutoLabs/autolens_profiling/pull/416)
 
 ### Active tasks
 
-- [Freeze the setup baseline specification, then collect and review evidence](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/setup_baseline_campaign.md) — needs-decision: Prepare the HST/MGE CPU pilot first; review its protocol/resource proposal and resolve exact host/stack/data/witness choices. Manual HST builder shipped, but collection producer remains pending. Wider specification stays draft; collection, scientific acceptance and baseline promotion are separate.
-- [Prepare and review the HST/MGE fp64 CPU pilot](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/hst_mge_cpu_pilot.md) — needs-decision: Preparation merged (#54); raw fixed-parameter runner implementation approved and tracked in autolens_profiling#415. Review producer evidence, then resolve exact host/stack/data/witness choices. No inference, production compute, baseline freeze or scientific acceptance authorized.
+- [Freeze the setup baseline specification, then collect and review evidence](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/setup_baseline_campaign.md) — needs-decision: HST/MGE raw fixed-parameter CPU runner merged in #416; Pulse handoff #55 merged and Mind implementation closed. Resolve exact production host/stack/data, full settings, independent correctness witness/tolerances and background-load method. No collection, campaign freeze or acceptance authorized; global compile dispatch remains unavailable.
+- [Prepare and review the HST/MGE fp64 CPU pilot](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/hst_mge_cpu_pilot.md) — needs-decision: HST/MGE raw fixed-parameter CPU runner merged in #416; Pulse handoff #55 merged and Mind implementation closed. Resolve exact production host/stack/data, full settings, independent correctness witness/tolerances and background-load method. No collection, campaign freeze or acceptance authorized; global compile dispatch remains unavailable.
 
 </details>
 
@@ -134,9 +134,9 @@ Reviewed 2026-10-13. No new production-over-sampling or post-certified measureme
 
 <details><summary>Measurement reliability and profiling tools — active</summary>
 
-Reviewed 2026-10-13. Timing-noise audit implementation complete: #410, #411, #412 merged 2026-10-13 in order (4abe4226, 3cf6b2ce, 6108d029); issue #362 closed. Final inventory 35 SOUND including caveats / 3 FRAGILE / 0 UNSAFE-SILENT. No fresh measurements or scientific acceptance. Compile-builder phase #413 shipped via merged #414; setup-baseline choices remain unfrozen. C1/C11 sample counts, C5 estimators, GPU memo interpretation and fresh repeats remain explicit domain follow-ups.
+Reviewed 2026-10-13. Timing audit #410–#412 and raw HST/MGE pilot producer #416 merged; implementation issues #362/#415 closed. No fresh production measurements or scientific acceptance. C1/C11 repeat counts, C5 estimator policy, memo interpretation, fresh runtime repeats and other tools remain pending.
 
-[Campaign evidence](https://github.com/PyAutoLabs/autolens_profiling/pull/412)
+[Campaign evidence](https://github.com/PyAutoLabs/autolens_profiling/pull/416)
 
 ### Active tasks
 
@@ -144,7 +144,7 @@ Reviewed 2026-10-13. Timing-noise audit implementation complete: #410, #411, #41
 - [A gradient-cost probe: forward vs `value_and_grad` ms/eval and a strict FD check, on any registry cell](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/gradient_cost_probe.md) — ready: Unissued. New context 2026-10-07: Heart unit-test timing flagged PyAutoLens forward-gradient tests +150%/+96% after PyAutoLens#768 rewrote that test file; not a controlled comparison, and this probe is the right instrument. Select one bounded step when prioritised.
 - [Numba breakdown harness: perturb the instance so the operated-matrix memo cannot hide a step](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/numba_breakdown_harness_memo_blind.md) — ready: Unchanged and unissued (PyAutoArray#496 closed 2026-08-27). Select one bounded step when prioritised.
 - [Search settings-estimation + profiling infrastructure (n_starts / batch_size / n_batch)](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/search_settings_estimation_infrastructure.md) — ready: Unchanged and unissued (autolens_profiling#82 closed 2026-08-18). Select one bounded step when prioritised.
-- [jax_compile/probe.py lost its cell builder with the searches tier — give profiling its own](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/jax_compile_probe_needs_own_cell_builder.md) — active: Bounded phase approved and issued as autolens_profiling#413: explicit current-runtime imaging/MGE/HST fp64 jit workload with isolated output, no historical-pin equivalence. PR #414 and Pulse #51 merged 2026-10-13; issue #413 and the bounded Mind task are complete. Local/CI validation passed and independent review was CLEAN. Next: agree the next capability or a separately authorized measurement plan. No production compute authorized; global compile dispatch and broader builder coverage remain unavailable.
+- [jax_compile/probe.py lost its cell builder with the searches tier — give profiling its own](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/jax_compile_probe_needs_own_cell_builder.md) — active: Manual HST/MGE fp64 jit builder #414 and separate raw pilot runner #416 merged. Bounded Mind implementations complete; wider builder coverage/global compile dispatch still unavailable. Agree a next capability or separately authorize a qualified pilot; no production compute authorized.
 - [profile_lens_aggregator.py cannot run from the autolens_workspace_developer root: no config/ directory](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/profile_lens_aggregator_needs_config_dir.md) — ready: Unchanged: workspace_developer main still has no root config/ (bug presumed live, not re-run). Select one bounded step when prioritised.
 - [jax_profiling/gradient/imaging/pixelization.py: 3.2% of its pin move is unattributed](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/gradient_pixelization_pin_residual_drift.md) — ready: Unchanged and unissued (PyAutoArray#490 merged 2026-08-26). Select one bounded step when prioritised.
 - [Pair JAX/XLA env vars with measured compile and run times, per backend](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/pair_jax_xla_env_vars_with_measured.md) — ready: Unchanged and unissued. Context: the jax-version policy is now released (2026.10.7.1 libraries require Nerves with the JAX deadlock exclusions). Select one bounded step when prioritised.

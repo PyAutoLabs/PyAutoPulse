@@ -22,6 +22,16 @@ The original task below is retained verbatim. Current scheduling state lives in 
 - Evidence: [project main reviewed at 4db4d988](https://github.com/PyAutoLabs/autolens_profiling/blob/4db4d988e520a82219152743748c3188d485a4ba/wiki/campaigns/measurement_tools.md), [Mind claims at 35281b1d](https://github.com/PyAutoLabs/PyAutoMind/blob/35281b1d/active.md), [full dated review](../checkins/2026-10-13.md). Review date does not refresh measurement dates.
 - Availability: project `hpc/sync jobs` returned an empty current queue; `hpc/sync status` timed out after 25 seconds during the output preview. Historical job outcomes, unpulled results and RAL cleanup contents are unverified; no collection or compute was performed.
 
+
+## Evening check-in — 2026-10-13
+
+Reviewed at 2026-10-13T17:51:40Z. Library half shipped: PyAutoArray#615 (closes #613) merged 2026-10-06, in 2026.10.7.1. Local solver-only witness (n=576): iid memo on/off 1.49x → 1.17x; walk 0.18x unchanged. Owed: re-run the autolens_profiling#332 ALMA Delaunay 2.17x after-measurement (needs compute authorization).
+
+[Full campaign/task review](../checkins/2026-10-13-evening.md) records verified
+GitHub sources and limits. Current RAL queue was empty; the transfer preview timed
+out, so historical jobs and unpulled results remain unverified. Review time does
+not refresh measurements or authorize compute. Historical task text is retained.
+
 ---
 
 # fnnls warm-start memo: stop it slowing scattered evaluation streams (interferometer CPU, autolens_profiling#332)
