@@ -191,7 +191,7 @@ tasks:
   updated: '2026-10-13'
   next: 'Bounded phase approved and issued as autolens_profiling#413: explicit current-runtime imaging/MGE/HST
     fp64 jit workload with isolated output, no historical-pin equivalence. PR #414 is open for review; local
-    validation passed, GitHub checks pending.
+    validation and exact-head GitHub checks passed (2026-10-13); independent review in progress.
     No production compute authorized. After review, agree a separate measurement plan or next capability;
     global compile dispatch and broader builder coverage remain unavailable.'
   evidence: https://github.com/PyAutoLabs/autolens_profiling/pull/414

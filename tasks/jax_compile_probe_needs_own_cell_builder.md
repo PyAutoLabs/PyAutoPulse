@@ -45,7 +45,13 @@ The original task below is retained verbatim. Current scheduling state lives in 
   baseline-only failures passing after reverting an inventory-hash-changing route
   description edit. The registry and baseline remain byte-for-byte unchanged.
   Project import smoke, lint, generated catalogue/dashboard and contract checks pass.
-  CI is pending at publication; no successful-job inference or scientific acceptance.
+  Exact-head [project CI](https://github.com/PyAutoLabs/autolens_profiling/actions/runs/38426218793)
+  passed 2026-10-13: 1,424 tests passed / 6 skipped, plus browser, link, smoke and
+  generated-contract checks. Pulse head `685e1b8` passed both
+  [lint](https://github.com/PyAutoLabs/PyAutoPulse/actions/runs/38426360330) and
+  [refresh dry run](https://github.com/PyAutoLabs/PyAutoPulse/actions/runs/38426360116).
+  Independent review is in progress. These checks establish implementation
+  validation, not timing improvement or scientific acceptance.
 - Plan adjustment: partial capability is documented in the instrument and campaign
   journal; the machine-readable global route reason is retained because the baseline
   draft pins the registry's exact bytes. No re-freeze was authorized or performed.
