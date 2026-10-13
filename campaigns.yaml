@@ -1,14 +1,15 @@
 version: 1
-last_checkin: '2026-10-13T14:47:44Z'
+last_checkin: '2026-10-13T17:51:40Z'
 campaigns:
 - id: setup-baseline
   title: Setup baseline collection and scientific acceptance
   status: needs-decision
   updated: '2026-10-13'
-  next: HST/MGE fp64 CPU pilot preparation approved; review its draft protocol, resource ceiling and open
-    freeze choices. Manual HST jit builder merged (#414); global compile dispatch remains unavailable.
-    Producer gaps, exact host/stack/data and correctness witness remain unresolved. No compute authorized.
-  evidence: https://github.com/PyAutoLabs/autolens_profiling/blob/b8b3b23cd1f0aabc2d7d4ce1cd297f7420b14f76/baseline/campaign.json
+  next: 'HST/MGE raw fixed-parameter CPU runner merged in #416; Pulse handoff #55 merged and Mind implementation
+    closed. Resolve exact production host/stack/data, full settings, independent correctness witness/tolerances
+    and background-load method. No collection, campaign freeze or acceptance authorized; global compile dispatch
+    remains unavailable.'
+  evidence: https://github.com/PyAutoLabs/autolens_profiling/pull/416
 - id: point-source-image-cpu
   title: Point-source image plane · CPU
   status: active
@@ -72,12 +73,10 @@ campaigns:
   title: Measurement reliability and profiling tools
   status: active
   updated: '2026-10-13'
-  next: 'Timing-noise audit implementation complete: #410, #411, #412 merged 2026-10-13 in order (4abe4226,
-    3cf6b2ce, 6108d029); issue #362 closed. Final inventory 35 SOUND including caveats / 3 FRAGILE / 0 UNSAFE-SILENT.
-    No fresh measurements or scientific acceptance. Compile-builder phase #413 shipped via merged #414; setup-baseline
-    choices remain unfrozen. C1/C11 sample counts, C5 estimators, GPU memo interpretation and fresh repeats
-    remain explicit domain follow-ups.'
-  evidence: https://github.com/PyAutoLabs/autolens_profiling/pull/412
+  next: 'Timing audit #410–#412 and raw HST/MGE pilot producer #416 merged; implementation issues #362/#415
+    closed. No fresh production measurements or scientific acceptance. C1/C11 repeat counts, C5 estimator policy,
+    memo interpretation, fresh runtime repeats and other tools remain pending.'
+  evidence: https://github.com/PyAutoLabs/autolens_profiling/pull/416
 - id: autofit
   title: PyAutoFit profiling bootstrap
   status: ready
@@ -110,11 +109,12 @@ tasks:
   priority: high
   path: tasks/setup_baseline_campaign.md
   updated: '2026-10-13'
-  next: Prepare the HST/MGE CPU pilot first; review its protocol/resource proposal and resolve exact
-    host/stack/data/witness choices. Manual HST builder shipped, but collection producer remains pending.
-    Wider specification stays draft; collection, scientific acceptance and baseline promotion are separate.
+  next: 'HST/MGE raw fixed-parameter CPU runner merged in #416; Pulse handoff #55 merged and Mind implementation
+    closed. Resolve exact production host/stack/data, full settings, independent correctness witness/tolerances
+    and background-load method. No collection, campaign freeze or acceptance authorized; global compile dispatch
+    remains unavailable.'
   issue: https://github.com/PyAutoLabs/autolens_profiling/issues/384
-  evidence: https://github.com/PyAutoLabs/autolens_profiling/blob/719459fefb40c7e5be157f652818dbf923830557/baseline/campaign.json
+  evidence: https://github.com/PyAutoLabs/autolens_profiling/pull/416
 - id: hst_mge_cpu_pilot
   campaign: setup-baseline
   title: Prepare and review the HST/MGE fp64 CPU pilot
@@ -122,11 +122,12 @@ tasks:
   priority: high
   path: tasks/hst_mge_cpu_pilot.md
   updated: '2026-10-13'
-  next: Preparation merged (#54); raw fixed-parameter runner implementation approved and tracked in
-    autolens_profiling#415. Review producer evidence, then resolve exact host/stack/data/witness choices.
-    No inference, production compute, baseline freeze or scientific acceptance authorized.
+  next: 'HST/MGE raw fixed-parameter CPU runner merged in #416; Pulse handoff #55 merged and Mind implementation
+    closed. Resolve exact production host/stack/data, full settings, independent correctness witness/tolerances
+    and background-load method. No collection, campaign freeze or acceptance authorized; global compile dispatch
+    remains unavailable.'
   issue: https://github.com/PyAutoLabs/autolens_profiling/issues/415
-  evidence: https://github.com/PyAutoLabs/PyAutoPulse/pull/54
+  evidence: https://github.com/PyAutoLabs/autolens_profiling/pull/416
 - id: runtime_cell_single_jit_gpu_warmup
   campaign: point-source-source
   title: Runtime cells' A100 `single_jit` includes the post-compile warm-up — source-plane 0.642 ms vs a steady
@@ -200,12 +201,10 @@ tasks:
   priority: high
   path: tasks/jax_compile_probe_needs_own_cell_builder.md
   updated: '2026-10-13'
-  next: 'Bounded phase approved and issued as autolens_profiling#413: explicit current-runtime imaging/MGE/HST
-    fp64 jit workload with isolated output, no historical-pin equivalence. PR #414 and Pulse #51 merged
-    2026-10-13; issue #413 and the bounded Mind task are complete. Local/CI validation passed and independent
-    review was CLEAN. Next: agree the next capability or a separately authorized measurement plan.
-    No production compute authorized; global compile dispatch and broader builder coverage remain unavailable.'
-  evidence: https://github.com/PyAutoLabs/autolens_profiling/pull/414
+  next: 'Manual HST/MGE fp64 jit builder #414 and separate raw pilot runner #416 merged. Bounded Mind implementations
+    complete; wider builder coverage/global compile dispatch still unavailable. Agree a next capability or
+    separately authorize a qualified pilot; no production compute authorized.'
+  evidence: https://github.com/PyAutoLabs/autolens_profiling/pull/416
 - id: mass_field_flat_adoption_science_repos
   campaign: measurement-tools
   title: 'Remaining code consumers move to the flat `fields=` form: profiling, inference, JOSS benchmarks,

@@ -82,6 +82,16 @@ The original task below is retained verbatim. Current scheduling state lives in 
 - Review/merge date does not refresh measurement freshness. No background follow-up.
 
 
+
+## Evening check-in — 2026-10-13
+
+Reviewed at 2026-10-13T17:51:40Z. Manual HST/MGE fp64 jit builder #414 and separate raw pilot runner #416 merged. Bounded Mind implementations complete; wider builder coverage/global compile dispatch still unavailable. Agree a next capability or separately authorize a qualified pilot; no production compute authorized.
+
+[Full campaign/task review](../checkins/2026-10-13-evening.md) records verified
+GitHub sources and limits. Current RAL queue was empty; the transfer preview timed
+out, so historical jobs and unpulled results remain unverified. Review time does
+not refresh measurements or authorize compute. Historical task text is retained.
+
 ---
 
 # jax_compile/probe.py lost its cell builder with the searches tier — give profiling its own

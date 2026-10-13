@@ -102,3 +102,13 @@ Next: review the pilot's protocol/resource proposal and unresolved host, stack,
 data and independent correctness choices; develop the bounded producer through
 Mind before separately authorized collection. No freeze, compute or acceptance
 was granted. This focused review does not change last_checkin or measurement dates.
+
+
+## Evening check-in — 2026-10-13
+
+Reviewed at 2026-10-13T17:51:40Z. HST/MGE raw fixed-parameter CPU runner merged in #416; Pulse handoff #55 merged and Mind implementation closed. Resolve exact production host/stack/data, full settings, independent correctness witness/tolerances and background-load method. No collection, campaign freeze or acceptance authorized; global compile dispatch remains unavailable.
+
+[Full campaign/task review](../checkins/2026-10-13-evening.md) records verified
+GitHub sources and limits. Current RAL queue was empty; the transfer preview timed
+out, so historical jobs and unpulled results remain unverified. Review time does
+not refresh measurements or authorize compute. Historical task text is retained.

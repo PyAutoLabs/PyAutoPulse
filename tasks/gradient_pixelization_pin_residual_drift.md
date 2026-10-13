@@ -16,6 +16,16 @@ Original task retained verbatim below. Current scheduling state: `campaigns.yaml
 - Evidence: [project main reviewed at 4db4d988](https://github.com/PyAutoLabs/autolens_profiling/blob/4db4d988e520a82219152743748c3188d485a4ba/wiki/campaigns/measurement_tools.md), [Mind claims at 35281b1d](https://github.com/PyAutoLabs/PyAutoMind/blob/35281b1d/active.md), [full dated review](../checkins/2026-10-13.md). Review date does not refresh measurement dates.
 - Availability: project `hpc/sync jobs` returned an empty current queue; `hpc/sync status` timed out after 25 seconds during the output preview. Historical job outcomes, unpulled results and RAL cleanup contents are unverified; no collection or compute was performed.
 
+
+## Evening check-in — 2026-10-13
+
+Reviewed at 2026-10-13T17:51:40Z. Unchanged and unissued (PyAutoArray#490 merged 2026-08-26). Select one bounded step when prioritised.
+
+[Full campaign/task review](../checkins/2026-10-13-evening.md) records verified
+GitHub sources and limits. Current RAL queue was empty; the transfer preview timed
+out, so historical jobs and unpulled results remain unverified. Review time does
+not refresh measurements or authorize compute. Historical task text is retained.
+
 ---
 
 # jax_profiling/gradient/imaging/pixelization.py: 3.2% of its pin move is unattributed
