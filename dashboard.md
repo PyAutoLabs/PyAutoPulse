@@ -1,6 +1,6 @@
 # PyAutoPulse — profiling dashboard
 
-<!-- pulse-campaigns:949e65e28d6d53e41dd3f86d7170e8b3419a385e6debf61756a518b0e1877ccd -->
+<!-- pulse-campaigns:b22a787746f3dc695099e748c7d1bb4ca52c932cb99185bf625878506ca73f04 -->
 ## Profiling Check In
 
 <details><summary>Full check-in prompt</summary>
@@ -31,13 +31,14 @@ Last check-in: 2026-10-13T14:47:44Z (review date, not measurement freshness).
 
 <details><summary>Setup baseline collection and scientific acceptance — needs-decision</summary>
 
-Reviewed 2026-10-13. Draft unchanged; no frozen revisions/environment lock, selected hardware/affinity, complete per-cell settings/input hashes/witness tolerances or collection authorization. Compile builder remains explicitly unavailable. Resolve the manifest choices, then request separate collection authorization.
+Reviewed 2026-10-13. HST/MGE fp64 CPU pilot preparation approved; review its draft protocol, resource ceiling and open freeze choices. Manual HST jit builder merged (#414); global compile dispatch remains unavailable. Producer gaps, exact host/stack/data and correctness witness remain unresolved. No compute authorized.
 
-[Campaign evidence](https://github.com/PyAutoLabs/autolens_profiling/blob/4db4d988e520a82219152743748c3188d485a4ba/wiki/campaigns/setup_baseline.md)
+[Campaign evidence](https://github.com/PyAutoLabs/autolens_profiling/blob/b8b3b23cd1f0aabc2d7d4ce1cd297f7420b14f76/baseline/campaign.json)
 
 ### Active tasks
 
-- [Freeze the setup baseline specification, then collect and review evidence](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/setup_baseline_campaign.md) — needs-decision: Specification merged as draft v1 (autolens_profiling#385, 2026-10-06). Human resolves the six recorded unknowns and freezes the specification; collection requires separate compute authorization. The report prepares evidence for human scientific review and never promotes baselines. CPU production arrays use ral only.
+- [Freeze the setup baseline specification, then collect and review evidence](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/setup_baseline_campaign.md) — needs-decision: Prepare the HST/MGE CPU pilot first; review its protocol/resource proposal and resolve exact host/stack/data/witness choices. Manual HST builder shipped, but collection producer remains pending. Wider specification stays draft; collection, scientific acceptance and baseline promotion are separate.
+- [Prepare and review the HST/MGE fp64 CPU pilot](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/hst_mge_cpu_pilot.md) — needs-decision: Review the draft pilot, resolve host/stack/data/witness choices and plan the bounded project producer. Proposed maximum 32 sequential processes, 16 CPU-hours; compute and freeze remain unauthorized.
 
 </details>
 

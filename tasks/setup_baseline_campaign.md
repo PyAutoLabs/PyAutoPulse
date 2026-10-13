@@ -87,3 +87,18 @@ the later collection and review deliverables.
 - Task next step: Specification merged as draft v1 (autolens_profiling#385, 2026-10-06). Human resolves the six recorded unknowns and freezes the specification; collection requires separate compute authorization. The report prepares evidence for human scientific review and never promotes baselines. CPU production arrays use ral only.
 - Evidence: [project main reviewed at 4db4d988](https://github.com/PyAutoLabs/autolens_profiling/blob/4db4d988e520a82219152743748c3188d485a4ba/wiki/campaigns/measurement_tools.md), [Mind claims at 35281b1d](https://github.com/PyAutoLabs/PyAutoMind/blob/35281b1d/active.md), [full dated review](../checkins/2026-10-13.md). Review date does not refresh measurement dates.
 - Availability: project `hpc/sync jobs` returned an empty current queue; `hpc/sync status` timed out after 25 seconds during the output preview. Historical job outcomes, unpulled results and RAL cleanup contents are unverified; no collection or compute was performed.
+
+
+## Focused preparation 2026-10-13 — HST/MGE CPU pilot
+
+The human approved preparation of the [bounded pilot](hst_mge_cpu_pilot.md).
+[Project #414](https://github.com/PyAutoLabs/autolens_profiling/pull/414) merged:
+manual HST/MGE fp64 jit construction exists; the global compile grid remains
+unavailable. Earlier blanket builder-unavailable wording above is historical.
+The new probe is not yet a baseline observation producer and has no verified
+cache-hit witness. The wider manifest remains draft/blocked and unchanged.
+
+Next: review the pilot's protocol/resource proposal and unresolved host, stack,
+data and independent correctness choices; develop the bounded producer through
+Mind before separately authorized collection. No freeze, compute or acceptance
+was granted. This focused review does not change last_checkin or measurement dates.

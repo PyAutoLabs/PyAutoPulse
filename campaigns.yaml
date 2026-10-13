@@ -5,10 +5,10 @@ campaigns:
   title: Setup baseline collection and scientific acceptance
   status: needs-decision
   updated: '2026-10-13'
-  next: Draft unchanged; no frozen revisions/environment lock, selected hardware/affinity, complete per-cell
-    settings/input hashes/witness tolerances or collection authorization. Compile builder remains explicitly
-    unavailable. Resolve the manifest choices, then request separate collection authorization.
-  evidence: https://github.com/PyAutoLabs/autolens_profiling/blob/4db4d988e520a82219152743748c3188d485a4ba/wiki/campaigns/setup_baseline.md
+  next: HST/MGE fp64 CPU pilot preparation approved; review its draft protocol, resource ceiling and open
+    freeze choices. Manual HST jit builder merged (#414); global compile dispatch remains unavailable.
+    Producer gaps, exact host/stack/data and correctness witness remain unresolved. No compute authorized.
+  evidence: https://github.com/PyAutoLabs/autolens_profiling/blob/b8b3b23cd1f0aabc2d7d4ce1cd297f7420b14f76/baseline/campaign.json
 - id: point-source-image-cpu
   title: Point-source image plane · CPU
   status: active
@@ -110,12 +110,22 @@ tasks:
   priority: high
   path: tasks/setup_baseline_campaign.md
   updated: '2026-10-13'
-  next: Specification merged as draft v1 (autolens_profiling#385, 2026-10-06). Human resolves the six recorded
-    unknowns and freezes the specification; collection requires separate compute authorization. The report
-    prepares evidence for human scientific review and never promotes baselines. CPU production arrays use ral
-    only.
+  next: Prepare the HST/MGE CPU pilot first; review its protocol/resource proposal and resolve exact
+    host/stack/data/witness choices. Manual HST builder shipped, but collection producer remains pending.
+    Wider specification stays draft; collection, scientific acceptance and baseline promotion are separate.
   issue: https://github.com/PyAutoLabs/autolens_profiling/issues/384
   evidence: https://github.com/PyAutoLabs/autolens_profiling/blob/719459fefb40c7e5be157f652818dbf923830557/baseline/campaign.json
+- id: hst_mge_cpu_pilot
+  campaign: setup-baseline
+  title: Prepare and review the HST/MGE fp64 CPU pilot
+  status: needs-decision
+  priority: high
+  path: tasks/hst_mge_cpu_pilot.md
+  updated: '2026-10-13'
+  next: Review the draft pilot, resolve host/stack/data/witness choices and plan the bounded project producer.
+    Proposed maximum 32 sequential processes, 16 CPU-hours; compute and freeze remain unauthorized.
+  issue: https://github.com/PyAutoLabs/PyAutoPulse/issues/53
+  evidence: https://github.com/PyAutoLabs/autolens_profiling/pull/414
 - id: runtime_cell_single_jit_gpu_warmup
   campaign: point-source-source
   title: Runtime cells' A100 `single_jit` includes the post-compile warm-up — source-plane 0.642 ms vs a steady
