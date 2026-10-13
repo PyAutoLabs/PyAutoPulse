@@ -9,6 +9,14 @@ The original task below is retained verbatim. Current scheduling state lives in 
 - VERIFIED: gradient-sampler admission evidence is not met: autolens_inference `scripts/point_source/` has only the Nautilus source-plane leaf; no blackjax NUTS/SMC leaf.
 - Status stays blocked; blackjax work stays parked.
 
+
+## Check-in 2026-10-13
+
+- Campaign review: Core remains parked; autolens_inference#21 reorganized setup evidence but added no point-source gradient admission measurement. #408 merged median fields into 11 runtime cells; #412 completes remaining headline/repeat support but is open. No new runtime sweep; keep Blackjax parked.
+- Task next step: Still blocked on a point-source gradient-sampler admission measurement. Inference #21 is setup organization, not that measurement. Keep parked.
+- Evidence: [project main reviewed at 4db4d988](https://github.com/PyAutoLabs/autolens_profiling/blob/4db4d988e520a82219152743748c3188d485a4ba/wiki/campaigns/measurement_tools.md), [Mind claims at 35281b1d](https://github.com/PyAutoLabs/PyAutoMind/blob/35281b1d/active.md), [full dated review](../checkins/2026-10-13.md). Review date does not refresh measurement dates.
+- Availability: project `hpc/sync jobs` returned an empty current queue; `hpc/sync status` timed out after 25 seconds during the output preview. Historical job outcomes, unpulled results and RAL cleanup contents are unverified; no collection or compute was performed.
+
 ---
 
 # Point-source source-plane chi-squared speed-up campaign — remaining candidates (phases 1–2e shipped)

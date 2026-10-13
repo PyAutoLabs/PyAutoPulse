@@ -64,6 +64,51 @@ The original task below is retained verbatim. Current scheduling state lives in 
 - #407 close-out: Mind record `complete/2026/10/timing-noise-audit-p5-round-bootstrap.md` (a9eb5864). Fix phases (5) and (6) NOT started at session end (no branch, Mind entry or plan comment); resume at start_dev with slug `timing-noise-audit-p6-median-headline-gpu-marker` from main 8be806c.
 - Leftovers recorded in the audit note: phase 3b (C1/C3/C4/C5 have no interval), multiple-comparison policy (Holm/Bonferroni), `gpu_bottleneck_map` still per-call. Next: fix phase (5) P8/P9, then (6) P3/P5 (human authorized both under --auto 2026-10-08).
 
+## Execution 2026-10-09 — fix phases (5)-(6) merged; phase 3b + leftovers to PR
+
+- Human (Pulse chat 2026-10-09): "finish up the timing task", then "prm and then do 3b and leftovers fully wrap up --auto" and "do all work until complete --auto". Effective level supervised (bug, Consequence judge): every PR ends at PR-open for a human `/prm`. Plan: https://github.com/PyAutoLabs/autolens_profiling/issues/362#issuecomment-6079746240
+- Heart: this morning's STALE/monitoring-RED set was human-acknowledged for these PRs. Later Heart went RED on `release validation FAILED (stage integrate)`; the human chose the development-only Heart-RED override for #412 (recorded https://github.com/PyAutoLabs/autolens_profiling/issues/362#issuecomment-6083878510).
+- VERIFIED merged 2026-10-09 via human `/prm` (every CI job green): [#408](https://github.com/PyAutoLabs/autolens_profiling/pull/408) (3ce8d789) P8 median headline beside the block mean in 11 runtime cells, drift compares like estimators only; P9 timeouts INCONCLUSIVE unless qualified (all 4 committed markers are laptop/no-load; the ALMA laptop entry is now "did not finish (inconclusive)"). [#409](https://github.com/PyAutoLabs/autolens_profiling/pull/409) (4db4d988) P3 unsettled warm-up -> INCONCLUSIVE (0/28 committed unsettled); P5 witness PASS/FAIL only on the reference host class (all 8 committed laptop/untagged verdicts -> INCONCLUSIVE). Mind records `complete/2026/10/timing-noise-audit-p6-…`, `…-p7-…`.
+- OPEN, stacked, merge in order (all reviewed CLEAN after fixes; no compute; no committed JSON rewritten):
+  - [#410](https://github.com/PyAutoLabs/autolens_profiling/pull/410) phase 3b: C1/C3/C4/C5 on paired round-bootstrap intervals; Holm helper (`ab_verdict.holm_family_verdict`). Suite 1341/6. No decision changed (memo-policy NO_LEVER, scaling PASS, A100 no-lever stand); C1's 128 flags INCONCLUSIVE (4 < 5 repeats); 2 laptop logdet rows INCONCLUSIVE.
+  - [#411](https://github.com/PyAutoLabs/autolens_profiling/pull/411) one family-wise policy (Holm, family = one verdict) for C6/C10/C11; C12 paired rounds (A100 MDI 5.45 % -> 0.94 %); P2 between-row drift. Suite 1376/6. C6 deciding GO routes unchanged; C10 tie sets widen (IP-4a 5 -> 7), no named best changed; numba-interferometer kill "passed" -> INCONCLUSIVE (4 rounds).
+  - [#412](https://github.com/PyAutoLabs/autolens_profiling/pull/412) headline completion (README, breakdown/datacube/mge_mass cells), wall basis +50 s/invocation (A100 source_plane_solved submit 0:20 -> 0:27), `single_jit_repeats` support so `flat` is reachable. Suite 1405/6. Latent additive v2 metric `cube_single_jit_median`; no other profiling-summary@2 change.
+- Audit end state (#412): 38 rows, 35 SOUND / 3 FRAGILE / 0 UNSAFE-SILENT.
+- Open human decisions (none blocks merge): C1 n=4 rule or re-run ≥5 repeats; C5 "both estimators" rule; C11 4-round rule or re-run `--reps` ≥ 6; GPU memo "below MDI" readings at 0.94 %; #412's flagged choices. v2 catalogue qualification waits on the setup-baseline reference-host decision. Brain compile-drift follow-up filed as Mind `draft/bug/pyautobrain/profiling_compile_drift_point_vs_point.md`. Measuring repeats needs compute (not authorized).
+- Next: human `/prm` #410 -> #411 -> #412, then close #362 and set this task complete. Completion is not inferred from PR-open.
+
+
+## Check-in 2026-10-13
+
+- Campaign review: #408/#409 merged 2026-10-09. #410 -> #411 -> #412 remain OPEN, lint SUCCESS at reviewed heads ffddf755/a5de4d49/9ce9a132; Mind claims all three awaiting merge. Review flagged statistical/estimator decisions, then human /prm in order. Issue #362 stays open. No new measurement JSON; v2 catalogue remains 0 qualified / 112 records, 0 comparisons.
+- Task next step: #408/#409 merged 2026-10-09. #410 -> #411 -> #412 remain OPEN, lint SUCCESS at reviewed heads ffddf755/a5de4d49/9ce9a132; Mind claims all three awaiting merge. Review flagged statistical/estimator decisions, then human /prm in order. Issue #362 stays open. No new measurement JSON; v2 catalogue remains 0 qualified / 112 records, 0 comparisons.
+- Evidence: [project main reviewed at 4db4d988](https://github.com/PyAutoLabs/autolens_profiling/blob/4db4d988e520a82219152743748c3188d485a4ba/wiki/campaigns/measurement_tools.md), [Mind claims at 35281b1d](https://github.com/PyAutoLabs/PyAutoMind/blob/35281b1d/active.md), [full dated review](../checkins/2026-10-13.md). Review date does not refresh measurement dates.
+- Availability: project `hpc/sync jobs` returned an empty current queue; `hpc/sync status` timed out after 25 seconds during the output preview. Historical job outcomes, unpulled results and RAL cleanup contents are unverified; no collection or compute was performed.
+
+
+## Implementation close-out 2026-10-13
+
+Human authorization: “Merge all four when green” (#410 → #411 → #412 and Pulse #48).
+All three profiling PRs merged at unchanged reviewed heads after every Actions
+run/job passed. Merge commits: #410 `4abe4226`, #411 `3cf6b2ce`, #412 `6108d029`.
+Git confirms every head is in main. [Issue #362 closed](https://github.com/PyAutoLabs/autolens_profiling/issues/362#issuecomment-6148464632).
+
+The implementation task is complete: 38 inventoried rows, 35 SOUND including
+caveats, 3 FRAGILE descriptive rows and 0 UNSAFE-SILENT. Existing independent
+shipping reviews are CLEAN; this close-out did not repeat a full code review.
+No measured JSON was rewritten, no compute launched and no baseline/default changed.
+
+Mind completion records:
+- [Phase 8](https://github.com/PyAutoLabs/PyAutoMind/blob/main/complete/2026/10/timing-noise-audit-p8-phase3b-intervals.md)
+- [Phase 9](https://github.com/PyAutoLabs/PyAutoMind/blob/main/complete/2026/10/timing-noise-audit-p9-familywise-policy.md)
+- [Phase 10](https://github.com/PyAutoLabs/PyAutoMind/blob/main/complete/2026/10/timing-noise-audit-p10-headline-completion.md)
+
+Preserve the unresolved domain choices: C1/C11 repeat minima, C5's two-estimator
+rule, GPU memo interpretation under paired-round MDI, v2 reference-host qualification,
+new repeat measurements and the separate Brain compile-drift draft. Nothing here
+relaxes a gate or turns an INCONCLUSIVE row into scientific acceptance.
+Next priority agreed by the human: compile capability and setup-baseline specification.
+
 ---
 
 # Audit timing tests and profiling gates for measurement noise

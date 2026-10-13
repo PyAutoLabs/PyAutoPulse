@@ -79,3 +79,11 @@ the later collection and review deliverables.
 ## Note 2026-10-08 (from timing_noise_audit fix phase 2)
 
 - When the frozen specification names a reference host and the v2 catalogue starts writing `qualified: true`, reuse autolens_profiling's `build_dashboard.is_reference_host_class` rule (laptop rows never qualify; a missing load average or host is unqualified with a reason) so the v1 and v2 qualification cannot drift apart. Source: autolens_profiling#405.
+
+
+## Check-in 2026-10-13
+
+- Campaign review: Draft unchanged; no frozen revisions/environment lock, selected hardware/affinity, complete per-cell settings/input hashes/witness tolerances or collection authorization. Compile builder remains explicitly unavailable. Resolve the manifest choices, then request separate collection authorization.
+- Task next step: Specification merged as draft v1 (autolens_profiling#385, 2026-10-06). Human resolves the six recorded unknowns and freezes the specification; collection requires separate compute authorization. The report prepares evidence for human scientific review and never promotes baselines. CPU production arrays use ral only.
+- Evidence: [project main reviewed at 4db4d988](https://github.com/PyAutoLabs/autolens_profiling/blob/4db4d988e520a82219152743748c3188d485a4ba/wiki/campaigns/measurement_tools.md), [Mind claims at 35281b1d](https://github.com/PyAutoLabs/PyAutoMind/blob/35281b1d/active.md), [full dated review](../checkins/2026-10-13.md). Review date does not refresh measurement dates.
+- Availability: project `hpc/sync jobs` returned an empty current queue; `hpc/sync status` timed out after 25 seconds during the output preview. Historical job outcomes, unpulled results and RAL cleanup contents are unverified; no collection or compute was performed.

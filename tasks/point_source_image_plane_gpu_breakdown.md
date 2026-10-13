@@ -21,6 +21,14 @@ The original task below is retained verbatim. Current scheduling state lives in 
 - https://github.com/PyAutoLabs/PyAutoLens/issues/767 closed; fixed by https://github.com/PyAutoLabs/PyAutoLens/pull/768 (merged 2026-10-04T20:41Z, 0659903d4), in tag 2026.10.7.1 (merge-base verified). Correctness only; no timing claim.
 - Stays `needs-decision`: the autolens_inference image-plane fit measurement still awaits human authorisation.
 
+
+## Check-in 2026-10-13
+
+- Campaign review: No new image-plane fit measurement found. Correctness fix #768 remains shipped; current libraries now have release 2026.10.12.1, not a measured performance baseline. Image-plane admission measurement still needs authorization. #411 proposes reinterpreting the old GPU memo MDI evidence; it remains unmerged.
+- Task next step: No new image-plane fit measurement found. Correctness fix #768 remains shipped; current libraries now have release 2026.10.12.1, not a measured performance baseline. Image-plane admission measurement still needs authorization. #411 proposes reinterpreting the old GPU memo MDI evidence; it remains unmerged.
+- Evidence: [project main reviewed at 4db4d988](https://github.com/PyAutoLabs/autolens_profiling/blob/4db4d988e520a82219152743748c3188d485a4ba/wiki/campaigns/measurement_tools.md), [Mind claims at 35281b1d](https://github.com/PyAutoLabs/PyAutoMind/blob/35281b1d/active.md), [full dated review](../checkins/2026-10-13.md). Review date does not refresh measurement dates.
+- Availability: project `hpc/sync jobs` returned an empty current queue; `hpc/sync status` timed out after 25 seconds during the output preview. Historical job outcomes, unpulled results and RAL cleanup contents are unverified; no collection or compute was performed.
+
 ---
 
 # Point-source A100 speed-up campaign: profile and optimize with the shared breakdown

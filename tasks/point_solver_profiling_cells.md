@@ -8,6 +8,14 @@ The original task below is retained verbatim. Current scheduling state lives in 
 - VERIFIED: no open issue/PR and no Mind claim (2026-10-04). The Mind source draft was removed in Mind `dbbe5b22` (2026-10-03, move to Pulse); it is not in Mind complete/ or active.md, so this file is the live record.
 - Next: issue one bounded cell when cluster-pointsolver selects it (candidate: representative-data cluster likelihood_runtime baseline, single-source preset).
 
+
+## Check-in 2026-10-13
+
+- Campaign review: No campaign wiki/results change or new matching implementation claim found. Representative cluster baseline and observable-overflow policy remain unstarted. Choose one bounded phase; inherited single-source results do not qualify a representative cluster baseline.
+- Task next step: Unissued, no claim. Candidate first cell: a representative-data cluster likelihood_runtime baseline (single-source preset).
+- Evidence: [project main reviewed at 4db4d988](https://github.com/PyAutoLabs/autolens_profiling/blob/4db4d988e520a82219152743748c3188d485a4ba/wiki/campaigns/measurement_tools.md), [Mind claims at 35281b1d](https://github.com/PyAutoLabs/PyAutoMind/blob/35281b1d/active.md), [full dated review](../checkins/2026-10-13.md). Review date does not refresh measurement dates.
+- Availability: project `hpc/sync jobs` returned an empty current queue; `hpc/sync status` timed out after 25 seconds during the output preview. Historical job outcomes, unpulled results and RAL cleanup contents are unverified; no collection or compute was performed.
+
 ---
 
 # PointSolver profiling cells: lensed quasar → cluster runtime tier → single/multi-source → multiplane

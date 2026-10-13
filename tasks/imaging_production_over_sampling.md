@@ -10,6 +10,14 @@ The original task below is retained verbatim. Current scheduling state lives in 
 - Context: [PyAutoArray#606](https://github.com/PyAutoLabs/PyAutoArray/pull/606) merged 2026-10-02 adds `over_sample_size_via_snr_from` (present in 2026.10.4.1), which may simplify the presets.
 - Next: phase 1 (workspace-only) adds `--instrument euclid|hst` presets with flat-1 selectable; CPU smoke only. The A100 re-measure is a separate compute-authorized phase.
 
+
+## Check-in 2026-10-13
+
+- Campaign review: No new production-over-sampling or post-certified measurements. #408 now adds median headline fields to runtime cells; #412 extends remaining surfaces but is unmerged. Production presets, memo-blind harness, cumulative MGE steps and quick-update costs remain separate pending work. Scope production-preset phase 1 (CPU smoke only); A100 measurement separately authorized.
+- Task next step: Phase 1 (workspace-only): --instrument euclid|hst presets for the JAX Delaunay runtime/breakdown cells, keeping flat-1 selectable; CPU smoke only. A100 re-measure is a separate compute-authorized phase.
+- Evidence: [project main reviewed at 4db4d988](https://github.com/PyAutoLabs/autolens_profiling/blob/4db4d988e520a82219152743748c3188d485a4ba/wiki/campaigns/measurement_tools.md), [Mind claims at 35281b1d](https://github.com/PyAutoLabs/PyAutoMind/blob/35281b1d/active.md), [full dated review](../checkins/2026-10-13.md). Review date does not refresh measurement dates.
+- Availability: project `hpc/sync jobs` returned an empty current queue; `hpc/sync status` timed out after 25 seconds during the output preview. Historical job outcomes, unpulled results and RAL cleanup contents are unverified; no collection or compute was performed.
+
 ---
 
 # Profile imaging pixelizations at production over-sampling
