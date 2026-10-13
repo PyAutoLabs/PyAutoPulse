@@ -122,10 +122,11 @@ tasks:
   priority: high
   path: tasks/hst_mge_cpu_pilot.md
   updated: '2026-10-13'
-  next: Review the draft pilot, resolve host/stack/data/witness choices and plan the bounded project producer.
-    Proposed maximum 32 sequential processes, 16 CPU-hours; compute and freeze remain unauthorized.
-  issue: https://github.com/PyAutoLabs/PyAutoPulse/issues/53
-  evidence: https://github.com/PyAutoLabs/autolens_profiling/pull/414
+  next: Preparation merged (#54); raw fixed-parameter runner implementation approved and tracked in
+    autolens_profiling#415. Review producer evidence, then resolve exact host/stack/data/witness choices.
+    No inference, production compute, baseline freeze or scientific acceptance authorized.
+  issue: https://github.com/PyAutoLabs/autolens_profiling/issues/415
+  evidence: https://github.com/PyAutoLabs/PyAutoPulse/pull/54
 - id: runtime_cell_single_jit_gpu_warmup
   campaign: point-source-source
   title: Runtime cells' A100 `single_jit` includes the post-compile warm-up — source-plane 0.642 ms vs a steady
