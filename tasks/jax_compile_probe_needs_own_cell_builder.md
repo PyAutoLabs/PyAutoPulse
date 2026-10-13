@@ -50,8 +50,12 @@ The original task below is retained verbatim. Current scheduling state lives in 
   generated-contract checks. Pulse head `685e1b8` passed both
   [lint](https://github.com/PyAutoLabs/PyAutoPulse/actions/runs/38426360330) and
   [refresh dry run](https://github.com/PyAutoLabs/PyAutoPulse/actions/runs/38426360116).
-  Independent review is in progress. These checks establish implementation
-  validation, not timing improvement or scientific acceptance.
+  Independent review was CLEAN at project `05c5c49` and Pulse `a76a769` on
+  2026-10-13: 40 focused tests passed; the real tiny-FITS CPU CLI path with a
+  3×3 PSF passed within the 60-second verification cap; baseline, registry and
+  historical files were unchanged. Temporary verification artifacts were removed.
+  These checks establish implementation validation, not timing improvement or
+  scientific acceptance. Both PRs still require the judge-tier human merge command.
 - Plan adjustment: partial capability is documented in the instrument and campaign
   journal; the machine-readable global route reason is retained because the baseline
   draft pins the registry's exact bytes. No re-freeze was authorized or performed.
