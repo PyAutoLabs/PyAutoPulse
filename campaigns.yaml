@@ -5,10 +5,9 @@ campaigns:
   title: Setup baseline collection and scientific acceptance
   status: needs-decision
   updated: '2026-10-13'
-  next: 'HST/MGE raw fixed-parameter CPU runner merged in #416; Pulse handoff #55 merged and Mind implementation
-    closed. Resolve exact production host/stack/data, full settings, independent correctness witness/tolerances
-    and background-load method. No collection, campaign freeze or acceptance authorized; global compile dispatch
-    remains unavailable.'
+  next: 'Review the Pulse collection choices (candidate input hashes and 31-worker resource plan verified without
+    execution) alongside project correctness audit #417. Resolve data origin/suitability, named host/stack/full
+    settings, witness/tolerances and background-load method. No freeze, compute or acceptance authorized.'
   evidence: https://github.com/PyAutoLabs/autolens_profiling/pull/416
 - id: point-source-image-cpu
   title: Point-source image plane · CPU
@@ -122,10 +121,9 @@ tasks:
   priority: high
   path: tasks/hst_mge_cpu_pilot.md
   updated: '2026-10-13'
-  next: 'HST/MGE raw fixed-parameter CPU runner merged in #416; Pulse handoff #55 merged and Mind implementation
-    closed. Resolve exact production host/stack/data, full settings, independent correctness witness/tolerances
-    and background-load method. No collection, campaign freeze or acceptance authorized; global compile dispatch
-    remains unavailable.'
+  next: 'Review the Pulse collection choices (candidate input hashes and 31-worker resource plan verified without
+    execution) alongside project correctness audit #417. Resolve data origin/suitability, named host/stack/full
+    settings, witness/tolerances and background-load method. No freeze, compute or acceptance authorized.'
   issue: https://github.com/PyAutoLabs/autolens_profiling/issues/415
   evidence: https://github.com/PyAutoLabs/autolens_profiling/pull/416
 - id: runtime_cell_single_jit_gpu_warmup

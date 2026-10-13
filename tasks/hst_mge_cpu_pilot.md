@@ -199,3 +199,15 @@ Reviewed at 2026-10-13T17:51:40Z. HST/MGE raw fixed-parameter CPU runner merged 
 GitHub sources and limits. Current RAL queue was empty; the transfer preview timed
 out, so historical jobs and unpulled results remain unverified. Review time does
 not refresh measurements or authorize compute. Historical task text is retained.
+
+
+## Collection choices prepared — 2026-10-13
+
+[Collection decision document](hst_mge_cpu_pilot_choices.md) records candidate
+FITS identities and the existing driver's plan-only resource bounds, distinguishing
+verified facts from unresolved production choices. The human requested this
+Pulse-side preparation under `--auto`, leaving the independent correctness audit
+[project #417](https://github.com/PyAutoLabs/autolens_profiling/issues/417) with its
+current session. No witness or profiling execution, campaign freeze or acceptance
+was authorized. This focused preparation does not advance the all-campaign
+`last_checkin` or measurement dates.
