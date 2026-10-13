@@ -187,3 +187,5 @@ production timing comparison, independent scientific witness or accepted baselin
 The 32 protocol tests passed and independent code review was CLEAN after rejecting
 dirty/unknown source identities. Project #415 retains the implementation and PR
 validation record; full scientific qualification remains pending here.
+
+Implementation PR: [autolens_profiling #416](https://github.com/PyAutoLabs/autolens_profiling/pull/416), opened 2026-10-13; pending CI/merge.
