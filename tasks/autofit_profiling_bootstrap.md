@@ -37,6 +37,32 @@ GitHub sources and limits. Current RAL queue was empty; the transfer preview tim
 out, so historical jobs and unpulled results remain unverified. Review time does
 not refresh measurements or authorize compute. Historical task text is retained.
 
+## Check-in 2026-10-14 — B4a at PR; epic-1 ranked table
+
+- B4a implemented (search-extensibility, autofit_profiling#2): [autofit_profiling#3](https://github.com/PyAutoLabs/autofit_profiling/pull/3) adds the `search.fit` breakdown cell `scripts/gaussian_x1/nautilus/search_fit_breakdown.py` (re-homed from autofit_workspace_developer `searches_minimal/nautilus_profile.py`), its committed rows, the `profiling-summary@2` exporter (`dashboard/catalogue.json`, validated by this organ's reader) and the Pages + `pulse-refresh` workflow. This Pulse PR registers instance `fit`; the developer-workspace originals are retired in a separate PR. Merge order: autofit_profiling#3 → this PR (after its Pages deploy is live and the `fit` receipt is captured) → autofit_workspace_developer.
+- Reproduction: the bare-sampler re-run matches the 2026-07 findings within the cell's ±10 pp gate (NN training 53.8 % vs 51.7 %, bound geometry 25.3 % vs 25.2 %, likelihood 11.6 % vs 14.3 %; log Z −57.455 both).
+- Measurements are producer declarations (`validation: unreviewed`); the Brain's profiling conductor judges them. Laptop CPU only; no RAL compute.
+
+### Epic 1 — ranked bottleneck table, one `search.fit` on a fast likelihood
+
+`af.Nautilus(n_live=200, n_networks=4, seed=1, number_of_cores=1).fit` on gaussian_x1 (3 parameters, 100 pixels), numpy fp64, laptop CPU (WSL2, 8 cores), PyAutoFit `911fe05e1`, nautilus 1.0.5; median of 3 fresh fits, wall 28.4 s, 7 501 likelihood calls; exclusive component wall. Evidence: [`results/gaussian_x1/nautilus/breakdown.json`](https://github.com/PyAutoLabs/autofit_profiling/blob/9074c7c/results/gaussian_x1/nautilus/breakdown.json); full page: [`wiki/campaigns/search_fit_bottlenecks.md`](https://github.com/PyAutoLabs/autofit_profiling/blob/9074c7c/wiki/campaigns/search_fit_bottlenecks.md).
+
+| rank | component | owner | share of wall |
+|---:|---|---|---:|
+| 1 | NN ensemble training | nautilus | 43.4 % |
+| 2 | checkpoint I/O (103 HDF5 writes) | nautilus, switched on by PyAutoFit's `filepath=checkpoint.hdf5` | 24.5 % |
+| 3 | bound geometry | nautilus | 20.4 % |
+| 4 | visualisation | PyAutoFit | 4.1 % |
+| 5 | sampler bookkeeping | nautilus | 2.3 % |
+| 6 | samples output (pre/post-fit, samples, latents, summary) | PyAutoFit | 1.7 % |
+| 7 | likelihood (prior transform + `Fitness`) | PyAutoFit + user | 1.1 % |
+| 8 | other (unattributed remainder) | PyAutoFit | 1.0 % |
+| 9 | proposal sampling | nautilus | 0.8 % |
+
+`likelihood_share` from the B2/B3 rows (autofit_inference `dashboard/summary.json` at [`637713b2`](https://github.com/PyAutoLabs/autofit_inference/blob/637713b253ab149f87a08ea0b02fcb009b4aa24e/dashboard/summary.json); `catalogue/search_catalogue.json` carries no such field): Nautilus numpy median 1.9 % (n=11, gaussian_x3), Nautilus JAX CPU ≈0.01 % (n=12), Dynesty numpy 26–33 %, Dynesty JAX CPU 2.5–4.5 %. On a fast likelihood a Nautilus `search.fit` is ~98 % search and wrapper overhead; the one PyAutoFit-side lever above 5 % is the per-update nautilus checkpoint write.
+
+- Next: B4b (EP / graphical baseline port). Epic 2 (EP loop) is **not** opened; it waits for epic 1's top findings to ship. Candidate one-PR prompts (checkpoint cadence, end-of-fit visualisation) are listed in the project page for the human / profiling conductor, not filed.
+
 ---
 
 # autofit_profiling: bootstrap the repo + general PyAutoFit profiling epic
