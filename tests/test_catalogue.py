@@ -221,3 +221,15 @@ def test_method_ids_cannot_hide_different_measurement_procedures(doc):
     other["method"]["statistic"] = "minimum"
     doc["records"].append(other)
     assert any("conflicting definitions" in e for e in summary.validate(doc))
+
+
+def test_the_autofit_profiling_producer_feed_validates_through_the_shared_reader():
+    """Instance ``fit``: autofit_profiling's catalogue at its B4a PR head (autofit_profiling#3,
+    commit 9074c7c), copied verbatim; read through the same code path as every producer."""
+    doc = fixture_doc("autofit_profiling_v2.json")
+    assert doc["project"] == "autofit_profiling"
+    assert summary.classify(doc, ("profiling-summary", 2)) == ("ok", [])
+    axes = {r["axis"] for r in doc["records"]}
+    assert axes == {"runtime", "breakdown"}
+    slots = [s for s in doc["selections"] if s["status"] == "inapplicable"]
+    assert slots and all(s["record_id"] is None for s in slots)

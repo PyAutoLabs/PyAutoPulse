@@ -12,3 +12,10 @@ instances:
     dashboard_url: https://pyautolabs.github.io/autolens_profiling/
     library_refs: [PyAutoLens, PyAutoGalaxy, PyAutoArray, PyAutoFit]
     cortex_project: null
+  - instance: fit
+    repo: autofit_profiling
+    summary_path: dashboard/catalogue.json
+    supported_schema: profiling-summary@2
+    dashboard_url: https://pyautolabs.github.io/autofit_profiling/
+    library_refs: [PyAutoFit]
+    cortex_project: null

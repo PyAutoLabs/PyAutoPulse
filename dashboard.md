@@ -1,6 +1,6 @@
 # PyAutoPulse — profiling dashboard
 
-<!-- pulse-campaigns:d39fa8eaef6911cdb8a186ab8544a71e3ace4da6f8ef385069edf3cba0c43878 -->
+<!-- pulse-campaigns:40ebeabfcfa2bcc9dccff22b0816ae55956895694c0126147309ac3c6d3a7460 -->
 ## Profiling Check In
 
 <details><summary>Full check-in prompt</summary>
@@ -151,15 +151,15 @@ Reviewed 2026-10-13. Timing audit #410–#412 and raw HST/MGE pilot producer #41
 
 </details>
 
-<details><summary>PyAutoFit profiling bootstrap — ready</summary>
+<details><summary>PyAutoFit profiling bootstrap — active</summary>
 
-Reviewed 2026-10-13. B1 registration is complete: Heart#292 and .github#34 merged 2026-10-08. autofit_profiling main remains skeleton 86c77345: no exporter, harness or measurements, no Pulse fit registration. B4a remains next profiling phase, subject to the search-extensibility epic handoff/review findings; then B4b. Do not restart the separate B3 inference pilot.
+Reviewed 2026-10-14. B4a at PR; B4b next. B4a = autofit_profiling#3 (search.fit breakdown cell, profiling-summary@2 exporter, Pages) then this Pulse fit row, then the autofit_workspace_developer retirement PR, merged in that order. Epic-1 ranked table filed in tasks/autofit_profiling_bootstrap.md (2026-10-14); epic 2 not opened. B4b = the EP / graphical baseline port.
 
-[Campaign evidence](https://github.com/PyAutoLabs/autofit_profiling/pull/1)
+[Campaign evidence](https://github.com/PyAutoLabs/autofit_profiling/pull/3)
 
 ### Active tasks
 
-- [autofit_profiling: bootstrap the repo + general PyAutoFit profiling epic](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/autofit_profiling_bootstrap.md) — ready: B1 registration is complete: Heart#292 and .github#34 merged 2026-10-08. autofit_profiling main remains skeleton 86c77345: no exporter, harness or measurements, no Pulse fit registration. B4a remains next profiling phase, subject to the search-extensibility epic handoff/review findings; then B4b. Do not restart the separate B3 inference pilot.
+- [autofit_profiling: bootstrap the repo + general PyAutoFit profiling epic](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/autofit_profiling_bootstrap.md) — active: B4a at PR; B4b next. B4a = autofit_profiling#3 (search.fit breakdown cell, profiling-summary@2 exporter, Pages) then this Pulse fit row, then the autofit_workspace_developer retirement PR, merged in that order. Epic-1 ranked table filed in tasks/autofit_profiling_bootstrap.md (2026-10-14); epic 2 not opened. B4b = the EP / graphical baseline port.
 
 </details>
 
@@ -278,6 +278,39 @@ Project `autolens_profiling`, scope `setup-catalogue`, read from [PyAutoLabs/aut
 - Source-row isolation prevents cross-file joins where complete configuration identity is unknown.
 - The v1 production feed remains published during migration; this is the companion v2 catalogue.
 - Indexed-only evidence and static estimates are not successful measurements or measured peak VRAM.
+</details>
+
+<details><summary>autofit — choose a setup</summary>
+
+[Interactive setup browser](https://pyautolabs.github.io/autofit_profiling/)
+
+<details><summary>gaussian_x1</summary>
+
+- **gaussian**: unspecified
+
+</details>
+
+</details>
+
+<details><summary>Capture, qualification and legacy diagnostics</summary>
+
+
+## fit
+
+<!-- pulse:instance name=fit receipt=007791a6fa7ac7ddea3b1fae666de46d82a797eb outcome=ok shown=007791a6fa7ac7ddea3b1fae666de46d82a797eb -->
+
+Project `autofit_profiling`, scope `search-fit-breakdown`, read from [PyAutoLabs/autofit_profiling](https://github.com/PyAutoLabs/autofit_profiling) `dashboard/catalogue.json` at [`007791a6`](https://github.com/PyAutoLabs/autofit_profiling/tree/007791a6fa7ac7ddea3b1fae666de46d82a797eb); producer revision `—`; generated 2026-10-14T09:19:45Z; comparison policy `no-temporal-comparisons`. [Project dashboard](https://pyautolabs.github.io/autofit_profiling/) · [receipt](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/receipts/fit.json).
+
+- **Integrity:** ok
+- **Freshness:** freshness policy unspecified · age 0 d at fetch 2026-10-14 (evidence 2026-10-14)
+- **Qualification:** 17/17 records · 0/0 comparisons qualified
+
+### fit / limitations
+
+- Laptop CPU only (single host, WSL2); wall times vary up to ±40 % between sessions, so shares are the comparable quantity, not seconds.
+- Component times are exclusive monkey-patched wall-clock intervals; 'other' is wall minus the instrumented total, not a measured phase.
+- Every record is unreviewed: the producer declares measurements, the Brain's profiling conductor judges them; nothing here is a verdict.
+- No temporal comparisons yet: one baseline per setup, no drift policy.
 </details>
 
 

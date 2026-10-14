@@ -3,8 +3,8 @@
   "organ": "pulse",
   "repo": "PyAutoPulse",
   "status": "yellow",
-  "headline": "1 project · 112 records · 0 cached",
-  "updated": "2026-10-06T13:06:36Z",
+  "headline": "2 projects · 129 records · 0 cached",
+  "updated": "2026-10-14T09:50:22Z",
   "pages_url": "https://pyautolabs.github.io/PyAutoPulse/",
   "items": [
     {
@@ -29,6 +29,13 @@
       "severity": "info",
       "text": "lens: 112 records · 0 comparisons · 4 limitations · 0 qualified",
       "url": "https://pyautolabs.github.io/autolens_profiling/",
+      "prompt": null
+    },
+    {
+      "id": "pulse:fit:census",
+      "severity": "info",
+      "text": "fit: 17 records · 0 comparisons · 4 limitations · 17 qualified",
+      "url": "https://pyautolabs.github.io/autofit_profiling/",
       "prompt": null
     }
   ]

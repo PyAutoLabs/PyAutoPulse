@@ -78,13 +78,13 @@ campaigns:
   evidence: https://github.com/PyAutoLabs/autolens_profiling/pull/416
 - id: autofit
   title: PyAutoFit profiling bootstrap
-  status: ready
-  updated: '2026-10-13'
-  next: 'B1 registration is complete: Heart#292 and .github#34 merged 2026-10-08. autofit_profiling main remains
-    skeleton 86c77345: no exporter, harness or measurements, no Pulse fit registration. B4a remains next profiling
-    phase, subject to the search-extensibility epic handoff/review findings; then B4b. Do not restart the separate
-    B3 inference pilot.'
-  evidence: https://github.com/PyAutoLabs/autofit_profiling/pull/1
+  status: active
+  updated: '2026-10-14'
+  next: 'B4a at PR; B4b next. B4a = autofit_profiling#3 (search.fit breakdown cell, profiling-summary@2
+    exporter, Pages) then this Pulse fit row, then the autofit_workspace_developer retirement PR, merged in that
+    order. Epic-1 ranked table filed in tasks/autofit_profiling_bootstrap.md (2026-10-14); epic 2 not opened.
+    B4b = the EP / graphical baseline port.'
+  evidence: https://github.com/PyAutoLabs/autofit_profiling/pull/3
 - id: critical-curves
   title: Critical curves and evaluation grids
   status: needs-decision
@@ -228,15 +228,15 @@ tasks:
 - id: autofit_profiling_bootstrap
   campaign: autofit
   title: 'autofit_profiling: bootstrap the repo + general PyAutoFit profiling epic'
-  status: ready
+  status: active
   priority: normal
   path: tasks/autofit_profiling_bootstrap.md
-  updated: '2026-10-13'
-  next: 'B1 registration is complete: Heart#292 and .github#34 merged 2026-10-08. autofit_profiling main remains
-    skeleton 86c77345: no exporter, harness or measurements, no Pulse fit registration. B4a remains next profiling
-    phase, subject to the search-extensibility epic handoff/review findings; then B4b. Do not restart the separate
-    B3 inference pilot.'
-  evidence: https://github.com/PyAutoLabs/autofit_profiling
+  updated: '2026-10-14'
+  next: 'B4a at PR; B4b next. B4a = autofit_profiling#3 (search.fit breakdown cell, profiling-summary@2
+    exporter, Pages) then this Pulse fit row, then the autofit_workspace_developer retirement PR, merged in that
+    order. Epic-1 ranked table filed in tasks/autofit_profiling_bootstrap.md (2026-10-14); epic 2 not opened.
+    B4b = the EP / graphical baseline port.'
+  evidence: https://github.com/PyAutoLabs/autofit_profiling/pull/3
 - id: cluster_pointsolver_speed
   campaign: cluster-pointsolver
   title: Cluster PointSolver — robustness, analysis settings and performance
