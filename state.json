@@ -2,36 +2,11 @@
   "schema_version": 1,
   "organ": "pulse",
   "repo": "PyAutoPulse",
-  "status": "red",
-  "headline": "2 projects · 112 records · 0 cached · 1 failed",
-  "updated": "2026-10-14T09:25:47Z",
+  "status": "yellow",
+  "headline": "2 projects · 129 records · 0 cached",
+  "updated": "2026-10-14T09:50:22Z",
   "pages_url": "https://pyautolabs.github.io/PyAutoPulse/",
   "items": [
-    {
-      "id": "pulse:fit:unavailable",
-      "severity": "red",
-      "state": "failed",
-      "text": "fit: summary unavailable",
-      "reason": "no receipt yet (never fetched)",
-      "url": "https://github.com/PyAutoLabs/PyAutoPulse/blob/main/receipts/fit.json",
-      "prompt": null,
-      "actions": [
-        {
-          "id": "fetch",
-          "label": "Re-fetch this instance",
-          "kind": "command",
-          "target": "bin/pyauto-pulse fetch --instance fit",
-          "safety": "read_only"
-        },
-        {
-          "id": "open",
-          "label": "Open the project dashboard",
-          "kind": "link",
-          "target": "https://pyautolabs.github.io/autofit_profiling/",
-          "safety": "read_only"
-        }
-      ]
-    },
     {
       "id": "pulse:lens:unqualified",
       "severity": "yellow",
@@ -54,6 +29,13 @@
       "severity": "info",
       "text": "lens: 112 records · 0 comparisons · 4 limitations · 0 qualified",
       "url": "https://pyautolabs.github.io/autolens_profiling/",
+      "prompt": null
+    },
+    {
+      "id": "pulse:fit:census",
+      "severity": "info",
+      "text": "fit: 17 records · 0 comparisons · 4 limitations · 17 qualified",
+      "url": "https://pyautolabs.github.io/autofit_profiling/",
       "prompt": null
     }
   ]

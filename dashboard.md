@@ -280,16 +280,37 @@ Project `autolens_profiling`, scope `setup-catalogue`, read from [PyAutoLabs/aut
 - Indexed-only evidence and static estimates are not successful measurements or measured peak VRAM.
 </details>
 
-**fit: unavailable**
+<details><summary>autofit — choose a setup</summary>
+
+[Interactive setup browser](https://pyautolabs.github.io/autofit_profiling/)
+
+<details><summary>gaussian_x1</summary>
+
+- **gaussian**: unspecified
+
+</details>
+
+</details>
 
 <details><summary>Capture, qualification and legacy diagnostics</summary>
 
 
 ## fit
 
-<!-- pulse:instance name=fit receipt=none outcome=unavailable shown=none -->
+<!-- pulse:instance name=fit receipt=007791a6fa7ac7ddea3b1fae666de46d82a797eb outcome=ok shown=007791a6fa7ac7ddea3b1fae666de46d82a797eb -->
 
-**Unavailable:** no receipt yet (never fetched).
+Project `autofit_profiling`, scope `search-fit-breakdown`, read from [PyAutoLabs/autofit_profiling](https://github.com/PyAutoLabs/autofit_profiling) `dashboard/catalogue.json` at [`007791a6`](https://github.com/PyAutoLabs/autofit_profiling/tree/007791a6fa7ac7ddea3b1fae666de46d82a797eb); producer revision `—`; generated 2026-10-14T09:19:45Z; comparison policy `no-temporal-comparisons`. [Project dashboard](https://pyautolabs.github.io/autofit_profiling/) · [receipt](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/receipts/fit.json).
+
+- **Integrity:** ok
+- **Freshness:** freshness policy unspecified · age 0 d at fetch 2026-10-14 (evidence 2026-10-14)
+- **Qualification:** 17/17 records · 0/0 comparisons qualified
+
+### fit / limitations
+
+- Laptop CPU only (single host, WSL2); wall times vary up to ±40 % between sessions, so shares are the comparable quantity, not seconds.
+- Component times are exclusive monkey-patched wall-clock intervals; 'other' is wall minus the instrumented total, not a measured phase.
+- Every record is unreviewed: the producer declares measurements, the Brain's profiling conductor judges them; nothing here is a verdict.
+- No temporal comparisons yet: one baseline per setup, no drift policy.
 </details>
 
 
