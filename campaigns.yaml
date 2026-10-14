@@ -80,11 +80,11 @@ campaigns:
   title: PyAutoFit profiling bootstrap
   status: active
   updated: '2026-10-14'
-  next: 'B4a at PR; B4b next. B4a = autofit_profiling#3 (search.fit breakdown cell, profiling-summary@2
-    exporter, Pages) then this Pulse fit row, then the autofit_workspace_developer retirement PR, merged in that
-    order. Epic-1 ranked table filed in tasks/autofit_profiling_bootstrap.md (2026-10-14); epic 2 not opened.
-    B4b = the EP / graphical baseline port.'
-  evidence: https://github.com/PyAutoLabs/autofit_profiling/pull/3
+  next: 'B4a merged (autofit_profiling#3, Pulse#60); B4b at PR (issue autofit_profiling#4) ports the EP /
+    graphical N3/N10/N30 baselines and the analytic parity cell (runtime + memory records, same laptop host as
+    B4a). Truth logL sums and both N30 sanity FAILs reproduce exactly; every wall is faster than the committed
+    developer baseline beyond 2x (improved). Receipt/snapshot refresh after its Pages deploy. Epic 2 not opened.'
+  evidence: https://github.com/PyAutoLabs/autofit_profiling/issues/4
 - id: critical-curves
   title: Critical curves and evaluation grids
   status: needs-decision
@@ -232,11 +232,11 @@ tasks:
   priority: normal
   path: tasks/autofit_profiling_bootstrap.md
   updated: '2026-10-14'
-  next: 'B4a at PR; B4b next. B4a = autofit_profiling#3 (search.fit breakdown cell, profiling-summary@2
-    exporter, Pages) then this Pulse fit row, then the autofit_workspace_developer retirement PR, merged in that
-    order. Epic-1 ranked table filed in tasks/autofit_profiling_bootstrap.md (2026-10-14); epic 2 not opened.
-    B4b = the EP / graphical baseline port.'
-  evidence: https://github.com/PyAutoLabs/autofit_profiling/pull/3
+  next: 'B4a merged (autofit_profiling#3, Pulse#60); B4b at PR (issue autofit_profiling#4) ports the EP /
+    graphical N3/N10/N30 baselines and the analytic parity cell (runtime + memory records, same laptop host as
+    B4a). Truth logL sums and both N30 sanity FAILs reproduce exactly; every wall is faster than the committed
+    developer baseline beyond 2x (improved). Receipt/snapshot refresh after its Pages deploy. Epic 2 not opened.'
+  evidence: https://github.com/PyAutoLabs/autofit_profiling/issues/4
 - id: cluster_pointsolver_speed
   campaign: cluster-pointsolver
   title: Cluster PointSolver — robustness, analysis settings and performance
