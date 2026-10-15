@@ -1,7 +1,7 @@
 # Exclude zero-weight mappings from AdaptSplit pixel signals on Delaunay meshes only
 
 Date: 2026-10-15
-Decision maker: the PyAutoLabs maintainer
+Decision maker: James Nightingale
 Decision source: AskUserQuestion answer "Delaunay only (Recommended by review)" in session 3e3dea38, 2026-10-15. Quoted on [PyAutoArray#627 (issuecomment-6200058449)](https://github.com/PyAutoLabs/PyAutoArray/issues/627#issuecomment-6200058449). Recorded on the human's explicit direction in the same session ("Yes, record it as my decision").
 
 ## Campaign

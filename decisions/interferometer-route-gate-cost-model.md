@@ -1,7 +1,7 @@
 # Route interferometer curvature by a calibrated two-constant cost model
 
 Date: 2026-10-15
-Decision maker: the PyAutoLabs maintainer
+Decision maker: James Nightingale
 Decision source: The plan on [PyAutoArray#628](https://github.com/PyAutoLabs/PyAutoArray/issues/628) was approved under `--auto` in session 3e3dea38. On 2026-10-15 the human merged [PyAutoArray#632](https://github.com/PyAutoLabs/PyAutoArray/pull/632) by `/prm`, answering "merged-unchanged" (Mind `complete/2026/10/interferometer-numba-route-gate.md`). The decision is recorded on the human's explicit direction in the same session ("Yes, record it as my decision").
 
 ## Campaign
