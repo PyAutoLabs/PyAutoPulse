@@ -1,6 +1,6 @@
 # PyAutoPulse — profiling dashboard
 
-<!-- pulse-campaigns:40ebeabfcfa2bcc9dccff22b0816ae55956895694c0126147309ac3c6d3a7460 -->
+<!-- pulse-campaigns:b95c0bf384d49e4f8bd1f183ef71eae3e05fa2e4892d3ba474b05d4261563690 -->
 ## Profiling Check In
 
 <details><summary>Full check-in prompt</summary>
@@ -153,13 +153,13 @@ Reviewed 2026-10-13. Timing audit #410–#412 and raw HST/MGE pilot producer #41
 
 <details><summary>PyAutoFit profiling bootstrap — active</summary>
 
-Reviewed 2026-10-14. B4a at PR; B4b next. B4a = autofit_profiling#3 (search.fit breakdown cell, profiling-summary@2 exporter, Pages) then this Pulse fit row, then the autofit_workspace_developer retirement PR, merged in that order. Epic-1 ranked table filed in tasks/autofit_profiling_bootstrap.md (2026-10-14); epic 2 not opened. B4b = the EP / graphical baseline port.
+Reviewed 2026-10-14. B4a merged (autofit_profiling#3, Pulse#60); B4b at PR (issue autofit_profiling#4) ports the EP / graphical N3/N10/N30 baselines and the analytic parity cell (runtime + memory records, same laptop host as B4a). Truth logL sums and both N30 sanity FAILs reproduce exactly; every wall is faster than the committed developer baseline beyond 2x (improved). Receipt/snapshot refresh after its Pages deploy. Epic 2 not opened.
 
-[Campaign evidence](https://github.com/PyAutoLabs/autofit_profiling/pull/3)
+[Campaign evidence](https://github.com/PyAutoLabs/autofit_profiling/issues/4)
 
 ### Active tasks
 
-- [autofit_profiling: bootstrap the repo + general PyAutoFit profiling epic](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/autofit_profiling_bootstrap.md) — active: B4a at PR; B4b next. B4a = autofit_profiling#3 (search.fit breakdown cell, profiling-summary@2 exporter, Pages) then this Pulse fit row, then the autofit_workspace_developer retirement PR, merged in that order. Epic-1 ranked table filed in tasks/autofit_profiling_bootstrap.md (2026-10-14); epic 2 not opened. B4b = the EP / graphical baseline port.
+- [autofit_profiling: bootstrap the repo + general PyAutoFit profiling epic](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/autofit_profiling_bootstrap.md) — active: B4a merged (autofit_profiling#3, Pulse#60); B4b at PR (issue autofit_profiling#4) ports the EP / graphical N3/N10/N30 baselines and the analytic parity cell (runtime + memory records, same laptop host as B4a). Truth logL sums and both N30 sanity FAILs reproduce exactly; every wall is faster than the committed developer baseline beyond 2x (improved). Receipt/snapshot refresh after its Pages deploy. Epic 2 not opened.
 
 </details>
 

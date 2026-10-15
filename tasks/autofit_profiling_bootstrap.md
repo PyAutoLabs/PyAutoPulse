@@ -63,6 +63,15 @@ not refresh measurements or authorize compute. Historical task text is retained.
 
 - Next: B4b (EP / graphical baseline port). Epic 2 (EP loop) is **not** opened; it waits for epic 1's top findings to ship. Candidate one-PR prompts (checkpoint cadence, end-of-fit visualisation) are listed in the project page for the human / profiling conductor, not filed.
 
+
+## Check-in 2026-10-14 — B4b at PR; EP / graphical baselines reproduced
+
+- B4b (search-extensibility, issue autofit_profiling#4) ports `autofit_workspace_developer/{ep,graphical}` as `scripts/gaussian_1d_ep/{ep,graphical}/baseline.py` and adds `scripts/analytic_gaussian/parity/benchmark.py`, which runs autofit_workspace_test's analytic parity script unchanged. Each row exports a `runtime` wall and a `memory` `host_peak_rss` record on the existing axes (sibling result schemas `autofit-profiling-baseline` / `-parity`; no registry row, no contract bump). Findings: `wiki/campaigns/ep_graphical_baselines.md` in autofit_profiling.
+- Host pin (decided and flagged): the same laptop as B4a (`DESKTOP-H143S82`, WSL2), not the release-sweep A100 node, so Pulse's same-host rule pairs the new records with B4a's. PyAutoFit `df6d218f1`, JAX CPU float64.
+- Reproduction against the committed developer `baseline.json`: every `truth_log_likelihood_sum` matches exactly and both N30 sanity FAILs reproduce (graphical: max-logL rule; EP: shared centre |z| 6.7). Every wall is faster beyond the `runtime-drift-2x-1ms` policy (graphical 6.0 / 7.1 / 19.0 s vs 22.8 / 50.7 / 132.8 s; EP 37.1 / 152.9 / 842.8 s vs 251.9 / 566.9 / 1758.7 s; all `improved`), so the "N3/N10 within 2x" witness is not met as written; the committed baselines predate the changes behind the developer postfix re-runs. Another session shared the host during the runs (load 2.5–4.7), so the seconds are conservative.
+- Analytic parity (seed 0, N = 5): PARITY PASS 41/41 for closed form vs minimal EP vs graphical vs EP; closed-form `sigma_q95` 12.1536 matches the banked 12.15; `analytic_gaussian_priors.py` recorded as parked NEEDS_FIX, not run.
+- This Pulse branch refreshes the fixture; the `fit` receipt and snapshot are refreshed here after the autofit_profiling PR merges and its Pages deploy is live. Measurements are `unreviewed`; the Brain's profiling conductor judges.
+
 ---
 
 # autofit_profiling: bootstrap the repo + general PyAutoFit profiling epic

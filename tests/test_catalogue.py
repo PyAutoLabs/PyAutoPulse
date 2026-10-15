@@ -224,12 +224,15 @@ def test_method_ids_cannot_hide_different_measurement_procedures(doc):
 
 
 def test_the_autofit_profiling_producer_feed_validates_through_the_shared_reader():
-    """Instance ``fit``: autofit_profiling's catalogue at its B4a PR head (autofit_profiling#3,
-    commit 9074c7c), copied verbatim; read through the same code path as every producer."""
+    """Instance ``fit``: autofit_profiling's catalogue at its B4b branch (issue autofit_profiling#4:
+    the B4a breakdown plus the EP / graphical baselines and the analytic parity cell), copied
+    verbatim; read through the same code path as every producer."""
     doc = fixture_doc("autofit_profiling_v2.json")
     assert doc["project"] == "autofit_profiling"
     assert summary.classify(doc, ("profiling-summary", 2)) == ("ok", [])
     axes = {r["axis"] for r in doc["records"]}
-    assert axes == {"runtime", "breakdown"}
+    assert axes == {"runtime", "breakdown", "memory"}
+    memory = [r for r in doc["records"] if r["axis"] == "memory"]
+    assert memory and {(r["metric"], r["unit"]) for r in memory} == {("host_peak_rss", "KiB")}
     slots = [s for s in doc["selections"] if s["status"] == "inapplicable"]
     assert slots and all(s["record_id"] is None for s in slots)
