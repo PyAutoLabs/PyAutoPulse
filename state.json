@@ -3,8 +3,8 @@
   "organ": "pulse",
   "repo": "PyAutoPulse",
   "status": "yellow",
-  "headline": "2 projects · 129 records · 0 cached",
-  "updated": "2026-10-14T09:50:22Z",
+  "headline": "2 projects · 143 records · 0 cached",
+  "updated": "2026-10-15T12:22:49Z",
   "pages_url": "https://pyautolabs.github.io/PyAutoPulse/",
   "items": [
     {
@@ -34,7 +34,7 @@
     {
       "id": "pulse:fit:census",
       "severity": "info",
-      "text": "fit: 17 records · 0 comparisons · 4 limitations · 17 qualified",
+      "text": "fit: 31 records · 0 comparisons · 7 limitations · 31 qualified",
       "url": "https://pyautolabs.github.io/autofit_profiling/",
       "prompt": null
     }

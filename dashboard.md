@@ -284,6 +284,18 @@ Project `autolens_profiling`, scope `setup-catalogue`, read from [PyAutoLabs/aut
 
 [Interactive setup browser](https://pyautolabs.github.io/autofit_profiling/)
 
+<details><summary>analytic_gaussian</summary>
+
+- **conjugate hierarchical gaussian**: unspecified
+
+</details>
+
+<details><summary>gaussian_1d_ep</summary>
+
+- **gaussian, centre shared across datasets**: unspecified
+
+</details>
+
 <details><summary>gaussian_x1</summary>
 
 - **gaussian**: unspecified
@@ -297,20 +309,23 @@ Project `autolens_profiling`, scope `setup-catalogue`, read from [PyAutoLabs/aut
 
 ## fit
 
-<!-- pulse:instance name=fit receipt=007791a6fa7ac7ddea3b1fae666de46d82a797eb outcome=ok shown=007791a6fa7ac7ddea3b1fae666de46d82a797eb -->
+<!-- pulse:instance name=fit receipt=e63a891276ea1118e0acd185f97df4c42da27f47 outcome=ok shown=e63a891276ea1118e0acd185f97df4c42da27f47 -->
 
-Project `autofit_profiling`, scope `search-fit-breakdown`, read from [PyAutoLabs/autofit_profiling](https://github.com/PyAutoLabs/autofit_profiling) `dashboard/catalogue.json` at [`007791a6`](https://github.com/PyAutoLabs/autofit_profiling/tree/007791a6fa7ac7ddea3b1fae666de46d82a797eb); producer revision `—`; generated 2026-10-14T09:19:45Z; comparison policy `no-temporal-comparisons`. [Project dashboard](https://pyautolabs.github.io/autofit_profiling/) · [receipt](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/receipts/fit.json).
+Project `autofit_profiling`, scope `pyautofit-profiling`, read from [PyAutoLabs/autofit_profiling](https://github.com/PyAutoLabs/autofit_profiling) `dashboard/catalogue.json` at [`e63a8912`](https://github.com/PyAutoLabs/autofit_profiling/tree/e63a891276ea1118e0acd185f97df4c42da27f47); producer revision `—`; generated 2026-10-14T14:45:45Z; comparison policy `no-temporal-comparisons`. [Project dashboard](https://pyautolabs.github.io/autofit_profiling/) · [receipt](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/receipts/fit.json).
 
 - **Integrity:** ok
-- **Freshness:** freshness policy unspecified · age 0 d at fetch 2026-10-14 (evidence 2026-10-14)
-- **Qualification:** 17/17 records · 0/0 comparisons qualified
+- **Freshness:** freshness policy unspecified · age 0 d at fetch 2026-10-15 (evidence 2026-10-14)
+- **Qualification:** 31/31 records · 0/0 comparisons qualified
 
 ### fit / limitations
 
-- Laptop CPU only (single host, WSL2); wall times vary up to ±40 % between sessions, so shares are the comparable quantity, not seconds.
+- Laptop CPU only, pinned to one host (DESKTOP-H143S82, WSL2) so Pulse's same-host rule pairs every record; the epic's release-sweep pin (euclid-ral-gpu-2, an A100 node) does not fit CPU Dynesty runs. Cross-machine reproduction on RAL is a later campaign.
+- Wall times vary up to ±40 % between sessions on this host, so breakdown shares are the comparable quantity, not seconds; the EP / graphical / parity rows are single fresh-process fits (repetitions 1).
 - Component times are exclusive monkey-patched wall-clock intervals; 'other' is wall minus the instrumented total, not a measured phase.
+- The EP / graphical rows carry a producer-side reproduction note against the committed autofit_workspace_developer baselines (runtime-drift-2x-1ms, in each row's `reference`); it is not a Pulse comparison, because those baselines recorded no host and no record pair exists.
+- The N30 EP and graphical rows reproduce the committed sanity FAIL; their wall and memory are real measurements of a fit whose parameter recovery fails, not of a correct fit.
 - Every record is unreviewed: the producer declares measurements, the Brain's profiling conductor judges them; nothing here is a verdict.
-- No temporal comparisons yet: one baseline per setup, no drift policy.
+- No temporal comparisons: one baseline per setup.
 </details>
 
 
