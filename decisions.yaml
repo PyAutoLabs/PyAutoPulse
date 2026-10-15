@@ -4,3 +4,11 @@ decisions:
   title: Keep Jacobi PDIP as the Mapper default and raw+polish as the MGE-only default
   date: '2026-10-08'
   url: https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/linear-solver-mapper-default-jacobi.md
+- id: adaptsplit-zero-weight-delaunay-only
+  title: Exclude zero-weight mappings from AdaptSplit pixel signals on Delaunay meshes only
+  date: '2026-10-15'
+  url: https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/adaptsplit-zero-weight-delaunay-only.md
+- id: interferometer-route-gate-cost-model
+  title: Route interferometer curvature by a calibrated two-constant cost model
+  date: '2026-10-15'
+  url: https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/interferometer-route-gate-cost-model.md

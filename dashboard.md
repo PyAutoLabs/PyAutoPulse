@@ -1,6 +1,6 @@
 # PyAutoPulse — profiling dashboard
 
-<!-- pulse-campaigns:0ec1ffed93e62a62d70397b0e88007eb2e1d8284d3e4f54f10d7c51896a2ac7e -->
+<!-- pulse-campaigns:4e132b2d2378f34b9712646cb9a497b82be62a3d7d484f8136ab2bc19cc70303 -->
 ## Profiling Check In
 
 <details><summary>Full check-in prompt</summary>
@@ -94,7 +94,7 @@ Reviewed 2026-10-13. No campaign wiki/results change or new matching implementat
 
 <details><summary>Interferometer likelihood and streaming — active</summary>
 
-Reviewed 2026-10-15. All three PyAutoArray members from the Aris 512×512 profiling (PyAutoPulse#62) merged 2026-10-15, pending release: #630 sparse data vector memory, #631 AdaptSplit log-det backend parity, #632 numba route-gate cost model; phase-2 autolens_profiling record in flight. Streaming 1e8 CPU/A100 rows and the #332 memo after-measurement still need authorization; curvature preload needs the fixed-mapper science decision; FFT levers remain unstarted.
+Reviewed 2026-10-15. Aris large-mask work (PyAutoPulse#62): #630/#631/#632 merged 2026-10-15, pending release; knowledge section and two human decisions recorded; phase-2 record at PR-open (autolens_profiling#420); L1 Cholesky reuse (PyAutoArray#633) in development, L2 direct_conv symmetry filed and unstarted. Streaming 1e8 CPU/A100 rows and the #332 memo after-measurement still need authorization; curvature preload needs the fixed-mapper science decision; FFT levers remain unstarted.
 
 [Campaign evidence](https://github.com/PyAutoLabs/autolens_profiling/blob/4db4d988e520a82219152743748c3188d485a4ba/wiki/campaigns/interferometer_likelihood.md)
 
@@ -103,7 +103,7 @@ Reviewed 2026-10-15. All three PyAutoArray members from the Aris 512×512 profil
 - [Interferometer fixed-mapper searches: reuse the W~ curvature matrix across likelihood calls via `preloads.curvature_matrix`](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/interferometer_fixed_mapper_curvature_preload.md) — ready: Phase 1 Mind draft (2026-10-04) still unstarted; run it through start_dev. Human science call first - no production SLaM stage holds the mapper fixed today.
 - [fnnls warm-start memo: stop it slowing scattered evaluation streams (interferometer CPU, autolens_profiling#332)](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/interferometer_nnls_memo_scattered_stream_guard.md) — active: Library half shipped: PyAutoArray#615 (closes #613) merged 2026-10-06, in 2026.10.7.1. Local solver-only witness (n=576): iid memo on/off 1.49x → 1.17x; walk 0.18x unchanged. Owed: re-run the autolens_profiling#332 ALMA Delaunay 2.17x after-measurement (needs compute authorization).
 - [Campaign: interferometer streaming (array-free) vs in-memory — memory and time scaling to 2e8 visibilities](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/interferometer_streaming_scaling.md) — active: Phase 1 CPU cells + results/streaming_scaling rows merged (autolens_profiling#375, 2026-10-04); wiki/campaigns/interferometer_streaming.md. Optional: 1e8 CPU row and A100 rows (compute authorization). Library candidate unfiled: chunk transformer.image_from in apply_sparse_operator (memory).
-- [Interferometer large-mask likelihood (Aris 512×512): sparse data-vector memory, AdaptSplit log-det backend parity, numba route-gate cost model](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/interferometer_large_mask_aris.md) — active: All three library members merged (PRs #630, #631, #632; pending release). In flight: autolens_profiling phase-2 record (routing table under the cost model + Aris log-det after-measurement). Then copy that table here and close the task.
+- [Interferometer large-mask likelihood (Aris 512×512): sparse data-vector memory, AdaptSplit log-det backend parity, numba route-gate cost model](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/interferometer_large_mask_aris.md) — active: Knowledge written 2026-10-15 (cost structure, routing model, levers, collaborator settings) and the two human decisions recorded. #630/#631/#632 merged, pending release. Phase-2 record at PR-open (autolens_profiling#420): re-pin its table on merge. L1 Cholesky reuse (PyAutoArray#633) in development; L2 direct_conv symmetry filed, unstarted.
 - [Interferometer W~ curvature matrix is FFT-bound on the mask extent: pruned padded FFT and real-space pixel scale on the A100](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/interferometer_w_tilde_fft_size_levers.md) — ready: Unstarted (no PR/issue/branch/results, 2026-10-04). Select one bounded step when prioritised.
 
 </details>
@@ -330,7 +330,9 @@ Project `autofit_profiling`, scope `pyautofit-profiling`, read from [PyAutoLabs/
 </details>
 
 
-<!-- decision-history:8f1840916151d6a62b1cb1cd473edede0a3647c198fe8ef2371ce31a66c873a5 -->
+<!-- decision-history:20f0256fc1d56eda82a910f81ddb71d393e76eeaf26e486d9c836b00282b99f9 -->
 ## Decision History
 
+- <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/interferometer-route-gate-cost-model.md">Route interferometer curvature by a calibrated two-constant cost model</a>
+- <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/adaptsplit-zero-weight-delaunay-only.md">Exclude zero-weight mappings from AdaptSplit pixel signals on Delaunay meshes only</a>
 - <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/linear-solver-mapper-default-jacobi.md">Keep Jacobi PDIP as the Mapper default and raw+polish as the MGE-only default</a>
