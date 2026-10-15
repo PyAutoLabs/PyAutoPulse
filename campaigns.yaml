@@ -45,7 +45,7 @@ campaigns:
   title: Interferometer likelihood and streaming
   status: active
   updated: '2026-10-15'
-  next: 'Three PyAutoArray tasks filed 2026-10-15 from the Aris 512×512 profiling (PyAutoPulse#62): #626 sparse data vector memory (active, --auto), #627 AdaptSplit log-det backend parity and #628 numba route-gate cost model (queued behind the PyAutoArray claim). Streaming 1e8 CPU/A100 rows and the #332 memo after-measurement still need authorization; curvature preload needs the fixed-mapper science decision; FFT levers remain unstarted.'
+  next: 'All three PyAutoArray members from the Aris 512×512 profiling (PyAutoPulse#62) merged 2026-10-15, pending release: #630 sparse data vector memory, #631 AdaptSplit log-det backend parity, #632 numba route-gate cost model; phase-2 autolens_profiling record in flight. Streaming 1e8 CPU/A100 rows and the #332 memo after-measurement still need authorization; curvature preload needs the fixed-mapper science decision; FFT levers remain unstarted.'
   evidence: https://github.com/PyAutoLabs/autolens_profiling/blob/4db4d988e520a82219152743748c3188d485a4ba/wiki/campaigns/interferometer_likelihood.md
 - id: linear-solver
   title: Linear-solver accuracy and cost
@@ -307,7 +307,7 @@ tasks:
   priority: high
   path: tasks/interferometer_large_mask_aris.md
   updated: '2026-10-15'
-  next: 'PyAutoArray#626 active under --auto (worktree interferometer-sparse-data-vector; witness 7.2 GB -> <= ~3.5 GB at 5,746 vertices); #627 and #628 queued in Mind planned.md behind the PyAutoArray claim, in that order. Record each before/after witness table in the task file at close-out.'
+  next: 'All three library members merged (PRs #630, #631, #632; pending release). In flight: autolens_profiling phase-2 record (routing table under the cost model + Aris log-det after-measurement). Then copy that table here and close the task.'
   issue: https://github.com/PyAutoLabs/PyAutoPulse/issues/62
   evidence: https://github.com/PyAutoLabs/PyAutoArray/issues/626
 - id: interferometer_w_tilde_fft_size_levers
