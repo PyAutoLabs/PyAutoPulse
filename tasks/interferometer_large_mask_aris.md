@@ -3,7 +3,7 @@
 Campaign: interferometer
 Task: interferometer_large_mask_aris
 Reviewed: 2026-10-15
-Status: active
+Status: active (all three library members merged 2026-10-15, pending release; phase-2 record and Aris log-det after-measurement in flight)
 
 Filed 2026-10-15 from the Aris interferometer profiling session (Delaunay + `AdaptSplit`,
 `use_jax=False` numba route and JAX jit, real-space masks 125×125 at 5,496 masked pixels and
@@ -42,3 +42,51 @@ scratchpad (temporary); the numbers above are the durable record.
 
 - Filed: #626 active (worktree `interferometer-sparse-data-vector`), #627 and #628 queued in Mind planned.md. Implementation worker running on #626; read-only root-cause investigation running for #627.
 - Next: after #626 PR-open and human `/prm`, start #627 (`/start_library`), then #628. Record each task's before/after witness table here on close-out.
+
+## Results 2026-10-15
+
+All three members merged on 2026-10-15 and are pending release. The tables below are copied
+from the PR bodies and the Mind completion records. Timings are not claimed: the machine's
+load average was 2–14 during measurement.
+
+### 1. Sparse data vector — [PyAutoArray#630](https://github.com/PyAutoLabs/PyAutoArray/pull/630) (merged 7cc71238)
+
+| run (Aris 512×512) | before | after |
+|---|---|---|
+| numba, 5,746 vertices, peak RSS | 7.17 GB | **3.14 GB** |
+| JAX jit, 1,459 vertices, peak RSS | 3.65 GB | 2.60 GB |
+| JAX, 5,746 vertices, XLA compile temp | 8.95 GB | 1.86 GB |
+| JAX jit, 5,746 vertices | infeasible | runs, peak RSS 3.24 GB |
+
+- The data vector matches the dense `mapping_matrix.T @ d~` to 5.8e-16 relative. The log likelihood moves by at most 2.5e-11 relative (≈3.5e-4 nats at |logL| ≈ 1.4e7).
+- Decision taken: the witness "logL unchanged to 1e-8" was read as fp64 precision, because an absolute 1e-8 is below float64 resolution at this logL. Revert: `git revert 8676b6a0`.
+
+### 2. AdaptSplit log-det backend parity — [PyAutoArray#631](https://github.com/PyAutoLabs/PyAutoArray/pull/631) (merged 0377eeaa)
+
+| check | before | after |
+|---|---|---|
+| synthetic ill-conditioned AdaptSplit Delaunay H (cond ≈ 2.2e9), NumPy vs JAX | different H | H parity 3.6e-15 |
+| same, log-det NumPy vs JAX | — | Δ 2.1e-9; both within 1.7e-9 of a 50-digit mpmath reference |
+| Aris 125×125 dump, log-det (investigation's simulated fix) | 2443.22 numba vs 2561.98 JAX | 2468.446318 on both |
+
+- Root cause: the log-det code was correct. `adaptive_pixel_signals_from` counted zero-weight mappings for data points lying on a vertex or edge, and scipy and the JAX Delaunay walk pick different triangles for those points. The two backends therefore built different H matrices.
+- Fix: zero-weight mappings are excluded for Delaunay and DelaunayNN only. The human chose this scope after review, because KNNBarycentric clips weights to zero over whole regions. KNN, KNNBarycentric and rectangular meshes are bit-identical.
+- Owed: the Aris setup was not re-run on the branch. The after-measurement goes into the phase-2 record (in flight as a separate autolens_profiling task).
+
+### 3. Numba route-gate cost model — [PyAutoArray#632](https://github.com/PyAutoLabs/PyAutoArray/pull/632) (merged 17caf228)
+
+| mask (extent) | vertices | nnz/col | measured faster | chosen (cost model) | old gate 60 |
+|---|---|---|---|---|---|
+| 512×512 (341²) | 1,459 | 187.6 | FFT | FFT ✓ | FFT |
+| 512×512 (341²) | 2,577 | 106.2 | numba | numba ✓ | FFT ✗ |
+| 512×512 (341²) | 5,746 | 47.7 | numba | numba ✓ | numba |
+| 125×125 (83²) | 1,405 / 2,947 / 5,526 | 11.7 / 5.6 / 3.0 | numba | numba ✓ | numba |
+
+- Cost model: `t_fft = c_fft · S · FFT work` (pocketfft `cost_guess` over the padded extent) and `t_dc = c_dc · nnz · ny · nx`, with c_fft 7.62e-10 and c_dc 1.77e-09. It was fitted on 9 paired timings and picks the faster route at 9/9, with residual ratios 0.68–1.47. Mask extents are 341² and 83²; 682 was the padded FFT grid.
+- Settings: `interferometer_numba_nnz_per_source_max` null means the cost model (new default), a positive value is a hard gate, and 0 turns numba off. The new `interferometer_route` setting forces `"numba"` or `"fft"`. Revert: set the gate back to 60.
+- The routing above is a live routing-only check. The timings come from the baseline table and were not re-run.
+
+### Next
+
+The autolens_profiling phase-2 record is in flight. It re-measures the routing table under the cost
+model and records the Aris log-det after-measurement. Copy that table here, then close the task.
