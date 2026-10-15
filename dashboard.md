@@ -265,9 +265,9 @@ Choose a project, dataset and model on the interactive board.
 
 ## lens
 
-<!-- pulse:instance name=lens receipt=e4266a1355a860d2274a82722858349cd3521e46 outcome=ok shown=e4266a1355a860d2274a82722858349cd3521e46 -->
+<!-- pulse:instance name=lens receipt=33779e460edec342ab13e2afe2432e8079dc5d51 outcome=ok shown=33779e460edec342ab13e2afe2432e8079dc5d51 -->
 
-Project `autolens_profiling`, scope `setup-catalogue`, read from [PyAutoLabs/autolens_profiling](https://github.com/PyAutoLabs/autolens_profiling) `dashboard/catalogue.json` at [`e4266a13`](https://github.com/PyAutoLabs/autolens_profiling/tree/e4266a1355a860d2274a82722858349cd3521e46); producer revision `b5b8160b`; generated 2026-10-13T17:24:03Z; comparison policy `no-temporal-comparisons`. [Project dashboard](https://pyautolabs.github.io/autolens_profiling/) · [receipt](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/receipts/lens.json).
+Project `autolens_profiling`, scope `setup-catalogue`, read from [PyAutoLabs/autolens_profiling](https://github.com/PyAutoLabs/autolens_profiling) `dashboard/catalogue.json` at [`33779e46`](https://github.com/PyAutoLabs/autolens_profiling/tree/33779e460edec342ab13e2afe2432e8079dc5d51); producer revision `b5b8160b`; generated 2026-10-13T17:24:03Z; comparison policy `no-temporal-comparisons`. [Project dashboard](https://pyautolabs.github.io/autolens_profiling/) · [receipt](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/receipts/lens.json).
 
 - **Integrity:** ok
 - **Freshness:** freshness policy unspecified · evidence time unknown (evidence unknown (No common measurement wall-clock across legacy evidence; inspect each record.))
@@ -310,12 +310,12 @@ Project `autolens_profiling`, scope `setup-catalogue`, read from [PyAutoLabs/aut
 
 ## fit
 
-<!-- pulse:instance name=fit receipt=e63a891276ea1118e0acd185f97df4c42da27f47 outcome=ok shown=e63a891276ea1118e0acd185f97df4c42da27f47 -->
+<!-- pulse:instance name=fit receipt=58e56b9646da2181061b2e8d7907d6db2542ee07 outcome=ok shown=58e56b9646da2181061b2e8d7907d6db2542ee07 -->
 
-Project `autofit_profiling`, scope `pyautofit-profiling`, read from [PyAutoLabs/autofit_profiling](https://github.com/PyAutoLabs/autofit_profiling) `dashboard/catalogue.json` at [`e63a8912`](https://github.com/PyAutoLabs/autofit_profiling/tree/e63a891276ea1118e0acd185f97df4c42da27f47); producer revision `—`; generated 2026-10-14T14:45:45Z; comparison policy `no-temporal-comparisons`. [Project dashboard](https://pyautolabs.github.io/autofit_profiling/) · [receipt](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/receipts/fit.json).
+Project `autofit_profiling`, scope `pyautofit-profiling`, read from [PyAutoLabs/autofit_profiling](https://github.com/PyAutoLabs/autofit_profiling) `dashboard/catalogue.json` at [`58e56b96`](https://github.com/PyAutoLabs/autofit_profiling/tree/58e56b9646da2181061b2e8d7907d6db2542ee07); producer revision `—`; generated 2026-10-14T14:45:45Z; comparison policy `no-temporal-comparisons`. [Project dashboard](https://pyautolabs.github.io/autofit_profiling/) · [receipt](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/receipts/fit.json).
 
 - **Integrity:** ok
-- **Freshness:** freshness policy unspecified · age 0 d at fetch 2026-10-15 (evidence 2026-10-14)
+- **Freshness:** freshness policy unspecified · age 1 d at fetch 2026-10-15 (evidence 2026-10-14)
 - **Qualification:** 31/31 records · 0/0 comparisons qualified
 
 ### fit / limitations
