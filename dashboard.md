@@ -1,6 +1,6 @@
 # PyAutoPulse — profiling dashboard
 
-<!-- pulse-campaigns:b95c0bf384d49e4f8bd1f183ef71eae3e05fa2e4892d3ba474b05d4261563690 -->
+<!-- pulse-campaigns:a53f6bbfc21f511541a477cdac96aaf7b677a7e058726ca4f839a61947a26133 -->
 ## Profiling Check In
 
 <details><summary>Full check-in prompt</summary>
@@ -94,7 +94,7 @@ Reviewed 2026-10-13. No campaign wiki/results change or new matching implementat
 
 <details><summary>Interferometer likelihood and streaming — active</summary>
 
-Reviewed 2026-10-13. No new committed measurements. Decision matrix remains filled; streaming 1e8 CPU/A100 rows and the #332 memo after-measurement still need authorization. #411 merged 2026-10-13: the historical numba kill gate is INCONCLUSIVE (four rounds). Curvature preload needs the fixed-mapper science decision; FFT levers remain unstarted.
+Reviewed 2026-10-15. Three PyAutoArray tasks filed 2026-10-15 from the Aris 512×512 profiling (PyAutoPulse#62): #626 sparse data vector memory (active, --auto), #627 AdaptSplit log-det backend parity and #628 numba route-gate cost model (queued behind the PyAutoArray claim). Streaming 1e8 CPU/A100 rows and the #332 memo after-measurement still need authorization; curvature preload needs the fixed-mapper science decision; FFT levers remain unstarted.
 
 [Campaign evidence](https://github.com/PyAutoLabs/autolens_profiling/blob/4db4d988e520a82219152743748c3188d485a4ba/wiki/campaigns/interferometer_likelihood.md)
 
@@ -103,6 +103,7 @@ Reviewed 2026-10-13. No new committed measurements. Decision matrix remains fill
 - [Interferometer fixed-mapper searches: reuse the W~ curvature matrix across likelihood calls via `preloads.curvature_matrix`](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/interferometer_fixed_mapper_curvature_preload.md) — ready: Phase 1 Mind draft (2026-10-04) still unstarted; run it through start_dev. Human science call first - no production SLaM stage holds the mapper fixed today.
 - [fnnls warm-start memo: stop it slowing scattered evaluation streams (interferometer CPU, autolens_profiling#332)](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/interferometer_nnls_memo_scattered_stream_guard.md) — active: Library half shipped: PyAutoArray#615 (closes #613) merged 2026-10-06, in 2026.10.7.1. Local solver-only witness (n=576): iid memo on/off 1.49x → 1.17x; walk 0.18x unchanged. Owed: re-run the autolens_profiling#332 ALMA Delaunay 2.17x after-measurement (needs compute authorization).
 - [Campaign: interferometer streaming (array-free) vs in-memory — memory and time scaling to 2e8 visibilities](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/interferometer_streaming_scaling.md) — active: Phase 1 CPU cells + results/streaming_scaling rows merged (autolens_profiling#375, 2026-10-04); wiki/campaigns/interferometer_streaming.md. Optional: 1e8 CPU row and A100 rows (compute authorization). Library candidate unfiled: chunk transformer.image_from in apply_sparse_operator (memory).
+- [Interferometer large-mask likelihood (Aris 512×512): sparse data-vector memory, AdaptSplit log-det backend parity, numba route-gate cost model](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/interferometer_large_mask_aris.md) — active: PyAutoArray#626 active under --auto (worktree interferometer-sparse-data-vector; witness 7.2 GB -&gt; &lt;= ~3.5 GB at 5,746 vertices); #627 and #628 queued in Mind planned.md behind the PyAutoArray claim, in that order. Record each before/after witness table in the task file at close-out.
 - [Interferometer W~ curvature matrix is FFT-bound on the mask extent: pruned padded FFT and real-space pixel scale on the A100](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/interferometer_w_tilde_fft_size_levers.md) — ready: Unstarted (no PR/issue/branch/results, 2026-10-04). Select one bounded step when prioritised.
 
 </details>

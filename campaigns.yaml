@@ -44,11 +44,8 @@ campaigns:
 - id: interferometer
   title: Interferometer likelihood and streaming
   status: active
-  updated: '2026-10-13'
-  next: 'No new committed measurements. Decision matrix remains filled; streaming 1e8 CPU/A100 rows and the
-    #332 memo after-measurement still need authorization. #411 merged 2026-10-13: the historical numba kill
-    gate is INCONCLUSIVE (four rounds). Curvature preload needs the fixed-mapper science decision; FFT levers
-    remain unstarted.'
+  updated: '2026-10-15'
+  next: 'Three PyAutoArray tasks filed 2026-10-15 from the Aris 512×512 profiling (PyAutoPulse#62): #626 sparse data vector memory (active, --auto), #627 AdaptSplit log-det backend parity and #628 numba route-gate cost model (queued behind the PyAutoArray claim). Streaming 1e8 CPU/A100 rows and the #332 memo after-measurement still need authorization; curvature preload needs the fixed-mapper science decision; FFT levers remain unstarted.'
   evidence: https://github.com/PyAutoLabs/autolens_profiling/blob/4db4d988e520a82219152743748c3188d485a4ba/wiki/campaigns/interferometer_likelihood.md
 - id: linear-solver
   title: Linear-solver accuracy and cost
@@ -303,6 +300,16 @@ tasks:
     in apply_sparse_operator (memory).'
   issue: https://github.com/PyAutoLabs/autolens_profiling/issues/368
   evidence: https://github.com/PyAutoLabs/autolens_profiling/blob/719459fefb40c7e5be157f652818dbf923830557/wiki/campaigns/interferometer_streaming.md
+- id: interferometer_large_mask_aris
+  campaign: interferometer
+  title: 'Interferometer large-mask likelihood (Aris 512×512): sparse data-vector memory, AdaptSplit log-det backend parity, numba route-gate cost model'
+  status: active
+  priority: high
+  path: tasks/interferometer_large_mask_aris.md
+  updated: '2026-10-15'
+  next: 'PyAutoArray#626 active under --auto (worktree interferometer-sparse-data-vector; witness 7.2 GB -> <= ~3.5 GB at 5,746 vertices); #627 and #628 queued in Mind planned.md behind the PyAutoArray claim, in that order. Record each before/after witness table in the task file at close-out.'
+  issue: https://github.com/PyAutoLabs/PyAutoPulse/issues/62
+  evidence: https://github.com/PyAutoLabs/PyAutoArray/issues/626
 - id: interferometer_w_tilde_fft_size_levers
   campaign: interferometer
   title: 'Interferometer W~ curvature matrix is FFT-bound on the mask extent: pruned padded FFT and real-space
