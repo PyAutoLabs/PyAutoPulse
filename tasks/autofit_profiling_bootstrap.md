@@ -72,6 +72,12 @@ not refresh measurements or authorize compute. Historical task text is retained.
 - Analytic parity (seed 0, N = 5): PARITY PASS 41/41 for closed form vs minimal EP vs graphical vs EP; closed-form `sigma_q95` 12.1536 matches the banked 12.15; `analytic_gaussian_priors.py` recorded as parked NEEDS_FIX, not run.
 - This Pulse branch refreshes the fixture; the `fit` receipt and snapshot are refreshed here after the autofit_profiling PR merges and its Pages deploy is live. Measurements are `unreviewed`; the Brain's profiling conductor judges.
 
+## Check-in 2026-10-17
+
+- B4b merged: autofit_profiling#5 (issue #4 closed, 2026-10-15 12:22Z) ports the EP / graphical N3/N10/N30 baselines and the analytic parity cell; Pulse#61 added the fit fixture and campaign row (merged 2026-10-15). autofit_profiling#6 repointed RAL paths to the category layout (merged 2026-10-15).
+- Pulse `fit` receipt ok at autofit_profiling `58e56b9` (31 records, 0 comparisons, fetched 2026-10-15T22:58Z): the post-deploy receipt/snapshot refresh owed by the previous check-in is done.
+- No new measurements since B4b. Epic 2 is not opened; the search-extensibility B5c inference work is Insight's, not Pulse's. Next bounded step: a human-scoped epic-2 campaign row.
+
 ---
 
 # autofit_profiling: bootstrap the repo + general PyAutoFit profiling epic
