@@ -39,6 +39,18 @@ GitHub sources and limits. Current RAL queue was empty; the transfer preview tim
 out, so historical jobs and unpulled results remain unverified. Review time does
 not refresh measurements or authorize compute. Historical task text is retained.
 
+
+## Check-in 2026-10-17 (evening)
+
+- **A100 reference measurement:** autolens_profiling PR [#434](https://github.com/PyAutoLabs/autolens_profiling/pull/434) (issue #427; OPEN, CI green, unmerged). Heart read STALE ("release validation incomplete: no rehearsal for current source"); no override used. Job 412519, `euclid-ral-gpu-2` exclusive, A100 80GB, jax 0.10.2, fp64, 2026.10.17.1 private clone:
+  - Single call 0.934 ms (pre-#768 0.910 ms); vmap-256 0.0125 ms per likelihood (0.0120); compile 6.54 s, separate.
+  - Forward gradient finite 16/16 and equal to reverse to 1.6e-11 (was NaN before #768); reverse/likelihood 1.889. Strict FD check 4/6, failing at the same points as before. logL bit-exact.
+  - Within-run MDI 1.50 %. The +2.7 % against job 366916 is not attributed (different node and date).
+  - The A100 per-step breakdown rows are unusable (11/43 differences negative); A100 step attribution needs a device trace.
+  - jax 0.10.2 on RAL is outside 2026.10.17.1's declared jax range; SHAs are the provenance.
+- **Human decision 2026-10-17 (chat):** image plane is "just research to file". Campaign and task → parked with this as the reference measurement; the phase-2 autolens_inference image-plane fit measurement is dropped. No baseline admission is recorded.
+- [Full dated review](../checkins/2026-10-17.md). Review time does not refresh measurements or authorize compute; merge is the human's.
+
 ---
 
 # Point-source A100 speed-up campaign: profile and optimize with the shared breakdown

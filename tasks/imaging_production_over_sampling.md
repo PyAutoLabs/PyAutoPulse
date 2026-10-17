@@ -28,6 +28,16 @@ GitHub sources and limits. Current RAL queue was empty; the transfer preview tim
 out, so historical jobs and unpulled results remain unverified. Review time does
 not refresh measurements or authorize compute. Historical task text is retained.
 
+
+## Check-in 2026-10-17 (evening)
+
+- **Phase 1 at PR-open:** autolens_profiling PR [#431](https://github.com/PyAutoLabs/autolens_profiling/pull/431) (issue #430; OPEN, CI green, unmerged). Workspace-only; CPU functional smoke 8/8 pass; no rows recorded, no compute. Heart read STALE ("release validation incomplete: no rehearsal for current source"); no override used.
+  - Adds `--over-sampling {flat1,production}` (default flat1) to the four JAX Delaunay/DelaunayNN imaging cells (`scripts/imaging/delaunay{,_nn}/likelihood_{runtime,breakdown}.py`).
+  - Presets: euclid lp [4,4,2] at [0.1,0.3], pix sub 4 where source S/N > 3 else 2 (euclid_strong_lens_modeling_pipeline@9b1bc4c); hst lp [4,2,2] at [0.1,0.3], same rule (subhalo_validation@ab4bf32). HST 2,022 / 15,361 px at sub 4; Euclid 1,057 / 3,841.
+- **Findings:** the HST flat-1 `adapt_split` pin fails on unmodified main (29155.000 vs 29140.296, 5e-4); the numba cells' production threshold (capped adapt image) never reaches sub 4 for HST; rectangular JAX cells are not covered.
+- **Phase 2** (A100 production re-measure, `--over-sampling production --instrument euclid|hst`): **needs-decision** — human undecided 2026-10-17 (chat). Requires #431 merged and separate compute authorization.
+- [Full dated review](../checkins/2026-10-17.md). Review time does not refresh measurements or authorize compute; merge is the human's.
+
 ---
 
 # Profile imaging pixelizations at production over-sampling
