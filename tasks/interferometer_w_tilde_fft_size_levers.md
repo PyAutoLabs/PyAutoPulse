@@ -35,6 +35,12 @@ not refresh measurements or authorize compute. Historical task text is retained.
 - **Human decision 2026-10-17 (chat):** interferometer GPU levers — "file wiki research but not make source code changes for now". The PyAutoArray `apply_operator` JAX pruning prompt is NOT filed; the prototype (`apply_pruned` / `curvature_pruned` in `scripts/interferometer/delaunay/fft_size_levers.py`) stays in the project. Route-constant refit on CPU deferred (CPU lane closed). Status → parked (research filed).
 - [Full dated review](../checkins/2026-10-17.md). Review time does not refresh measurements or authorize compute; merge is the human's.
 
+### Post-/prm 2026-10-17
+
+- **Merged 2026-10-17 (human /prm):** [autolens_profiling#433](https://github.com/PyAutoLabs/autolens_profiling/pull/433).
+- **Issues closed:** autolens_profiling#429.
+- **Mind record:** [`ral-route-constants-fft-levers`](https://github.com/PyAutoLabs/PyAutoMind/blob/main/complete/2026/10/ral-route-constants-fft-levers.md).
+
 ---
 
 # Interferometer W~ curvature matrix is FFT-bound on the mask extent: pruned padded FFT and real-space pixel scale on the A100

@@ -54,6 +54,12 @@ not refresh measurements or authorize compute. Historical task text is retained.
 - **Human decision 2026-10-17 (chat):** interferometer CPU work closed; GPU levers filed as research, no source changes. The library candidate (chunk `transformer.image_from` in `apply_sparse_operator`) stays unfiled. Optional measured 2e8 rows recorded as research, not a task. Status → parked.
 - [Full dated review](../checkins/2026-10-17.md). Review time does not refresh measurements or authorize compute; merge is the human's.
 
+### Post-/prm 2026-10-17
+
+- **Merged 2026-10-17 (human /prm):** [autolens_profiling#435](https://github.com/PyAutoLabs/autolens_profiling/pull/435).
+- **Issues closed:** autolens_profiling#368.
+- **Mind record:** [`interferometer-streaming-memo-after`](https://github.com/PyAutoLabs/PyAutoMind/blob/main/complete/2026/10/interferometer-streaming-memo-after.md).
+
 ---
 
 # Campaign: interferometer streaming (array-free) vs in-memory — memory and time scaling to 2e8 visibilities

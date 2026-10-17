@@ -38,6 +38,12 @@ not refresh measurements or authorize compute. Historical task text is retained.
 - **Human decision 2026-10-17 (chat):** source-plane speed-ups "not worth pursuing again, file as research". Task → complete; campaign closed as research. Blackjax stays parked. The Adam step-limit observation is recorded as a PyAutoFit search-settings note, not a task.
 - [Full dated review](../checkins/2026-10-17.md). Review time does not refresh measurements or authorize compute; merge is the human's.
 
+### Post-/prm 2026-10-17
+
+- **Merged 2026-10-17 (human /prm):** [autolens_inference#29](https://github.com/PyAutoLabs/autolens_inference/pull/29), [autolens_profiling#432](https://github.com/PyAutoLabs/autolens_profiling/pull/432).
+- **Issues closed:** autolens_inference#25, autolens_profiling#428.
+- **Mind record:** [`ps-source-gradient-admission`](https://github.com/PyAutoLabs/PyAutoMind/blob/main/complete/2026/10/ps-source-gradient-admission.md).
+
 ---
 
 # Point-source source-plane chi-squared speed-up campaign — remaining candidates (phases 1–2e shipped)

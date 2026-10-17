@@ -347,3 +347,11 @@ Not worth it (measured on the 125×125 setup unless stated):
 - **Decision record** [`direct-conv-symmetric-gate`](../decisions/direct-conv-symmetric-gate.md) added for the human decision of 2026-10-16 on PyAutoArray#635 (ymin ordering, gate 0.5 → 0.7).
 - **Human decision 2026-10-17 (chat):** interferometer CPU work is exhaustive and closed. The route-constant refit (RAL FFT/full `direct_conv` 0.68 measured vs 0.89 predicted) is deferred, not filed. Curvature preload (L3) parked: "we will come back to it soon".
 - **State:** all L-levers are shipped or parked. This task stays active only until #636 and #425 are merged and released; merge is the human's.
+
+### Post-/prm 2026-10-17
+
+- **Merged 2026-10-17 (human /prm):** [PyAutoArray#636](https://github.com/PyAutoLabs/PyAutoArray/pull/636) (pending-release), [autolens_profiling#425](https://github.com/PyAutoLabs/autolens_profiling/pull/425).
+- **Issues closed:** PyAutoArray#635.
+- **Mind record:** [`direct-conv-symmetric`](https://github.com/PyAutoLabs/PyAutoMind/blob/main/complete/2026/10/direct-conv-symmetric.md).
+- Shadow row owed in Mind `autonomy_log` (glance tier; human to confirm merged-unchanged).
+- Remaining: release of #636.
