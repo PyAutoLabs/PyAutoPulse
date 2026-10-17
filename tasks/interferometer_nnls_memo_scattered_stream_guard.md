@@ -32,6 +32,18 @@ GitHub sources and limits. Current RAL queue was empty; the transfer preview tim
 out, so historical jobs and unpulled results remain unverified. Review time does
 not refresh measurements or authorize compute. Historical task text is retained.
 
+
+## Check-in 2026-10-17 (evening)
+
+- **After-measurement on 2026.10.17.1:** autolens_profiling PR [#435](https://github.com/PyAutoLabs/autolens_profiling/pull/435) (issue #426; OPEN, CI green, unmerged). Heart read STALE ("release validation incomplete: no rehearsal for current source"); no override used. RAL job 412526, `ral` compute-10-2 (load ~10), 1 thread, 6 rounds, median memo on/off with paired-bootstrap 90 % CI:
+  - Delaunay iid at the #332 flags: 1.918 [1.887, 1.925] (2.17 in #332). 15 timed solves: 1.018 [1.013, 1.023].
+  - Delaunay walk 0.46; rect iid 0.887 / 0.987; rect walk 0.15. Figure of merit identical.
+  - Limits: the rounds re-time one fixed iid stream, so the CI covers timing noise, not stream-to-stream variation; host class differs from #332. Reported as an after-measurement, not as evidence that #613 is fixed.
+  - Harness note: clear with `nnls_memo.memo_clear()` (memo plus back-off state) on PyAutoArray ≥ 2026.10.7.1.
+- **Owed, recorded as research (not tasks):** a Nautilus evaluation-sequence replay witness; varied-seed rounds.
+- **Human decision 2026-10-17 (chat):** interferometer CPU work is exhaustive and closed. Status → parked.
+- [Full dated review](../checkins/2026-10-17.md). Review time does not refresh measurements or authorize compute; merge is the human's.
+
 ---
 
 # fnnls warm-start memo: stop it slowing scattered evaluation streams (interferometer CPU, autolens_profiling#332)

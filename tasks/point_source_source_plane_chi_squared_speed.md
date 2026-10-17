@@ -27,6 +27,17 @@ GitHub sources and limits. Current RAL queue was empty; the transfer preview tim
 out, so historical jobs and unpulled results remain unverified. Review time does
 not refresh measurements or authorize compute. Historical task text is retained.
 
+
+## Check-in 2026-10-17 (evening)
+
+- **Gradient-search admission evidence landed:** autolens_inference PR [#29](https://github.com/PyAutoLabs/autolens_inference/pull/29) (issue #25) and autolens_profiling PR [#432](https://github.com/PyAutoLabs/autolens_profiling/pull/432) (issue #428); both OPEN, CI green, unmerged. Heart read STALE ("release validation incomplete: no rehearsal for current source"); no override used.
+  - `af.MultiStartAdam`, forward gradients, 48 starts, 5 seeds, released 2026.10.17.1 wheels (jax 0.11.2), fp64, RAL CPU (`ral`, 8490H) and A100 (RAL 412495/412498).
+  - Default 300 steps: 4/5 seeds stop on the step limit, two 1.4σ off. 3000 steps: all seeds converge into the Nautilus log-L range, parameters ≤ 0.8σ from truth.
+  - Likelihood + gradient is ≤ 3.7 % of fit wall. Per step 1.7 ms CPU / 4.4 ms A100, of which 0.24 / 0.35 ms is likelihood + gradient. The A100 is slower end to end than 8 CPU cores.
+  - So a likelihood/gradient speed-up caps at a few percent of such fits.
+- **Human decision 2026-10-17 (chat):** source-plane speed-ups "not worth pursuing again, file as research". Task → complete; campaign closed as research. Blackjax stays parked. The Adam step-limit observation is recorded as a PyAutoFit search-settings note, not a task.
+- [Full dated review](../checkins/2026-10-17.md). Review time does not refresh measurements or authorize compute; merge is the human's.
+
 ---
 
 # Point-source source-plane chi-squared speed-up campaign — remaining candidates (phases 1–2e shipped)

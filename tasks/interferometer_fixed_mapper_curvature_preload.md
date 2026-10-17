@@ -40,6 +40,12 @@ GitHub sources and limits. Current RAL queue was empty; the transfer preview tim
 out, so historical jobs and unpulled results remain unverified. Review time does
 not refresh measurements or authorize compute. Historical task text is retained.
 
+
+## Check-in 2026-10-17 (evening)
+
+- **Human decision 2026-10-17 (chat):** interferometer CPU work is exhaustive and closed; curvature preload is parked — "we will come back to it soon". The phase-1 Mind draft is not started. Status → parked.
+- [Full dated review](../checkins/2026-10-17.md). Review time does not refresh measurements or authorize compute; merge is the human's.
+
 ---
 
 # Interferometer fixed-mapper searches: reuse the W~ curvature matrix across likelihood calls via `preloads.curvature_matrix`

@@ -252,7 +252,7 @@ these cells.
 | Rank | Lever | Size | State |
 |---|---|---|---|
 | L1 | One `cho_factor` of F+H for both the reconstruction solve and the log det (NumPy path, `use_positive_only_solver=False`). The positive-only path already reuses its factor. | 65 ms vs 113+81 ms at 1,405; 612 ms vs 948+654 ms at 2,947 → **−20% / −40–45% per call**. Solution change 7e-14 / 2e-11 relative, log det identical, non-PD still raises. | Filed and **in development**: Mind task `reuse-cholesky-factor`, PyAutoArray [#633](https://github.com/PyAutoLabs/PyAutoArray/issues/633). |
-| L2 | `direct_conv` symmetry: convolve only the extent rows that later-ranked (y-sorted) columns span, clipped to the mask x-span; gather the upper triangle; mirror. Exact to 2e-16. | Work 0.60× at 125, 0.42× at 512. Measured: 125 1.10× / 0.82× (overhead cancels, so not worth it there); 512 synthetic (341², 91k px, 1,428 vertices) 2.5× uncontended (63 → 25 s), but 1.03–1.10× under load. **2–2.5× at 512, unconfirmed.** | Filed (Mind draft), unstarted. If it holds, direct_conv may beat FFT at 1,459 too, and the #632 constants must be refitted. |
+| L2 | `direct_conv` symmetry: rank the source columns by top extent row (`ymin`). Each column convolves only the extent rows that later-ranked columns span, clipped to each row's mask x-range. Gather the ranked upper triangle, then mirror. Computed entries are bit-identical. Serial numba only. | Real Aris 512, RAL quiet core: **1.49× / 1.53× / 1.58×** at 1,459 / 2,577 / 5,746 vertices (f 0.511 / 0.504 / 0.495). Synthetic Aris-512: 1.83–1.90× (f ≈ 0.41). Gain over the *previous default route* at 1,459 is only ~1.02×, because FFT measures 15.32 s on the same node. | **PR-open** [PyAutoArray#636](https://github.com/PyAutoLabs/PyAutoArray/pull/636) (issue #635; pending release; merge is the human's). Default gate 0.7. Record: autolens_profiling [#425](https://github.com/PyAutoLabs/autolens_profiling/pull/425) `results/notes/interferometer_direct_conv_symmetric_2026_10.md` (PR-open). Decision: [`direct-conv-symmetric-gate`](../decisions/direct-conv-symmetric-gate.md). |
 | L3 | Fixed-mapper curvature preload: F, D, the mapper and the split mappings do not change while the lens is fixed, which is exactly a source_pix[1]-style phase with only AdaptSplit parameters free. | With L1: ~0.1 s at 1,405 (~6×), ~0.8 s at 2,947, ~1 s at 512 / 2,577 against 34–44 s (~30×). Applies to **fixed-lens phases only**; a moving lens (mass[1]) has nothing to cache. | Existing Pulse task `interferometer_fixed_mapper_curvature_preload` (ready; needs the fixed-mapper science decision). |
 
 Not worth it (measured on the 125×125 setup unless stated):
@@ -280,6 +280,55 @@ Not worth it (measured on the 125×125 setup unless stated):
   now routes it automatically.
 - **Leave `interferometer_numba_nnz_per_source_max` unset** (the cost model) unless running an A/B.
   Scripts that set it explicitly keep the old hard-gate meaning.
+- **Leave `interferometer_direct_conv_symmetric_max_work_fraction` unset** (default 0.7) once
+  PyAutoArray#636 is released. With serial numba it speeds up F by about 1.5× on multiply imaged
+  sources at no accuracy cost. Set it to `0` only for an A/B test against the full kernel.
+
+### (h) The symmetric `direct_conv` kernel and the tall-column insight (PyAutoArray#635 / #636, 2026-10-17)
+
+- **Rule.**
+  - The serial numba `direct_conv` route uses `curvature_direct_conv_symmetric` when the geometry
+    work fraction f ≤ 0.7. f is computed from the mapper triplets and the mask extent in about 1 ms,
+    before any curvature work.
+  - Its time is κf of the full kernel, with κ = 1.32. κ was fitted on the synthetic geometry
+    (log-rms 0.008) and checked out of sample on real data: predicted 1.48–1.53×, measured
+    1.49–1.58×. So the kernel wins while f < 0.76.
+  - The #632 route model scales `t_dc` by `min(1, κf)`.
+- **Tall columns from multiple imaging.**
+  - On real Aris data, each source vertex is fed by two to four lensed images, so its image-plane
+    column spans a median of **90 of 341** extent rows (p95 158), against 15 on the synthetic
+    3-NN geometry.
+  - The tall columns are not the mask-edge vertices: 0 of the 30 tallest are edge vertices.
+  - Tall columns overlap in rows, so less work can be skipped. f is about 0.50 on real data against
+    about 0.41 synthetic, which means about 1.5× rather than 1.9×.
+  - Ranking columns by **ascending `ymin`** instead of centroid lowers real-data f from 0.587 to
+    0.511. On compact columns the ordering barely matters (0.416 → 0.414).
+- **Witness.**
+  - **Setup:** RAL `euclid-ral-compute-1`, `ral`, `--exclusive`, 1 thread, load ≤ 1.0, compile
+    excluded, min of 2. Software: PyAutoArray `e59d5fa9` + v3 (PR head `62a1e3ac`), Nerves `7f3055b`,
+    Fit `9b394e73`, Galaxy `9f9ac947`, Lens `4723668a`; numba 0.65.1, numpy 2.2.6.
+  - **Curvature step:** 22.43 → 15.08 s (1,459 vertices), 22.83 → 14.95 s (2,577), 24.22 → 15.35 s
+    (5,746).
+  - **log L:** bit-identical at 1,459, relative 3e-16 at 2,577 and 2e-12 at 5,746.
+  - **5,746 log det:** Δ 0.0071 nats, which is round-off. Control job 412493: the full kernel's own
+    F, factorised from its lower versus its upper triangle, moves the log det by 0.0077 nats at
+    cond(F+H) = 7.2e13.
+  - **Memory:** peak RSS 43 GB without NUFFT chunking.
+  - **Jobs:** 412490 (step 8 + synthetic), 412491 (FFT arm), 412492 (steps 6 and 4), 412493
+    (control).
+- **Route-constant calibration gap (deferred).**
+  - At 1,459 vertices on RAL, FFT/full `direct_conv` measures **0.68**. The laptop-calibrated #632
+    constants (`c_fft` 7.62e-10, `c_dc` 1.77e-09) predict 0.89.
+  - The route the factory now picks at 1,459 (symmetric `direct_conv`, 15.08 s) is right, but only
+    by about 1.02× over FFT (15.32 s). No measured route is wrong; the margin is thin on RAL.
+  - A cluster-node refit of `c_fft / c_dc` is deferred: the human closed the interferometer CPU lane
+    (human decision 2026-10-17, chat).
+- **Not covered.**
+  - The parallel numba kernel (unchanged).
+  - The 125×125 mask, not re-timed with v3. The earlier research found the overhead cancels the
+    gain there.
+  - Other lenses: one real dataset only.
+  - κ near the 0.7 gate: the predicted 1.08× there is an extrapolation.
 
 ### Check-in 2026-10-17
 
@@ -290,3 +339,11 @@ Not worth it (measured on the 125×125 setup unless stated):
 - **Human decision 2026-10-16 (recorded on #635, not yet a Pulse decision record):** rank columns by ascending ymin; raise the default `interferometer_direct_conv_symmetric_max_work_fraction` from 0.5 to 0.7 (kernel predicted to win while κf < 1, f < 0.76). v3 implementing this is in the worktree diff (gate 0.7, ymin ordering); its test run is unconfirmed.
 - **Owed on resume (from the #635 checkpoint):** verify v3 and the full suites; RAL real-data witness on `ral`, serial (`l2_realdata.py --n-pixels 512 --mesh-step 8 --repeats 2`), gate ≥ 1.3× on the curvature step with matching logL; re-confirm the synthetic witness with ymin order; Heart check; `/ship_library` PR; write-up (autolens_profiling results note with the decision rule, this Knowledge section, decision record `direct-conv-symmetric-gate`). When L2 ships, the #632 `c_dc` constant is effectively scaled by min(1, κf) and the Aris-512 1,459-vertex cell is predicted to flip from FFT to direct_conv.
 - **RAL staging verified 2026-10-17.** `/mnt/ral/jnightin/scratch/aris_l2_20261016/` holds `aris_data/`, `PyAutoArray` and `PyAutoArray_l2` (the v3 patch still to be applied), PyAutoNerves/PyAutoFit/PyAutoGalaxy/PyAutoLens mains, `numba_cache/`, the witness scripts, patches and the 411832–411835 job outputs.
+
+## Check-in 2026-10-17 (evening)
+
+- **L2 shipped to PR.** [PyAutoArray#636](https://github.com/PyAutoLabs/PyAutoArray/pull/636) (issue #635, head `62a1e3ac`, pending-release) and autolens_profiling [#425](https://github.com/PyAutoLabs/autolens_profiling/pull/425) (results note `results/notes/interferometer_direct_conv_symmetric_2026_10.md`): both OPEN, CI green, unmerged. Heart read STALE ("release validation incomplete: no rehearsal for current source"); no override used. Merge #425 after #636.
+- **RAL real-data witness met** (≥ 1.3× on the curvature step): 1.49× / 1.53× / 1.58× at 1,459 / 2,577 / 5,746 vertices, predicted 1.48× / 1.50× / 1.53×; see Knowledge (h). Synthetic ymin order 1.83× / 1.86× / 1.90×.
+- **Decision record** [`direct-conv-symmetric-gate`](../decisions/direct-conv-symmetric-gate.md) added for the human decision of 2026-10-16 on PyAutoArray#635 (ymin ordering, gate 0.5 → 0.7).
+- **Human decision 2026-10-17 (chat):** interferometer CPU work is exhaustive and closed. The route-constant refit (RAL FFT/full `direct_conv` 0.68 measured vs 0.89 predicted) is deferred, not filed. Curvature preload (L3) parked: "we will come back to it soon".
+- **State:** all L-levers are shipped or parked. This task stays active only until #636 and #425 are merged and released; merge is the human's.

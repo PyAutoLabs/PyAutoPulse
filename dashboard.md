@@ -1,6 +1,6 @@
 # PyAutoPulse — profiling dashboard
 
-<!-- pulse-campaigns:19faf009965e3df26e5113e7c9ff26b4dcb4a5df3d156bf43e8838997abca73d -->
+<!-- pulse-campaigns:4e7b5e1126147b4593a7e870235fd9a5d367256202aaeb9408c0254298791675 -->
 ## Profiling Check In
 
 <details><summary>Full check-in prompt</summary>
@@ -25,7 +25,7 @@ After taking action, report what changed, what the evidence supports and what re
 
 </details>
 
-Last check-in: 2026-10-17T11:09:26Z (review date, not measurement freshness).
+Last check-in: 2026-10-17T15:12:59Z (review date, not measurement freshness).
 
 ## Active campaigns
 
@@ -54,28 +54,15 @@ Reviewed 2026-10-17. No new committed campaign measurements. Phases 1–4 remain
 
 </details>
 
-<details><summary>Point-source image plane · A100 — needs-decision</summary>
+<details><summary>Point-source image plane · A100 — parked</summary>
 
-Reviewed 2026-10-17. No new image-plane fit measurement found. Correctness fix #768 remains shipped; current libraries now have release 2026.10.12.1, not a measured performance baseline. Image-plane admission measurement still needs authorization. #411 merged 2026-10-13, recording the paired-round MDI reinterpretation; no new measurement. Check-in 2026-10-17: no project wiki/results/issue change since 2026-10-13 beyond autolens_profiling#420/#422/#424 (interferometer only); releases 2026.10.16.1/.2 and 2026.10.17.1 supply no new measurement.
+Reviewed 2026-10-17. Parked as research, human decision 2026-10-17 (chat) (&quot;just research to file&quot;). Reference measurement autolens_profiling#434 (issue #427, OPEN): job 412519 euclid-ral-gpu-2 exclusive A100, jax 0.10.2, fp64, 2026.10.17.1 private clone: single call 0.934 ms (pre-#768 0.910), vmap-256 0.0125 ms (0.0120), compile 6.54 s; forward gradient finite 16/16, equal to reverse to 1.6e-11; logL bit-exact; +2.7% not attributed (different node/date). A100 per-step breakdown rows unusable. Phase-2 inference fit measurement dropped; no baseline admitted.
 
 [Campaign evidence](https://github.com/PyAutoLabs/autolens_profiling/blob/4db4d988e520a82219152743748c3188d485a4ba/wiki/campaigns/point_source_gpu_breakdown.md)
 
 ### Active tasks
 
-- [Point-source A100 speed-up campaign: profile and optimize with the shared breakdown](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/point_source_image_plane_gpu_breakdown.md) — needs-decision: No new image-plane fit measurement found. Correctness fix #768 remains shipped; current libraries now have release 2026.10.12.1, not a measured performance baseline. Image-plane admission measurement still needs authorization. #411 merged 2026-10-13, recording the paired-round MDI reinterpretation; no new measurement.
-
-</details>
-
-<details><summary>Point-source source plane — parked</summary>
-
-Reviewed 2026-10-17. Core remains parked; autolens_inference#21 reorganized setup evidence but added no point-source gradient admission measurement. #408 merged median fields into 11 runtime cells; #412 merged 2026-10-13, completing headline/repeat support. No new runtime sweep; keep Blackjax parked. Check-in 2026-10-17: no project wiki/results/issue change since 2026-10-13 beyond autolens_profiling#420/#422/#424 (interferometer only); releases 2026.10.16.1/.2 and 2026.10.17.1 supply no new measurement.
-
-[Campaign evidence](https://github.com/PyAutoLabs/autolens_profiling/blob/4db4d988e520a82219152743748c3188d485a4ba/wiki/campaigns/point_source_source_plane.md)
-
-### Active tasks
-
-- [Runtime cells&#x27; A100 `single_jit` includes the post-compile warm-up — source-plane 0.642 ms vs a steady 0.267 ms on the same node](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/runtime_cell_single_jit_gpu_warmup.md) — active: #408 merged 2026-10-09: median headline fields now wired into 11 runtime cells, superseding the old imaging-not-wired note. #412 merged 2026-10-13 with remaining headline/repeat support. No new runtime sweep; fresh median evidence still missing.
-- [Point-source source-plane chi-squared speed-up campaign — remaining candidates (phases 1–2e shipped)](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/point_source_source_plane_chi_squared_speed.md) — blocked: Still blocked on a point-source gradient-sampler admission measurement. Inference #21 is setup organization, not that measurement. Keep parked.
+- [Point-source A100 speed-up campaign: profile and optimize with the shared breakdown](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/point_source_image_plane_gpu_breakdown.md) — parked: Parked, human decision 2026-10-17 (chat). Reference A100 measurement autolens_profiling#434 (OPEN, job 412519): 0.934 ms single call, 0.0125 ms at vmap-256, forward gradient fixed; phase-2 inference fit measurement dropped.
 
 </details>
 
@@ -92,19 +79,19 @@ Reviewed 2026-10-17. No campaign wiki/results change or new matching implementat
 
 </details>
 
-<details><summary>Interferometer likelihood and streaming — active</summary>
+<details><summary>Interferometer likelihood and streaming — parked</summary>
 
-Reviewed 2026-10-17. Aris large-mask (PyAutoPulse#62): library PRs PyAutoArray#630/#631/#632/#634 RELEASED in 2026.10.16.1 (2026-10-16; 2026.10.16.2 and 2026.10.17.1 followed with no further PyAutoArray change). Phase-2 route-gate record autolens_profiling#420 merged 2026-10-15; #422 (gate-60 wording historical) and #424 (lint re-pin after #634) merged 2026-10-16; project main fd29902. L1 Cholesky reuse (#634) measured on the NumPy path: solve+log-det 144.5→50.9 ms at 1,405 vertices, 1,268→373 ms at 2,947 (full call −22–24% / −51%). L2 direct_conv symmetry (PyAutoArray#635) PAUSED by the human 2026-10-16, uncommitted on worktree feature/direct-conv-symmetric (base e59d5fa9), no PR: synthetic Aris-512 serial RAL witness (job 411835) 1.81×/1.85×/1.90× at S 1,428/2,540/5,712, computed entries bit-identical; real Aris data on the laptop 1.32× (centroid order) / 1.46× (ymin order), work fraction 0.59/0.51; human decision 2026-10-16: rank by ascending ymin, default gate 0.5→0.7; v3 (ymin + 0.7) present in the worktree diff, its test run, the RAL real-data witness (≥1.3× curvature step), ship and write-up are owed. Streaming 1e8 CPU/A100 rows, the #332 memo after-measurement, curvature preload (fixed-mapper science decision) and FFT levers unchanged.
+Reviewed 2026-10-17. Evening 2026-10-17: human decision 2026-10-17 (chat): interferometer CPU work is exhaustive and closed; curvature preload parked (&quot;we will come back to it soon&quot;); GPU levers &quot;file wiki research but not make source code changes for now&quot;, so no library prompt for JAX FFT pruning. Parked at knowledge-complete. Open PRs (human&#x27;s to merge or close): L2 symmetric direct_conv PyAutoArray#636 (pending-release; real Aris RAL 1.49×/1.53×/1.58× at 1,459/2,577/5,746 vertices, logL to round-off; decision record direct-conv-symmetric-gate) + record autolens_profiling#425; A100 FFT levers #433 (pruned FFT 1.08×/1.18×/1.41× whole likelihood at alma/alma_high/jvla; pixel-scale coarsening fails the 0.5-nat bar); streaming 1e8 CPU/A100 + memo after-measurement #435. Route-constant refit (RAL FFT/full direct_conv 0.68 vs 0.89 predicted) deferred. Merge #425 after #636. Six open autolens_profiling PRs (#425, #431, #432, #433, #434, #435) all regenerate the shared catalogue/dashboard: each merge after the first needs a rebase + re-render; suggested order #425, #432, #431, #433, #434, #435. #425 after PyAutoArray#636.
 
 [Campaign evidence](https://github.com/PyAutoLabs/autolens_profiling/blob/fd29902bd09f/wiki/campaigns/interferometer_likelihood.md)
 
 ### Active tasks
 
-- [Interferometer fixed-mapper searches: reuse the W~ curvature matrix across likelihood calls via `preloads.curvature_matrix`](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/interferometer_fixed_mapper_curvature_preload.md) — ready: Phase 1 Mind draft (2026-10-04) still unstarted; run it through start_dev. Human science call first - no production SLaM stage holds the mapper fixed today.
-- [fnnls warm-start memo: stop it slowing scattered evaluation streams (interferometer CPU, autolens_profiling#332)](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/interferometer_nnls_memo_scattered_stream_guard.md) — active: Library half shipped: PyAutoArray#615 (closes #613) merged 2026-10-06, in 2026.10.7.1. Local solver-only witness (n=576): iid memo on/off 1.49x → 1.17x; walk 0.18x unchanged. Owed: re-run the autolens_profiling#332 ALMA Delaunay 2.17x after-measurement (needs compute authorization).
-- [Campaign: interferometer streaming (array-free) vs in-memory — memory and time scaling to 2e8 visibilities](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/interferometer_streaming_scaling.md) — active: Phase 1 CPU cells + results/streaming_scaling rows merged (autolens_profiling#375, 2026-10-04); wiki/campaigns/interferometer_streaming.md. Optional: 1e8 CPU row and A100 rows (compute authorization). Library candidate unfiled: chunk transformer.image_from in apply_sparse_operator (memory).
-- [Interferometer large-mask likelihood (Aris 512×512): sparse data-vector memory, AdaptSplit log-det backend parity, numba route-gate cost model](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/interferometer_large_mask_aris.md) — active: Released: #630/#631/#632/#634 in 2026.10.16.1 (2026-10-16). Phase-2 record #420 merged 2026-10-15 (table re-pinned at fd29902); #422/#424 merged 2026-10-16. L2 (PyAutoArray#635) paused 2026-10-16 with v3 (ymin order, gate 0.7) uncommitted in worktree feature/direct-conv-symmetric; synthetic witness PASS 1.81–1.90× (RAL 411835), real-data laptop 1.46× at ymin order; owed on resume: verify v3 + full suite, RAL real-data witness ≥1.3× (data and private library clones staged under scratch/aris_l2_20261016), Heart check, ship_library PR, write-up (results note, Knowledge section, decision record direct-conv-symmetric-gate). κ=1.32 means the #632 cost-model constant for direct_conv is effectively refit when L2 ships.
-- [Interferometer W~ curvature matrix is FFT-bound on the mask extent: pruned padded FFT and real-space pixel scale on the A100](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/interferometer_w_tilde_fft_size_levers.md) — ready: Unstarted (no PR/issue/branch/results, 2026-10-04). Select one bounded step when prioritised.
+- [Interferometer fixed-mapper searches: reuse the W~ curvature matrix across likelihood calls via `preloads.curvature_matrix`](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/interferometer_fixed_mapper_curvature_preload.md) — parked: Parked, human decision 2026-10-17 (chat): interferometer CPU work closed; &quot;we will come back to it soon&quot;. Phase-1 Mind draft unstarted.
+- [fnnls warm-start memo: stop it slowing scattered evaluation streams (interferometer CPU, autolens_profiling#332)](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/interferometer_nnls_memo_scattered_stream_guard.md) — parked: After-measurement at PR-open autolens_profiling#435 (issue #426, OPEN; job 412526, ral compute-10-2, load ~10, 1 thread, 6 rounds, paired bootstrap 90% CI): Delaunay iid #332 flags 1.918 [1.887,1.925] (2.17 in #332); 15 timed solves 1.018 [1.013,1.023]; Delaunay walk 0.46; rect iid 0.887/0.987; rect walk 0.15; FoM identical. Not evidence #613 is fixed. Research owed: Nautilus-replay witness, varied-seed rounds. Parked, human decision 2026-10-17 (chat).
+- [Campaign: interferometer streaming (array-free) vs in-memory — memory and time scaling to 2e8 visibilities](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/interferometer_streaming_scaling.md) — parked: Phase 2 at PR-open autolens_profiling#435 (issue #368 reopened, OPEN): from_stream chunk 65536 fp64, 1e8 vis RAL CPU 707.5 s / 1.78 GB RSS, A100 157.3 s / 1.48 GB device; compile ~3 s constant. In-memory fails at 2.5e5 (RAL 10 GB cap) and 4e6 (A100); uncapped CPU ~7.5 kB/vis. Optional 2e8 rows are research; library candidate (chunk transformer.image_from) unfiled per human decision 2026-10-17 (chat). Parked.
+- [Interferometer large-mask likelihood (Aris 512×512): sparse data-vector memory, AdaptSplit log-det backend parity, numba route-gate cost model](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/interferometer_large_mask_aris.md) — active: L2 shipped to PR: PyAutoArray#636 (head 62a1e3ac, pending-release) + autolens_profiling#425 (results note), both OPEN, CI green. RAL real-data witness 1.49×/1.53×/1.58× at 1,459/2,577/5,746 vertices (pred 1.48×/1.50×/1.53×), logL to round-off; peak RSS 43 GB without NUFFT chunking. Decision record direct-conv-symmetric-gate added. Route-constant refit (0.68 measured vs 0.89 predicted) deferred: CPU lane closed, human decision 2026-10-17 (chat). Remaining: human merge of #636 then #425, and release.
+- [Interferometer W~ curvature matrix is FFT-bound on the mask extent: pruned padded FFT and real-space pixel scale on the A100](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/interferometer_w_tilde_fft_size_levers.md) — parked: A100 research filed at PR-open autolens_profiling#433 (issue #429, OPEN; job 412515): pruned padded FFT 1.08×/1.18×/1.41× whole likelihood at alma/alma_high/jvla, F exact to 1.7e-15; pixel-scale coarsening shifts log evidence by +1,310 to +2,757 nats (fails). No library prompt, human decision 2026-10-17 (chat). Parked.
 
 </details>
 
@@ -121,21 +108,33 @@ Reviewed 2026-10-17. Retain the 2026-10-08 human decision: Jacobi for Mapper, ra
 
 <details><summary>Production imaging and likelihood breakdown — active</summary>
 
-Reviewed 2026-10-17. No new production-over-sampling or post-certified measurements. #408 now adds median headline fields to runtime cells; #412 merged 2026-10-13 and extends remaining headline surfaces. Production presets, memo-blind harness, cumulative MGE steps and quick-update costs remain separate pending work. Scope production-preset phase 1 (CPU smoke only); A100 measurement separately authorized. New related library evidence: PyAutoArray#624/#625 (numba Sibson kernel; DelaunayNN within 2× Delaunay on Aris 1,405) released 2026.10.16.1; follow-up PyAutoArray#629 (imaging DelaunayNN still ~2.7× Delaunay at sub_size 4: unique_mappings 0.30 vs 0.10 s, adaptive_pixel_signals 0.16 vs 0.01 s; laptop, threads=1, load 3–5, not a controlled measurement) is open and its Mind draft expects a Pulse campaign delaunay-nn-cpu that does not yet exist — human decision whether to open one.
+Reviewed 2026-10-17. Production over-sampling phase 1 at PR-open: autolens_profiling#431 (issue #430, OPEN, CPU smoke 8/8): --over-sampling {flat1,production} on the 4 JAX Delaunay/DelaunayNN cells, euclid/hst presets. Findings: HST flat-1 adapt_split pin fails on unmodified main (29155.000 vs 29140.296); numba cells&#x27; production threshold never reaches sub 4 for HST; rectangular JAX cells uncovered. Phase 2 (A100 production re-measure) needs-decision (human decision 2026-10-17 (chat): undecided). DelaunayNN imaging moved to the parked delaunay-nn-cpu campaign. Post-certified, quick-update plotting and other tasks unchanged.
 
 [Campaign evidence](https://github.com/PyAutoLabs/autolens_profiling/blob/4db4d988e520a82219152743748c3188d485a4ba/wiki/campaigns/post_certified_breakdown.md)
 
 ### Active tasks
 
-- [Profile imaging pixelizations at production over-sampling](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/imaging_production_over_sampling.md) — ready: Phase 1 (workspace-only): --instrument euclid\|hst presets for the JAX Delaunay runtime/breakdown cells, keeping flat-1 selectable; CPU smoke only. A100 re-measure is a separate compute-authorized phase.
+- [Profile imaging pixelizations at production over-sampling](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/imaging_production_over_sampling.md) — needs-decision: Phase 1 at PR-open: autolens_profiling#431 (issue #430, OPEN, CPU smoke 8/8). Phase 2 A100 production re-measure needs-decision (human decision 2026-10-17 (chat): undecided); requires #431 merged and compute authorization. Findings: HST flat-1 adapt_split pin fails on main; numba HST threshold never reaches sub 4; rectangular JAX cells uncovered.
 - [Assess remaining likelihood bottlenecks after certified solver integration on CPU and GPUs](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/post_certified_solver_likelihood_breakdown.md) — needs-slicing: Blocked-by is stale: resolved 2026-09-27 (PyAutoArray#567 in 2026.9.26.1). Unissued; scope one bounded phase from the full task contract.
 - [Quick-update plotting cost — minutes per update, and it is not JAX compile](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/quick_update_plotting_cost.md) — ready: Unchanged; targets PyAutoLens/PyAutoGalaxy (PyAutoLens#680 closed 2026-07-31, no follow-up issue). Select one bounded step when prioritised.
 
 </details>
 
+<details><summary>DelaunayNN (Sibson) mesh at Delaunay cost on the numba/NumPy CPU path — parked</summary>
+
+Reviewed 2026-10-17. Created parked, human decision 2026-10-17 (chat): &quot;file in research to come back to in the future&quot;. PyAutoArray#637 (issue #629, OPEN, pending-release, CI 3 legs green): RAL compute-10-4 exclusive 1 thread A-B-B-A ×2, 1,030 vertices / 15,380 px: NN sub4 0.569→0.392 s (2.20× Delaunay, was 3.00×), sub2 0.235→0.189 s (1.75×); logL bit-identical; fixes the size-0 Sibson NaN case. ~1.5× target not met; remaining cost is Sibson (~0.16 s) + wider curvature rows. Target and two hazards recorded as future work, not filed.
+
+[Campaign evidence](https://github.com/PyAutoLabs/PyAutoArray/pull/637)
+
+### Active tasks
+
+- [DelaunayNN (Sibson) imaging likelihood at close to Delaunay cost on the numba/NumPy CPU path](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/delaunay_nn_cpu_imaging.md) — parked: Parked, human decision 2026-10-17 (chat). PyAutoArray#637 (OPEN, pending-release) at PR-open: sub4 2.20× Delaunay (was 3.00×), sub2 1.75×; logL bit-identical. Future (unfiled): ~1.5× target; hazards sub_slim_indexes_for_pix_index padding and Sibson rows with mid-row gaps.
+
+</details>
+
 <details><summary>Measurement reliability and profiling tools — active</summary>
 
-Reviewed 2026-10-17. Timing audit #410–#412 and raw HST/MGE pilot producer #416 merged; implementation issues #362/#415 closed. No fresh production measurements or scientific acceptance. C1/C11 repeat counts, C5 estimator policy, memo interpretation, fresh runtime repeats and other tools remain pending. Check-in 2026-10-17: autolens_profiling#418 (pilot qualification design) open since 2026-10-13 with CI green and no review; #417 open; no new measurements.
+Reviewed 2026-10-17. Timing audit #410–#412 and raw HST/MGE pilot producer #416 merged; implementation issues #362/#415 closed. No fresh production measurements or scientific acceptance. C1/C11 repeat counts, C5 estimator policy, memo interpretation, fresh runtime repeats and other tools remain pending. #418 and #417 open. Evening 2026-10-17 merge-order note: Six open autolens_profiling PRs (#425, #431, #432, #433, #434, #435) all regenerate the shared catalogue/dashboard: each merge after the first needs a rebase + re-render; suggested order #425, #432, #431, #433, #434, #435. #425 after PyAutoArray#636.
 
 [Campaign evidence](https://github.com/PyAutoLabs/autolens_profiling/pull/416)
 
@@ -330,9 +329,10 @@ Project `autofit_profiling`, scope `pyautofit-profiling`, read from [PyAutoLabs/
 </details>
 
 
-<!-- decision-history:20f0256fc1d56eda82a910f81ddb71d393e76eeaf26e486d9c836b00282b99f9 -->
+<!-- decision-history:731ca0edc0c01337b75841f88d79bd1838b31ba05910928a6353dc43150ca0ea -->
 ## Decision History
 
+- <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/direct-conv-symmetric-gate.md">Gate the symmetric direct_conv kernel at work fraction 0.7, with ymin column ordering</a>
 - <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/interferometer-route-gate-cost-model.md">Route interferometer curvature by a calibrated two-constant cost model</a>
 - <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/adaptsplit-zero-weight-delaunay-only.md">Exclude zero-weight mappings from AdaptSplit pixel signals on Delaunay meshes only</a>
 - <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/linear-solver-mapper-default-jacobi.md">Keep Jacobi PDIP as the Mapper default and raw+polish as the MGE-only default</a>

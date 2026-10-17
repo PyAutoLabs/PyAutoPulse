@@ -26,6 +26,15 @@ GitHub sources and limits. Current RAL queue was empty; the transfer preview tim
 out, so historical jobs and unpulled results remain unverified. Review time does
 not refresh measurements or authorize compute. Historical task text is retained.
 
+
+## Check-in 2026-10-17 (evening)
+
+- **Measured on the A100** under autolens_profiling issue #429, PR [#433](https://github.com/PyAutoLabs/autolens_profiling/pull/433) (OPEN, CI green, unmerged; titles still name the CPU route constants, which were dropped). RAL job 412515, `euclid-ral-gpu-1`, A100 80GB, JAX 0.10.2, fp64, private 2026.10.17.1 stack, compile excluded. Note `results/notes/interferometer_w_tilde_fft_size_levers_2026_10.md`; witness `results/breakdown/interferometer/jvla/delaunay_hpc_a100_fp64_fft_prune.json`. Heart read STALE ("release validation incomplete: no rehearsal for current source"); no override used.
+- **(1) Pruned padded FFT vs library F** (Delaunay-1500, batch 128): alma 140² 17.97 → 14.49 ms, alma_high 280² 65.45 → 50.96 ms, jvla 700² 499.6 → 351.2 ms (F saving 19.4 / 22.1 / 29.7 %; whole likelihood 1.08× / 1.18× / 1.41×). F max rel diff ≤ 1.7e-15 (bar 1e-12), figure-of-merit shift 0 (bar 1e-6 nats). The saving grows with extent; four 1-D cuFFT calls beat one 2-D call at every extent measured.
+- **(2) Real-space pixel scale at jvla:** 0.015 / 0.02 / 0.025″ instead of 0.01″ cuts F 1.53× / 4.09× / 7.61× but shifts log evidence +1,310 / +1,807 / +2,757 nats (mesh rebuilt per scale), failing the 0.5-nat bar: a modelling choice, not a speed setting. No workspace docs prompt. At 0.015″ the padded length 932 = 2²·233 limits the gain (awkward FFT lengths matter on the GPU too).
+- **Human decision 2026-10-17 (chat):** interferometer GPU levers — "file wiki research but not make source code changes for now". The PyAutoArray `apply_operator` JAX pruning prompt is NOT filed; the prototype (`apply_pruned` / `curvature_pruned` in `scripts/interferometer/delaunay/fft_size_levers.py`) stays in the project. Route-constant refit on CPU deferred (CPU lane closed). Status → parked (research filed).
+- [Full dated review](../checkins/2026-10-17.md). Review time does not refresh measurements or authorize compute; merge is the human's.
+
 ---
 
 # Interferometer W~ curvature matrix is FFT-bound on the mask extent: pruned padded FFT and real-space pixel scale on the A100

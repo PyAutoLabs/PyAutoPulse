@@ -42,6 +42,18 @@ GitHub sources and limits. Current RAL queue was empty; the transfer preview tim
 out, so historical jobs and unpulled results remain unverified. Review time does
 not refresh measurements or authorize compute. Historical task text is retained.
 
+
+## Check-in 2026-10-17 (evening)
+
+- **Phase 2 measured:** autolens_profiling PR [#435](https://github.com/PyAutoLabs/autolens_profiling/pull/435) (issue #368 reopened; OPEN, CI green, unmerged). Heart read STALE ("release validation incomplete: no rehearsal for current source"); no override used. Streaming (`from_stream`, chunk 65536, fp64, synthetic 400×400 mask NUFFT), compile split from execution:
+  - 1e8 visibilities, RAL CPU (`ral`, Xeon 8490H, 8 threads): 707.5 s wall, 3.1 s compile, 1.78 GB peak RSS; 7.04 s per 1e6 vis.
+  - 1e8 visibilities, A100: 157.3 s wall, 3.6 s compile, 1.48 GB device; 1.53 s per 1e6 vis. Compile is constant at ~3 s across N_vis.
+  - In-memory: the RAL CPU 10 GB cap fails at 2.5e5; uncapped, 1.6e7 in 68.3 s at 119.3 GB (~7.5 kB/vis). The A100 fails at 4e6 (46.2 GB vs the 63.8 GB limit). Streaming is the only route to ALMA-cube visibility counts on either device.
+  - Streamed vs in-memory parity: 1.2e-9 nats at 5e5, 6.1e-8 at 4e6.
+  - Cap-failure points are host-dependent; quote uncapped peak RSS as the portable memory figure.
+- **Human decision 2026-10-17 (chat):** interferometer CPU work closed; GPU levers filed as research, no source changes. The library candidate (chunk `transformer.image_from` in `apply_sparse_operator`) stays unfiled. Optional measured 2e8 rows recorded as research, not a task. Status → parked.
+- [Full dated review](../checkins/2026-10-17.md). Review time does not refresh measurements or authorize compute; merge is the human's.
+
 ---
 
 # Campaign: interferometer streaming (array-free) vs in-memory — memory and time scaling to 2e8 visibilities

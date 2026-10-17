@@ -39,6 +39,13 @@ GitHub sources and limits. Current RAL queue was empty; the transfer preview tim
 out, so historical jobs and unpulled results remain unverified. Review time does
 not refresh measurements or authorize compute. Historical task text is retained.
 
+
+## Check-in 2026-10-17 (evening)
+
+- **Fresh median evidence:** autolens_profiling PR [#432](https://github.com/PyAutoLabs/autolens_profiling/pull/432) (OPEN, CI green, unmerged), 2026.10.17.1 wheels. Source-plane solved runtime cell: A100 median 0.233 ms (`single_jit` 0.347 ms); RAL CPU median 0.147 ms (`single_jit` 0.177 ms). Pins pass. `single_jit` sits above the median on both, so the "first block after compile" label and the quote-the-median rule hold. Heart read STALE ("release validation incomplete: no rehearsal for current source"); no override used.
+- Task → complete (witness met at PR-open; merge is the human's). Remaining release-sweep cells gain the field at the next full sweep.
+- [Full dated review](../checkins/2026-10-17.md). Review time does not refresh measurements or authorize compute; merge is the human's.
+
 ---
 
 # Runtime cells' A100 `single_jit` includes the post-compile warm-up — source-plane 0.642 ms vs a steady 0.267 ms on the same node

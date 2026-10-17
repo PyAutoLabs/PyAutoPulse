@@ -12,3 +12,7 @@ decisions:
   title: Route interferometer curvature by a calibrated two-constant cost model
   date: '2026-10-15'
   url: https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/interferometer-route-gate-cost-model.md
+- id: direct-conv-symmetric-gate
+  title: Gate the symmetric direct_conv kernel at work fraction 0.7, with ymin column ordering
+  date: '2026-10-16'
+  url: https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/direct-conv-symmetric-gate.md
