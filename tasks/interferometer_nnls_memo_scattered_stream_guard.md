@@ -44,6 +44,12 @@ not refresh measurements or authorize compute. Historical task text is retained.
 - **Human decision 2026-10-17 (chat):** interferometer CPU work is exhaustive and closed. Status → parked.
 - [Full dated review](../checkins/2026-10-17.md). Review time does not refresh measurements or authorize compute; merge is the human's.
 
+### Post-/prm 2026-10-17
+
+- **Merged 2026-10-17 (human /prm):** [autolens_profiling#435](https://github.com/PyAutoLabs/autolens_profiling/pull/435).
+- **Issues closed:** autolens_profiling#426.
+- **Mind record:** [`interferometer-streaming-memo-after`](https://github.com/PyAutoLabs/PyAutoMind/blob/main/complete/2026/10/interferometer-streaming-memo-after.md).
+
 ---
 
 # fnnls warm-start memo: stop it slowing scattered evaluation streams (interferometer CPU, autolens_profiling#332)

@@ -51,6 +51,12 @@ not refresh measurements or authorize compute. Historical task text is retained.
 - **Human decision 2026-10-17 (chat):** image plane is "just research to file". Campaign and task → parked with this as the reference measurement; the phase-2 autolens_inference image-plane fit measurement is dropped. No baseline admission is recorded.
 - [Full dated review](../checkins/2026-10-17.md). Review time does not refresh measurements or authorize compute; merge is the human's.
 
+### Post-/prm 2026-10-17
+
+- **Merged 2026-10-17 (human /prm):** [autolens_profiling#434](https://github.com/PyAutoLabs/autolens_profiling/pull/434).
+- **Issues closed:** autolens_profiling#427.
+- **Mind record:** [`point-source-image-gpu-admission`](https://github.com/PyAutoLabs/PyAutoMind/blob/main/complete/2026/10/point-source-image-gpu-admission.md).
+
 ---
 
 # Point-source A100 speed-up campaign: profile and optimize with the shared breakdown

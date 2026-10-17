@@ -58,3 +58,9 @@ Per the human decision of 2026-10-17 these stay as research:
 - Campaign created parked (human decision 2026-10-17, chat). #637 recorded at PR-open; it is file-
   disjoint from PyAutoArray#636 and independent of it.
 - [Full dated review](../checkins/2026-10-17.md).
+
+### Post-/prm 2026-10-17
+
+- **Merged 2026-10-17 (human /prm):** [PyAutoArray#637](https://github.com/PyAutoLabs/PyAutoArray/pull/637) (pending-release).
+- **Issues closed:** PyAutoArray#629.
+- **Mind record:** [`delaunaynn-wide-row-overhead`](https://github.com/PyAutoLabs/PyAutoMind/blob/main/complete/2026/10/delaunaynn-wide-row-overhead.md).

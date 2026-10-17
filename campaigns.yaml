@@ -10,7 +10,7 @@ campaigns:
     settings, witness/tolerances and background-load method. No freeze, compute or acceptance authorized.
     Check-in 2026-10-17: no project wiki/results/issue change since 2026-10-13 beyond
     autolens_profiling#420/#422/#424 (interferometer only); releases 2026.10.16.1/.2 and 2026.10.17.1 supply no
-    new measurement.'
+    new measurement. Post-/prm 2026-10-17: autolens_profiling#418 (pilot qualification design) merged after an independent review (FINDINGS, none blocking); issue #417 closed; Mind record complete/2026/10/hst-mge-pilot-qualification.md. Carried to the next bounded step: background-load method (none proposed), the 1e-8 relative image L2 budget (likely unattainable; synthetic-harness calibration must be allowed to revise tolerances), and the correctness-process feasibility needed before the 32-process budget is final.'
   evidence: https://github.com/PyAutoLabs/autolens_profiling/pull/416
 - id: point-source-image-cpu
   title: Point-source image plane · CPU
@@ -27,22 +27,25 @@ campaigns:
   title: Point-source image plane · A100
   status: parked
   updated: '2026-10-17'
-  next: 'Parked as research, human decision 2026-10-17 (chat) ("just research to file"). Reference measurement autolens_profiling#434
-    (issue #427, OPEN): job 412519 euclid-ral-gpu-2 exclusive A100, jax 0.10.2, fp64, 2026.10.17.1 private clone:
-    single call 0.934 ms (pre-#768 0.910), vmap-256 0.0125 ms (0.0120), compile 6.54 s; forward gradient finite 16/16,
-    equal to reverse to 1.6e-11; logL bit-exact; +2.7% not attributed (different node/date). A100 per-step breakdown
-    rows unusable. Phase-2 inference fit measurement dropped; no baseline admitted.'
+  next: 'Parked as research, human decision 2026-10-17 (chat) ("just research to file"). Reference measurement
+    autolens_profiling#434 (issue #427 closed) merged 2026-10-17 (human /prm): job 412519 euclid-ral-gpu-2 exclusive
+    A100, jax 0.10.2, fp64, 2026.10.17.1 private clone: single call 0.934 ms (pre-#768 0.910), vmap-256 0.0125 ms
+    (0.0120), compile 6.54 s; forward gradient finite 16/16, equal to reverse to 1.6e-11; logL bit-exact; +2.7% not
+    attributed (different node/date). A100 per-step breakdown rows unusable. Phase-2 inference fit measurement
+    dropped; no baseline admitted. Records:
+    https://github.com/PyAutoLabs/PyAutoMind/blob/main/complete/2026/10/point-source-image-gpu-admission.md.'
   evidence: https://github.com/PyAutoLabs/autolens_profiling/blob/4db4d988e520a82219152743748c3188d485a4ba/wiki/campaigns/point_source_gpu_breakdown.md
 - id: point-source-source
   title: Point-source source plane
   status: complete
   updated: '2026-10-17'
   next: 'Closed as research, human decision 2026-10-17 (chat): source-plane speed-ups "not worth pursuing again".
-    Evidence: autolens_inference#29 (issue #25) + autolens_profiling#432 (issue #428), both OPEN at PR-open: MultiStartAdam
-    forward gradients, 48 starts, 5 seeds, 2026.10.17.1 wheels (jax 0.11.2), fp64; likelihood+gradient ≤3.7% of fit
-    wall, A100 slower end to end than 8 CPU cores; default 300 steps stops 4/5 seeds on the limit, 3000 converges.
-    Runtime cell medians A100 0.233 ms / RAL CPU 0.147 ms. Blackjax stays parked; Adam step limit recorded as a PyAutoFit
-    search-settings note.'
+    Evidence: autolens_inference#29 (issue #25) + autolens_profiling#432 (issue #428), both merged 2026-10-17 (human
+    /prm), issues closed: MultiStartAdam forward gradients, 48 starts, 5 seeds, 2026.10.17.1 wheels (jax 0.11.2),
+    fp64; likelihood+gradient ≤3.7% of fit wall, A100 slower end to end than 8 CPU cores; default 300 steps stops 4/5
+    seeds on the limit, 3000 converges. Runtime cell medians A100 0.233 ms / RAL CPU 0.147 ms. Blackjax stays parked;
+    Adam step limit recorded as a PyAutoFit search-settings note. Records:
+    https://github.com/PyAutoLabs/PyAutoMind/blob/main/complete/2026/10/ps-source-gradient-admission.md.'
   evidence: https://github.com/PyAutoLabs/autolens_profiling/blob/4db4d988e520a82219152743748c3188d485a4ba/wiki/campaigns/point_source_source_plane.md
 - id: cluster-pointsolver
   title: Cluster PointSolver robustness and performance
@@ -58,16 +61,18 @@ campaigns:
   title: Interferometer likelihood and streaming
   status: parked
   updated: '2026-10-17'
-  next: 'Evening 2026-10-17: human decision 2026-10-17 (chat): interferometer CPU work is exhaustive and closed; curvature
-    preload parked ("we will come back to it soon"); GPU levers "file wiki research but not make source code changes
-    for now", so no library prompt for JAX FFT pruning. Parked at knowledge-complete. Open PRs (human''s to merge
-    or close): L2 symmetric direct_conv PyAutoArray#636 (pending-release; real Aris RAL 1.49×/1.53×/1.58× at 1,459/2,577/5,746
-    vertices, logL to round-off; decision record direct-conv-symmetric-gate) + record autolens_profiling#425; A100
-    FFT levers #433 (pruned FFT 1.08×/1.18×/1.41× whole likelihood at alma/alma_high/jvla; pixel-scale coarsening
-    fails the 0.5-nat bar); streaming 1e8 CPU/A100 + memo after-measurement #435. Route-constant refit (RAL FFT/full
-    direct_conv 0.68 vs 0.89 predicted) deferred. Merge #425 after #636. Six open autolens_profiling PRs (#425, #431,
-    #432, #433, #434, #435) all regenerate the shared catalogue/dashboard: each merge after the first needs a rebase
-    + re-render; suggested order #425, #432, #431, #433, #434, #435. #425 after PyAutoArray#636.'
+  next: 'Evening 2026-10-17: human decision 2026-10-17 (chat): interferometer CPU work is exhaustive and closed;
+    curvature preload parked ("we will come back to it soon"); GPU levers "file wiki research but not make source code
+    changes for now", so no library prompt for JAX FFT pruning. Parked at knowledge-complete. All merged 2026-10-17
+    (human /prm), pending release for the library PRs: L2 symmetric direct_conv PyAutoArray#636 (issue #635 closed,
+    pending-release; real Aris RAL 1.49×/1.53×/1.58× at 1,459/2,577/5,746 vertices, logL to round-off; decision record
+    direct-conv-symmetric-gate) + record autolens_profiling#425; A100 FFT levers #433 (issue #429 closed) (pruned FFT
+    1.08×/1.18×/1.41× whole likelihood at alma/alma_high/jvla; pixel-scale coarsening fails the 0.5-nat bar);
+    streaming 1e8 CPU/A100 + memo after-measurement #435 (issues #368, #426 closed). Route-constant refit (RAL
+    FFT/full direct_conv 0.68 vs 0.89 predicted) deferred. Merged in order #636, #425, #432, #431, #433, #434, #435.
+    Records: https://github.com/PyAutoLabs/PyAutoMind/blob/main/complete/2026/10/direct-conv-symmetric.md,
+    https://github.com/PyAutoLabs/PyAutoMind/blob/main/complete/2026/10/ral-route-constants-fft-levers.md,
+    https://github.com/PyAutoLabs/PyAutoMind/blob/main/complete/2026/10/interferometer-streaming-memo-after.md.'
   evidence: https://github.com/PyAutoLabs/autolens_profiling/blob/fd29902bd09f/wiki/campaigns/interferometer_likelihood.md
 - id: linear-solver
   title: Linear-solver accuracy and cost
@@ -84,22 +89,24 @@ campaigns:
   title: Production imaging and likelihood breakdown
   status: active
   updated: '2026-10-17'
-  next: 'Production over-sampling phase 1 at PR-open: autolens_profiling#431 (issue #430, OPEN, CPU smoke 8/8): --over-sampling
-    {flat1,production} on the 4 JAX Delaunay/DelaunayNN cells, euclid/hst presets. Findings: HST flat-1 adapt_split
-    pin fails on unmodified main (29155.000 vs 29140.296); numba cells'' production threshold never reaches sub 4
-    for HST; rectangular JAX cells uncovered. Phase 2 (A100 production re-measure) needs-decision (human decision
-    2026-10-17 (chat): undecided). DelaunayNN imaging moved to the parked delaunay-nn-cpu campaign. Post-certified,
-    quick-update plotting and other tasks unchanged.'
+  next: 'Production over-sampling phase 1 merged 2026-10-17 (human /prm): autolens_profiling#431 (issue #430 closed,
+    CPU smoke 8/8): --over-sampling {flat1,production} on the 4 JAX Delaunay/DelaunayNN cells, euclid/hst presets.
+    Findings: HST flat-1 adapt_split pin fails on unmodified main (29155.000 vs 29140.296); numba cells'' production
+    threshold never reaches sub 4 for HST; rectangular JAX cells uncovered. Phase 2 (A100 production re-measure)
+    needs-decision (human decision 2026-10-17 (chat): undecided). DelaunayNN imaging moved to the parked
+    delaunay-nn-cpu campaign. Post-certified, quick-update plotting and other tasks unchanged. Records:
+    https://github.com/PyAutoLabs/PyAutoMind/blob/main/complete/2026/10/imaging-production-over-sampling.md. Human decision 2026-10-17 (chat): hold off on phase 2 (A100 production over-sampling re-measure); not authorized, revisit when production imaging needs a cost picture.'
   evidence: https://github.com/PyAutoLabs/autolens_profiling/blob/4db4d988e520a82219152743748c3188d485a4ba/wiki/campaigns/post_certified_breakdown.md
 - id: delaunay-nn-cpu
   title: DelaunayNN (Sibson) mesh at Delaunay cost on the numba/NumPy CPU path
   status: parked
   updated: '2026-10-17'
-  next: 'Created parked, human decision 2026-10-17 (chat): "file in research to come back to in the future". PyAutoArray#637
-    (issue #629, OPEN, pending-release, CI 3 legs green): RAL compute-10-4 exclusive 1 thread A-B-B-A ×2, 1,030 vertices
-    / 15,380 px: NN sub4 0.569→0.392 s (2.20× Delaunay, was 3.00×), sub2 0.235→0.189 s (1.75×); logL bit-identical;
-    fixes the size-0 Sibson NaN case. ~1.5× target not met; remaining cost is Sibson (~0.16 s) + wider curvature rows.
-    Target and two hazards recorded as future work, not filed.'
+  next: 'Created parked, human decision 2026-10-17 (chat): "file in research to come back to in the future".
+    PyAutoArray#637 (issue #629 closed) merged 2026-10-17 (human /prm), pending-release: RAL compute-10-4 exclusive 1
+    thread A-B-B-A ×2, 1,030 vertices / 15,380 px: NN sub4 0.569→0.392 s (2.20× Delaunay, was 3.00×), sub2 0.235→0.189
+    s (1.75×); logL bit-identical; fixes the size-0 Sibson NaN case. ~1.5× target not met; remaining cost is Sibson
+    (~0.16 s) + wider curvature rows. Target and two hazards recorded as future work, not filed. Records:
+    https://github.com/PyAutoLabs/PyAutoMind/blob/main/complete/2026/10/delaunaynn-wide-row-overhead.md.'
   evidence: https://github.com/PyAutoLabs/PyAutoArray/pull/637
 - id: measurement-tools
   title: Measurement reliability and profiling tools
@@ -165,7 +172,7 @@ tasks:
   updated: '2026-10-13'
   next: 'Review the Pulse collection choices (candidate input hashes and 31-worker resource plan verified without
     execution) alongside project correctness audit #417. Resolve data origin/suitability, named host/stack/full
-    settings, witness/tolerances and background-load method. No freeze, compute or acceptance authorized.'
+    settings, witness/tolerances and background-load method. No freeze, compute or acceptance authorized. Post-/prm 2026-10-17: #418 merged (QUALIFICATION.md), #417 closed; record https://github.com/PyAutoLabs/PyAutoMind/blob/main/complete/2026/10/hst-mge-pilot-qualification.md. Next bounded step: the synthetic witness harness that also fixes the background-load method and calibrates tolerances; still no collection, freeze or acceptance authorized.'
   issue: https://github.com/PyAutoLabs/autolens_profiling/issues/415
   evidence: https://github.com/PyAutoLabs/autolens_profiling/pull/416
 - id: runtime_cell_single_jit_gpu_warmup
@@ -176,8 +183,10 @@ tasks:
   priority: low
   path: tasks/runtime_cell_single_jit_gpu_warmup.md
   updated: '2026-10-17'
-  next: 'Fresh medians at PR-open, autolens_profiling#432 (OPEN), 2026.10.17.1 wheels: A100 0.233 ms (single_jit 0.347),
-    RAL CPU 0.147 ms (0.177); pins pass. Remaining release-sweep cells gain the field at the next full sweep.'
+  next: 'Fresh medians in autolens_profiling#432, merged 2026-10-17 (human /prm), 2026.10.17.1 wheels: A100 0.233 ms
+    (single_jit 0.347), RAL CPU 0.147 ms (0.177); pins pass. Remaining release-sweep cells gain the field at the next
+    full sweep. Records:
+    https://github.com/PyAutoLabs/PyAutoMind/blob/main/complete/2026/10/ps-source-gradient-admission.md.'
   issue: https://github.com/PyAutoLabs/autolens_profiling/issues/371
   evidence: https://github.com/PyAutoLabs/autolens_profiling/blob/719459fefb40c7e5be157f652818dbf923830557/scripts/point_source_source/source_plane/likelihood_runtime_solved.py
 - id: timing_noise_audit
@@ -294,14 +303,15 @@ tasks:
 - id: imaging_production_over_sampling
   campaign: imaging
   title: Profile imaging pixelizations at production over-sampling
-  status: needs-decision
+  status: parked
   priority: normal
   path: tasks/imaging_production_over_sampling.md
   updated: '2026-10-17'
-  next: 'Phase 1 at PR-open: autolens_profiling#431 (issue #430, OPEN, CPU smoke 8/8). Phase 2 A100 production re-measure
-    needs-decision (human decision 2026-10-17 (chat): undecided); requires #431 merged and compute authorization.
-    Findings: HST flat-1 adapt_split pin fails on main; numba HST threshold never reaches sub 4; rectangular JAX cells
-    uncovered.'
+  next: 'Phase 1 merged 2026-10-17 (human /prm): autolens_profiling#431 (issue #430 closed, CPU smoke 8/8). Phase 2
+    A100 production re-measure needs-decision (human decision 2026-10-17 (chat): undecided); requires compute
+    authorization (#431 now merged). Findings: HST flat-1 adapt_split pin fails on main; numba HST threshold never
+    reaches sub 4; rectangular JAX cells uncovered. Records:
+    https://github.com/PyAutoLabs/PyAutoMind/blob/main/complete/2026/10/imaging-production-over-sampling.md. Human decision 2026-10-17 (chat): phase 2 A100 re-measure held; task stays parked at phase 1 shipped (#431).'
   evidence: https://github.com/PyAutoLabs/PyAutoArray/pull/606
 - id: interferometer_decision_matrix_last_cell
   campaign: interferometer
@@ -333,11 +343,12 @@ tasks:
   priority: medium
   path: tasks/interferometer_nnls_memo_scattered_stream_guard.md
   updated: '2026-10-17'
-  next: 'After-measurement at PR-open autolens_profiling#435 (issue #426, OPEN; job 412526, ral compute-10-2, load
-    ~10, 1 thread, 6 rounds, paired bootstrap 90% CI): Delaunay iid #332 flags 1.918 [1.887,1.925] (2.17 in #332);
-    15 timed solves 1.018 [1.013,1.023]; Delaunay walk 0.46; rect iid 0.887/0.987; rect walk 0.15; FoM identical.
-    Not evidence #613 is fixed. Research owed: Nautilus-replay witness, varied-seed rounds. Parked, human decision
-    2026-10-17 (chat).'
+  next: 'After-measurement autolens_profiling#435 merged 2026-10-17 (human /prm) (issue #426 closed; job 412526, ral
+    compute-10-2, load ~10, 1 thread, 6 rounds, paired bootstrap 90% CI): Delaunay iid #332 flags 1.918 [1.887,1.925]
+    (2.17 in #332); 15 timed solves 1.018 [1.013,1.023]; Delaunay walk 0.46; rect iid 0.887/0.987; rect walk 0.15; FoM
+    identical. Not evidence #613 is fixed. Research owed: Nautilus-replay witness, varied-seed rounds. Parked, human
+    decision 2026-10-17 (chat). Records:
+    https://github.com/PyAutoLabs/PyAutoMind/blob/main/complete/2026/10/interferometer-streaming-memo-after.md.'
   issue: https://github.com/PyAutoLabs/PyAutoArray/issues/613
   evidence: https://github.com/PyAutoLabs/PyAutoArray/pull/615
 - id: interferometer_streaming_scaling
@@ -347,10 +358,11 @@ tasks:
   priority: high
   path: tasks/interferometer_streaming_scaling.md
   updated: '2026-10-17'
-  next: 'Phase 2 at PR-open autolens_profiling#435 (issue #368 reopened, OPEN): from_stream chunk 65536 fp64, 1e8
-    vis RAL CPU 707.5 s / 1.78 GB RSS, A100 157.3 s / 1.48 GB device; compile ~3 s constant. In-memory fails at 2.5e5
-    (RAL 10 GB cap) and 4e6 (A100); uncapped CPU ~7.5 kB/vis. Optional 2e8 rows are research; library candidate (chunk
-    transformer.image_from) unfiled per human decision 2026-10-17 (chat). Parked.'
+  next: 'Phase 2 autolens_profiling#435 merged 2026-10-17 (human /prm) (issue #368 closed): from_stream chunk 65536
+    fp64, 1e8 vis RAL CPU 707.5 s / 1.78 GB RSS, A100 157.3 s / 1.48 GB device; compile ~3 s constant. In-memory fails
+    at 2.5e5 (RAL 10 GB cap) and 4e6 (A100); uncapped CPU ~7.5 kB/vis. Optional 2e8 rows are research; library
+    candidate (chunk transformer.image_from) unfiled per human decision 2026-10-17 (chat). Parked. Records:
+    https://github.com/PyAutoLabs/PyAutoMind/blob/main/complete/2026/10/interferometer-streaming-memo-after.md.'
   issue: https://github.com/PyAutoLabs/autolens_profiling/issues/368
   evidence: https://github.com/PyAutoLabs/autolens_profiling/blob/719459fefb40c7e5be157f652818dbf923830557/wiki/campaigns/interferometer_streaming.md
 - id: interferometer_large_mask_aris
@@ -361,10 +373,12 @@ tasks:
   path: tasks/interferometer_large_mask_aris.md
   updated: '2026-10-17'
   next: 'L2 shipped to PR: PyAutoArray#636 (head 62a1e3ac, pending-release) + autolens_profiling#425 (results note),
-    both OPEN, CI green. RAL real-data witness 1.49×/1.53×/1.58× at 1,459/2,577/5,746 vertices (pred 1.48×/1.50×/1.53×),
-    logL to round-off; peak RSS 43 GB without NUFFT chunking. Decision record direct-conv-symmetric-gate added. Route-constant
-    refit (0.68 measured vs 0.89 predicted) deferred: CPU lane closed, human decision 2026-10-17 (chat). Remaining:
-    human merge of #636 then #425, and release.'
+    both merged 2026-10-17 (human /prm); issue #635 closed. RAL real-data witness 1.49×/1.53×/1.58× at
+    1,459/2,577/5,746 vertices (pred 1.48×/1.50×/1.53×), logL to round-off; peak RSS 43 GB without NUFFT chunking.
+    Decision record direct-conv-symmetric-gate added. Route-constant refit (0.68 measured vs 0.89 predicted) deferred:
+    CPU lane closed, human decision 2026-10-17 (chat). Remaining: release of #636; shadow row owed in Mind
+    autonomy_log (glance tier; human to confirm merged-unchanged). Records:
+    https://github.com/PyAutoLabs/PyAutoMind/blob/main/complete/2026/10/direct-conv-symmetric.md. Shadow row appended 2026-10-17 (merged-unchanged, stage 1). Human decision 2026-10-17: remaining Aris levers stay research; not enough return to implement for now.'
   issue: https://github.com/PyAutoLabs/PyAutoPulse/issues/62
   evidence: https://github.com/PyAutoLabs/PyAutoArray/issues/626
 - id: interferometer_w_tilde_fft_size_levers
@@ -375,9 +389,10 @@ tasks:
   priority: normal
   path: tasks/interferometer_w_tilde_fft_size_levers.md
   updated: '2026-10-17'
-  next: 'A100 research filed at PR-open autolens_profiling#433 (issue #429, OPEN; job 412515): pruned padded FFT 1.08×/1.18×/1.41×
-    whole likelihood at alma/alma_high/jvla, F exact to 1.7e-15; pixel-scale coarsening shifts log evidence by +1,310
-    to +2,757 nats (fails). No library prompt, human decision 2026-10-17 (chat). Parked.'
+  next: 'A100 research autolens_profiling#433 merged 2026-10-17 (human /prm) (issue #429 closed; job 412515): pruned
+    padded FFT 1.08×/1.18×/1.41× whole likelihood at alma/alma_high/jvla, F exact to 1.7e-15; pixel-scale coarsening
+    shifts log evidence by +1,310 to +2,757 nats (fails). No library prompt, human decision 2026-10-17 (chat). Parked.
+    Records: https://github.com/PyAutoLabs/PyAutoMind/blob/main/complete/2026/10/ral-route-constants-fft-levers.md.'
 - id: point_solver_profiling_cells
   campaign: cluster-pointsolver
   title: 'PointSolver profiling cells: lensed quasar → cluster runtime tier → single/multi-source → multiplane'
@@ -394,8 +409,10 @@ tasks:
   priority: high
   path: tasks/point_source_image_plane_gpu_breakdown.md
   updated: '2026-10-17'
-  next: 'Parked, human decision 2026-10-17 (chat). Reference A100 measurement autolens_profiling#434 (OPEN, job 412519):
-    0.934 ms single call, 0.0125 ms at vmap-256, forward gradient fixed; phase-2 inference fit measurement dropped.'
+  next: 'Parked, human decision 2026-10-17 (chat). Reference A100 measurement autolens_profiling#434 (merged
+    2026-10-17 (human /prm), issue #427 closed, job 412519): 0.934 ms single call, 0.0125 ms at vmap-256, forward
+    gradient fixed; phase-2 inference fit measurement dropped. Records:
+    https://github.com/PyAutoLabs/PyAutoMind/blob/main/complete/2026/10/point-source-image-gpu-admission.md.'
   issue: https://github.com/PyAutoLabs/PyAutoLens/issues/767
   evidence: https://github.com/PyAutoLabs/PyAutoLens/pull/768
 - id: point_source_source_plane_chi_squared_speed
@@ -405,9 +422,10 @@ tasks:
   priority: low
   path: tasks/point_source_source_plane_chi_squared_speed.md
   updated: '2026-10-17'
-  next: 'Complete as research, human decision 2026-10-17 (chat). Admission evidence autolens_inference#29 + autolens_profiling#432
-    (OPEN): likelihood+gradient ≤3.7% of MultiStartAdam fit wall, so a likelihood speed-up caps at a few percent.
-    Blackjax stays parked.'
+  next: 'Complete as research, human decision 2026-10-17 (chat). Admission evidence autolens_inference#29 +
+    autolens_profiling#432 (merged 2026-10-17 (human /prm); issues #25, #428 closed): likelihood+gradient ≤3.7% of
+    MultiStartAdam fit wall, so a likelihood speed-up caps at a few percent. Blackjax stays parked. Records:
+    https://github.com/PyAutoLabs/PyAutoMind/blob/main/complete/2026/10/ps-source-gradient-admission.md.'
   evidence: https://github.com/PyAutoLabs/autolens_inference/pull/17
 - id: pointsolver_cpu_speed_campaign_remainder
   campaign: point-source-image-cpu
@@ -476,8 +494,9 @@ tasks:
   priority: normal
   path: tasks/delaunay_nn_cpu_imaging.md
   updated: '2026-10-17'
-  next: 'Parked, human decision 2026-10-17 (chat). PyAutoArray#637 (OPEN, pending-release) at PR-open: sub4 2.20×
-    Delaunay (was 3.00×), sub2 1.75×; logL bit-identical. Future (unfiled): ~1.5× target; hazards sub_slim_indexes_for_pix_index
-    padding and Sibson rows with mid-row gaps.'
+  next: 'Parked, human decision 2026-10-17 (chat). PyAutoArray#637 merged 2026-10-17 (human /prm) (issue #629
+    closed, pending-release): sub4 2.20× Delaunay (was 3.00×), sub2 1.75×; logL bit-identical. Future (unfiled): ~1.5×
+    target; hazards sub_slim_indexes_for_pix_index padding and Sibson rows with mid-row gaps. Records:
+    https://github.com/PyAutoLabs/PyAutoMind/blob/main/complete/2026/10/delaunaynn-wide-row-overhead.md.'
   issue: https://github.com/PyAutoLabs/PyAutoArray/issues/629
   evidence: https://github.com/PyAutoLabs/PyAutoArray/pull/637
