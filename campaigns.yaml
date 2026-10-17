@@ -10,7 +10,7 @@ campaigns:
     settings, witness/tolerances and background-load method. No freeze, compute or acceptance authorized.
     Check-in 2026-10-17: no project wiki/results/issue change since 2026-10-13 beyond
     autolens_profiling#420/#422/#424 (interferometer only); releases 2026.10.16.1/.2 and 2026.10.17.1 supply no
-    new measurement.'
+    new measurement. Post-/prm 2026-10-17: autolens_profiling#418 (pilot qualification design) merged after an independent review (FINDINGS, none blocking); issue #417 closed; Mind record complete/2026/10/hst-mge-pilot-qualification.md. Carried to the next bounded step: background-load method (none proposed), the 1e-8 relative image L2 budget (likely unattainable; synthetic-harness calibration must be allowed to revise tolerances), and the correctness-process feasibility needed before the 32-process budget is final.'
   evidence: https://github.com/PyAutoLabs/autolens_profiling/pull/416
 - id: point-source-image-cpu
   title: Point-source image plane · CPU
@@ -172,7 +172,7 @@ tasks:
   updated: '2026-10-13'
   next: 'Review the Pulse collection choices (candidate input hashes and 31-worker resource plan verified without
     execution) alongside project correctness audit #417. Resolve data origin/suitability, named host/stack/full
-    settings, witness/tolerances and background-load method. No freeze, compute or acceptance authorized.'
+    settings, witness/tolerances and background-load method. No freeze, compute or acceptance authorized. Post-/prm 2026-10-17: #418 merged (QUALIFICATION.md), #417 closed; record https://github.com/PyAutoLabs/PyAutoMind/blob/main/complete/2026/10/hst-mge-pilot-qualification.md. Next bounded step: the synthetic witness harness that also fixes the background-load method and calibrates tolerances; still no collection, freeze or acceptance authorized.'
   issue: https://github.com/PyAutoLabs/autolens_profiling/issues/415
   evidence: https://github.com/PyAutoLabs/autolens_profiling/pull/416
 - id: runtime_cell_single_jit_gpu_warmup
@@ -378,7 +378,7 @@ tasks:
     Decision record direct-conv-symmetric-gate added. Route-constant refit (0.68 measured vs 0.89 predicted) deferred:
     CPU lane closed, human decision 2026-10-17 (chat). Remaining: release of #636; shadow row owed in Mind
     autonomy_log (glance tier; human to confirm merged-unchanged). Records:
-    https://github.com/PyAutoLabs/PyAutoMind/blob/main/complete/2026/10/direct-conv-symmetric.md.'
+    https://github.com/PyAutoLabs/PyAutoMind/blob/main/complete/2026/10/direct-conv-symmetric.md. Shadow row appended 2026-10-17 (merged-unchanged, stage 1). Human decision 2026-10-17: remaining Aris levers stay research; not enough return to implement for now.'
   issue: https://github.com/PyAutoLabs/PyAutoPulse/issues/62
   evidence: https://github.com/PyAutoLabs/PyAutoArray/issues/626
 - id: interferometer_w_tilde_fft_size_levers

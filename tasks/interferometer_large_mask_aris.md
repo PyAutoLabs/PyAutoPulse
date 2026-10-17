@@ -355,3 +355,8 @@ Not worth it (measured on the 125×125 setup unless stated):
 - **Mind record:** [`direct-conv-symmetric`](https://github.com/PyAutoLabs/PyAutoMind/blob/main/complete/2026/10/direct-conv-symmetric.md).
 - Shadow row owed in Mind `autonomy_log` (glance tier; human to confirm merged-unchanged).
 - Remaining: release of #636.
+
+### Post-/prm addendum 2026-10-17
+
+- Glance shadow row appended to Mind `autonomy_log.md` for `direct-conv-symmetric` (PyAutoArray#636 / autolens_profiling#425): `merged-unchanged`, stage 1 (human answer 2026-10-17).
+- Human decision 2026-10-17: the remaining Aris levers (route-constant refit, FFT pruning, curvature preload) stay as research; not enough return to implement for now.
