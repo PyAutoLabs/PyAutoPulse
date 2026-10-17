@@ -95,7 +95,7 @@ campaigns:
     threshold never reaches sub 4 for HST; rectangular JAX cells uncovered. Phase 2 (A100 production re-measure)
     needs-decision (human decision 2026-10-17 (chat): undecided). DelaunayNN imaging moved to the parked
     delaunay-nn-cpu campaign. Post-certified, quick-update plotting and other tasks unchanged. Records:
-    https://github.com/PyAutoLabs/PyAutoMind/blob/main/complete/2026/10/imaging-production-over-sampling.md.'
+    https://github.com/PyAutoLabs/PyAutoMind/blob/main/complete/2026/10/imaging-production-over-sampling.md. Human decision 2026-10-17 (chat): hold off on phase 2 (A100 production over-sampling re-measure); not authorized, revisit when production imaging needs a cost picture.'
   evidence: https://github.com/PyAutoLabs/autolens_profiling/blob/4db4d988e520a82219152743748c3188d485a4ba/wiki/campaigns/post_certified_breakdown.md
 - id: delaunay-nn-cpu
   title: DelaunayNN (Sibson) mesh at Delaunay cost on the numba/NumPy CPU path
@@ -303,7 +303,7 @@ tasks:
 - id: imaging_production_over_sampling
   campaign: imaging
   title: Profile imaging pixelizations at production over-sampling
-  status: needs-decision
+  status: parked
   priority: normal
   path: tasks/imaging_production_over_sampling.md
   updated: '2026-10-17'
@@ -311,7 +311,7 @@ tasks:
     A100 production re-measure needs-decision (human decision 2026-10-17 (chat): undecided); requires compute
     authorization (#431 now merged). Findings: HST flat-1 adapt_split pin fails on main; numba HST threshold never
     reaches sub 4; rectangular JAX cells uncovered. Records:
-    https://github.com/PyAutoLabs/PyAutoMind/blob/main/complete/2026/10/imaging-production-over-sampling.md.'
+    https://github.com/PyAutoLabs/PyAutoMind/blob/main/complete/2026/10/imaging-production-over-sampling.md. Human decision 2026-10-17 (chat): phase 2 A100 re-measure held; task stays parked at phase 1 shipped (#431).'
   evidence: https://github.com/PyAutoLabs/PyAutoArray/pull/606
 - id: interferometer_decision_matrix_last_cell
   campaign: interferometer
