@@ -19,3 +19,10 @@ instances:
     dashboard_url: https://pyautolabs.github.io/autofit_profiling/
     library_refs: [PyAutoFit]
     cortex_project: null
+  - instance: lens-walltime
+    repo: autolens_inference
+    summary_path: dashboard/walltime_validation.json
+    supported_schema: walltime-validation@1
+    dashboard_url: https://pyautolabs.github.io/autolens_inference/
+    library_refs: [PyAutoLens, PyAutoGalaxy, PyAutoArray, PyAutoFit]
+    cortex_project: autolens_inference
