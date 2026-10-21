@@ -15,6 +15,11 @@ records' evidence at the captured commit and a ``/profiling triage <key>``
 manual handoff. Pairs the reader refuses (axis mismatch, changed hardware,
 missing endpoint) are listed apart with the reason and no ratio.
 
+A ``profiling-summary@3`` instance adds its producer-declared lifecycle counts
+(current / superseded / archived) to its status lines and renders the
+Class-first setup browser; a ``walltime-validation@1`` instance renders its
+full-fit records as their own table under Profiling Results.
+
 The board never recomputes a ratio, never combines records whose axis or
 hardware differs, never ranks cells across projects and never emits a
 release verdict. Its output is deterministic: the pages carry no wall-clock
@@ -31,7 +36,7 @@ from collections import OrderedDict
 from datetime import UTC, datetime
 from pathlib import Path
 
-from pulse import ORGAN_ROOT, campaigns, decisions, setup_browser
+from pulse import ORGAN_ROOT, campaigns, catalogue, decisions, setup_browser
 from pulse import summary as summary_mod
 from pulse.ingest import Snapshot
 
@@ -58,6 +63,28 @@ def _days(later: str | None, earlier: str | None) -> int | None:
     if a is None or b is None:
         return None
     return max(0, (a - b).days)
+
+
+def is_walltime(s: Snapshot) -> bool:
+    return (s.doc or {}).get("schema") == "walltime-validation"
+
+
+def is_catalogue(doc: dict | None) -> bool:
+    """A setup catalogue (v2/v3) or the wall-time axis: the browser layout."""
+    doc = doc or {}
+    return doc.get("schema") == "walltime-validation" or doc.get("version") in (2, 3)
+
+
+def lifecycle(s: Snapshot) -> str | None:
+    """``N current · N superseded · N archived`` for a v3 capture, else None."""
+    doc = s.doc or {}
+    if doc.get("schema") != "profiling-summary" or doc.get("version") != 3:
+        return None
+    c = catalogue.lifecycle_counts(doc)
+    return (
+        f"{c['current']} current · {c['superseded']} superseded · {c['archived']} archived "
+        "(producer-declared)"
+    )
 
 
 def records(s: Snapshot) -> list[dict]:
@@ -119,6 +146,8 @@ def qualification(s: Snapshot) -> str:
     recs, comps = records(s), comparisons(s)
     if not recs:
         return "no measurements"
+    if is_walltime(s):
+        return f"{len(recs)} full-fit records (walltime-validation carries no qualification flag)"
     q = summary_mod.qualified_records(s.doc)
     cq = sum(1 for c in comps if c.get("qualified") is True)
     return f"{q}/{len(recs)} records · {cq}/{len(comps)} comparisons qualified"
@@ -280,6 +309,8 @@ def _status_lines(s: Snapshot, now: str | None = None) -> list[str]:
             f"- **Freshness:** {freshness(s, now)} (evidence {evidence(s)})",
             f"- **Qualification:** {qualification(s)}",
         ]
+        if lifecycle(s):
+            out.append(f"- **Lifecycle:** {lifecycle(s)}")
     return out
 
 
@@ -337,9 +368,75 @@ def _md_detail(s: Snapshot, now: str | None = None) -> list[str]:
     return out
 
 
+WALLTIME_COLUMNS = (
+    (
+        "Likelihood",
+        lambda r: (
+            f"{(r.get('likelihood') or {}).get('dataset_type')}/"
+            f"{(r.get('likelihood') or {}).get('variant')}"
+        ),
+    ),
+    ("Instrument", lambda r: r.get("instrument")),
+    ("Setup", lambda r: r.get("setup_id")),
+    ("Hardware class", lambda r: r.get("host_class")),
+    ("Model variant", lambda r: r.get("model_variant")),
+    ("Sampler", lambda r: r.get("sampler")),
+    ("Seed", lambda r: r.get("seed")),
+    ("Cores", lambda r: r.get("cores")),
+    ("Wall s", lambda r: r.get("wall_s")),
+    ("Likelihood evals", lambda r: r.get("likelihood_evals")),
+    ("Implied ms/eval", lambda r: r.get("implied_ms_per_eval")),
+    ("Predicted ms/eval", lambda r: r.get("predicted_ms_per_eval")),
+    ("Measured/predicted", lambda r: r.get("ratio_measured_over_predicted")),
+    ("Parallel efficiency", lambda r: r.get("parallel_efficiency")),
+    ("Parity", lambda r: r.get("parity_status")),
+    ("Reference runtime record", lambda r: r.get("reference_runtime_record_id")),
+    ("Release", lambda r: r.get("release_pin")),
+)
+WALLTIME_NOTE = (
+    "Full-fit measurements: one sampler run per row. Every derived number is the "
+    "producer's; Pulse computes no ratio and never reads a full-fit time as a "
+    "per-likelihood measurement."
+)
+
+
+def _cell(value) -> str:
+    return "—" if value is None else str(value)
+
+
+def walltime_markdown(s: Snapshot) -> list[str]:
+    name = s.instance.repo
+    out = [
+        f"<details><summary>{html.escape(name)} — wall-time validation</summary>",
+        "",
+        WALLTIME_NOTE,
+        "",
+        "| " + " | ".join(t for t, _ in WALLTIME_COLUMNS) + " |",
+        "|" + "---|" * len(WALLTIME_COLUMNS),
+    ]
+    for r in records(s):
+        out.append("| " + " | ".join(_md_escape(_cell(f(r))) for _, f in WALLTIME_COLUMNS) + " |")
+    return out + ["", "</details>", ""]
+
+
+def walltime_html(s: Snapshot) -> str:
+    head = "".join(f"<th>{_e(t)}</th>" for t, _ in WALLTIME_COLUMNS)
+    body = "".join(
+        "<tr>" + "".join(f"<td>{_e(_cell(f(r)))}</td>" for _, f in WALLTIME_COLUMNS) + "</tr>"
+        for r in records(s)
+    )
+    return (
+        f'<section class="walltime-validation" data-walltime="{_e(s.instance.instance)}" '
+        f'aria-label="{_e(s.instance.repo)} wall-time validation">'
+        f"<h3>{_e(s.instance.repo)}: wall-time validation</h3><p>{_e(WALLTIME_NOTE)}</p>"
+        f"<div class='tablewrap'><table><thead><tr>{head}</tr></thead><tbody>{body}</tbody>"
+        "</table></div></section>"
+    )
+
+
 def render_markdown(views, now: str | None = None, campaign_data: dict | None = None) -> str:
     now = now or _utc_now()
-    if any((s.doc or {}).get("version") == 2 for s in views):
+    if any(is_catalogue(s.doc) for s in views):
         out = [
             "# PyAutoPulse — profiling dashboard",
             "",
@@ -350,7 +447,9 @@ def render_markdown(views, now: str | None = None, campaign_data: dict | None = 
         for snapshot in views:
             if snapshot.failed or snapshot.cached:
                 out += [f"**{snapshot.instance.instance}: {integrity(snapshot)}**", ""]
-            if (snapshot.doc or {}).get("version") == 2:
+            if is_walltime(snapshot):
+                out += walltime_markdown(snapshot)
+            elif (snapshot.doc or {}).get("version") in (2, 3):
                 out += setup_browser.markdown(snapshot)
             out += [
                 "<details><summary>Capture, qualification and legacy diagnostics</summary>",
@@ -444,7 +543,8 @@ def _html_notions(s: Snapshot, now: str | None = None) -> str:
         f"<div><b>Integrity</b><span class='{_integrity_class(s)}'>{_e(integrity(s))}</span></div>"
         f"<div><b>Freshness</b>{_e(freshness(s, now))} (evidence {_e(evidence(s))}){live}</div>"
         f"<div><b>Qualification</b>{_e(qualification(s))}</div>"
-        "</div>"
+        + (f"<div><b>Lifecycle</b>{_e(lifecycle(s))}</div>" if lifecycle(s) else "")
+        + "</div>"
     )
 
 
@@ -557,8 +657,11 @@ def render_html(views, now: str | None = None, campaign_data: dict | None = None
             content.append(
                 f'<p class="warn">{_e(name)}: {_e(integrity(snapshot))}. Displayed evidence retains its captured source.</p>'
             )
+        if is_walltime(snapshot):
+            content.append(walltime_html(snapshot))
+            continue
         content.append(setup_browser.render(snapshot))
-        if (snapshot.doc or {}).get("version") != 2:
+        if (snapshot.doc or {}).get("version") not in (2, 3):
             content.append(
                 f"<p>{_e(name)}: setup catalogue unavailable; use the project dashboard for original evidence.</p>"
             )
@@ -713,7 +816,7 @@ def _instance_items(s: Snapshot, now: str) -> tuple[list, list, list]:
                 "actions": [open_action],
             }
         )
-    else:
+    elif not is_walltime(s):
         unq = len(recs) - summary_mod.qualified_records(doc)
         if unq:
             yellow.append(
@@ -792,6 +895,7 @@ def _instance_items(s: Snapshot, now: str) -> tuple[list, list, list]:
             "text": (
                 f"{key}: {len(recs)} records · {len(comparisons(s))} comparisons · "
                 f"{len(lims)} limitations · {summary_mod.qualified_records(doc)} qualified"
+                + (f" · {lifecycle(s)}" if lifecycle(s) else "")
             ),
             "url": inst.dashboard_url,
             "prompt": None,

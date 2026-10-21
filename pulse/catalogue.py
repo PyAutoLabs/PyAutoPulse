@@ -1,21 +1,78 @@
-"""Validate the setup-oriented v2 exchange contract without judging evidence.
+"""Validate the setup-oriented v2 and lifecycle v3 contracts without judging evidence.
 
-Stable setup IDs decouple scientific navigation from script paths. Selections
-name exact records and their measurement context; missing cells remain explicit.
-This module is stdlib-only and does not read files, choose results or compute
-comparisons. See REFERENCE.md for the producer-facing grammar.
+Stable setup IDs decouple scientific navigation from script paths. In v2,
+selections name exact records and their measurement context; missing cells
+remain explicit. In v3 every record declares its own likelihood, setup tuple,
+host class, ``class`` (optimal/secondary/experimental) and ``status``
+(current/superseded); the producer declares exactly one ``current`` record per
+key and Pulse only checks that the declaration is consistent. This module is
+stdlib-only and does not read files, choose results, infer an optimal setup or
+compute comparisons. See REFERENCE.md for the producer-facing grammar.
 """
 
 from __future__ import annotations
 
 import json
 import math
+import re
 
 from pulse import summary
 
 SELECTION_STATES = {"accepted", "unreviewed", "not_measured", "failed", "unusable", "inapplicable"}
 VALIDATION_STATES = {"accepted", "unreviewed", "rejected"}
 MEMORY_METRICS = {"host_peak_rss", "device_peak_allocated", "device_peak_reserved", "device_total"}
+
+# ---- profiling-summary@3 vocabulary (REFERENCE.md, "profiling-summary v3") ----
+DATASET_TYPES = {
+    "imaging",
+    "interferometer",
+    "datacube",
+    "point_source_image",
+    "point_source_source",
+    "multi_galaxy",
+    "group",
+    "cluster",
+    "multi_dataset",
+    "weak",
+}
+HOST_CLASSES = set(summary.HOST_CLASSES)
+LOCAL_HOST_CLASSES = set(summary.LOCAL_HOST_CLASSES)
+_SECONDS = {"s"}
+_MEMORY = summary.AXIS_UNITS["memory"]
+MEASUREMENT_UNITS = {
+    "runtime": _SECONDS,
+    "breakdown": _SECONDS,
+    "gradient": _SECONDS,
+    "compile": _SECONDS,
+    "memory_host": _MEMORY,
+    "memory_device": _MEMORY,
+    "parity": {"dimensionless"},
+    "walltime_validation": _SECONDS,
+}
+CLASSES = {"optimal", "secondary", "experimental"}
+STATUSES = {"current", "superseded", "archived"}
+SETUP_CHOICES = {
+    "backend": {"numba", "jax"},
+    "device": {"cpu", "gpu"},
+    "operator": {"dense", "sparse", "na"},
+    "precision": {"fp64", "mixed"},
+    "transformer": {"dft", "nufft", "wtilde", "streaming", "na"},
+}
+KEY_FIELDS = ("likelihood", "instrument", "setup_id", "host_class", "model_variant", "measurement")
+_SHA256 = re.compile(r"^[0-9a-f]{64}$")
+
+
+def setup_id(setup: dict) -> str:
+    """The canonical ``<backend>_<device>_<operator>_<precision>[_<transformer>]``."""
+    parts = [str(setup.get(k)) for k in ("backend", "device", "operator", "precision")]
+    if setup.get("transformer") != "na":
+        parts.append(str(setup.get("transformer")))
+    return "_".join(parts)
+
+
+def lifecycle_key(item: dict) -> str:
+    """The one-``current``-per-key identity of a v3 record or planned cell."""
+    return json.dumps({k: item.get(k) for k in KEY_FIELDS}, sort_keys=True)
 
 
 class _Check:
@@ -120,6 +177,10 @@ def _finite(value):
         return False
 
 
+def _list(value):
+    return value if isinstance(value, list) else []
+
+
 def _integer(value):
     return isinstance(value, int) and not isinstance(value, bool) and value >= 0
 
@@ -202,6 +263,11 @@ def _record(check, item, setups):
             )
     if axis == "memory":
         check.choice(metric, MEMORY_METRICS, f"{where}.metric")
+    _record_body(check, item, where)
+
+
+def _record_body(check, item, where):
+    """Identity, method, provenance, validation and evidence: shared by v2 and v3."""
     _identity(check, item.get("identity"), f"{where}.identity")
     method = item.get("method")
     if not isinstance(method, dict):
@@ -236,6 +302,216 @@ def _record(check, item, setups):
             "accepted evidence must be qualified",
         )
     check.evidence(item.get("evidence"), f"{where}.evidence")
+
+
+def _likelihood(check, value, where):
+    if not isinstance(value, dict):
+        check.errors.append(f"{where}: must be a likelihood object {{dataset_type, variant}}")
+        return
+    check.choice(value.get("dataset_type"), DATASET_TYPES, f"{where}.dataset_type")
+    check.text(value.get("variant"), f"{where}.variant")
+
+
+def _setup_tuple(check, item, where):
+    """The compute tuple and its canonical ``setup_id`` (R1 grammar)."""
+    setup = item.get("setup")
+    if not isinstance(setup, dict):
+        check.errors.append(f"{where}.setup: must be an object")
+        check.text(item.get("setup_id"), f"{where}.setup_id")
+        return
+    for key, choices in SETUP_CHOICES.items():
+        check.choice(setup.get(key), choices, f"{where}.setup.{key}")
+    threads = setup.get("threads")
+    check.require(
+        threads is None or (_integer(threads) and threads > 0),
+        f"{where}.setup.threads",
+        "must be a positive integer or null",
+    )
+    if all(isinstance(setup.get(k), str) and setup.get(k) in c for k, c in SETUP_CHOICES.items()):
+        expected = setup_id(setup)
+        check.require(
+            item.get("setup_id") == expected,
+            f"{where}.setup_id",
+            f"must be {expected!r} (<backend>_<device>_<operator>_<precision>[_<transformer>])",
+        )
+
+
+def _cell_key_fields(check, item, where):
+    """The key fields shared by v3 records and planned cells."""
+    _likelihood(check, item.get("likelihood"), f"{where}.likelihood")
+    check.text(item.get("instrument"), f"{where}.instrument")
+    check.text(item.get("setup_id"), f"{where}.setup_id")
+    check.choice(item.get("host_class"), HOST_CLASSES, f"{where}.host_class")
+    check.text(item.get("model_variant"), f"{where}.model_variant")
+    check.choice(item.get("measurement"), MEASUREMENT_UNITS, f"{where}.measurement")
+    check.choice(item.get("class"), CLASSES, f"{where}.class")
+
+
+def _nullable_text(check, item, key, where):
+    check.require(key in item, where, f"missing {key} (null when not applicable)")
+    value = item.get(key)
+    check.require(value is None or summary._text(value), f"{where}.{key}", "string or null")
+
+
+def _record_v3(check, item, ids):
+    where = f"record {item['id']!r}"
+    _cell_key_fields(check, item, where)
+    _setup_tuple(check, item, where)
+    check.text(item.get("regime"), f"{where}.regime")
+    check.text(item.get("run_id"), f"{where}.run_id")
+    metric = item.get("metric")
+    check.text(metric, f"{where}.metric")
+    measurement = item.get("measurement")
+    if isinstance(measurement, str) and measurement in MEASUREMENT_UNITS:
+        check.choice(item.get("unit"), MEASUREMENT_UNITS[measurement], f"{where}.unit")
+    values = item.get("values")
+    check.require(
+        isinstance(values, dict) and isinstance(metric, str) and metric in values,
+        where,
+        "values must be a non-empty object containing its headline metric",
+    )
+    if isinstance(values, dict):
+        for value in values.values():
+            check.require(
+                _finite(value) and value >= 0,
+                where,
+                "values must be finite and non-negative; missing cells use planned_cells",
+            )
+    status = item.get("status")
+    check.choice(status, STATUSES, f"{where}.status")
+    check.require(
+        status != "archived",
+        where,
+        "archived records are not rendered; drop them from records[] and count them in "
+        "archive_record_count",
+    )
+    if status == "current":
+        check.require(
+            item.get("host_class") not in summary.LOCAL_HOST_CLASSES,
+            where,
+            f"host_class {item.get('host_class')!r} is never current (laptop and local-GPU rows "
+            "are provenance only)",
+        )
+    check.require("superseded_by" in item, where, "missing superseded_by (null unless superseded)")
+    target = item.get("superseded_by")
+    if status == "superseded":
+        check.require(
+            isinstance(target, str) and target in ids and target != item["id"],
+            f"{where}.superseded_by",
+            f"must name another record in this document, got {target!r}",
+        )
+    else:
+        check.require(target is None, f"{where}.superseded_by", "only superseded records set it")
+    _nullable_text(check, item, "decision_id", where)
+    if item.get("class") == "optimal":
+        check.require(
+            summary._text(item.get("decision_id")),
+            where,
+            "class optimal requires a decision_id (a Pulse designation decision)",
+        )
+    _nullable_text(check, item, "day_zero", where)
+    _nullable_text(check, item, "release_pin", where)
+    check.require(
+        summary.parse_utc(item.get("measured_at")) is not None,
+        f"{where}.measured_at",
+        "must be an ISO-8601 UTC timestamp",
+    )
+    for i, fig in enumerate(check.objects(item.get("figures"), f"{where}.figures")):
+        loc = f"{where}.figures[{i}]"
+        check.text(fig.get("kind"), f"{loc}.kind")
+        check.require(summary.safe_relative_path(fig.get("path")), loc, "unsafe figure path")
+        sha = fig.get("sha256")
+        check.require(
+            isinstance(sha, str) and bool(_SHA256.match(sha)), loc, "sha256 is not 64-hex"
+        )
+    _record_body(check, item, where)
+
+
+def _validate_v3(check, doc):
+    """The lifecycle rules: one current per key, optimal ⇒ decision, no archived rows."""
+    records = check.index(doc.get("records"), "records")
+    ids = set(records)
+    for item in records.values():
+        _record_v3(check, item, ids)
+    current = {}
+    for item in records.values():
+        if item.get("status") == "current":
+            key = lifecycle_key(item)
+            prior = current.setdefault(key, item["id"])
+            check.require(
+                prior == item["id"],
+                "records",
+                f"second current record {item['id']!r} on the key of {prior!r}; the producer "
+                "declares exactly one current per (likelihood, instrument, setup_id, host_class, "
+                "model_variant, measurement)",
+            )
+    planned = check.objects(doc.get("planned_cells", []), "planned_cells")
+    seen = set()
+    for i, cell in enumerate(planned):
+        where = f"planned_cells[{i}]"
+        _cell_key_fields(check, cell, where)
+        key = lifecycle_key(cell)
+        check.require(key not in seen, where, "duplicate planned cell")
+        seen.add(key)
+    count = doc.get("archive_record_count")
+    check.require(
+        _integer(count), "archive_record_count", "must be a non-negative integer (0 when none)"
+    )
+    # Advice keeps the v2 shape; its setup_ids name the canonical v3 setup_ids.
+    setups = {
+        r["setup_id"]: {"id": r["setup_id"]}
+        for r in records.values()
+        if summary._text(r.get("setup_id"))
+    }
+    for field, kind in (("hazards", "hazard"), ("recommendations", "recommendation")):
+        for item in check.index(doc.get(field, []), field).values():
+            _advice(check, item, setups, records, kind)
+    cov = doc.get("coverage")
+    if isinstance(cov, dict):
+        expected, observed = cov.get("expected"), cov.get("observed")
+        check.require(
+            isinstance(expected, dict)
+            and type(expected.get("cells")) is int
+            and expected.get("cells") == len(planned),
+            "coverage.expected.cells",
+            "must equal the planned_cells count",
+        )
+        if isinstance(observed, dict):
+            counts = lifecycle_counts(doc)
+            check.require(
+                type(observed.get("records")) is int and observed.get("records") == len(records),
+                "coverage.observed.records",
+                "must match catalogue contents",
+            )
+            for key in ("current", "superseded"):
+                if key in observed:
+                    check.require(
+                        observed[key] == counts[key],
+                        f"coverage.observed.{key}",
+                        "must match catalogue contents",
+                    )
+
+
+def lifecycle_counts(doc: dict) -> dict:
+    """``{current, superseded, archived}`` as the producer declared them (v3 only)."""
+    records = [r for r in _list(doc.get("records")) if isinstance(r, dict)]
+    count = doc.get("archive_record_count")
+    return {
+        "current": sum(r.get("status") == "current" for r in records),
+        "superseded": sum(r.get("status") == "superseded" for r in records),
+        "archived": count if _integer(count) else 0,
+    }
+
+
+def decision_ids(doc: dict) -> list[str]:
+    """Every ``decision_id`` a v3 document names, for the repo-aware resolution step."""
+    return sorted(
+        {
+            r["decision_id"]
+            for r in _list(doc.get("records"))
+            if isinstance(r, dict) and summary._text(r.get("decision_id"))
+        }
+    )
 
 
 def _selection(check, item, setups, records):
@@ -342,20 +618,27 @@ def _advice(check, item, setups, records, kind):
                 )
 
 
-def validate(doc):
-    """Return all detected v2 contract violations; never choose a baseline."""
+def validate(doc, version=2):
+    """Return all detected v2/v3 contract violations; never choose a baseline.
+
+    v3 resolves ``decision_id`` presence only; resolving each id against the
+    organ's ``decisions.yaml`` is the repo-aware step in ``pulse.ingest``.
+    """
     check = _Check()
     _json_values(check, doc, "summary")
     # The common envelope retains v1 transport/receipt/board fields. Validate
-    # it through the established reader with empty records/comparisons; v2
-    # records are checked below and v2 deliberately carries no trend pairs.
+    # it through the established reader with empty records/comparisons; v2/v3
+    # records are checked below and neither carries trend pairs.
     envelope = dict(doc, records=[], comparisons=[])
     check.errors.extend(summary._validate_v1(envelope))
     check.require(
         doc.get("comparisons") == [],
         "comparisons",
-        "v2 setup feed has no temporal comparisons; must be []",
+        f"v{version} setup feed has no temporal comparisons; must be []",
     )
+    if version == 3:
+        _validate_v3(check, doc)
+        return check.errors
     setups = check.index(doc.get("setups"), "setups")
     records = check.index(doc.get("records"), "records")
     selections = check.index(doc.get("selections"), "selections")

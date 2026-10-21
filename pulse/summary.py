@@ -1,9 +1,11 @@
-"""The ``profiling-summary`` v1/v2 exchange contracts, as the organ reads them.
+"""The ``profiling-summary`` v1/v2/v3 and ``walltime-validation`` v1 exchange
+contracts, as the organ reads them.
 
 The contract is owned by the producer and documented beside it
 (``autolens_profiling/dashboard/README.md``, "summary.json — the
 profiling-summary v1 read contract": Envelope / Records / Comparisons). This
-module dispatches setup-oriented v2 validation to ``pulse.catalogue`` and
+module dispatches setup-oriented v2 and lifecycle v3 validation to
+``pulse.catalogue``, full-fit wall-time evidence to ``pulse.walltime``, and
 validates the **exchange** contract only — known schema/version,
 required fields, unique ids, finite numerics, UTC dates, safe evidence paths,
 axis/unit consistency — and pairs each producer comparison with its two
@@ -20,7 +22,12 @@ import re
 from dataclasses import dataclass, field
 from datetime import datetime
 
-SUPPORTED = {("profiling-summary", 1), ("profiling-summary", 2)}
+SUPPORTED = {
+    ("profiling-summary", 1),
+    ("profiling-summary", 2),
+    ("profiling-summary", 3),
+    ("walltime-validation", 1),
+}
 
 ENVELOPE = (
     "schema",
@@ -47,6 +54,10 @@ AXIS_UNITS = {
 }
 STATUSES = {"drifted", "improved", "flat", "insufficient"}
 HARDWARE = ("device", "backend", "precision", "host")
+# Where a v3 record ran (provenance, never identity). Laptop/local-GPU rows are
+# never ``current``; ``hardware()`` reports the class beside the identity.
+HOST_CLASSES = ("hpc_ral_cpu", "hpc_a100", "local_laptop", "local_gpu")
+LOCAL_HOST_CLASSES = ("local_laptop", "local_gpu")
 
 _SHA = re.compile(r"^[0-9a-f]{40}$")
 
@@ -121,10 +132,14 @@ def validate(doc) -> list[str]:
     why = supported(doc)
     if why:
         return [why]
-    if doc["version"] == 2:
+    if doc["schema"] == "walltime-validation":
+        from pulse import walltime
+
+        return walltime.validate(doc)
+    if doc["version"] in (2, 3):
         from pulse import catalogue
 
-        return catalogue.validate(doc)
+        return catalogue.validate(doc, version=doc["version"])
     return _validate_v1(doc)
 
 
@@ -324,21 +339,30 @@ def classify(doc, wanted: tuple[str, int] | None = None) -> tuple[str, list[str]
 
 
 def hardware(record: dict) -> dict:
-    """The hardware identity a record was measured on (None = not recorded)."""
+    """The hardware identity a record was measured on (None = not recorded).
+
+    A v3 record also names its ``host_class``; it is reported beside the
+    identity (provenance) and never compared as part of it.
+    """
     ident = record.get("identity") or {}
     prov = record.get("provenance") or {}
-    return {
+    hw = {
         "device": ident.get("device"),
         "backend": ident.get("backend"),
         "precision": ident.get("precision"),
         "host": prov.get("host"),
     }
+    if "host_class" in record:
+        hw["host_class"] = record.get("host_class")
+    return hw
 
 
 def group_label(hw: dict | None) -> str:
     if hw is None:
         return "unresolved"
     parts = [str(hw[k]) if hw[k] is not None else f"{k} unknown" for k in HARDWARE[:3]]
+    if hw.get("host_class") is not None:
+        parts.append(str(hw["host_class"]))
     return " · ".join(parts)
 
 

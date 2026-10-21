@@ -318,3 +318,28 @@ button.retry {
 .timing-diagnostics {
   margin-top: 0.8rem;
 }
+/* profiling-summary@3: Class-first lifecycle browser. */
+.lifecycle-selectors {
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+}
+.lifecycle-selectors .history-toggle {
+  align-self: end;
+  font-weight: 500;
+}
+.lifecycle-table tr[hidden],
+.lifecycle-browser [hidden] {
+  display: none;
+}
+.lifecycle-table td,
+.lifecycle-table th {
+  font-size: 0.8rem;
+  padding: 0.35rem 0.45rem;
+  vertical-align: top;
+}
+.lifecycle-coverage {
+  margin: 1rem 0;
+}
+.lifecycle-coverage summary {
+  cursor: pointer;
+  font-weight: 600;
+}

@@ -136,3 +136,74 @@ def test_second_producer_takes_the_same_code_path():
     assert summary.classify(doc, V1) == ("ok", [])
     (p,) = summary.pair(doc)
     assert p.group == "a100 · gpu · mixed" and not p.refused
+
+
+# --------------------------------------------- v3 dispatch and walltime@1 ---
+
+WALL = ("walltime-validation", 1)
+
+
+def test_supported_set_names_every_reader_version():
+    assert summary.SUPPORTED == {
+        ("profiling-summary", 1),
+        ("profiling-summary", 2),
+        ("profiling-summary", 3),
+        ("walltime-validation", 1),
+    }
+    assert summary.classify(fixture_doc("setup_summary_v3.json"), ("profiling-summary", 3)) == (
+        "ok",
+        [],
+    )
+
+
+def test_hardware_reports_host_class_beside_identity_never_inside_it():
+    record = fixture_doc("setup_summary_v3.json")["records"][0]
+    hw = summary.hardware(record)
+    assert hw["host_class"] == "hpc_a100"
+    assert summary.group_label(hw) == "gpu · jax · float64 · hpc_a100"
+    v1 = fixture_doc("lens_summary_v1.json")["records"][0]
+    assert "host_class" not in summary.hardware(v1)
+
+
+def test_walltime_validation_is_accepted_and_pulse_computes_nothing():
+    doc = fixture_doc("walltime_validation_v1.json")
+    assert summary.classify(doc, WALL) == ("ok", [])
+    assert summary.classify(doc, ("profiling-summary", 3))[0] == "unsupported"
+    before = copy.deepcopy(doc)
+    # A producer ratio that disagrees with its own inputs is still the producer's.
+    doc["records"][1]["ratio_measured_over_predicted"] = 99.0
+    assert summary.classify(doc, WALL) == ("ok", [])
+    assert before["records"][0] == doc["records"][0]
+
+
+@pytest.mark.parametrize(
+    "mutation,needle",
+    [
+        (lambda d: d["records"][0].update(wall_s=math.inf), "finite number or null"),
+        (lambda d: d["records"][0].update(implied_ms_per_eval="fast"), "finite number or null"),
+        (lambda d: d["records"][0].pop("max_log_likelihood"), "missing max_log_likelihood"),
+        (lambda d: d["records"][0].update(parity_status="ok"), "parity_status"),
+        (lambda d: d["records"][0].update(seed=-1), "seed"),
+        (lambda d: d["records"][0].update(cores=1.5), "cores"),
+        (lambda d: d["records"][0].update(host_class="cloud"), "host_class"),
+        (lambda d: d["records"][0].update(slurm_job_id=412000), "slurm_job_id"),
+        (lambda d: d["records"][1].update(seed=0), "duplicate key"),
+        (lambda d: d["records"].append(copy.deepcopy(d["records"][0])), "duplicate id"),
+        (lambda d: d.pop("producer_revision"), "producer_revision"),
+        (lambda d: d.update(generated_at="2026-10-21"), "generated_at"),
+    ],
+)
+def test_walltime_contract_breaks_are_named(mutation, needle):
+    doc = fixture_doc("walltime_validation_v1.json")
+    mutation(doc)
+    outcome, errors = summary.classify(doc, WALL)
+    assert outcome == "invalid"
+    assert any(needle in e for e in errors), errors
+
+
+def test_null_derived_numbers_are_allowed_when_not_measured():
+    doc = fixture_doc("walltime_validation_v1.json")
+    doc["records"][0].update(
+        predicted_ms_per_eval=None, ratio_measured_over_predicted=None, parallel_efficiency=None
+    )
+    assert summary.classify(doc, WALL) == ("ok", [])

@@ -18,17 +18,25 @@ It owns:
 - the **instance registry** (`registry.yaml`) — which projects publish a
   profiling summary, where, under which contract version; each project is named
   by its PyAutoMind body-map identity, never a second repository catalogue;
-- the versioned **`profiling-summary` read contract** — v2 is live at
-  `autolens_profiling/dashboard/catalogue.json`, documented in that repo's
-  [dashboard/README.md](https://github.com/PyAutoLabs/autolens_profiling/blob/main/dashboard/README.md);
+- the versioned **`profiling-summary` read contract** — v2 is the live pin for
+  `autolens_profiling` and `autofit_profiling` (`dashboard/catalogue.json`,
+  documented in autolens_profiling's
+  [dashboard/README.md](https://github.com/PyAutoLabs/autolens_profiling/blob/main/dashboard/README.md));
+  v3, the lifecycle catalogue in which the producer declares each record's
+  `class` (optimal/secondary/experimental) and `status` (current/superseded),
+  is supported for the next migration; v1 snapshots still validate;
+- the **`walltime-validation` v1 contract** — full-fit sampler runs, registered
+  as their own instance row;
+- the **decision index** (`decisions.yaml`), including `designation` entries
+  that `class: optimal` records must cite;
 - the **ingest receipts** (`receipts/`) — the one commit each project was read
   at, per render — and the last-good **snapshots** (`snapshots/`), shown as
   *cached* when a later fetch fails;
 - the cross-project **Pages board** (`dashboard.md`, `dashboard.html`, plus
   `state.json` for the Brain cockpit and `badge.json`).
 
-It validates the exchange contract only. It never moves pins, combines unmatched
-timings, applies the compile threshold to runtime, computes an ecosystem-wide
+It validates the exchange contract only. It never moves pins, infers an optimal
+setup, selects the fastest row, combines unmatched timings, applies the compile threshold to runtime, computes an ecosystem-wide
 speed score or issues a release-health verdict, and it never judges a timing —
 the Brain's profiling conductor does (`/profiling triage <comparison_key>`). The
 project repos keep their producers, results, drift policy and their own Pages page.
@@ -70,7 +78,10 @@ Pulse embeds the validated captured v2 index and loads a chosen evidence shard
 from that **same captured commit**, verifying its SHA-256 and setup identity.
 A failed or cached fetch remains visible; a missing deep link never substitutes a
 different run. Local reads cannot load remote shards as if they were published.
-Inline v2 records and v1 diagnostics remain supported. No rendering action accepts
+Inline v2 records and v1 diagnostics remain supported. A v3 catalogue instead
+opens on Class (Optimal by default) → Likelihood → Instrument → Hardware class →
+Measurement, shows current records unless History is ticked, counts archived
+records without showing them and lists optimal cells not yet measured. No rendering action accepts
 a baseline, changes campaign state, runs profiling, or selects the fastest run.
 Temporal diagnostics remain collapsed while the front page focuses on setup
 choices. Existing archive evidence still requires scientific review.

@@ -7,7 +7,7 @@ import pytest
 import yaml
 from conftest import SHA_A, SHA_B, fixture_doc
 
-from pulse import board, ingest, registry, summary
+from pulse import board, catalogue, ingest, registry, summary
 
 V2 = ("profiling-summary", 2)
 
@@ -157,7 +157,13 @@ def test_accepted_recommendation_cannot_rest_on_unreviewed_evidence(doc):
 
 @pytest.mark.parametrize(
     "schema,version",
-    [("profiling-summary", 3), ("profiling-summary", True), ([], 2), ("profiling-summary", {})],
+    [
+        ("profiling-summary", 4),
+        ("walltime-validation", 2),
+        ("profiling-summary", True),
+        ([], 2),
+        ("profiling-summary", {}),
+    ],
 )
 def test_bad_versions_fail_closed_without_crashing(doc, schema, version):
     doc.update(schema=schema, version=version)
@@ -236,3 +242,142 @@ def test_the_autofit_profiling_producer_feed_validates_through_the_shared_reader
     assert memory and {(r["metric"], r["unit"]) for r in memory} == {("host_peak_rss", "KiB")}
     slots = [s for s in doc["selections"] if s["status"] == "inapplicable"]
     assert slots and all(s["record_id"] is None for s in slots)
+
+
+# ---------------------------------------------------- profiling-summary@3 ---
+
+V3 = ("profiling-summary", 3)
+
+
+@pytest.fixture
+def v3():
+    return fixture_doc("setup_summary_v3.json")
+
+
+def test_lifecycle_catalogue_validates_and_v2_is_unchanged(v3):
+    assert summary.classify(v3, V3) == ("ok", [])
+    assert summary.classify(v3, V2)[0] == "unsupported"
+    assert summary.classify(fixture_doc("setup_summary_v2.json"), V2) == ("ok", [])
+    assert summary.classify(fixture_doc("autofit_profiling_v2.json"), V2) == ("ok", [])
+    assert catalogue.lifecycle_counts(v3) == {"current": 5, "superseded": 1, "archived": 3}
+    assert catalogue.decision_ids(v3) == ["fixture-designation"]
+    assert summary.pair(v3) == []
+
+
+@pytest.mark.parametrize(
+    "fixture,needle",
+    [
+        ("v3_duplicate_current.json", "second current record"),
+        ("v3_optimal_without_decision.json", "class optimal requires a decision_id"),
+        ("v3_laptop_current.json", "is never current"),
+        ("v3_archived_in_records.json", "archive_record_count"),
+    ],
+)
+def test_lifecycle_refusal_fixtures(fixture, needle):
+    outcome, errors = summary.classify(fixture_doc(fixture), V3)
+    assert outcome == "invalid"
+    assert any(needle in e for e in errors), errors
+
+
+@pytest.mark.parametrize(
+    "path,value,needle",
+    [
+        (("records", 0, "setup_id"), "jax_gpu_dense", "must be 'jax_gpu_dense_fp64'"),
+        (("records", 5, "setup_id"), "jax_cpu_dense_fp64", "jax_cpu_dense_fp64_nufft"),
+        (("records", 0, "setup", "backend"), "torch", "setup.backend"),
+        (("records", 0, "setup", "precision"), "fp32", "setup.precision"),
+        (("records", 0, "setup", "threads"), 0, "threads"),
+        (("records", 0, "likelihood", "dataset_type"), "pixelized", "dataset_type"),
+        (("records", 0, "host_class"), "cloud", "host_class"),
+        (("records", 0, "measurement"), "memory", "measurement"),
+        (("records", 0, "unit"), "MiB", "unit"),
+        (("records", 0, "class"), "fastest", "class"),
+        (("records", 0, "status"), "latest", "status"),
+        (("records", 0, "values"), {"other": 1.0}, "headline metric"),
+        (("records", 0, "values", "single_call"), -1, "non-negative"),
+        (("records", 0, "measured_at"), "2026-10-18", "measured_at"),
+        (("records", 0, "figures", 0, "sha256"), "abc", "sha256"),
+        (("records", 0, "figures", 0, "path"), "/abs.png", "unsafe figure path"),
+        (
+            ("records", 0, "superseded_by"),
+            "imaging-delaunay-hst-a100-runtime-old",
+            "only superseded",
+        ),
+        (("records", 1, "superseded_by"), "missing", "must name another record"),
+        (("records", 1, "superseded_by"), None, "must name another record"),
+        (("records", 3, "decision_id"), "", "string or null"),
+        (("planned_cells", 0, "class"), None, "class"),
+        (("planned_cells", 1), "cell", "must be an object"),
+        (("archive_record_count",), -1, "archive_record_count"),
+        (("archive_record_count",), True, "archive_record_count"),
+        (("coverage", "expected", "cells"), 4, "planned_cells count"),
+        (("coverage", "observed", "current"), 9, "observed.current"),
+    ],
+)
+def test_lifecycle_contract_breaks_are_named(v3, path, value, needle):
+    target = v3
+    for key in path[:-1]:
+        target = target[key]
+    target[path[-1]] = value
+    outcome, errors = summary.classify(v3, V3)
+    assert outcome == "invalid"
+    assert any(needle in e for e in errors), errors
+
+
+def test_planned_cells_carry_class_and_are_unique(v3):
+    v3["planned_cells"][0].pop("class")
+    assert any("planned_cells[0].class" in e for e in summary.validate(v3))
+    v3 = fixture_doc("setup_summary_v3.json")
+    v3["planned_cells"].append(copy.deepcopy(v3["planned_cells"][0]))
+    v3["coverage"]["expected"]["cells"] += 1
+    assert any("duplicate planned cell" in e for e in summary.validate(v3))
+
+
+def test_one_current_per_key_counts_host_class_and_variant_as_identity(v3):
+    other = copy.deepcopy(v3["records"][3])
+    other.update(id="light-fixed", model_variant="light_fixed")
+    v3["records"].append(other)
+    v3["coverage"]["observed"].update(records=7, current=6)
+    assert summary.classify(v3, V3) == ("ok", [])
+    clash = copy.deepcopy(v3["records"][3])
+    clash["id"] = "clash"
+    v3["records"].append(clash)
+    v3["coverage"]["observed"].update(records=8, current=7)
+    assert any("second current record 'clash'" in e for e in summary.validate(v3))
+
+
+def test_local_gpu_rows_may_be_kept_but_never_current(v3):
+    row = copy.deepcopy(v3["records"][4])
+    row.update(id="laptop-gpu", host_class="local_gpu", status="superseded")
+    row["superseded_by"] = v3["records"][4]["id"]
+    v3["records"].append(row)
+    v3["coverage"]["observed"].update(records=7, superseded=2)
+    assert summary.classify(v3, V3) == ("ok", [])
+    row["status"], row["superseded_by"] = "current", None
+    row["model_variant"] = "laptop"
+    v3["coverage"]["observed"].update(current=6, superseded=1)
+    assert any("'local_gpu' is never current" in e for e in summary.validate(v3))
+
+
+@pytest.mark.parametrize("value", [None, [], {}, True, 0, "", float("nan")])
+def test_malformed_v3_fields_return_errors_not_exceptions(v3, value):
+    def paths(obj, prefix=()):
+        items = (
+            obj.items()
+            if isinstance(obj, dict)
+            else enumerate(obj)
+            if isinstance(obj, list)
+            else []
+        )
+        for key, child in items:
+            yield (*prefix, key)
+            yield from paths(child, (*prefix, key))
+
+    for path in list(paths(v3))[::3]:
+        changed = copy.deepcopy(v3)
+        target = changed
+        for key in path[:-1]:
+            target = target[key]
+        target[path[-1]] = value
+        outcome, errors = summary.classify(changed)
+        assert outcome in ("ok", "invalid", "unsupported"), (path, outcome, errors)

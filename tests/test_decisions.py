@@ -94,3 +94,75 @@ def test_cli_rejects_invalid_decision_index(monkeypatch, capsys):
     monkeypatch.setattr(decisions, "load", invalid)
     assert cli.main(["check", "--offline"]) == 1
     assert "FAIL decisions: broken decision index" in capsys.readouterr().out
+
+
+# ----------------------------------------------------------- designation ---
+
+
+def designation(key="imaging-delaunay-gpu", **extra):
+    entry = row(key)
+    entry.update(
+        kind="designation",
+        likelihood="imaging/delaunay",
+        regime="standard",
+        hardware_class="gpu_a100",
+        optimal="jax_gpu_dense_fp64",
+        secondary=["jax_gpu_sparse_fp64"],
+        evidence=["imaging-delaunay-hst-a100-runtime"],
+        rule="Any imaging Delaunay fit on an A100 uses the dense JAX route.",
+        supersedes=None,
+    )
+    entry.update(extra)
+    return entry
+
+
+def test_designation_entries_validate_and_resolve(tmp_path):
+    first = designation("first", date="2026-10-01")
+    second = designation("second", supersedes="first", secondary=[])
+    write(tmp_path, [first, second, row("plain")])
+    loaded = decisions.load(tmp_path)
+    assert {r["id"] for r in loaded} == {"first", "second", "plain"}
+    assert decisions.ids(tmp_path) == {"first", "second", "plain"}
+    assert next(r for r in loaded if r["id"] == "second")["supersedes"] == "first"
+    assert "NNLS &lt;solver&gt;" in decisions.render_html(loaded)
+
+
+@pytest.mark.parametrize(
+    "mutation,needle",
+    [
+        ({"kind": "ranking"}, "kind must be designation"),
+        ({"hardware_class": "a100"}, "hardware_class"),
+        ({"likelihood": "imaging"}, "likelihood"),
+        ({"likelihood": "pixelized/delaunay"}, "likelihood"),
+        ({"optimal": "jax_gpu_dense"}, "canonical setup_id"),
+        ({"optimal": "jax_gpu_dense_fp64_na"}, "canonical setup_id"),
+        ({"secondary": ["numba_cpu_sparse_fp32"]}, "canonical setup_id"),
+        ({"secondary": "jax_cpu_dense_fp64"}, "secondary must be a list"),
+        ({"secondary": ["jax_gpu_dense_fp64"]}, "distinct"),
+        ({"evidence": []}, "evidence"),
+        ({"rule": "two\nlines"}, "single-line"),
+        ({"supersedes": "missing"}, "supersedes unknown"),
+    ],
+)
+def test_invalid_designations_rejected(tmp_path, mutation, needle):
+    entry = designation(**mutation)
+    write(tmp_path, [entry])
+    with pytest.raises(ValueError, match=needle):
+        decisions.load(tmp_path)
+
+
+def test_designation_fields_require_the_kind(tmp_path):
+    entry = designation()
+    entry.pop("kind")
+    write(tmp_path, [entry])
+    with pytest.raises(ValueError, match="requires id, title, date and url"):
+        decisions.load(tmp_path)
+    entry = designation()
+    entry.pop("rule")
+    write(tmp_path, [entry])
+    with pytest.raises(ValueError, match="lacks rule"):
+        decisions.load(tmp_path)
+
+
+def test_the_live_index_holds_no_designation_yet():
+    assert all("kind" not in r for r in decisions.load())

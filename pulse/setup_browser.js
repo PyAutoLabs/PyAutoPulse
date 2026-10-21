@@ -1,8 +1,44 @@
-/* Pulse v2 reader UI; conventions shared with the project setup browser.
+/* Pulse v2/v3 reader UI; conventions shared with the project setup browser.
  * Consumes captured producer data only. No cross-setup joins or scientific judgement. */
 (() => {
   "use strict";
+  // profiling-summary@3: the producer declares class and status. Filtering only
+  // shows or hides server-rendered rows; nothing is ranked, joined or chosen.
+  function lifecycle(root) {
+    const filters = [...root.querySelectorAll("select[data-filter]")];
+    const history = root.querySelector('input[data-filter="history"]');
+    const rows = [...root.querySelectorAll("tr[data-record]")];
+    const empty = root.querySelector('[data-id="no-rows"]');
+    function apply() {
+      let shown = 0;
+      for (const row of rows) {
+        const status = row.getAttribute("data-status");
+        const visible =
+          (status === "current" ||
+            (history.checked && status === "superseded")) &&
+          filters.every((select) => {
+            const key = select.dataset.filter;
+            const value = select.value;
+            if (key === "class" && value === "all") return true;
+            return (
+              !value ||
+              row.getAttribute("data-" + key.replaceAll("_", "-")) === value
+            );
+          });
+        row.hidden = !visible;
+        if (visible) shown += 1;
+      }
+      empty.hidden = shown > 0;
+    }
+    for (const control of [...filters, history])
+      control.addEventListener("change", apply);
+    apply();
+  }
   for (const root of document.querySelectorAll("[data-setup-browser]")) {
+    if (root.hasAttribute("data-lifecycle")) {
+      lifecycle(root);
+      continue;
+    }
     const capture = JSON.parse(
       root.querySelector(".setup-payload").textContent,
     );

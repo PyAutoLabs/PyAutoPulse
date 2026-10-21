@@ -198,16 +198,23 @@ def cmd_check(args) -> int:
                 print(f"FAIL {key}: receipt does not record the snapshot commit")
                 continue
             # The committed snapshot must still validate under this reader.
-            outcome, errors = summary_mod.classify(
-                s.doc, (s.instance.schema_name, s.instance.schema_version)
+            outcome, errors = ingest.classify(
+                s.doc, (s.instance.schema_name, s.instance.schema_version), args.out
             )
             if outcome != "ok":
                 problems.append(f"{key}: snapshot {outcome}: {'; '.join(errors)}")
                 print(f"FAIL {key}: snapshot {outcome}: {'; '.join(errors[:5])}")
                 continue
+        counts = ingest.lifecycle_counts(s.doc)
+        lifecycle = (
+            f" ({counts['current']} current, {counts['superseded']} superseded, "
+            f"{counts['archived']} archived)"
+            if counts
+            else ""
+        )
         print(
             f"ok   {key}: {s.doc['schema']}@{s.doc['version']} valid, "
-            f"{len(board.records(s))} records, {len(board.comparisons(s))} comparisons at "
+            f"{len(board.records(s))} records{lifecycle}, {len(board.comparisons(s))} comparisons at "
             f"{(s.commit or 'unknown')[:12]} ({mode if s.source == 'remote' else 'local read'})"
         )
     out = Path(args.out)

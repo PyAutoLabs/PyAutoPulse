@@ -220,3 +220,68 @@ def test_capture_freshness_is_conservative(lens, web, tmp_path):
     s.outcome = "ok"
     s.refreshed_at = None
     assert "Last updated unavailable" in board.render_html([s])
+
+
+# ------------------------------------------- v3 lifecycle and walltime axis ---
+
+
+def _snapshot(name, schema, fixture):
+    from pulse.ingest import Snapshot
+    from pulse.registry import Instance
+
+    instance = Instance(
+        name,
+        "autolens_profiling" if name == "lens" else "autolens_inference",
+        "dashboard/catalogue.json",
+        schema,
+        "https://example.invalid",
+        github="PyAutoLabs/autolens_profiling",
+    )
+    return Snapshot(instance, "ok", "remote", fixture_doc(fixture), SHA_A, NOW, refreshed_at=NOW)
+
+
+def test_v3_status_lines_carry_lifecycle_counts():
+    s = _snapshot("lens", "profiling-summary@3", "setup_summary_v3.json")
+    expected = "5 current · 1 superseded · 3 archived (producer-declared)"
+    assert board.lifecycle(s) == expected
+    md = board.render_markdown([s], NOW, campaign_data={"campaigns": [], "tasks": []})
+    assert f"- **Lifecycle:** {expected}" in md
+    assert "optimal, current setups" in md
+    assert "imaging/delaunay | hst | `jax_gpu_dense_fp64`" in md
+    assert "imaging-delaunay-hst-a100-runtime-old" not in md
+    assert "Coverage: 1 optimal cell(s) not measured." in md
+    state = board.render_state([s], updated=NOW, now=NOW)
+    census = next(i for i in state["items"] if i["id"] == "pulse:lens:census")
+    assert expected in census["text"]
+
+
+def test_v2_status_lines_are_unchanged():
+    s = _snapshot("lens", "profiling-summary@2", "setup_summary_v2.json")
+    assert board.lifecycle(s) is None
+    md = board.render_markdown([s], NOW, campaign_data={"campaigns": [], "tasks": []})
+    assert "**Lifecycle:**" not in md
+
+
+def test_walltime_instance_renders_its_own_table_under_profiling_results():
+    lens = _snapshot("lens", "profiling-summary@3", "setup_summary_v3.json")
+    wall = _snapshot("lens-walltime", "walltime-validation@1", "walltime_validation_v1.json")
+    data = {"campaigns": [], "tasks": []}
+    page = board.render_html([lens, wall], NOW, campaign_data=data)
+    results = page.index('id="evidence"')
+    table = page.index('data-walltime="lens-walltime"')
+    assert results < table
+    assert "Full-fit measurements" in page and "nautilus" in page
+    assert "setup catalogue unavailable" not in page
+    md = board.render_markdown([lens, wall], NOW, campaign_data=data)
+    assert md.index("## Profiling Results") < md.index("wall-time validation")
+    assert "| Measured/predicted |" in md and "| 1.26 |" in md
+    state = board.render_state([wall], updated=NOW, now=NOW)
+    assert not any(i["id"].endswith(":unqualified") for i in state["items"])
+    assert "full-fit records" in board.qualification(wall)
+
+
+def test_v3_and_walltime_state_meets_the_brain_contract():
+    lens = _snapshot("lens", "profiling-summary@3", "setup_summary_v3.json")
+    wall = _snapshot("lens-walltime", "walltime-validation@1", "walltime_validation_v1.json")
+    state = board.render_state([lens, wall], updated=NOW, now=NOW)
+    assert _validator().validate_state(state) == []
