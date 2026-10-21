@@ -626,6 +626,31 @@ button.retry {
 .timing-diagnostics {
   margin-top: 0.8rem;
 }
+/* profiling-summary@3: Class-first lifecycle browser. */
+.lifecycle-selectors {
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+}
+.lifecycle-selectors .history-toggle {
+  align-self: end;
+  font-weight: 500;
+}
+.lifecycle-table tr[hidden],
+.lifecycle-browser [hidden] {
+  display: none;
+}
+.lifecycle-table td,
+.lifecycle-table th {
+  font-size: 0.8rem;
+  padding: 0.35rem 0.45rem;
+  vertical-align: top;
+}
+.lifecycle-coverage {
+  margin: 1rem 0;
+}
+.lifecycle-coverage summary {
+  cursor: pointer;
+  font-weight: 600;
+}
 </style></head><body><header class="hero"><span class="orb"><svg class="mark" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="24" cy="25.6" r="18.8"/><path d="M21.2,4.2 L26.8,4.2 M24,4.2 L24,6.8"/><path d="M8.4,27.2 L17.0,27.2 L19.6,22.4 L22.6,35.0 L26.4,14.8 L29.4,27.2 L39.6,27.2"/><g fill="currentColor" stroke="none"><circle cx="26.4" cy="14.8" r="1.5"/><circle cx="24" cy="4.2" r="1.3"/></g></svg></span><h1>PyAuto<b>Pulse</b><span class="kind">Profiling</span></h1><div class="rule"></div><p class="tag">Measure. Trace. Compare.</p></header><section class="orchestration-panel" id="orchestration-pulse" aria-labelledby="orchestration-pulse-heading" data-orchestration-panel><div class="orchestration-head"><div><h2 class="prompt-heading" id="orchestration-pulse-heading">Check your <strong>Pulse</strong></h2></div><nav class="orchestration-links" aria-label="Work on GitHub"><a href="https://github.com/PyAutoLabs/PyAutoPulse">PyAutoPulse</a><a href="https://github.com/PyAutoLabs/autolens_profiling">autolens_profiling</a><a href="https://github.com/PyAutoLabs/autofit_profiling">autofit_profiling</a></nav></div><div class="orchestration-controls"><div class="orchestration-direction"><label for="orchestration-pulse-direction">Optional direction</label><textarea id="orchestration-pulse-direction" rows="2" data-orchestration-direction placeholder="Focus on a task, project or question"></textarea></div><button type="button" class="orchestration-copy" data-orchestration-copy>Copy check-in prompt</button></div><div class="orchestration-footer"><details data-orchestration-preview><summary>Read the prompt</summary><label class="sr-only" for="orchestration-pulse-prompt">Exact prompt to copy</label><textarea id="orchestration-pulse-prompt" data-orchestration-prompt readonly rows="8">Use PyAutoPulse as the home for profiling work in this ongoing chat. Read PyAutoPulse/AGENTS.md and CHECKIN.md, then the campaign ledger, relevant tasks and registered project evidence. Use Brain’s profiling conductor for profiling analysis and planning, and project-owned drivers for execution.
 
 When I give no particular direction, review every open campaign and task for changes since the last check-in: measurements, jobs, PRs, releases, blockers and recorded next steps. Give me a concise campaign-by-campaign summary and a proposed priority order. Distinguish verified updates from stale, missing or unavailable evidence.
@@ -1123,11 +1148,47 @@ window.addEventListener('hashchange',openCampaign);openCampaign();
   if (typeof module !== "undefined") module.exports = api;
 })();
 
-/* Pulse v2 reader UI; conventions shared with the project setup browser.
+/* Pulse v2/v3 reader UI; conventions shared with the project setup browser.
  * Consumes captured producer data only. No cross-setup joins or scientific judgement. */
 (() => {
   "use strict";
+  // profiling-summary@3: the producer declares class and status. Filtering only
+  // shows or hides server-rendered rows; nothing is ranked, joined or chosen.
+  function lifecycle(root) {
+    const filters = [...root.querySelectorAll("select[data-filter]")];
+    const history = root.querySelector('input[data-filter="history"]');
+    const rows = [...root.querySelectorAll("tr[data-record]")];
+    const empty = root.querySelector('[data-id="no-rows"]');
+    function apply() {
+      let shown = 0;
+      for (const row of rows) {
+        const status = row.getAttribute("data-status");
+        const visible =
+          (status === "current" ||
+            (history.checked && status === "superseded")) &&
+          filters.every((select) => {
+            const key = select.dataset.filter;
+            const value = select.value;
+            if (key === "class" && value === "all") return true;
+            return (
+              !value ||
+              row.getAttribute("data-" + key.replaceAll("_", "-")) === value
+            );
+          });
+        row.hidden = !visible;
+        if (visible) shown += 1;
+      }
+      empty.hidden = shown > 0;
+    }
+    for (const control of [...filters, history])
+      control.addEventListener("change", apply);
+    apply();
+  }
   for (const root of document.querySelectorAll("[data-setup-browser]")) {
+    if (root.hasAttribute("data-lifecycle")) {
+      lifecycle(root);
+      continue;
+    }
     const capture = JSON.parse(
       root.querySelector(".setup-payload").textContent,
     );

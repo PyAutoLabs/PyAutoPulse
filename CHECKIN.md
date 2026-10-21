@@ -13,7 +13,8 @@ campaigns and tasks. This static page does not run jobs or monitor them itself.
 2. Read each campaign's current project wiki/ledger, results and issue/PR state.
    Evidence URLs pin the last reviewed source; inspect the current default
    branch for subsequent changes too. Consult Brain's profiling conductor for
-   scientific interpretation. With HPC access, use project pull/status commands;
+   scientific interpretation. Research lookups in Pulse catalogues read
+   `class: optimal` + `status: current` records unless asked otherwise. With HPC access, use project pull/status commands;
    otherwise report which jobs/results remain unverified. Never infer completion
    from an old job id or absent data.
 3. Compare with the last check-in and report one table: changes, current state,
