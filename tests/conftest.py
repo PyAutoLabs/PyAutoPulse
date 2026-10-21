@@ -50,6 +50,11 @@ BODY_MAP = {
             "github": "PyAutoLabs/autofit_profiling",
             "category": "project",
         },
+        "autolens_inference": {
+            "path": "lens/autolens_inference",
+            "github": "PyAutoLabs/autolens_inference",
+            "category": "project",
+        },
         "PyAutoLens": {"path": "lens/PyAutoLens", "github": "PyAutoLabs/PyAutoLens"},
         "PyAutoGalaxy": {"path": "galaxy/PyAutoGalaxy", "github": "PyAutoLabs/PyAutoGalaxy"},
         "PyAutoFit": {"path": "fit/PyAutoFit", "github": "PyAutoLabs/PyAutoFit"},

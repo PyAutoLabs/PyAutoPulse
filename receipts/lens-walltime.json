@@ -1,0 +1,17 @@
+{
+  "instance": "lens-walltime",
+  "repo": "autolens_inference",
+  "github": "PyAutoLabs/autolens_inference",
+  "branch": "main",
+  "resolved_commit": "bdc8b2dcba590a5cbc0ce0898b55102a4b10ae6d",
+  "summary_path": "dashboard/walltime_validation.json",
+  "source": "remote",
+  "fetched_at": "2026-10-21T19:08:40Z",
+  "outcome": "ok",
+  "schema": "walltime-validation",
+  "version": 1,
+  "record_count": 56,
+  "errors": [],
+  "cached_from": null,
+  "refreshed_at": "2026-10-21T19:11:14Z"
+}
