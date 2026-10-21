@@ -1,0 +1,509 @@
+{
+  "schema": "profiling-summary",
+  "version": 3,
+  "project": "fixture_profiling",
+  "scope": "likelihood-lifecycle",
+  "generated_at": "2026-10-21T12:00:00Z",
+  "evidence_updated_at": "2026-10-18T12:00:00Z",
+  "valid_until": null,
+  "producer_revision": "0123456789abcdef0123456789abcdef01234567",
+  "comparison_policy": {
+    "id": "no-temporal-comparisons"
+  },
+  "coverage": {
+    "expected": {
+      "cells": 5
+    },
+    "observed": {
+      "records": 6
+    },
+    "excluded": []
+  },
+  "records": [
+    {
+      "id": "imaging-delaunay-hst-a100-runtime",
+      "run_id": "synthetic-run-imaging-delaunay-hst-a100-runtime",
+      "likelihood": {
+        "dataset_type": "imaging",
+        "variant": "delaunay"
+      },
+      "instrument": "hst",
+      "regime": "standard",
+      "setup": {
+        "backend": "jax",
+        "device": "gpu",
+        "operator": "dense",
+        "precision": "fp64",
+        "transformer": "na",
+        "threads": null
+      },
+      "setup_id": "jax_gpu_dense_fp64",
+      "host_class": "hpc_a100",
+      "model_variant": "default",
+      "measurement": "runtime",
+      "metric": "single_call",
+      "unit": "s",
+      "values": {
+        "single_call": 0.012
+      },
+      "class": "optimal",
+      "status": "current",
+      "superseded_by": null,
+      "day_zero": "2026.10.16.2",
+      "figures": [
+        {
+          "kind": "fit",
+          "path": "figures/imaging_delaunay_hst.png",
+          "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+        }
+      ],
+      "decision_id": "fixture-designation",
+      "release_pin": "2026.10.16.2",
+      "measured_at": "2026-10-18T12:00:00Z",
+      "identity": {
+        "device": "gpu",
+        "backend": "jax",
+        "precision": "float64",
+        "library_version": "2026.10.16.2",
+        "software": {
+          "PyAutoLens": "2026.10.16.2",
+          "PyAutoArray": "2026.10.16.2",
+          "jax": "fixture"
+        }
+      },
+      "method": {
+        "id": "runtime-fixture-method",
+        "statistic": "median",
+        "repetitions": 5,
+        "warmup": "one call",
+        "synchronization": "block_until_ready",
+        "cache_state": "warm"
+      },
+      "provenance": {
+        "host": "fixture-hpc_a100",
+        "measured_at": "2026-10-18T12:00:00Z",
+        "has_provenance": true,
+        "qualified": true
+      },
+      "validation": {
+        "status": "accepted",
+        "reason": "synthetic fixture only; not a scientific result"
+      },
+      "evidence": {
+        "path": "results/imaging/delaunay/imaging-delaunay-hst-a100-runtime.json",
+        "fragment": "single_call"
+      }
+    },
+    {
+      "id": "imaging-delaunay-hst-a100-runtime-old",
+      "run_id": "synthetic-run-imaging-delaunay-hst-a100-runtime-old",
+      "likelihood": {
+        "dataset_type": "imaging",
+        "variant": "delaunay"
+      },
+      "instrument": "hst",
+      "regime": "standard",
+      "setup": {
+        "backend": "jax",
+        "device": "gpu",
+        "operator": "dense",
+        "precision": "fp64",
+        "transformer": "na",
+        "threads": null
+      },
+      "setup_id": "jax_gpu_dense_fp64",
+      "host_class": "hpc_a100",
+      "model_variant": "default",
+      "measurement": "runtime",
+      "metric": "single_call",
+      "unit": "s",
+      "values": {
+        "single_call": 0.019
+      },
+      "class": "optimal",
+      "status": "current",
+      "superseded_by": null,
+      "day_zero": null,
+      "figures": [],
+      "decision_id": "fixture-designation",
+      "release_pin": "2026.10.16.2",
+      "measured_at": "2026-10-18T12:00:00Z",
+      "identity": {
+        "device": "gpu",
+        "backend": "jax",
+        "precision": "float64",
+        "library_version": "2026.10.16.2",
+        "software": {
+          "PyAutoLens": "2026.10.16.2",
+          "PyAutoArray": "2026.10.16.2",
+          "jax": "fixture"
+        }
+      },
+      "method": {
+        "id": "runtime-fixture-method",
+        "statistic": "median",
+        "repetitions": 5,
+        "warmup": "one call",
+        "synchronization": "block_until_ready",
+        "cache_state": "warm"
+      },
+      "provenance": {
+        "host": "fixture-hpc_a100",
+        "measured_at": "2026-10-18T12:00:00Z",
+        "has_provenance": true,
+        "qualified": true
+      },
+      "validation": {
+        "status": "accepted",
+        "reason": "synthetic fixture only; not a scientific result"
+      },
+      "evidence": {
+        "path": "results/imaging/delaunay/imaging-delaunay-hst-a100-runtime-old.json",
+        "fragment": "single_call"
+      }
+    },
+    {
+      "id": "imaging-delaunay-hst-a100-breakdown",
+      "run_id": "synthetic-run-imaging-delaunay-hst-a100-breakdown",
+      "likelihood": {
+        "dataset_type": "imaging",
+        "variant": "delaunay"
+      },
+      "instrument": "hst",
+      "regime": "standard",
+      "setup": {
+        "backend": "jax",
+        "device": "gpu",
+        "operator": "dense",
+        "precision": "fp64",
+        "transformer": "na",
+        "threads": null
+      },
+      "setup_id": "jax_gpu_dense_fp64",
+      "host_class": "hpc_a100",
+      "model_variant": "default",
+      "measurement": "breakdown",
+      "metric": "component_total",
+      "unit": "s",
+      "values": {
+        "component_total": 0.011,
+        "mapping": 0.004,
+        "inversion": 0.007
+      },
+      "class": "optimal",
+      "status": "current",
+      "superseded_by": null,
+      "day_zero": null,
+      "figures": [],
+      "decision_id": "fixture-designation",
+      "release_pin": "2026.10.16.2",
+      "measured_at": "2026-10-18T12:00:00Z",
+      "identity": {
+        "device": "gpu",
+        "backend": "jax",
+        "precision": "float64",
+        "library_version": "2026.10.16.2",
+        "software": {
+          "PyAutoLens": "2026.10.16.2",
+          "PyAutoArray": "2026.10.16.2",
+          "jax": "fixture"
+        }
+      },
+      "method": {
+        "id": "breakdown-fixture-method",
+        "statistic": "median",
+        "repetitions": 5,
+        "warmup": "one call",
+        "synchronization": "block_until_ready",
+        "cache_state": "warm"
+      },
+      "provenance": {
+        "host": "fixture-hpc_a100",
+        "measured_at": "2026-10-18T12:00:00Z",
+        "has_provenance": true,
+        "qualified": true
+      },
+      "validation": {
+        "status": "accepted",
+        "reason": "synthetic fixture only; not a scientific result"
+      },
+      "evidence": {
+        "path": "results/imaging/delaunay/imaging-delaunay-hst-a100-breakdown.json",
+        "fragment": "component_total"
+      }
+    },
+    {
+      "id": "imaging-delaunay-hst-ral-runtime",
+      "run_id": "synthetic-run-imaging-delaunay-hst-ral-runtime",
+      "likelihood": {
+        "dataset_type": "imaging",
+        "variant": "delaunay"
+      },
+      "instrument": "hst",
+      "regime": "standard",
+      "setup": {
+        "backend": "numba",
+        "device": "cpu",
+        "operator": "sparse",
+        "precision": "fp64",
+        "transformer": "na",
+        "threads": 16
+      },
+      "setup_id": "numba_cpu_sparse_fp64",
+      "host_class": "hpc_ral_cpu",
+      "model_variant": "default",
+      "measurement": "runtime",
+      "metric": "single_call",
+      "unit": "s",
+      "values": {
+        "single_call": 0.21
+      },
+      "class": "secondary",
+      "status": "current",
+      "superseded_by": null,
+      "day_zero": null,
+      "figures": [],
+      "decision_id": null,
+      "release_pin": "2026.10.16.2",
+      "measured_at": "2026-10-18T12:00:00Z",
+      "identity": {
+        "device": "cpu",
+        "backend": "numba",
+        "precision": "float64",
+        "library_version": "2026.10.16.2",
+        "software": {
+          "PyAutoLens": "2026.10.16.2",
+          "PyAutoArray": "2026.10.16.2",
+          "jax": "fixture"
+        }
+      },
+      "method": {
+        "id": "runtime-fixture-method",
+        "statistic": "median",
+        "repetitions": 5,
+        "warmup": "one call",
+        "synchronization": "block_until_ready",
+        "cache_state": "warm"
+      },
+      "provenance": {
+        "host": "fixture-hpc_ral_cpu",
+        "measured_at": "2026-10-18T12:00:00Z",
+        "has_provenance": true,
+        "qualified": true
+      },
+      "validation": {
+        "status": "accepted",
+        "reason": "synthetic fixture only; not a scientific result"
+      },
+      "evidence": {
+        "path": "results/imaging/delaunay/imaging-delaunay-hst-ral-runtime.json",
+        "fragment": "single_call"
+      }
+    },
+    {
+      "id": "imaging-delaunay-hst-a100-mixed",
+      "run_id": "synthetic-run-imaging-delaunay-hst-a100-mixed",
+      "likelihood": {
+        "dataset_type": "imaging",
+        "variant": "delaunay"
+      },
+      "instrument": "hst",
+      "regime": "standard",
+      "setup": {
+        "backend": "jax",
+        "device": "gpu",
+        "operator": "dense",
+        "precision": "mixed",
+        "transformer": "na",
+        "threads": null
+      },
+      "setup_id": "jax_gpu_dense_mixed",
+      "host_class": "hpc_a100",
+      "model_variant": "default",
+      "measurement": "runtime",
+      "metric": "single_call",
+      "unit": "s",
+      "values": {
+        "single_call": 0.009
+      },
+      "class": "experimental",
+      "status": "current",
+      "superseded_by": null,
+      "day_zero": null,
+      "figures": [],
+      "decision_id": null,
+      "release_pin": "2026.10.16.2",
+      "measured_at": "2026-10-18T12:00:00Z",
+      "identity": {
+        "device": "gpu",
+        "backend": "jax",
+        "precision": "mixed",
+        "library_version": "2026.10.16.2",
+        "software": {
+          "PyAutoLens": "2026.10.16.2",
+          "PyAutoArray": "2026.10.16.2",
+          "jax": "fixture"
+        }
+      },
+      "method": {
+        "id": "runtime-fixture-method",
+        "statistic": "median",
+        "repetitions": 5,
+        "warmup": "one call",
+        "synchronization": "block_until_ready",
+        "cache_state": "warm"
+      },
+      "provenance": {
+        "host": "fixture-hpc_a100",
+        "measured_at": "2026-10-18T12:00:00Z",
+        "has_provenance": true,
+        "qualified": true
+      },
+      "validation": {
+        "status": "accepted",
+        "reason": "synthetic fixture only; not a scientific result"
+      },
+      "evidence": {
+        "path": "results/imaging/delaunay/imaging-delaunay-hst-a100-mixed.json",
+        "fragment": "single_call"
+      }
+    },
+    {
+      "id": "interferometer-mge-sma-ral-runtime",
+      "run_id": "synthetic-run-interferometer-mge-sma-ral-runtime",
+      "likelihood": {
+        "dataset_type": "interferometer",
+        "variant": "mge"
+      },
+      "instrument": "sma",
+      "regime": "n_vis_lt_1e5",
+      "setup": {
+        "backend": "jax",
+        "device": "cpu",
+        "operator": "dense",
+        "precision": "fp64",
+        "transformer": "nufft",
+        "threads": 8
+      },
+      "setup_id": "jax_cpu_dense_fp64_nufft",
+      "host_class": "hpc_ral_cpu",
+      "model_variant": "default",
+      "measurement": "runtime",
+      "metric": "single_call",
+      "unit": "s",
+      "values": {
+        "single_call": 0.4
+      },
+      "class": "optimal",
+      "status": "current",
+      "superseded_by": null,
+      "day_zero": null,
+      "figures": [],
+      "decision_id": "fixture-designation",
+      "release_pin": "2026.10.16.2",
+      "measured_at": "2026-10-18T12:00:00Z",
+      "identity": {
+        "device": "cpu",
+        "backend": "jax",
+        "precision": "float64",
+        "library_version": "2026.10.16.2",
+        "software": {
+          "PyAutoLens": "2026.10.16.2",
+          "PyAutoArray": "2026.10.16.2",
+          "jax": "fixture"
+        }
+      },
+      "method": {
+        "id": "runtime-fixture-method",
+        "statistic": "median",
+        "repetitions": 5,
+        "warmup": "one call",
+        "synchronization": "block_until_ready",
+        "cache_state": "warm"
+      },
+      "provenance": {
+        "host": "fixture-hpc_ral_cpu",
+        "measured_at": "2026-10-18T12:00:00Z",
+        "has_provenance": true,
+        "qualified": true
+      },
+      "validation": {
+        "status": "accepted",
+        "reason": "synthetic fixture only; not a scientific result"
+      },
+      "evidence": {
+        "path": "results/interferometer/mge/interferometer-mge-sma-ral-runtime.json",
+        "fragment": "single_call"
+      }
+    }
+  ],
+  "comparisons": [],
+  "limitations": [
+    "fixture: hand-written lifecycle catalogue; not a scientific result"
+  ],
+  "planned_cells": [
+    {
+      "likelihood": {
+        "dataset_type": "imaging",
+        "variant": "delaunay"
+      },
+      "instrument": "hst",
+      "setup_id": "jax_gpu_dense_fp64",
+      "host_class": "hpc_a100",
+      "model_variant": "default",
+      "measurement": "runtime",
+      "class": "optimal"
+    },
+    {
+      "likelihood": {
+        "dataset_type": "imaging",
+        "variant": "delaunay"
+      },
+      "instrument": "hst",
+      "setup_id": "jax_gpu_dense_fp64",
+      "host_class": "hpc_a100",
+      "model_variant": "default",
+      "measurement": "breakdown",
+      "class": "optimal"
+    },
+    {
+      "likelihood": {
+        "dataset_type": "imaging",
+        "variant": "delaunay"
+      },
+      "instrument": "euclid",
+      "setup_id": "jax_gpu_dense_fp64",
+      "host_class": "hpc_a100",
+      "model_variant": "default",
+      "measurement": "runtime",
+      "class": "optimal"
+    },
+    {
+      "likelihood": {
+        "dataset_type": "imaging",
+        "variant": "delaunay"
+      },
+      "instrument": "hst",
+      "setup_id": "numba_cpu_sparse_fp64",
+      "host_class": "hpc_ral_cpu",
+      "model_variant": "default",
+      "measurement": "runtime",
+      "class": "secondary"
+    },
+    {
+      "likelihood": {
+        "dataset_type": "interferometer",
+        "variant": "mge"
+      },
+      "instrument": "sma",
+      "setup_id": "jax_cpu_dense_fp64_nufft",
+      "host_class": "hpc_ral_cpu",
+      "model_variant": "default",
+      "measurement": "runtime",
+      "class": "optimal"
+    }
+  ],
+  "archive_record_count": 3,
+  "hazards": [],
+  "recommendations": []
+}
