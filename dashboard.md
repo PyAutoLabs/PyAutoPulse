@@ -1,6 +1,6 @@
 # PyAutoPulse — profiling dashboard
 
-<!-- pulse-campaigns:4e7b5e1126147b4593a7e870235fd9a5d367256202aaeb9408c0254298791675 -->
+<!-- pulse-campaigns:b2279cce088381119a25ae69e4a1a493c347db477e562fe28b38596ca10f6197 -->
 ## Profiling Check In
 
 <details><summary>Full check-in prompt</summary>
@@ -25,7 +25,7 @@ After taking action, report what changed, what the evidence supports and what re
 
 </details>
 
-Last check-in: 2026-10-17T15:12:59Z (review date, not measurement freshness).
+Last check-in: 2026-10-23T15:00:32Z (review date, not measurement freshness).
 
 ## Active campaigns
 
@@ -68,14 +68,14 @@ Reviewed 2026-10-17. Parked as research, human decision 2026-10-17 (chat) (&quot
 
 <details><summary>Cluster PointSolver robustness and performance — active</summary>
 
-Reviewed 2026-10-17. No campaign wiki/results change or new matching implementation claim found. Representative cluster baseline and observable-overflow policy remain unstarted. Choose one bounded phase; inherited single-source results do not qualify a representative cluster baseline. Check-in 2026-10-17: no project wiki/results/issue change since 2026-10-13 beyond autolens_profiling#420/#422/#424 (interferometer only); releases 2026.10.16.1/.2 and 2026.10.17.1 supply no new measurement.
+Reviewed 2026-10-23. Human decision 2026-10-23 (chat): keep the 1.0″ starting grid as the production default (decision record cluster-pointsolver-starting-grid; closes the phase-1 deferral). Inputs: phase-1 simple sweep (#438), A2744 pilot job 412573 (1.0″ misses fewest, 2/69), starting-grid follow-up autolens_profiling#439 → #440 merged 03d36c81 (no fixed scale finds every image; no separation rule). Mitigation: the workspace validation check. Next bounded task: spurious-core candidates library task (start_dev in progress), then the validation check. No default changed.
 
-[Campaign evidence](https://github.com/PyAutoLabs/autolens_profiling/blob/4db4d988e520a82219152743748c3188d485a4ba/wiki/campaigns/cluster_pointsolver.md)
+[Campaign evidence](https://github.com/PyAutoLabs/autolens_profiling/blob/03d36c810b2a4f7d31342d9a75f46cd7fe10f43a/results/notes/cluster_pointsolver_campaign.md)
 
 ### Active tasks
 
-- [Cluster PointSolver — robustness, analysis settings and performance](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/cluster_pointsolver_speed.md) — ready: Unissued, no claim. Pick one bounded phase per Mind epics.md: observable-overflow invalid-result policy + CI witness, or a representative-data baseline cell.
-- [PointSolver profiling cells: lensed quasar → cluster runtime tier → single/multi-source → multiplane](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/point_solver_profiling_cells.md) — ready: Unissued, no claim. Candidate first cell: a representative-data cluster likelihood_runtime baseline (single-source preset).
+- [Cluster PointSolver — robustness, analysis settings and performance](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/cluster_pointsolver_speed.md) — active: Decision taken 2026-10-23 (human): keep 1.0″ + validation check; #439/#440 merged (03d36c81). Next: spurious-core candidates library task (start_dev in progress), then the workspace validation check.
+- [PointSolver profiling cells: lensed quasar → cluster runtime tier → single/multi-source → multiplane](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/point_solver_profiling_cells.md) — ready: Unissued, no claim. Candidate first cell: a representative-data cluster likelihood_runtime baseline (single-source preset). Reconcile onto the phase-1 harness (scripts/cluster/image_plane/robust_settings_sweep.py) when the next cell is issued; no duplicate cell.
 
 </details>
 
@@ -420,9 +420,10 @@ Project `autolens_inference`, scope `None`, read from [PyAutoLabs/autolens_infer
 </details>
 
 
-<!-- decision-history:731ca0edc0c01337b75841f88d79bd1838b31ba05910928a6353dc43150ca0ea -->
+<!-- decision-history:4d88bb773a36f774562f9e06d52a024b839cc44d2aa91282311891f6064c43c3 -->
 ## Decision History
 
+- <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/cluster-pointsolver-starting-grid.md">Keep the 1.0″ PointSolver starting grid for cluster fits, with a validation check</a>
 - <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/direct-conv-symmetric-gate.md">Gate the symmetric direct_conv kernel at work fraction 0.7, with ymin column ordering</a>
 - <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/interferometer-route-gate-cost-model.md">Route interferometer curvature by a calibrated two-constant cost model</a>
 - <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/adaptsplit-zero-weight-delaunay-only.md">Exclude zero-weight mappings from AdaptSplit pixel signals on Delaunay meshes only</a>

@@ -27,6 +27,84 @@ GitHub sources and limits. Current RAL queue was empty; the transfer preview tim
 out, so historical jobs and unpulled results remain unverified. Review time does
 not refresh measurements or authorize compute. Historical task text is retained.
 
+## Check-in 2026-10-23
+
+- VERIFIED: phase 1 (cluster-scale robust PointSolver settings) MERGED: [autolens_profiling#436](https://github.com/PyAutoLabs/autolens_profiling/issues/436) → [#438](https://github.com/PyAutoLabs/autolens_profiling/pull/438) (`c8c9abb3`, 2026-10-22). Record: [complete/2026/10/cluster-pointsolver-robust-settings.md](https://github.com/PyAutoLabs/PyAutoMind/blob/main/complete/2026/10/cluster-pointsolver-robust-settings.md); ledger: [results/notes/cluster_pointsolver_campaign.md at c8c9abb3](https://github.com/PyAutoLabs/autolens_profiling/blob/c8c9abb30b51698343a15adb767f80c9d4640273/results/notes/cluster_pointsolver_campaign.md).
+- Human decision DEFERRED 2026-10-22: the default initial scale stays 1.0″. See the Knowledge block below.
+- VERIFIED (RAL `sacct` + log read 2026-10-23): the A2744 pilot leg, job 412573 (`cluster_pointsolver_pilot`, profiling `b39f7ab2`, CPU fp64, `ral`), is **FAILED** after 03:33:07 with MaxRSS 85.5 GB. It completed 16 diagnostic rows. Row 17 (`tight_s1_p0.001`) and the two capacity controls died on LLVM `Cannot allocate memory` / `Failed to materialize symbols`. No JSON, PNG or memory trace was written.
+- A2744 ordering (synthetic prior-median model, 7 sources, 3 judged draws, 69 oracle roots): production 1.0″ misses 2/69 (both stress), 0.5″ misses 3, 0.7″ misses 5, 2.0″ misses 8. Truth-bbox extents miss 9–11. This is the opposite ordering to `simple`, so the initial-scale ranking is dataset-dependent.
+- RSS attribution (owed follow-up, now done): RSS climbs 8.3 → 39.4 GB over 16 rows while live JAX arrays stay ~0 MB. The growth is retained compiled executables (one 191-component multi-plane solver JIT per row, kept for interleaved timing) plus per-row compile transients (peak 22 → 81.5 GB). The harness must release executables between rows, or run one row per process, before any A2744 full sweep. No resubmission is authorized.
+- Next bounded task: the starting-grid / close-member-image Mind draft ([cluster_pointsolver_starting_grid_close_member_image.md](https://github.com/PyAutoLabs/PyAutoMind/blob/main/draft/research/autolens_profiling/cluster_pointsolver_starting_grid_close_member_image.md)) via start_dev. One task, no bulk queue.
+- Phase 2 (workspace_test CI witnesses) still has nothing accepted to distil. The old `point_solver_profiling_cells` coverage reconciles onto phase 1's harness (`scripts/cluster/image_plane/robust_settings_sweep.py`) when the next profiling cell is issued; no duplicate cell.
+- Follow-up [#439](https://github.com/PyAutoLabs/autolens_profiling/issues/439) → [#440](https://github.com/PyAutoLabs/autolens_profiling/pull/440) MERGED (`03d36c81`, 2026-10-23). Record: [complete/2026/10/cluster-pointsolver-starting-grid.md](https://github.com/PyAutoLabs/PyAutoMind/blob/main/complete/2026/10/cluster-pointsolver-starting-grid.md). The Knowledge block below is refreshed from the ledger appendix at `03d36c81`.
+- Human decision TAKEN 2026-10-23 (chat): keep the 1.0″ starting grid, plus the validation check as mitigation. See the Decision section below.
+- Next bounded task: spurious-core candidates (`draft/feature/autolens/point_solver_spurious_core_candidates.md`, start_dev in progress), then the workspace validation check.
+- Review date does not refresh measurement dates. This check-in authorizes no compute, default change or merge. [Full dated check-in](../checkins/2026-10-23.md).
+
+## Knowledge (2026-10-22): phase 1, cluster-scale robust PointSolver settings
+
+**Sources.** [autolens_profiling#436](https://github.com/PyAutoLabs/autolens_profiling/issues/436);
+ledger `results/notes/cluster_pointsolver_campaign.md`; sweep JSON
+`results/breakdown/cluster/robust_settings_sweep_simple_hpc_ral_cpu_fp64.json` (RAL job 412572,
+Xeon 8490H, CPU fp64, profiling `b39f7ab2`, PyAutoLens `c90eceb0`).
+
+**Ground truth.** The oracle is independent of the triangle solver. It samples the multi-plane
+lens-equation residual densely, Newton-polishes each basin and certifies roots below 1e-10″
+residual and 1e-6″ stability. It is calibrated to 2.84e-8″ on the 1a closed-form quad and the
+1c/1d near-cusp fixture.
+
+**Result (`simple`, 13 components, 3 planes, 2 sources, 101 draws).** No setting is admissible.
+Production-extent rows cover 306/306 prior roots and miss 2–6 of 300 stress roots. Every miss
+is a close high-|μ| pair, 0.33–0.76″ apart, on stress draws 53, 73 and 81 (one pair straddles
+the radial critical curve). Initial scale 0.5″/0.7″ misses 2 at 0.78×/0.75× the control's
+speed. The production 1.0″ misses 5 (5.29 ms per warmed two-source solve) and 2.0″ misses 6
+(1.30×). Precision 0.01 vs 0.001, `MAX_CONTAINING_SIZE` 20/40/60 and backend
+(NumPy/JIT/vmap) do not change coverage. The uncapped containing count reaches at most 7, so
+there is no overflow at cap 20. Eager JAX is unusable (projected row wall over cap). Truth-bbox
+extents miss 49–63 stress roots because the images move with the model. Peak RSS 4.3 GB.
+
+**Verdict.** DEFERRED (human, 2026-10-22). The 2-miss, ~0.77×-speed 0.5″/0.7″ start vs the
+5-miss 1.0″ production control is re-decided after the starting-grid draft and the A2744 pull.
+No default was changed; 0.5″ is the working answer if the choice is forced earlier.
+
+**Follow-up (#439, 2026-10-23).** A2744 pilot job 412573 pulled: FAILED after 16 diagnostic
+rows on LLVM `Cannot allocate memory` (RSS 8.3 → 39.4 GB, live arrays ~0: retained executables
++ compile transients; harness fix `--release-executables`). On that synthetic 3-draw A2744 model
+1.0″ misses fewest (2/69), the opposite of `simple`. On the autolens_visualization cluster model
+the workspace 1.0″ grid loses `point_0`'s central image 0.39″ from `main_1`'s core, and so does
+every scale down to 0.3″; only 0.2″ finds it, and 0.2″ still misses 3/108 roots. Finer is not
+monotonically safer, and no single-separation rule holds ("scale ≲ sep/1.06" contradicted).
+Recommendation: keep 1.0″ and add a validation check (observed image without a solved
+counterpart → local fine re-solve; drop high-residual candidates). Laptop rows, diagnostic timings.
+
+**Open.** The human's deferred decision (both inputs now in hand); the two Mind drafts
+(workspace validation check; spurious candidates at `r_core = 0` member cores). The human's
+Pulse profiling programme may revisit this goal.
+
+## Decision 2026-10-23 (human)
+
+**Keep the 1.0″ starting grid as the production default.** The human took this decision in chat on
+2026-10-23, closing the phase-1 decision DEFERRED on 2026-10-22. Canonical record:
+[decisions/cluster-pointsolver-starting-grid.md](../decisions/cluster-pointsolver-starting-grid.md).
+
+Evidence (profiling ledger [at `03d36c81`](https://github.com/PyAutoLabs/autolens_profiling/blob/03d36c810b2a4f7d31342d9a75f46cd7fe10f43a/results/notes/cluster_pointsolver_campaign.md)):
+
+- Phase 1 `simple` sweep (RAL job 412572, Xeon 8490H, CPU fp64): 0.5″/0.7″ miss 2 and 1.0″ misses 5
+  of 300 stress roots ([#438](https://github.com/PyAutoLabs/autolens_profiling/pull/438); Mind
+  [cluster-pointsolver-robust-settings.md](https://github.com/PyAutoLabs/PyAutoMind/blob/main/complete/2026/10/cluster-pointsolver-robust-settings.md)).
+- A2744 pilot (RAL job 412573, pulled 2026-10-23, FAILED after 16 rows): 1.0″ misses fewest, 2/69.
+- Starting-grid follow-up ([#439](https://github.com/PyAutoLabs/autolens_profiling/issues/439) →
+  [#440](https://github.com/PyAutoLabs/autolens_profiling/pull/440), merged `03d36c81`; Mind
+  [cluster-pointsolver-starting-grid.md](https://github.com/PyAutoLabs/PyAutoMind/blob/main/complete/2026/10/cluster-pointsolver-starting-grid.md)): the workspace
+  1.0″ grid loses the viz model's central image 0.39″ from `main_1`, but so do 0.7–0.3″; only 0.2″
+  finds it and still misses 3/108. Finer is not monotonically safer, no separation rule holds, and
+  the solver returns spurious candidates on `r_core = 0` member cores.
+
+Mitigation adopted: the validation check (Mind draft
+`draft/feature/autolens_workspace/cluster_point_solver_validation_check.md`, unissued). Next: the
+spurious-core candidates library task (`draft/feature/autolens/point_solver_spurious_core_candidates.md`,
+start_dev in progress). This record changes no library or workspace default.
+
 ---
 
 # Cluster PointSolver — robustness, analysis settings and performance

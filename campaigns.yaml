@@ -1,5 +1,5 @@
 version: 1
-last_checkin: '2026-10-17T15:12:59Z'
+last_checkin: '2026-10-23T15:00:32Z'
 campaigns:
 - id: setup-baseline
   title: Setup baseline collection and scientific acceptance
@@ -47,13 +47,9 @@ campaigns:
 - id: cluster-pointsolver
   title: Cluster PointSolver robustness and performance
   status: active
-  updated: '2026-10-17'
-  next: 'No campaign wiki/results change or new matching implementation claim found. Representative cluster baseline
-    and observable-overflow policy remain unstarted. Choose one bounded phase; inherited single-source results
-    do not qualify a representative cluster baseline. Check-in 2026-10-17: no project wiki/results/issue change
-    since 2026-10-13 beyond autolens_profiling#420/#422/#424 (interferometer only); releases 2026.10.16.1/.2 and
-    2026.10.17.1 supply no new measurement.'
-  evidence: https://github.com/PyAutoLabs/autolens_profiling/blob/4db4d988e520a82219152743748c3188d485a4ba/wiki/campaigns/cluster_pointsolver.md
+  updated: '2026-10-23'
+  next: 'Human decision 2026-10-23 (chat): keep the 1.0″ starting grid as the production default (decision record cluster-pointsolver-starting-grid; closes the phase-1 deferral). Inputs: phase-1 simple sweep (#438), A2744 pilot job 412573 (1.0″ misses fewest, 2/69), starting-grid follow-up autolens_profiling#439 → #440 merged 03d36c81 (no fixed scale finds every image; no separation rule). Mitigation: the workspace validation check. Next bounded task: spurious-core candidates library task (start_dev in progress), then the validation check. No default changed.'
+  evidence: https://github.com/PyAutoLabs/autolens_profiling/blob/03d36c810b2a4f7d31342d9a75f46cd7fe10f43a/results/notes/cluster_pointsolver_campaign.md
 - id: interferometer
   title: Interferometer likelihood and streaming
   status: parked
@@ -285,12 +281,11 @@ tasks:
 - id: cluster_pointsolver_speed
   campaign: cluster-pointsolver
   title: Cluster PointSolver — robustness, analysis settings and performance
-  status: ready
+  status: active
   priority: normal
   path: tasks/cluster_pointsolver_speed.md
-  updated: '2026-10-13'
-  next: 'Unissued, no claim. Pick one bounded phase per Mind epics.md: observable-overflow invalid-result policy
-    + CI witness, or a representative-data baseline cell.'
+  updated: '2026-10-23'
+  next: 'Decision taken 2026-10-23 (human): keep 1.0″ + validation check; #439/#440 merged (03d36c81). Next: spurious-core candidates library task (start_dev in progress), then the workspace validation check.'
 - id: imaging_production_over_sampling
   campaign: imaging
   title: Profile imaging pixelizations at production over-sampling
@@ -384,9 +379,8 @@ tasks:
   status: ready
   priority: normal
   path: tasks/point_solver_profiling_cells.md
-  updated: '2026-10-13'
-  next: 'Unissued, no claim. Candidate first cell: a representative-data cluster likelihood_runtime baseline
-    (single-source preset).'
+  updated: '2026-10-23'
+  next: 'Unissued, no claim. Candidate first cell: a representative-data cluster likelihood_runtime baseline (single-source preset). Reconcile onto the phase-1 harness (scripts/cluster/image_plane/robust_settings_sweep.py) when the next cell is issued; no duplicate cell.'
 - id: point_source_image_plane_gpu_breakdown
   campaign: point-source-image-gpu
   title: 'Point-source A100 speed-up campaign: profile and optimize with the shared breakdown'
