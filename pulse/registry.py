@@ -15,7 +15,7 @@ from pathlib import Path
 
 import yaml
 
-from pulse import ORGAN_ROOT
+from pulse import ORGAN_ROOT, summary
 
 REGISTRY_PATH = ORGAN_ROOT / "registry.yaml"
 REGISTRY_SCHEMA = 1
@@ -198,6 +198,13 @@ def validate(data, body_map: dict[str, dict] | None = None) -> list[str]:
         schema = row.get("supported_schema")
         if isinstance(schema, str) and not _SCHEMA.match(schema):
             problems.append(f"{where}: supported_schema must be <name>@<integer version>")
+        elif isinstance(schema, str):
+            # A row pins one exact contract this reader implements, e.g.
+            # profiling-summary@3 or the full-fit axis walltime-validation@1.
+            got = (_SCHEMA.match(schema)[1], int(_SCHEMA.match(schema)[2]))
+            if got not in summary.SUPPORTED:
+                known = ", ".join(f"{n}@{v}" for n, v in sorted(summary.SUPPORTED))
+                problems.append(f"{where}: supported_schema {schema} is not read here ({known})")
         url = row.get("dashboard_url")
         if isinstance(url, str) and not url.startswith("https://"):
             problems.append(f"{where}: dashboard_url must be an https:// URL")

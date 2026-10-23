@@ -118,3 +118,82 @@ def test_a_local_read_reports_revision_and_dirty_state_and_writes_nothing(lens, 
     (checkout / "scratch.txt").write_text("edit")
     assert ingest.ingest(lens, out, local_path=checkout).dirty is True
     assert not (out / "receipts").exists() and not (out / "snapshots").exists()
+
+
+# ------------------------------------------- v3 decision resolution, counts ---
+
+
+def _v3_lens(registry_file, fake_mind, schema="profiling-summary@3"):
+    import yaml
+
+    config = yaml.safe_load(registry_file.read_text())
+    config["instances"][0]["supported_schema"] = schema
+    registry_file.write_text(yaml.safe_dump(config))
+    return registry.get(registry.load(registry_file, mind=fake_mind), "lens")
+
+
+def _decisions(root, ids):
+    import yaml
+
+    rows = [
+        {
+            "id": key,
+            "title": f"Designate {key}",
+            "date": "2026-10-21",
+            "url": f"https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/{key}.md",
+        }
+        for key in ids
+    ]
+    root.mkdir(parents=True, exist_ok=True)
+    (root / "decisions.yaml").write_text(yaml.safe_dump({"decisions": rows}))
+    (root / "decisions").mkdir(exist_ok=True)
+    for row in rows:
+        (root / "decisions" / f"{row['id']}.md").write_text(
+            f"# {row['title']}\n\nDate: {row['date']}\n"
+        )
+
+
+def test_v3_decision_ids_resolve_and_the_receipt_counts_lifecycle(
+    registry_file, fake_mind, web, tmp_path
+):
+    lens = _v3_lens(registry_file, fake_mind)
+    _decisions(tmp_path, ["fixture-designation"])
+    web.publish(GH, SHA_A, PATH, fixture_doc("setup_summary_v3.json"))
+    s = ingest.ingest(lens, tmp_path, now="2026-10-21T00:00:00Z")
+    assert s.outcome == "ok", s.errors
+    receipt = ingest.read_receipt(tmp_path, "lens")
+    assert (receipt["schema"], receipt["version"]) == ("profiling-summary", 3)
+    assert receipt["lifecycle"] == {"current": 5, "superseded": 1, "archived": 3}
+
+
+def test_v3_unresolved_decision_is_invalid_and_keeps_the_last_good(
+    registry_file, fake_mind, web, tmp_path
+):
+    lens = _v3_lens(registry_file, fake_mind)
+    _decisions(tmp_path, ["fixture-designation"])
+    web.publish(GH, SHA_A, PATH, fixture_doc("setup_summary_v3.json"))
+    ingest.ingest(lens, tmp_path, now="2026-10-21T00:00:00Z")
+    _decisions(tmp_path, ["some-other-decision"])
+    (tmp_path / "decisions/fixture-designation.md").unlink()
+    web.publish(GH, SHA_B, PATH, fixture_doc("setup_summary_v3.json"))
+    s = ingest.ingest(lens, tmp_path, now="2026-10-22T00:00:00Z")
+    assert s.outcome == "invalid" and s.cached and s.commit == SHA_A
+    assert any("'fixture-designation' does not resolve" in e for e in s.errors)
+
+
+def test_v3_without_a_decision_index_cannot_resolve(registry_file, fake_mind, web, tmp_path):
+    lens = _v3_lens(registry_file, fake_mind)
+    web.publish(GH, SHA_A, PATH, fixture_doc("setup_summary_v3.json"))
+    s = ingest.ingest(lens, tmp_path, now="2026-10-21T00:00:00Z")
+    assert s.outcome == "invalid"
+    assert "decision index unreadable" in s.errors[0]
+
+
+def test_v2_and_walltime_receipts_keep_their_shape(registry_file, fake_mind, web, tmp_path):
+    lens = _v3_lens(registry_file, fake_mind, "walltime-validation@1")
+    web.publish(GH, SHA_A, PATH, fixture_doc("walltime_validation_v1.json"))
+    s = ingest.ingest(lens, tmp_path, now="2026-10-21T00:00:00Z")
+    assert s.outcome == "ok", s.errors
+    receipt = ingest.read_receipt(tmp_path, "lens")
+    assert receipt["schema"] == "walltime-validation" and "lifecycle" not in receipt
+    assert receipt["record_count"] == 2

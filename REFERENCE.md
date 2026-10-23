@@ -6,8 +6,9 @@ active campaigns and Pulse-owned tasks above the detailed profiling evidence.
 prompts and their source commit. Board refreshes never change task status or stamp
 a check-in. Run `bin/pyauto-pulse board --offline` after ledger edits.
 
-The registry schema, the `profiling-summary` v1 contract as this organ reads
-it, and the formats of the receipts, snapshots, board markers and cockpit feed.
+The registry schema, the `profiling-summary` contracts as this organ reads
+them (v1 historical, v2 the live registry pin, v3 the lifecycle catalogue now
+supported), the `walltime-validation` v1 evidence axis, and the formats of the receipts, snapshots, board markers and cockpit feed.
 Prose boundaries live in [AGENTS.md](AGENTS.md); the design is
 [profiling_inference_organs.md](https://github.com/PyAutoLabs/PyAutoBrain/blob/main/docs/research/profiling_inference_organs.md).
 
@@ -20,28 +21,33 @@ One row per instance under `instances:`. Unknown fields are refused.
 | `instance` | yes | Stable key within the organ, `^[a-z][a-z0-9_-]*$`, unique. |
 | `repo` | yes | A PyAutoMind body-map identity (`repos.yaml` key). `path` and `github` are read from the body map at load time and **may not** be written in the row. |
 | `summary_path` | yes | Repository-relative path of the producer's summary (no `/`-prefix, `..`, URL). |
-| `supported_schema` | yes | `<schema>@<integer version>` the reader expects, e.g. `profiling-summary@1`. |
+| `supported_schema` | yes | `<schema>@<integer version>` the reader expects and implements: `profiling-summary@1`, `@2`, `@3` or `walltime-validation@1`. Any other pin is refused. |
 | `dashboard_url` | yes | The project's own human-facing page (`https://`). |
 | `library_refs` | no | Body-map identities the project exercises (each must be in the body map). |
 | `cortex_project` | no | An existing Cortex key, or `null`. |
 
 Further rules: the same `(repo, summary_path)` may be registered once (disjoint
-scopes; no inflated coverage). Every ingest reads branch `main`.
+scopes; no inflated coverage). Every ingest reads branch `main`. A project that
+publishes wall-time validation registers it as a second instance row with its
+own `summary_path` and `supported_schema: walltime-validation@1`.
 
 Body map resolution order: `--mind PATH` (must hold `repos.yaml`, never a
 silent fall-through), `$PYAUTO_MIND`, `$PYAUTO_ROOT/organs/PyAutoMind`,
 `$PYAUTO_ROOT/PyAutoMind`, then beside this organ (grouped `organs/` or flat
 task-bundle layout). No body map → an error, never a guess.
 
-## `profiling-summary` v1, as read here
+## `profiling-summary` v1, as read here (historical)
 
 The producer documents the contract
 ([autolens_profiling `dashboard/README.md`](https://github.com/PyAutoLabs/autolens_profiling/blob/main/dashboard/README.md));
-this is what `pulse/summary.py` enforces. Additive fields are ignored.
+this is what `pulse/summary.py` enforces. Additive fields are ignored. No live
+registry row pins v1 today; saved v1 snapshots and fixtures still validate.
 
-**Support.** `(schema, version)` must be `("profiling-summary", 1)` *and* match the
+**Support.** `(schema, version)` must be one this reader implements
+(`profiling-summary` 1, 2 or 3, `walltime-validation` 1) *and* match the
 registry row's `supported_schema`; otherwise the outcome is **unsupported** and
-nothing else is validated.
+nothing else is validated. The envelope, record and comparison rules below are
+the v1 shape; v2 and v3 reuse the envelope.
 
 **Envelope** — required: `schema, version, project, scope, generated_at,
 evidence_updated_at, producer_revision, comparison_policy, coverage, records,
@@ -96,9 +102,9 @@ precision`, in producer order (never sorted by ratio).
 
 ## `profiling-summary` v2: setup catalogue
 
-The v2 reader lands before the project producer migrates. Registry entries
-still pin an exact version; supporting v2 does **not** silently upgrade the live
-`profiling-summary@1` registry or reinterpret a saved v1 snapshot. The full
+V2 is the live registry pin for both instances (`lens`, `fit`). Registry entries
+pin an exact version; supporting a newer version never silently upgrades a row
+or reinterprets a saved snapshot of an older one. The full
 [synthetic fixture](tests/fixtures/setup_summary_v2.json) is an executable
 producer example. Validation is stdlib-only in `pulse/catalogue.py`, through
 `pulse.summary.classify`; it never opens evidence files or judges science.
@@ -199,13 +205,126 @@ a recommended solver is correct. Consumers must inspect the cited records'
 hardware/method and applicability, and must not extrapolate to a different setup
 or interpret a per-likelihood measurement as a total-fit prediction.
 
+## `profiling-summary` v3: lifecycle catalogue
+
+V3 is v2's envelope with every record declaring where it sits in the
+likelihood lifecycle. The [synthetic fixture](tests/fixtures/setup_summary_v3.json)
+is an executable producer example; validation is stdlib-only in
+`pulse/catalogue.py`. The producer declares `class` and `status`; Pulse checks
+that the declarations are consistent and renders them. It infers no optimal
+setup, selects no fastest row and computes no ratio.
+
+**Envelope.** The common v1 envelope (as v2), `comparisons: []`, plus:
+
+- `records`: list (empty is valid; an empty catalogue is no evidence).
+- `planned_cells` (optional list): the cells the producer intends to measure,
+  each with the key fields below and `class`. Duplicate cells are refused.
+- `archive_record_count`: non-negative integer. Archived records are moved out
+  of `records[]` by the producer and only counted here.
+- `hazards`, `recommendations` (optional): the v2 shape; `applies_to.setup_ids`
+  name canonical v3 `setup_id`s present in `records`.
+- `coverage.expected.cells` equals the `planned_cells` count;
+  `coverage.observed.records` equals the record count, and `current` /
+  `superseded`, when present, match the declared statuses.
+
+**Vocabulary** (the validator's enumerations):
+
+| Field | Values |
+|---|---|
+| `likelihood.dataset_type` | `imaging`, `interferometer`, `datacube`, `point_source_image`, `point_source_source`, `multi_galaxy`, `group`, `cluster`, `multi_dataset`, `weak` |
+| `likelihood.variant` | non-empty string, e.g. `delaunay`, `mge`, `source_plane` |
+| `setup.backend` | `numba`, `jax` |
+| `setup.device` | `cpu`, `gpu` |
+| `setup.operator` | `dense`, `sparse`, `na` |
+| `setup.precision` | `fp64`, `mixed` (mixed is expected to be `class: experimental`) |
+| `setup.transformer` | `dft`, `nufft`, `wtilde`, `streaming`, `na` |
+| `setup.threads` | positive integer or `null` |
+| `setup_id` | `<backend>_<device>_<operator>_<precision>`, plus `_<transformer>` when the transformer is not `na`, e.g. `jax_gpu_sparse_fp64_wtilde` |
+| `host_class` | `hpc_ral_cpu`, `hpc_a100`, `local_laptop`, `local_gpu` (provenance, never identity) |
+| `measurement` | `runtime`, `breakdown`, `gradient`, `compile`, `memory_host`, `memory_device`, `parity`, `walltime_validation` |
+| `class` | `optimal`, `secondary`, `experimental` |
+| `status` | `current`, `superseded`, `archived` |
+
+**Records.** Each record has `id` (unique), `run_id`, `likelihood
+{dataset_type, variant}`, `instrument`, `regime` (the named size bin, e.g.
+`standard`), `setup {backend, device, operator, precision, transformer,
+threads}` and the matching `setup_id`, `host_class`, `model_variant` (e.g.
+`default`, `light_fixed`), `measurement`, `metric`, `unit`, `values`, `class`,
+`status`, `superseded_by`, `day_zero`, `figures`, `decision_id`,
+`release_pin`, `measured_at`, and v2's `identity`, `method`, `provenance`,
+`validation` and `evidence` with the same rules.
+
+- `unit` belongs to the measurement: seconds for the time measurements, a
+  memory unit for `memory_host`/`memory_device`, `dimensionless` for `parity`.
+- `values` is a non-empty object of finite, non-negative numbers that contains
+  the headline `metric` (a breakdown carries its components beside its total).
+  Missing cells are `planned_cells`, never zero-valued records.
+- `superseded_by` is `null` unless `status: superseded`, when it names another
+  record in the same document.
+- `day_zero`, `release_pin`, `decision_id`: string or `null`. `measured_at`:
+  ISO-8601 UTC.
+- `figures`: list of `{kind, path, sha256}` with safe repo-relative paths and
+  64-hex digests (may be empty).
+
+**Rules.**
+
+- Exactly one `current` record per key (`likelihood`, `instrument`,
+  `setup_id`, `host_class`, `model_variant`, `measurement`). The producer
+  chooses which one under the day-zero rule; a second `current` is refused.
+- `class: optimal` requires a `decision_id`. `pyauto-pulse check` and ingest
+  resolve every `decision_id` against this organ's `decisions.yaml`
+  (the `designation` decisions below); an unresolved id makes the capture
+  **invalid**.
+- `host_class` `local_laptop` or `local_gpu` is never `current`; such rows may
+  be kept as `superseded` provenance.
+- An `archived` record inside `records[]` is refused.
+
+**Board.** The setup browser's first selector is Class (Optimal by default,
+then Secondary, Experimental, All), then Likelihood (dataset type, variant),
+Instrument, Hardware class and Measurement. Only `current` rows show until
+History is ticked, which adds `superseded` rows. Archived records appear only
+as a count. A Coverage panel lists optimal `planned_cells` with no current
+record. Research lookups read `class: optimal` + `status: current` unless asked
+otherwise. The v2 eligibility heuristics never apply to a v3 catalogue.
+
+## `walltime-validation` v1: full-fit evidence axis
+
+A second evidence axis, produced by autolens_inference and registered as its
+own instance row. These are **full-fit** measurements: one sampler run per
+record. A per-likelihood `runtime` record is never read as a total-fit
+prediction, and a full-fit wall time is never read as a per-likelihood cost.
+The [fixture](tests/fixtures/walltime_validation_v1.json) is an executable
+example; validation is stdlib-only in `pulse/walltime.py`.
+
+**Envelope** — required: `schema` (`walltime-validation`), `version` (1),
+`project` (non-empty), `generated_at` (ISO-8601 UTC), `producer_revision`
+(40-hex or `null`), `records`; optional `limitations` (non-empty strings).
+
+**Records** — each with a unique `id` and one record per key (`likelihood
+{dataset_type, variant}`, `instrument`, `setup_id`, `host_class`,
+`model_variant`, `sampler`, `seed`); a duplicate key is refused. Fields:
+
+- `wall_s`, `implied_ms_per_eval`, `predicted_ms_per_eval`,
+  `ratio_measured_over_predicted`, `parallel_efficiency` (relative to the
+  1-core row of the same key), `max_log_likelihood`: finite number or `null`.
+- `likelihood_evals`, `cores`: non-negative integer or `null`; `seed`:
+  non-negative integer.
+- `reference_runtime_record_id` (the day-zero `runtime` record compared with),
+  `release_pin`, `slurm_job_id`: string or `null`.
+- `parity_status` ∈ `match | diverged | not_assessed`.
+
+Every derived number is computed and declared by the producer. Pulse renders
+the records as their own table under Profiling Results and computes nothing;
+the instance has no qualification flag, so it raises no "unqualified" item.
+
 ## Ingest
 
 1. `GET https://api.github.com/repos/<owner>/<repo>/commits/main` → one 40-hex SHA
    (stdlib `urllib`, 20 s timeout, `User-Agent`, `Authorization: Bearer $GH_TOKEN`
    on API calls only, when set).
 2. `GET https://raw.githubusercontent.com/<owner>/<repo>/<sha>/<summary_path>`.
-3. Validate; write the receipt; on `ok` also write the snapshot.
+3. Validate; for a `profiling-summary@3` document resolve every `decision_id`
+   against `decisions.yaml`; write the receipt; on `ok` also write the snapshot.
 
 `--offline` reads the committed receipt + snapshot and writes nothing. `--from
 [INSTANCE=]PATH` reads a local checkout (or the file), reports its `HEAD` and
@@ -223,6 +342,10 @@ writes **no** receipt or snapshot.
   "errors": [], "cached_from": "<last good snapshot's fetched_at, when outcome != ok; else null>"
 }
 ```
+
+A `profiling-summary@3` receipt also carries `"lifecycle": {"current": N,
+"superseded": N, "archived": N}` (the producer's declared counts); receipts of
+other schemas keep the shape above.
 
 ### Snapshot — `snapshots/<instance>.json`
 
@@ -247,6 +370,9 @@ nothing; a new project commit moves both.
   `/profiling triage <comparison_key>`. Freshness without a policy is shown as
   "freshness policy unspecified · age N d at fetch <date>" (the HTML adds a live
   "N d today"); a passed `valid_until` reads "stale".
+- A v3 instance's status lines add **Lifecycle** (`N current · N superseded ·
+  N archived`), and its census item carries the same counts. A
+  `walltime-validation` instance renders as its own table.
 - Instance marker (what `check` compares to the receipt):
   `<!-- pulse:instance name=<instance> receipt=<resolved commit|none> outcome=<outcome> shown=<snapshot commit|none> -->`.
 - `badge.json`: shields endpoint, label `pulse`, message = the state headline.
@@ -336,3 +462,16 @@ Results in HTML and Markdown. Both boards can link to one canonical record.
 The reader validates IDs, dates, GitHub destinations and owned record metadata;
 it never makes a scientific decision. Remote record existence is checked when
 publishing the cross-dashboard link, not by offline rendering.
+
+### Designation decisions
+
+An entry with `kind: designation` records the human's choice of setups for one
+likelihood, regime and hardware class. Its extra fields are validated only when
+the kind is set: `likelihood` (`<dataset_type>/<variant>`), `regime`,
+`hardware_class` ∈ `cpu_many_core | gpu_a100 | laptop`, `optimal` (one
+canonical `setup_id`), `secondary` (list of distinct canonical `setup_id`s),
+`evidence` (non-empty list of record ids), `rule` (one sentence in
+dataset-property terms) and `supersedes` (a decision id in the index, or
+`null`). `profiling-summary@3` records with `class: optimal` cite these entries
+in `decision_id`. The template is in [decisions/README.md](decisions/README.md);
+no designation is recorded yet.

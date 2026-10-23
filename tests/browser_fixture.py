@@ -276,6 +276,29 @@ def write(destination):
     legacy.doc["records"] = []
     (destination / "unknown-axes.html").write_text(board.render_html([legacy]))
 
+    # profiling-summary@3: the Class-first lifecycle browser beside a wall-time table.
+    lifecycle = copy.deepcopy(snapshots[0])
+    lifecycle.doc = json.loads(
+        (Path(__file__).parent / "fixtures/setup_summary_v3.json").read_text()
+    )
+    walltime_instance = Instance(
+        "walltime",
+        "autolens_inference",
+        "dashboard/walltime.json",
+        "walltime-validation@1",
+        "https://example.invalid",
+        github="PyAutoLabs/autolens_inference",
+    )
+    walltime = Snapshot(
+        walltime_instance,
+        "ok",
+        "remote",
+        json.loads((Path(__file__).parent / "fixtures/walltime_validation_v1.json").read_text()),
+        "b" * 40,
+        "2026-10-05T00:00:00Z",
+    )
+    (destination / "lifecycle.html").write_text(board.render_html([lifecycle, walltime]))
+
 
 if __name__ == "__main__":
     write(Path(sys.argv[1]))

@@ -623,6 +623,64 @@ const { execFileSync } = require("node:child_process");
         ),
       );
     }
+    // profiling-summary@3: Class first, Optimal + current by default,
+    // superseded rows only with History, archived never rendered.
+    await page.setViewportSize({ width: 1280, height: 1000 });
+    await page.goto(base + "/lifecycle.html");
+    const life = page.locator("[data-lifecycle]");
+    await life.evaluate((el) => {
+      for (let p = el.parentElement; p; p = p.parentElement)
+        if (p.tagName === "DETAILS") p.open = true;
+    });
+    const firstSelect = life.locator("select").first();
+    assert.equal(await firstSelect.getAttribute("data-filter"), "class");
+    assert.equal(await firstSelect.inputValue(), "optimal");
+    assert.deepEqual(
+      await life
+        .locator(".lifecycle-selectors > label")
+        .evaluateAll((els) => els.map((e) => e.firstChild.textContent.trim())),
+      [
+        "Class",
+        "Likelihood",
+        "Variant",
+        "Instrument",
+        "Hardware class",
+        "Measurement",
+        "",
+      ],
+    );
+    const row = (id) => life.locator(`tr[data-record="${id}"]`);
+    const old = row("imaging-delaunay-hst-a100-runtime-old");
+    assert(await row("imaging-delaunay-hst-a100-runtime").isVisible());
+    assert(!(await old.isVisible()));
+    assert(!(await row("imaging-delaunay-hst-ral-runtime").isVisible()));
+    await life.locator('input[data-filter="history"]').check();
+    assert(await old.isVisible());
+    await life.locator('input[data-filter="history"]').uncheck();
+    assert(!(await old.isVisible()));
+    await firstSelect.selectOption("secondary");
+    assert(await row("imaging-delaunay-hst-ral-runtime").isVisible());
+    assert(!(await row("imaging-delaunay-hst-a100-runtime").isVisible()));
+    await firstSelect.selectOption("all");
+    await life.locator('select[data-filter="instrument"]').selectOption("sma");
+    assert.equal(await life.locator("tr[data-record]:visible").count(), 1);
+    await life.locator('select[data-filter="measurement"]').selectOption("breakdown");
+    assert(await life.locator('[data-id="no-rows"]').isVisible());
+    assert.equal(await life.locator('tr[data-status="archived"]').count(), 0);
+    assert(
+      (await life.locator('[data-id="coverage"] summary').textContent()).includes(
+        "1 optimal cell not measured",
+      ),
+    );
+    assert.equal(await page.locator('[data-walltime="walltime"]').count(), 1);
+    for (const width of [390, 1280]) {
+      await page.setViewportSize({ width, height: 1000 });
+      assert(
+        await page.evaluate(
+          () => document.documentElement.scrollWidth <= window.innerWidth,
+        ),
+      );
+    }
     assert.deepEqual(errors, []);
     console.log(
       "Browser checks passed: new tabs, filtering, scales, transport, navigation and responsive layout",

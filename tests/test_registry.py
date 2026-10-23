@@ -15,7 +15,7 @@ def test_the_committed_registry_is_valid_against_a_body_map(body_map):
     data = yaml.safe_load((ORGAN_ROOT / "registry.yaml").read_text())
     body_map.update({"PyAutoArray": {"github": "PyAutoLabs/PyAutoArray"}})
     assert registry.validate(data, body_map) == []
-    assert [r["instance"] for r in data["instances"]] == ["lens", "fit"]
+    assert [r["instance"] for r in data["instances"]] == ["lens", "fit", "lens-walltime"]
 
 
 def test_load_resolves_path_and_github_from_the_body_map(registry_file, fake_mind):
@@ -95,3 +95,29 @@ def test_get_names_the_known_instances(registry_file, fake_mind):
     assert registry.get(instances, "lens").repo == "autolens_profiling"
     with pytest.raises(registry.RegistryError, match="known: lens"):
         registry.get(instances, "nope")
+
+
+WALLTIME_ROW = {
+    "instance": "lens-walltime",
+    "repo": "autolens_profiling",
+    "summary_path": "dashboard/walltime.json",
+    "supported_schema": "walltime-validation@1",
+    "dashboard_url": "https://pyautolabs.github.io/autolens_profiling/",
+    "library_refs": ["PyAutoLens"],
+    "cortex_project": None,
+}
+
+
+def test_a_walltime_validation_row_registers_as_its_own_instance(body_map, tmp_path, fake_mind):
+    v3 = dict(LENS_ROW, supported_schema="profiling-summary@3")
+    assert registry.validate(_doc(v3, WALLTIME_ROW), body_map) == []
+    path = tmp_path / "walltime.yaml"
+    path.write_text(yaml.safe_dump(_doc(WALLTIME_ROW)))
+    (inst,) = registry.load(path, mind=fake_mind)
+    assert (inst.schema_name, inst.schema_version) == ("walltime-validation", 1)
+
+
+@pytest.mark.parametrize("schema", ["walltime-validation@2", "profiling-summary@4", "nope@1"])
+def test_a_schema_this_reader_does_not_implement_is_refused(body_map, schema):
+    problems = registry.validate(_doc(dict(LENS_ROW, supported_schema=schema)), body_map)
+    assert any("is not read here" in p for p in problems), problems

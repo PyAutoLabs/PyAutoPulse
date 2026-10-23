@@ -1,0 +1,62 @@
+{
+  "schema": "walltime-validation",
+  "version": 1,
+  "project": "fixture_inference",
+  "generated_at": "2026-10-21T12:00:00Z",
+  "producer_revision": "0123456789abcdef0123456789abcdef01234567",
+  "limitations": [
+    "fixture: full-fit measurements; synthetic, not a scientific result"
+  ],
+  "records": [
+    {
+      "id": "nautilus-1core-s0",
+      "likelihood": {
+        "dataset_type": "imaging",
+        "variant": "delaunay"
+      },
+      "instrument": "hst",
+      "setup_id": "numba_cpu_sparse_fp64",
+      "host_class": "hpc_ral_cpu",
+      "model_variant": "default",
+      "sampler": "nautilus",
+      "seed": 0,
+      "wall_s": 4200.0,
+      "likelihood_evals": 20000,
+      "implied_ms_per_eval": 210.0,
+      "reference_runtime_record_id": "imaging-delaunay-hst-ral-runtime",
+      "predicted_ms_per_eval": 210.0,
+      "ratio_measured_over_predicted": 1.0,
+      "cores": 1,
+      "parallel_efficiency": 1.0,
+      "release_pin": "2026.10.16.2",
+      "slurm_job_id": "412000",
+      "max_log_likelihood": 12345.6,
+      "parity_status": "match"
+    },
+    {
+      "id": "nautilus-16core-s0",
+      "likelihood": {
+        "dataset_type": "imaging",
+        "variant": "delaunay"
+      },
+      "instrument": "hst",
+      "setup_id": "numba_cpu_sparse_fp64",
+      "host_class": "hpc_ral_cpu",
+      "model_variant": "default",
+      "sampler": "nautilus",
+      "seed": 1,
+      "wall_s": 330.0,
+      "likelihood_evals": 20000,
+      "implied_ms_per_eval": 16.5,
+      "reference_runtime_record_id": "imaging-delaunay-hst-ral-runtime",
+      "predicted_ms_per_eval": 13.1,
+      "ratio_measured_over_predicted": 1.26,
+      "cores": 16,
+      "parallel_efficiency": 0.795,
+      "release_pin": "2026.10.16.2",
+      "slurm_job_id": "412000",
+      "max_log_likelihood": 12345.6,
+      "parity_status": "not_assessed"
+    }
+  ]
+}

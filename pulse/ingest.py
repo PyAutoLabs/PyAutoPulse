@@ -14,6 +14,11 @@ Snapshots preserve capture history for unchanged input. Receipts separately
 record ``refreshed_at`` for each successful observation, so real refreshes
 can commit metadata even when evidence is unchanged. Offline replay retains
 the recorded observation time; a failed attempt exposes no successful refresh.
+A ``profiling-summary@3`` document passes one repo-aware step after the
+document-only validator: every ``decision_id`` it names must resolve in this
+organ's ``decisions.yaml`` (``classify``); its receipt also records the
+producer's current/superseded/archived counts.
+
 A local
 ``--from`` read reports the checkout's revision and dirty state, is labelled
 "local checkout", and writes no receipt or snapshot: it cannot masquerade as
@@ -32,7 +37,7 @@ from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from pathlib import Path
 
-from pulse import ORGAN_ROOT
+from pulse import ORGAN_ROOT, catalogue, decisions
 from pulse import summary as summary_mod
 from pulse.registry import Instance
 
@@ -85,6 +90,49 @@ def resolve_commit(github: str, branch: str = "main") -> str:
 def fetch_at(github: str, sha: str, path: str) -> bytes:
     """``path`` exactly as it is at commit ``sha``."""
     return _get(RAW_FILE.format(github=github, sha=sha, path=path))
+
+
+# -------------------------------------------------------------- classify ---
+
+
+def _lifecycle(doc) -> bool:
+    return (
+        isinstance(doc, dict)
+        and doc.get("schema") == "profiling-summary"
+        and doc.get("version") == 3
+    )
+
+
+def unresolved_decisions(doc: dict, root: Path = ORGAN_ROOT) -> list[str]:
+    """Errors for v3 ``decision_id`` values absent from ``root``'s decisions.yaml."""
+    wanted = catalogue.decision_ids(doc)
+    if not wanted:
+        return []
+    try:
+        known = decisions.ids(Path(root))
+    except ValueError as exc:
+        return [f"decision index unreadable, cannot resolve decision_id: {exc}"]
+    return [
+        f"decision_id {d!r} does not resolve in decisions.yaml (a designation decision is "
+        "required before a record is declared optimal)"
+        for d in wanted
+        if d not in known
+    ]
+
+
+def classify(doc, wanted, root: Path = ORGAN_ROOT) -> tuple[str, list[str]]:
+    """``summary.classify`` plus the repo-aware decision resolution for v3."""
+    outcome, errors = summary_mod.classify(doc, wanted)
+    if outcome == "ok" and _lifecycle(doc):
+        errors = unresolved_decisions(doc, root)
+        if errors:
+            outcome = "invalid"
+    return outcome, errors
+
+
+def lifecycle_counts(doc) -> dict | None:
+    """``{current, superseded, archived}`` for a v3 document, else None."""
+    return catalogue.lifecycle_counts(doc) if _lifecycle(doc) else None
 
 
 # -------------------------------------------------------------- snapshot ---
@@ -211,7 +259,7 @@ def ingest(
     out_dir = Path(out_dir)
     wanted = (inst.schema_name, inst.schema_version)
     if local_path is not None:
-        return _ingest_local(inst, Path(local_path).expanduser(), wanted)
+        return _ingest_local(inst, Path(local_path).expanduser(), wanted, out_dir)
     if offline:
         return _from_files(inst, out_dir)
 
@@ -225,7 +273,7 @@ def ingest(
         except ValueError as exc:
             outcome, errors = "invalid", [f"{inst.summary_path} is not JSON ({exc})"]
         else:
-            outcome, errors = summary_mod.classify(doc, wanted)
+            outcome, errors = classify(doc, wanted, out_dir)
     except FetchError as exc:
         outcome, errors = "unavailable", [str(exc)]
 
@@ -262,6 +310,10 @@ def ingest(
         "errors": errors,
         "cached_from": last_good.get("fetched_at") if last_good and outcome != "ok" else None,
     }
+    # Lifecycle counts exist only for v3, so earlier receipts keep their shape.
+    counts = lifecycle_counts(doc)
+    if counts is not None:
+        receipt["lifecycle"] = counts
     # Preserve capture history while recording a real successful observation.
     prior = read_receipt(out_dir, inst.instance)
     strip = lambda d: {k: v for k, v in d.items() if k not in ("fetched_at", "refreshed_at")}  # noqa: E731
@@ -282,7 +334,7 @@ def _git(checkout: Path, *args: str) -> str | None:
     return proc.stdout if proc.returncode == 0 else None
 
 
-def _ingest_local(inst: Instance, path: Path, wanted) -> Snapshot:
+def _ingest_local(inst: Instance, path: Path, wanted, root: Path = ORGAN_ROOT) -> Snapshot:
     file = path / inst.summary_path if path.is_dir() else path
     view = Snapshot(inst, "ok", "local", checkout=str(file.parent), fetched_at=utc_now())
     view.attempt_at = view.fetched_at
@@ -304,7 +356,7 @@ def _ingest_local(inst: Instance, path: Path, wanted) -> Snapshot:
         view.outcome, view.errors = "invalid", [f"{file} is not JSON ({exc})"]
         view.doc = None
         return view
-    view.outcome, view.errors = summary_mod.classify(view.doc, wanted)
+    view.outcome, view.errors = classify(view.doc, wanted, root)
     if view.failed:
         view.doc = None
     else:
