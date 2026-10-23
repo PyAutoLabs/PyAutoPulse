@@ -46,6 +46,12 @@ not refresh measurements or authorize compute. Historical task text is retained.
 - Task → complete (witness met at PR-open; merge is the human's). Remaining release-sweep cells gain the field at the next full sweep.
 - [Full dated review](../checkins/2026-10-17.md). Review time does not refresh measurements or authorize compute; merge is the human's.
 
+### Post-/prm 2026-10-17
+
+- **Merged 2026-10-17 (human /prm):** [autolens_profiling#432](https://github.com/PyAutoLabs/autolens_profiling/pull/432).
+- **Issues closed:** autolens_profiling#428.
+- **Mind record:** [`ps-source-gradient-admission`](https://github.com/PyAutoLabs/PyAutoMind/blob/main/complete/2026/10/ps-source-gradient-admission.md).
+
 ---
 
 # Runtime cells' A100 `single_jit` includes the post-compile warm-up — source-plane 0.642 ms vs a steady 0.267 ms on the same node

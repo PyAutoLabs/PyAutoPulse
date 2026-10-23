@@ -38,6 +38,13 @@ not refresh measurements or authorize compute. Historical task text is retained.
 - **Phase 2** (A100 production re-measure, `--over-sampling production --instrument euclid|hst`): **needs-decision** — human undecided 2026-10-17 (chat). Requires #431 merged and separate compute authorization.
 - [Full dated review](../checkins/2026-10-17.md). Review time does not refresh measurements or authorize compute; merge is the human's.
 
+### Post-/prm 2026-10-17
+
+- **Merged 2026-10-17 (human /prm):** [autolens_profiling#431](https://github.com/PyAutoLabs/autolens_profiling/pull/431).
+- **Issues closed:** autolens_profiling#430.
+- **Mind record:** [`imaging-production-over-sampling`](https://github.com/PyAutoLabs/PyAutoMind/blob/main/complete/2026/10/imaging-production-over-sampling.md).
+- Phase 2 (A100 production re-measure) still needs a human decision and compute authorization.
+
 ---
 
 # Profile imaging pixelizations at production over-sampling

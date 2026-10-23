@@ -211,3 +211,10 @@ Pulse-side preparation under `--auto`, leaving the independent correctness audit
 current session. No witness or profiling execution, campaign freeze or acceptance
 was authorized. This focused preparation does not advance the all-campaign
 `last_checkin` or measurement dates.
+
+### Post-/prm 2026-10-17 — qualification design merged
+
+- autolens_profiling#418 merged 2026-10-17 under human `/prm` after an independent review (verdict FINDINGS, none blocking a doc-only merge; review posted on the PR). Issue #417 closed. Mind record: [complete/2026/10/hst-mge-pilot-qualification.md](https://github.com/PyAutoLabs/PyAutoMind/blob/main/complete/2026/10/hst-mge-pilot-qualification.md).
+- The design (`scripts/misc/jax_compile/QUALIFICATION.md`) derives what the pilot computes, proposes an independent operator + scipy NNLS witness, lists the identities to capture and gives candidate tolerances marked unaccepted. No contradiction with the #416 runner.
+- Carried, not fixed: no background-load method proposed; the 1e-8 relative image L2 budget is likely unattainable against the packaged solver's inactive-column flux allowance, so synthetic-harness calibration must be allowed to revise tolerances; correctness-process feasibility is deferred, so the 32-process / 16 CPU-hour budget stays unfinalized. Witness placement in autolens_workspace_test with a project adapter needs the human's confirmation.
+- No collection, campaign freeze or acceptance authorized.
