@@ -40,6 +40,12 @@ not refresh measurements or authorize compute. Historical task text is retained.
 - Human decision TAKEN 2026-10-23 (chat): keep the 1.0″ starting grid, plus the validation check as mitigation. See the Decision section below.
 - Next bounded task: spurious-core candidates (`draft/feature/autolens/point_solver_spurious_core_candidates.md`, start_dev in progress), then the workspace validation check.
 - Review date does not refresh measurement dates. This check-in authorizes no compute, default change or merge. [Full dated check-in](../checkins/2026-10-23.md).
+- Spurious-core candidates ISSUED and SHIPPED 2026-10-23: [PyAutoLens#799](https://github.com/PyAutoLabs/PyAutoLens/issues/799) → [PyAutoLens#800](https://github.com/PyAutoLabs/PyAutoLens/pull/800) (OPEN, `pending-release`, awaiting human `/prm`). It adds an opt-in `residual_threshold` (default `None`, behaviour unchanged) that rejects candidates with |β(θ̂) − β| > k · `pixel_scale_precision`; k = 10 is recommended.
+  - Mechanism: the host is a near-critical saddle at the `r_core = 0` members, so the core points have |μ| 0.1–0.3 and the magnification filter cannot remove them.
+  - Evidence (laptop CPU fp64, diagnostic): true candidates reach at most 3.58× the precision (viz), 2.21× (`simple`) and 1.075× (1c/1d near-cusp); the core points are at least 38.5×. At k = 10 all 4 viz core points are removed and nothing else changes in 238 cases, and the 1c/1d rows are bit-identical.
+  - The rejected rule, a triangle-area consistency check, drops true near-cusp candidates.
+  - Not tested: A2744. At precision 0.01 the cut (0.1″) is above the 0.04″ residuals.
+- Next, after `/prm`: turning it on by default is a human decision. Then the workspace validation-check draft, and a workspace_test CI witness for `residual_threshold` (phase 2) once the rule is accepted. One task at a time.
 
 ## Knowledge (2026-10-22): phase 1, cluster-scale robust PointSolver settings
 
