@@ -27,6 +27,66 @@ GitHub sources and limits. Current RAL queue was empty; the transfer preview tim
 out, so historical jobs and unpulled results remain unverified. Review time does
 not refresh measurements or authorize compute. Historical task text is retained.
 
+## Check-in 2026-10-23
+
+- VERIFIED: phase 1 (cluster-scale robust PointSolver settings) MERGED: [autolens_profiling#436](https://github.com/PyAutoLabs/autolens_profiling/issues/436) → [#438](https://github.com/PyAutoLabs/autolens_profiling/pull/438) (`c8c9abb3`, 2026-10-22). Record: [complete/2026/10/cluster-pointsolver-robust-settings.md](https://github.com/PyAutoLabs/PyAutoMind/blob/main/complete/2026/10/cluster-pointsolver-robust-settings.md); ledger: [results/notes/cluster_pointsolver_campaign.md at c8c9abb3](https://github.com/PyAutoLabs/autolens_profiling/blob/c8c9abb30b51698343a15adb767f80c9d4640273/results/notes/cluster_pointsolver_campaign.md).
+- Human decision DEFERRED 2026-10-22: the default initial scale stays 1.0″. See the Knowledge block below.
+- VERIFIED (RAL `sacct` + log read 2026-10-23): the A2744 pilot leg, job 412573 (`cluster_pointsolver_pilot`, profiling `b39f7ab2`, CPU fp64, `ral`), is **FAILED** after 03:33:07 with MaxRSS 85.5 GB. It completed 16 diagnostic rows. Row 17 (`tight_s1_p0.001`) and the two capacity controls died on LLVM `Cannot allocate memory` / `Failed to materialize symbols`. No JSON, PNG or memory trace was written.
+- A2744 ordering (synthetic prior-median model, 7 sources, 3 judged draws, 69 oracle roots): production 1.0″ misses 2/69 (both stress), 0.5″ misses 3, 0.7″ misses 5, 2.0″ misses 8. Truth-bbox extents miss 9–11. This is the opposite ordering to `simple`, so the initial-scale ranking is dataset-dependent.
+- RSS attribution (owed follow-up, now done): RSS climbs 8.3 → 39.4 GB over 16 rows while live JAX arrays stay ~0 MB. The growth is retained compiled executables (one 191-component multi-plane solver JIT per row, kept for interleaved timing) plus per-row compile transients (peak 22 → 81.5 GB). The harness must release executables between rows, or run one row per process, before any A2744 full sweep. No resubmission is authorized.
+- Next bounded task: the starting-grid / close-member-image Mind draft ([cluster_pointsolver_starting_grid_close_member_image.md](https://github.com/PyAutoLabs/PyAutoMind/blob/main/draft/research/autolens_profiling/cluster_pointsolver_starting_grid_close_member_image.md)) via start_dev. One task, no bulk queue.
+- Phase 2 (workspace_test CI witnesses) still has nothing accepted to distil. The old `point_solver_profiling_cells` coverage reconciles onto phase 1's harness (`scripts/cluster/image_plane/robust_settings_sweep.py`) when the next profiling cell is issued; no duplicate cell.
+- Review date does not refresh measurement dates. This check-in authorizes no compute, default change or merge. [Full dated check-in](../checkins/2026-10-23.md).
+
+## Knowledge (2026-10-22): phase 1, cluster-scale robust PointSolver settings
+
+**Sources.** [autolens_profiling#436](https://github.com/PyAutoLabs/autolens_profiling/issues/436);
+ledger `results/notes/cluster_pointsolver_campaign.md`; sweep JSON
+`results/breakdown/cluster/robust_settings_sweep_simple_hpc_ral_cpu_fp64.json` (RAL job 412572,
+Xeon 8490H, CPU fp64, profiling `b39f7ab2`, PyAutoLens `c90eceb0`).
+
+**Ground truth.** The oracle is independent of the triangle solver. It samples the multi-plane
+lens-equation residual densely, Newton-polishes each basin and certifies roots below 1e-10″
+residual and 1e-6″ stability. It is calibrated to 2.84e-8″ on the 1a closed-form quad and the
+1c/1d near-cusp fixture.
+
+**Result (`simple`, 13 components, 3 planes, 2 sources, 101 draws).** No setting is admissible.
+Production-extent rows cover 306/306 prior roots and miss 2–6 of 300 stress roots. Every miss
+is a close high-|μ| pair, 0.33–0.76″ apart, on stress draws 53, 73 and 81 (one pair straddles
+the radial critical curve). Initial scale 0.5″/0.7″ misses 2 at 0.78×/0.75× the control's
+speed. The production 1.0″ misses 5 (5.29 ms per warmed two-source solve) and 2.0″ misses 6
+(1.30×). Precision 0.01 vs 0.001, `MAX_CONTAINING_SIZE` 20/40/60 and backend
+(NumPy/JIT/vmap) do not change coverage. The uncapped containing count reaches at most 7, so
+there is no overflow at cap 20. Eager JAX is unusable (projected row wall over cap). Truth-bbox
+extents miss 49–63 stress roots because the images move with the model. Peak RSS 4.3 GB.
+
+**Verdict.** DEFERRED (human, 2026-10-22). The 2-miss, ~0.77×-speed 0.5″/0.7″ start vs the
+5-miss 1.0″ production control is re-decided after the starting-grid draft and the A2744 pull.
+No default was changed; 0.5″ is the working answer if the choice is forced earlier.
+
+**A2744 pilot (pulled 2026-10-23).** RAL job 412573 (profiling `b39f7ab2`, CPU fp64, `ral`) is
+FAILED after 16 diagnostic rows (03:33:07, MaxRSS 85.5 GB). The dataset is an A2744-geometry
+synthetic model at prior medians, not a fitted cluster model: 7 sources (z 1.69–5.66), 3 judged
+draws (reference, prior, stress), oracle calibration 2.84e-8″, 69 stable oracle roots (prior 49,
+stress 20). Coverage: production 1.0″ (p0.01 and the p0.001 control) 67/69, missing 2 stress
+roots; 0.5″ 66/69; 0.7″ 64/69; 2.0″ 61/69; truth-bbox extents 58–60/69. Precision 0.01 vs 0.001
+never changes coverage; no duplicates or spurious images; the uncapped containing count peaks
+at 9, so cap 20 never binds. The ordering is the opposite of `simple` (0.5″/0.7″ best there), so
+the initial-scale ranking is dataset-dependent. The deferred decision is unchanged (default
+stays 1.0″) and the 0.5″ "working answer if forced" is weaker. Row 17 (`tight_s1_p0.001`) and
+the two capacity controls are invalid: LLVM `Cannot allocate memory` → `JaxRuntimeError:
+Failed to materialize symbols` → job killed. The backend rows and timing rounds were never
+reached and no JSON was written, so there is no speed claim. RSS rose 8.3 → 39.4 GB over 16 rows
+(2–4 GB per row) with live JAX arrays ~0 MB. The growth is retained compiled executables (one
+191-component multi-plane solver JIT per row, kept for interleaved timing) plus compile
+transients (peak 22 → 81.5 GB); on `simple` (13 components) the same mechanism cost only
+1.5 → 4.3 GB. Resubmission needs explicit human authorization.
+
+**Open.** The starting-grid / close-member-image question is in its own Mind draft
+(`cluster_pointsolver_starting_grid_close_member_image.md`). The sweep harness must release
+executables between rows (or run one row per process) before any A2744 full sweep. The human's
+Pulse profiling programme may revisit this goal.
+
 ---
 
 # Cluster PointSolver — robustness, analysis settings and performance

@@ -1,6 +1,6 @@
 # PyAutoPulse — profiling dashboard
 
-<!-- pulse-campaigns:4e7b5e1126147b4593a7e870235fd9a5d367256202aaeb9408c0254298791675 -->
+<!-- pulse-campaigns:ec53ecf7bd4af2304a71437803330484d2869f1ec99b7d6107c95fa9d0f50189 -->
 ## Profiling Check In
 
 <details><summary>Full check-in prompt</summary>
@@ -25,7 +25,7 @@ After taking action, report what changed, what the evidence supports and what re
 
 </details>
 
-Last check-in: 2026-10-17T15:12:59Z (review date, not measurement freshness).
+Last check-in: 2026-10-23T13:54:43Z (review date, not measurement freshness).
 
 ## Active campaigns
 
@@ -68,14 +68,14 @@ Reviewed 2026-10-17. Parked as research, human decision 2026-10-17 (chat) (&quot
 
 <details><summary>Cluster PointSolver robustness and performance — active</summary>
 
-Reviewed 2026-10-17. No campaign wiki/results change or new matching implementation claim found. Representative cluster baseline and observable-overflow policy remain unstarted. Choose one bounded phase; inherited single-source results do not qualify a representative cluster baseline. Check-in 2026-10-17: no project wiki/results/issue change since 2026-10-13 beyond autolens_profiling#420/#422/#424 (interferometer only); releases 2026.10.16.1/.2 and 2026.10.17.1 supply no new measurement.
+Reviewed 2026-10-23. Phase 1 (cluster-scale robust settings, autolens_profiling#438) merged 2026-10-22; human decision deferred, default initial scale stays 1.0″. A2744 pilot (RAL job 412573) pulled 2026-10-23: production 1.0″ misses the fewest roots on A2744 (2/69) while 0.5″/0.7″ were best on simple, so the scale ranking is dataset-dependent. The job FAILED at row 17 on LLVM memory exhaustion from retained compiled executables; the harness must release executables between rows before any A2744 sweep (no resubmission authorized). Next bounded task: the starting-grid / close-member-image Mind draft via start_dev.
 
-[Campaign evidence](https://github.com/PyAutoLabs/autolens_profiling/blob/4db4d988e520a82219152743748c3188d485a4ba/wiki/campaigns/cluster_pointsolver.md)
+[Campaign evidence](https://github.com/PyAutoLabs/autolens_profiling/blob/c8c9abb30b51698343a15adb767f80c9d4640273/results/notes/cluster_pointsolver_campaign.md)
 
 ### Active tasks
 
-- [Cluster PointSolver — robustness, analysis settings and performance](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/cluster_pointsolver_speed.md) — ready: Unissued, no claim. Pick one bounded phase per Mind epics.md: observable-overflow invalid-result policy + CI witness, or a representative-data baseline cell.
-- [PointSolver profiling cells: lensed quasar → cluster runtime tier → single/multi-source → multiplane](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/point_solver_profiling_cells.md) — ready: Unissued, no claim. Candidate first cell: a representative-data cluster likelihood_runtime baseline (single-source preset).
+- [Cluster PointSolver — robustness, analysis settings and performance](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/cluster_pointsolver_speed.md) — active: Phase 1 merged (autolens_profiling#438, c8c9abb3); human decision deferred, default stays 1.0″. A2744 pilot (job 412573) pulled 2026-10-23: FAILED after 16 diagnostic rows on LLVM memory; 1.0″ misses 2/69 vs 0.5″ 3, 0.7″ 5, 2.0″ 8 (opposite of simple). Next bounded task: the starting-grid / close-member-image Mind draft via start_dev.
+- [PointSolver profiling cells: lensed quasar → cluster runtime tier → single/multi-source → multiplane](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/point_solver_profiling_cells.md) — ready: Unissued, no claim. Candidate first cell: a representative-data cluster likelihood_runtime baseline (single-source preset). Reconcile onto the phase-1 harness (scripts/cluster/image_plane/robust_settings_sweep.py) when the next cell is issued; no duplicate cell.
 
 </details>
 
