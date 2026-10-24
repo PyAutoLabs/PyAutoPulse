@@ -2,41 +2,16 @@
   "schema_version": 1,
   "organ": "pulse",
   "repo": "PyAutoPulse",
-  "status": "red",
-  "headline": "3 projects · 199 records · 1 cached",
-  "updated": "2026-10-24T11:00:41Z",
+  "status": "yellow",
+  "headline": "3 projects · 532 records · 0 cached",
+  "updated": "2026-10-24T11:00:01Z",
   "pages_url": "https://pyautolabs.github.io/PyAutoPulse/",
   "items": [
-    {
-      "id": "pulse:lens:unsupported",
-      "severity": "red",
-      "state": "failed",
-      "text": "lens: summary unsupported; showing cached capture 0c6be19b",
-      "reason": "schema profiling-summary@3 is not the registered profiling-summary@2",
-      "url": "https://github.com/PyAutoLabs/PyAutoPulse/blob/main/receipts/lens.json",
-      "prompt": null,
-      "actions": [
-        {
-          "id": "fetch",
-          "label": "Re-fetch this instance",
-          "kind": "command",
-          "target": "bin/pyauto-pulse fetch --instance lens",
-          "safety": "read_only"
-        },
-        {
-          "id": "open",
-          "label": "Open the project dashboard",
-          "kind": "link",
-          "target": "https://pyautolabs.github.io/autolens_profiling/",
-          "safety": "read_only"
-        }
-      ]
-    },
     {
       "id": "pulse:lens:unqualified",
       "severity": "yellow",
       "state": "unknown",
-      "text": "lens: 112 of 112 records unqualified (producer provenance flags)",
+      "text": "lens: 445 of 445 records unqualified (producer provenance flags)",
       "url": "https://pyautolabs.github.io/autolens_profiling/",
       "prompt": null,
       "actions": [
@@ -52,7 +27,7 @@
     {
       "id": "pulse:lens:census",
       "severity": "info",
-      "text": "lens: 112 records · 0 comparisons · 4 limitations · 0 qualified",
+      "text": "lens: 445 records · 0 comparisons · 5 limitations · 0 qualified · 126 current · 319 superseded · 99 archived (producer-declared)",
       "url": "https://pyautolabs.github.io/autolens_profiling/",
       "prompt": null
     },

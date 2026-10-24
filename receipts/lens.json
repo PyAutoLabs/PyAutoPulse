@@ -6,19 +6,17 @@
   "resolved_commit": "81183fd87e9be55826fb0fa89c00e2d9514df852",
   "summary_path": "dashboard/catalogue.json",
   "source": "remote",
-  "fetched_at": "2026-10-24T11:00:38Z",
-  "outcome": "unsupported",
+  "fetched_at": "2026-10-24T10:59:58Z",
+  "outcome": "ok",
   "schema": "profiling-summary",
   "version": 3,
   "record_count": 445,
-  "errors": [
-    "schema profiling-summary@3 is not the registered profiling-summary@2"
-  ],
-  "cached_from": "2026-10-24T10:03:09Z",
+  "errors": [],
+  "cached_from": null,
   "lifecycle": {
     "current": 126,
     "superseded": 319,
     "archived": 99
   },
-  "refreshed_at": null
+  "refreshed_at": "2026-10-24T11:21:57Z"
 }
