@@ -191,6 +191,8 @@ Choose a project, dataset and model on the interactive board.
 
 [Interactive board](https://pyautolabs.github.io/PyAutoPulse/)
 
+**lens: cached · latest fetch unsupported**
+
 <details><summary>autolens — choose a setup</summary>
 
 [Interactive setup browser](https://pyautolabs.github.io/autolens_profiling/)
@@ -265,11 +267,12 @@ Choose a project, dataset and model on the interactive board.
 
 ## lens
 
-<!-- pulse:instance name=lens receipt=0c6be19b9e761a81163b667f4131d4d0c3001882 outcome=ok shown=0c6be19b9e761a81163b667f4131d4d0c3001882 -->
+<!-- pulse:instance name=lens receipt=81183fd87e9be55826fb0fa89c00e2d9514df852 outcome=unsupported shown=0c6be19b9e761a81163b667f4131d4d0c3001882 -->
 
+**Cached:** showing the last good capture (commit `0c6be19b`, fetched 2026-10-24T10:03:09Z, evidence unknown (No common measurement wall-clock across legacy evidence; inspect each record.)). The latest fetch (2026-10-24T11:00:38Z) was **unsupported**: schema profiling-summary@3 is not the registered profiling-summary@2.
 Project `autolens_profiling`, scope `setup-catalogue`, read from [PyAutoLabs/autolens_profiling](https://github.com/PyAutoLabs/autolens_profiling) `dashboard/catalogue.json` at [`0c6be19b`](https://github.com/PyAutoLabs/autolens_profiling/tree/0c6be19b9e761a81163b667f4131d4d0c3001882); producer revision `692f7e2c`; generated 2026-10-23T14:42:25Z; comparison policy `no-temporal-comparisons`. [Project dashboard](https://pyautolabs.github.io/autolens_profiling/) · [receipt](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/receipts/lens.json).
 
-- **Integrity:** ok
+- **Integrity:** cached · latest fetch unsupported
 - **Freshness:** freshness policy unspecified · evidence time unknown (evidence unknown (No common measurement wall-clock across legacy evidence; inspect each record.))
 - **Qualification:** 0/112 records · 0/0 comparisons qualified
 

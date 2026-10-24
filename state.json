@@ -2,11 +2,36 @@
   "schema_version": 1,
   "organ": "pulse",
   "repo": "PyAutoPulse",
-  "status": "yellow",
-  "headline": "3 projects · 199 records · 0 cached",
-  "updated": "2026-10-21T19:08:42Z",
+  "status": "red",
+  "headline": "3 projects · 199 records · 1 cached",
+  "updated": "2026-10-24T11:00:41Z",
   "pages_url": "https://pyautolabs.github.io/PyAutoPulse/",
   "items": [
+    {
+      "id": "pulse:lens:unsupported",
+      "severity": "red",
+      "state": "failed",
+      "text": "lens: summary unsupported; showing cached capture 0c6be19b",
+      "reason": "schema profiling-summary@3 is not the registered profiling-summary@2",
+      "url": "https://github.com/PyAutoLabs/PyAutoPulse/blob/main/receipts/lens.json",
+      "prompt": null,
+      "actions": [
+        {
+          "id": "fetch",
+          "label": "Re-fetch this instance",
+          "kind": "command",
+          "target": "bin/pyauto-pulse fetch --instance lens",
+          "safety": "read_only"
+        },
+        {
+          "id": "open",
+          "label": "Open the project dashboard",
+          "kind": "link",
+          "target": "https://pyautolabs.github.io/autolens_profiling/",
+          "safety": "read_only"
+        }
+      ]
+    },
     {
       "id": "pulse:lens:unqualified",
       "severity": "yellow",
