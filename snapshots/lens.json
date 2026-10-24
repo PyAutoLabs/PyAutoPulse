@@ -3,8 +3,8 @@
   "repo": "autolens_profiling",
   "github": "PyAutoLabs/autolens_profiling",
   "summary_path": "dashboard/catalogue.json",
-  "commit": "73b9385b0997472b3f238de9cc42a451a3d9cc4f",
-  "fetched_at": "2026-10-24T13:51:35Z",
+  "commit": "9bc9eb31ec05b913bfe908eb8b391478e99ebece",
+  "fetched_at": "2026-10-24T13:52:17Z",
   "summary": {
     "archive_record_count": 99,
     "comparison_policy": {
@@ -2077,15 +2077,17 @@
     },
     "evidence_updated_at": null,
     "evidence_updated_at_reason": "No common measurement wall-clock across legacy evidence; inspect each record's measured_at.",
-    "generated_at": "2026-10-24T12:57:17Z",
+    "generated_at": "2026-10-24T13:12:04Z",
     "hazards": [],
     "limitations": [
       "Phase-0 labels (autolens_profiling#442): nothing was re-measured. A current record is the canonical cell row on a reference host class for a planned baseline cell; it is not an accepted baseline and carries no day_zero stamp.",
       "No designation decision exists yet: provisional Optimal rows are class secondary with 'provisional_optimal: true' in their limitations (R3); planned_cells carry the provisional class.",
       "Standard source-pixel counts are Delaunay 1250 and rectangular 1225 (35x35). No committed row is at the standard size; current pixelized rows carry a size_fallback limitation.",
       "Records whose key has no current row (laptop-only, experiment-only, or outside the planned cells) are not rendered; coverage.excluded counts them per key. Every row stays in the companion v2 setup catalogue (dashboard/catalogue/setups.json).",
-      "Historical recommendations and hazard findings name v2 setups and stay in the companion catalogue until they are re-bound to v3 setup_ids."
+      "Historical recommendations and hazard findings name v2 setups and stay in the companion catalogue until they are re-bound to v3 setup_ids.",
+      "Parity records (measurement parity) transcribe a cell's parity.json witness: metric abs_delta_log_likelihood = |log L - reference log L| beside its tolerance, the signed values and the witness status in the record's parity block. A not_assessed witness has no value and yields no record; parity_witnesses lists every witness file."
     ],
+    "parity_witnesses": [],
     "planned_cells": [
       {
         "class": "optimal",
@@ -5040,7 +5042,7 @@
         "setup_id": "jax_gpu_na_fp64"
       }
     ],
-    "producer_revision": "b46a0f750ff63016a44e605c5a55533e3069179f",
+    "producer_revision": "1f3d336df122f6dd06afd895a09b0efd0c89afe5",
     "project": "autolens_profiling",
     "recommendations": [],
     "records": [
