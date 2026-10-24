@@ -3,8 +3,8 @@
   "repo": "autolens_profiling",
   "github": "PyAutoLabs/autolens_profiling",
   "summary_path": "dashboard/catalogue.json",
-  "commit": "81183fd87e9be55826fb0fa89c00e2d9514df852",
-  "fetched_at": "2026-10-24T10:59:58Z",
+  "commit": "73b9385b0997472b3f238de9cc42a451a3d9cc4f",
+  "fetched_at": "2026-10-24T13:51:35Z",
   "summary": {
     "archive_record_count": 99,
     "comparison_policy": {
@@ -2077,7 +2077,7 @@
     },
     "evidence_updated_at": null,
     "evidence_updated_at_reason": "No common measurement wall-clock across legacy evidence; inspect each record's measured_at.",
-    "generated_at": "2026-10-23T14:42:25Z",
+    "generated_at": "2026-10-24T12:57:17Z",
     "hazards": [],
     "limitations": [
       "Phase-0 labels (autolens_profiling#442): nothing was re-measured. A current record is the canonical cell row on a reference host class for a planned baseline cell; it is not an accepted baseline and carries no day_zero stamp.",
@@ -5040,7 +5040,7 @@
         "setup_id": "jax_gpu_na_fp64"
       }
     ],
-    "producer_revision": "692f7e2c69c3afd2dcdd7cf733be6bd506c99542",
+    "producer_revision": "b46a0f750ff63016a44e605c5a55533e3069179f",
     "project": "autolens_profiling",
     "recommendations": [],
     "records": [

@@ -3,10 +3,10 @@
   "repo": "autolens_profiling",
   "github": "PyAutoLabs/autolens_profiling",
   "branch": "main",
-  "resolved_commit": "81183fd87e9be55826fb0fa89c00e2d9514df852",
+  "resolved_commit": "73b9385b0997472b3f238de9cc42a451a3d9cc4f",
   "summary_path": "dashboard/catalogue.json",
   "source": "remote",
-  "fetched_at": "2026-10-24T10:59:58Z",
+  "fetched_at": "2026-10-24T13:51:35Z",
   "outcome": "ok",
   "schema": "profiling-summary",
   "version": 3,
@@ -18,5 +18,5 @@
     "superseded": 319,
     "archived": 99
   },
-  "refreshed_at": "2026-10-24T11:23:57Z"
+  "refreshed_at": "2026-10-24T13:51:35Z"
 }
