@@ -162,15 +162,15 @@ tasks:
 - id: hst_mge_cpu_pilot
   campaign: setup-baseline
   title: Prepare and review the HST/MGE fp64 CPU pilot
-  status: needs-decision
+  status: superseded
   priority: high
   path: tasks/hst_mge_cpu_pilot.md
-  updated: '2026-10-13'
-  next: 'Review the Pulse collection choices (candidate input hashes and 31-worker resource plan verified without
-    execution) alongside project correctness audit #417. Resolve data origin/suitability, named host/stack/full
-    settings, witness/tolerances and background-load method. No freeze, compute or acceptance authorized. Post-/prm 2026-10-17: #418 merged (QUALIFICATION.md), #417 closed; record https://github.com/PyAutoLabs/PyAutoMind/blob/main/complete/2026/10/hst-mge-pilot-qualification.md. Next bounded step: the synthetic witness harness that also fixes the background-load method and calibrates tolerances; still no collection, freeze or acceptance authorized.'
+  updated: '2026-10-25'
+  next: 'Superseded 2026-10-25 (human: adopt and close): the likelihood-lifecycle phase-2a imaging campaign
+    measured imaging/mge/hst jax_cpu_dense_fp64@hpc_ral_cpu at tag 2026.10.23.1 with parity match
+    (autolens_profiling#461). The pilot''s own protocol was not run. Do not reissue it.'
   issue: https://github.com/PyAutoLabs/autolens_profiling/issues/415
-  evidence: https://github.com/PyAutoLabs/autolens_profiling/pull/416
+  evidence: https://github.com/PyAutoLabs/autolens_profiling/pull/461
 - id: runtime_cell_single_jit_gpu_warmup
   campaign: point-source-source
   title: Runtime cells' A100 `single_jit` includes the post-compile warm-up — source-plane 0.642 ms vs a steady
