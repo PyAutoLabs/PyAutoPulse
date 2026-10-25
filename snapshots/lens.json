@@ -3,8 +3,8 @@
   "repo": "autolens_profiling",
   "github": "PyAutoLabs/autolens_profiling",
   "summary_path": "dashboard/catalogue.json",
-  "commit": "101df14a74e26a6f564d6ed67b7c4608cba39627",
-  "fetched_at": "2026-10-25T18:24:29Z",
+  "commit": "29caed89879399db78f2c6b3734558c844a66b19",
+  "fetched_at": "2026-10-25T19:33:56Z",
   "summary": {
     "archive_record_count": 99,
     "comparison_policy": {
@@ -1944,7 +1944,7 @@
     },
     "evidence_updated_at": null,
     "evidence_updated_at_reason": "No common measurement wall-clock across legacy evidence; inspect each record's measured_at.",
-    "generated_at": "2026-10-25T17:14:15Z",
+    "generated_at": "2026-10-25T18:51:31Z",
     "hazards": [],
     "limitations": [
       "Phase-0 labels (autolens_profiling#442): nothing was re-measured. A current record is the canonical cell row on a reference host class for a planned baseline cell; it is not an accepted baseline and carries no day_zero stamp.",
@@ -1954,7 +1954,7 @@
       "Historical recommendations and hazard findings name v2 setups and stay in the companion catalogue until they are re-bound to v3 setup_ids.",
       "Parity records (measurement parity) transcribe a cell's parity.json witness: metric abs_delta_log_likelihood = |log L - reference log L| beside its tolerance, the signed values and the witness status in the record's parity block. A not_assessed witness has no value and yields no record; parity_witnesses lists every witness file.",
       "resources (cpus_per_eval, peak_rss_gb) comes from the row's own resources block, or for rows measured before it existed from catalogue/peak_rss_backfill.json (sacct MaxRSS: per leg for RAL array tasks, a job-level upper bound for multi-leg A100 jobs).",
-      "projected_node_throughput on runtime records is basis projected, not measured: workers per declared host (catalogue/reference_hosts.json) = min(cores / cpus_per_eval, memory / peak_rss_gb), and one per GPU on a GPU host, times the declared parallel efficiency 1.0 (an upper bound, unmeasured; phase 4 measures it), over the per-call time (numba warm iid median, JAX vmap per-call). The sampler's batch ceiling (Nautilus n_batch) is not modelled."
+      "projected_node_throughput on runtime records is basis projected, not measured, and only onto the declared host (catalogue/reference_hosts.json) whose host_class the row was measured on (other host classes: not_projected): workers = min(cores / cpus_per_eval, memory / peak_rss_gb), and one per GPU on a GPU host, times the declared parallel efficiency 1.0 (an upper bound, unmeasured; phase 4 measures it), over the per-call time (numba warm iid median, JAX vmap per-call). The sampler's batch ceiling (Nautilus n_batch) is not modelled."
     ],
     "parity_witnesses": [
       {
@@ -5654,7 +5654,7 @@
         "setup_id": "jax_gpu_na_fp64"
       }
     ],
-    "producer_revision": "2719dfbfeacf849f5c2a6112384f963714da4a41",
+    "producer_revision": "ef6e60144b5aca7853115ae2f1a0934b4b558d33",
     "project": "autolens_profiling",
     "recommendations": [],
     "records": [
@@ -8037,18 +8037,6 @@
           "hosts": [
             {
               "bound_by": "cores",
-              "calls_per_s": 6.179,
-              "host": "laptop",
-              "host_class": "local_laptop",
-              "limits": {
-                "cores": 8,
-                "memory": 38
-              },
-              "per_call_measured_on_host": false,
-              "workers": 8
-            },
-            {
-              "bound_by": "cores",
               "calls_per_s": 182.3,
               "host": "ral_cpu_node",
               "host_class": "hpc_ral_cpu",
@@ -8056,20 +8044,7 @@
                 "cores": 236,
                 "memory": 1108
               },
-              "per_call_measured_on_host": true,
               "workers": 236
-            },
-            {
-              "bound_by": "cores",
-              "calls_per_s": 95.77,
-              "host": "ral_gpu_node",
-              "host_class": "hpc_a100",
-              "limits": {
-                "cores": 124,
-                "memory": 1064
-              },
-              "per_call_measured_on_host": false,
-              "workers": 124
             }
           ],
           "not_modelled": "The sampler's batch ceiling: Nautilus evaluates at most n_batch points in parallel per batch, so a node cannot use more workers than n_batch. Shared memory bandwidth and caches between workers are also not modelled; the declared parallel efficiency stands in for them.",
@@ -9023,18 +8998,6 @@
           "hosts": [
             {
               "bound_by": "cores",
-              "calls_per_s": 0.5277,
-              "host": "laptop",
-              "host_class": "local_laptop",
-              "limits": {
-                "cores": 1,
-                "memory": 10
-              },
-              "per_call_measured_on_host": false,
-              "workers": 1
-            },
-            {
-              "bound_by": "cores",
               "calls_per_s": 15.3,
               "host": "ral_cpu_node",
               "host_class": "hpc_ral_cpu",
@@ -9042,20 +9005,7 @@
                 "cores": 29,
                 "memory": 287
               },
-              "per_call_measured_on_host": true,
               "workers": 29
-            },
-            {
-              "bound_by": "cores",
-              "calls_per_s": 7.916,
-              "host": "ral_gpu_node",
-              "host_class": "hpc_a100",
-              "limits": {
-                "cores": 15,
-                "memory": 276
-              },
-              "per_call_measured_on_host": false,
-              "workers": 15
             }
           ],
           "not_modelled": "The sampler's batch ceiling: Nautilus evaluates at most n_batch points in parallel per batch, so a node cannot use more workers than n_batch. Shared memory bandwidth and caches between workers are also not modelled; the declared parallel efficiency stands in for them.",
@@ -9215,7 +9165,6 @@
                 "gpus": 4,
                 "memory": 119
               },
-              "per_call_measured_on_host": true,
               "workers": 4
             }
           ],
@@ -11789,30 +11738,6 @@
           "hosts": [
             {
               "bound_by": "cores",
-              "calls_per_s": 0.4738,
-              "host": "laptop",
-              "host_class": "local_laptop",
-              "limits": {
-                "cores": 1,
-                "memory": 2
-              },
-              "per_call_measured_on_host": false,
-              "workers": 1
-            },
-            {
-              "bound_by": "cores",
-              "calls_per_s": 13.74,
-              "host": "ral_cpu_node",
-              "host_class": "hpc_ral_cpu",
-              "limits": {
-                "cores": 29,
-                "memory": 85
-              },
-              "per_call_measured_on_host": false,
-              "workers": 29
-            },
-            {
-              "bound_by": "cores",
               "calls_per_s": 7.108,
               "host": "ral_gpu_node",
               "host_class": "hpc_a100",
@@ -11820,7 +11745,6 @@
                 "cores": 15,
                 "memory": 82
               },
-              "per_call_measured_on_host": true,
               "workers": 15
             }
           ],
@@ -13305,7 +13229,6 @@
                 "gpus": 4,
                 "memory": 119
               },
-              "per_call_measured_on_host": true,
               "workers": 4
             }
           ],
@@ -13730,7 +13653,6 @@
                 "gpus": 4,
                 "memory": 82
               },
-              "per_call_measured_on_host": true,
               "workers": 4
             }
           ],
@@ -16248,18 +16170,6 @@
           "hosts": [
             {
               "bound_by": "cores",
-              "calls_per_s": 0.1556,
-              "host": "laptop",
-              "host_class": "local_laptop",
-              "limits": {
-                "cores": 1,
-                "memory": 2
-              },
-              "per_call_measured_on_host": false,
-              "workers": 1
-            },
-            {
-              "bound_by": "cores",
               "calls_per_s": 4.512,
               "host": "ral_cpu_node",
               "host_class": "hpc_ral_cpu",
@@ -16267,20 +16177,7 @@
                 "cores": 29,
                 "memory": 85
               },
-              "per_call_measured_on_host": true,
               "workers": 29
-            },
-            {
-              "bound_by": "cores",
-              "calls_per_s": 2.334,
-              "host": "ral_gpu_node",
-              "host_class": "hpc_a100",
-              "limits": {
-                "cores": 15,
-                "memory": 81
-              },
-              "per_call_measured_on_host": false,
-              "workers": 15
             }
           ],
           "not_modelled": "The sampler's batch ceiling: Nautilus evaluates at most n_batch points in parallel per batch, so a node cannot use more workers than n_batch. Shared memory bandwidth and caches between workers are also not modelled; the declared parallel efficiency stands in for them.",
@@ -18795,18 +18692,6 @@
           "hosts": [
             {
               "bound_by": "memory",
-              "calls_per_s": 0.1153,
-              "host": "laptop",
-              "host_class": "local_laptop",
-              "limits": {
-                "cores": 8,
-                "memory": 1
-              },
-              "per_call_measured_on_host": false,
-              "workers": 1
-            },
-            {
-              "bound_by": "memory",
               "calls_per_s": 4.613,
               "host": "ral_cpu_node",
               "host_class": "hpc_ral_cpu",
@@ -18814,20 +18699,7 @@
                 "cores": 236,
                 "memory": 40
               },
-              "per_call_measured_on_host": true,
               "workers": 40
-            },
-            {
-              "bound_by": "memory",
-              "calls_per_s": 4.382,
-              "host": "ral_gpu_node",
-              "host_class": "hpc_a100",
-              "limits": {
-                "cores": 124,
-                "memory": 38
-              },
-              "per_call_measured_on_host": false,
-              "workers": 38
             }
           ],
           "not_modelled": "The sampler's batch ceiling: Nautilus evaluates at most n_batch points in parallel per batch, so a node cannot use more workers than n_batch. Shared memory bandwidth and caches between workers are also not modelled; the declared parallel efficiency stands in for them.",
@@ -19629,30 +19501,6 @@
           "hosts": [
             {
               "bound_by": "cores",
-              "calls_per_s": 0.5851,
-              "host": "laptop",
-              "host_class": "local_laptop",
-              "limits": {
-                "cores": 1,
-                "memory": 2
-              },
-              "per_call_measured_on_host": false,
-              "workers": 1
-            },
-            {
-              "bound_by": "cores",
-              "calls_per_s": 16.97,
-              "host": "ral_cpu_node",
-              "host_class": "hpc_ral_cpu",
-              "limits": {
-                "cores": 29,
-                "memory": 85
-              },
-              "per_call_measured_on_host": false,
-              "workers": 29
-            },
-            {
-              "bound_by": "cores",
               "calls_per_s": 8.776,
               "host": "ral_gpu_node",
               "host_class": "hpc_a100",
@@ -19660,7 +19508,6 @@
                 "cores": 15,
                 "memory": 82
               },
-              "per_call_measured_on_host": true,
               "workers": 15
             }
           ],
@@ -23010,18 +22857,6 @@
           "hosts": [
             {
               "bound_by": "cores",
-              "calls_per_s": 0.4927,
-              "host": "laptop",
-              "host_class": "local_laptop",
-              "limits": {
-                "cores": 1,
-                "memory": 10
-              },
-              "per_call_measured_on_host": false,
-              "workers": 1
-            },
-            {
-              "bound_by": "cores",
               "calls_per_s": 14.29,
               "host": "ral_cpu_node",
               "host_class": "hpc_ral_cpu",
@@ -23029,20 +22864,7 @@
                 "cores": 29,
                 "memory": 291
               },
-              "per_call_measured_on_host": true,
               "workers": 29
-            },
-            {
-              "bound_by": "cores",
-              "calls_per_s": 7.391,
-              "host": "ral_gpu_node",
-              "host_class": "hpc_a100",
-              "limits": {
-                "cores": 15,
-                "memory": 280
-              },
-              "per_call_measured_on_host": false,
-              "workers": 15
             }
           ],
           "not_modelled": "The sampler's batch ceiling: Nautilus evaluates at most n_batch points in parallel per batch, so a node cannot use more workers than n_batch. Shared memory bandwidth and caches between workers are also not modelled; the declared parallel efficiency stands in for them.",
@@ -25805,18 +25627,6 @@
           "hosts": [
             {
               "bound_by": "cores",
-              "calls_per_s": 4.739,
-              "host": "laptop",
-              "host_class": "local_laptop",
-              "limits": {
-                "cores": 8,
-                "memory": 16
-              },
-              "per_call_measured_on_host": false,
-              "workers": 8
-            },
-            {
-              "bound_by": "cores",
               "calls_per_s": 139.8,
               "host": "ral_cpu_node",
               "host_class": "hpc_ral_cpu",
@@ -25824,20 +25634,7 @@
                 "cores": 236,
                 "memory": 464
               },
-              "per_call_measured_on_host": true,
               "workers": 236
-            },
-            {
-              "bound_by": "cores",
-              "calls_per_s": 73.46,
-              "host": "ral_gpu_node",
-              "host_class": "hpc_a100",
-              "limits": {
-                "cores": 124,
-                "memory": 446
-              },
-              "per_call_measured_on_host": false,
-              "workers": 124
             }
           ],
           "not_modelled": "The sampler's batch ceiling: Nautilus evaluates at most n_batch points in parallel per batch, so a node cannot use more workers than n_batch. Shared memory bandwidth and caches between workers are also not modelled; the declared parallel efficiency stands in for them.",
@@ -26253,18 +26050,6 @@
           "hosts": [
             {
               "bound_by": "cores",
-              "calls_per_s": 3.033,
-              "host": "laptop",
-              "host_class": "local_laptop",
-              "limits": {
-                "cores": 1,
-                "memory": 9
-              },
-              "per_call_measured_on_host": false,
-              "workers": 1
-            },
-            {
-              "bound_by": "cores",
               "calls_per_s": 87.97,
               "host": "ral_cpu_node",
               "host_class": "hpc_ral_cpu",
@@ -26272,20 +26057,7 @@
                 "cores": 29,
                 "memory": 263
               },
-              "per_call_measured_on_host": true,
               "workers": 29
-            },
-            {
-              "bound_by": "cores",
-              "calls_per_s": 45.5,
-              "host": "ral_gpu_node",
-              "host_class": "hpc_a100",
-              "limits": {
-                "cores": 15,
-                "memory": 253
-              },
-              "per_call_measured_on_host": false,
-              "workers": 15
             }
           ],
           "not_modelled": "The sampler's batch ceiling: Nautilus evaluates at most n_batch points in parallel per batch, so a node cannot use more workers than n_batch. Shared memory bandwidth and caches between workers are also not modelled; the declared parallel efficiency stands in for them.",
@@ -26435,18 +26207,6 @@
           "hosts": [
             {
               "bound_by": "cores",
-              "calls_per_s": 8.406,
-              "host": "laptop",
-              "host_class": "local_laptop",
-              "limits": {
-                "cores": 8,
-                "memory": 37
-              },
-              "per_call_measured_on_host": false,
-              "workers": 8
-            },
-            {
-              "bound_by": "cores",
               "calls_per_s": 248.0,
               "host": "ral_cpu_node",
               "host_class": "hpc_ral_cpu",
@@ -26454,20 +26214,7 @@
                 "cores": 236,
                 "memory": 1078
               },
-              "per_call_measured_on_host": true,
               "workers": 236
-            },
-            {
-              "bound_by": "cores",
-              "calls_per_s": 130.3,
-              "host": "ral_gpu_node",
-              "host_class": "hpc_a100",
-              "limits": {
-                "cores": 124,
-                "memory": 1036
-              },
-              "per_call_measured_on_host": false,
-              "workers": 124
             }
           ],
           "not_modelled": "The sampler's batch ceiling: Nautilus evaluates at most n_batch points in parallel per batch, so a node cannot use more workers than n_batch. Shared memory bandwidth and caches between workers are also not modelled; the declared parallel efficiency stands in for them.",
@@ -28576,30 +28323,6 @@
           "devices_per_eval": 0,
           "hosts": [
             {
-              "bound_by": "memory",
-              "calls_per_s": 0.0,
-              "host": "laptop",
-              "host_class": "local_laptop",
-              "limits": {
-                "cores": 1,
-                "memory": 0
-              },
-              "per_call_measured_on_host": false,
-              "workers": 0
-            },
-            {
-              "bound_by": "memory",
-              "calls_per_s": 0.4524,
-              "host": "ral_cpu_node",
-              "host_class": "hpc_ral_cpu",
-              "limits": {
-                "cores": 29,
-                "memory": 23
-              },
-              "per_call_measured_on_host": false,
-              "workers": 23
-            },
-            {
               "bound_by": "cores",
               "calls_per_s": 0.295,
               "host": "ral_gpu_node",
@@ -28608,7 +28331,6 @@
                 "cores": 15,
                 "memory": 22
               },
-              "per_call_measured_on_host": true,
               "workers": 15
             }
           ],
@@ -28770,7 +28492,6 @@
                 "gpus": 4,
                 "memory": 462
               },
-              "per_call_measured_on_host": true,
               "workers": 4
             }
           ],
@@ -32821,18 +32542,6 @@
           "hosts": [
             {
               "bound_by": "memory",
-              "calls_per_s": 0.1002,
-              "host": "laptop",
-              "host_class": "local_laptop",
-              "limits": {
-                "cores": 8,
-                "memory": 1
-              },
-              "per_call_measured_on_host": false,
-              "workers": 1
-            },
-            {
-              "bound_by": "memory",
               "calls_per_s": 3.206,
               "host": "ral_cpu_node",
               "host_class": "hpc_ral_cpu",
@@ -32840,20 +32549,7 @@
                 "cores": 236,
                 "memory": 32
               },
-              "per_call_measured_on_host": true,
               "workers": 32
-            },
-            {
-              "bound_by": "memory",
-              "calls_per_s": 3.106,
-              "host": "ral_gpu_node",
-              "host_class": "hpc_a100",
-              "limits": {
-                "cores": 124,
-                "memory": 31
-              },
-              "per_call_measured_on_host": false,
-              "workers": 31
             }
           ],
           "not_modelled": "The sampler's batch ceiling: Nautilus evaluates at most n_batch points in parallel per batch, so a node cannot use more workers than n_batch. Shared memory bandwidth and caches between workers are also not modelled; the declared parallel efficiency stands in for them.",
@@ -34869,7 +34565,6 @@
                 "gpus": 4,
                 "memory": 82
               },
-              "per_call_measured_on_host": true,
               "workers": 4
             }
           ],
@@ -35999,7 +35694,6 @@
                 "gpus": 4,
                 "memory": 462
               },
-              "per_call_measured_on_host": true,
               "workers": 4
             }
           ],
@@ -36343,7 +36037,6 @@
                 "gpus": 4,
                 "memory": 22
               },
-              "per_call_measured_on_host": true,
               "workers": 4
             }
           ],
@@ -38802,7 +38495,6 @@
                 "gpus": 4,
                 "memory": 22
               },
-              "per_call_measured_on_host": true,
               "workers": 4
             }
           ],
@@ -38956,18 +38648,6 @@
           "hosts": [
             {
               "bound_by": "cores",
-              "calls_per_s": 24.07,
-              "host": "laptop",
-              "host_class": "local_laptop",
-              "limits": {
-                "cores": 1,
-                "memory": 24
-              },
-              "per_call_measured_on_host": false,
-              "workers": 1
-            },
-            {
-              "bound_by": "cores",
               "calls_per_s": 697.9,
               "host": "ral_cpu_node",
               "host_class": "hpc_ral_cpu",
@@ -38975,20 +38655,7 @@
                 "cores": 29,
                 "memory": 713
               },
-              "per_call_measured_on_host": true,
               "workers": 29
-            },
-            {
-              "bound_by": "cores",
-              "calls_per_s": 361.0,
-              "host": "ral_gpu_node",
-              "host_class": "hpc_a100",
-              "limits": {
-                "cores": 15,
-                "memory": 686
-              },
-              "per_call_measured_on_host": false,
-              "workers": 15
             }
           ],
           "not_modelled": "The sampler's batch ceiling: Nautilus evaluates at most n_batch points in parallel per batch, so a node cannot use more workers than n_batch. Shared memory bandwidth and caches between workers are also not modelled; the declared parallel efficiency stands in for them.",
@@ -39752,18 +39419,6 @@
           "hosts": [
             {
               "bound_by": "cores",
-              "calls_per_s": 1.464,
-              "host": "laptop",
-              "host_class": "local_laptop",
-              "limits": {
-                "cores": 1,
-                "memory": 16
-              },
-              "per_call_measured_on_host": false,
-              "workers": 1
-            },
-            {
-              "bound_by": "cores",
               "calls_per_s": 42.46,
               "host": "ral_cpu_node",
               "host_class": "hpc_ral_cpu",
@@ -39771,20 +39426,7 @@
                 "cores": 29,
                 "memory": 482
               },
-              "per_call_measured_on_host": true,
               "workers": 29
-            },
-            {
-              "bound_by": "cores",
-              "calls_per_s": 21.96,
-              "host": "ral_gpu_node",
-              "host_class": "hpc_a100",
-              "limits": {
-                "cores": 15,
-                "memory": 463
-              },
-              "per_call_measured_on_host": false,
-              "workers": 15
             }
           ],
           "not_modelled": "The sampler's batch ceiling: Nautilus evaluates at most n_batch points in parallel per batch, so a node cannot use more workers than n_batch. Shared memory bandwidth and caches between workers are also not modelled; the declared parallel efficiency stands in for them.",
@@ -43731,18 +43373,6 @@
           "hosts": [
             {
               "bound_by": "cores",
-              "calls_per_s": 9.756,
-              "host": "laptop",
-              "host_class": "local_laptop",
-              "limits": {
-                "cores": 8,
-                "memory": 58
-              },
-              "per_call_measured_on_host": false,
-              "workers": 8
-            },
-            {
-              "bound_by": "cores",
               "calls_per_s": 287.8,
               "host": "ral_cpu_node",
               "host_class": "hpc_ral_cpu",
@@ -43750,20 +43380,7 @@
                 "cores": 236,
                 "memory": 1671
               },
-              "per_call_measured_on_host": true,
               "workers": 236
-            },
-            {
-              "bound_by": "cores",
-              "calls_per_s": 151.2,
-              "host": "ral_gpu_node",
-              "host_class": "hpc_a100",
-              "limits": {
-                "cores": 124,
-                "memory": 1606
-              },
-              "per_call_measured_on_host": false,
-              "workers": 124
             }
           ],
           "not_modelled": "The sampler's batch ceiling: Nautilus evaluates at most n_batch points in parallel per batch, so a node cannot use more workers than n_batch. Shared memory bandwidth and caches between workers are also not modelled; the declared parallel efficiency stands in for them.",
@@ -53638,7 +53255,6 @@
                 "gpus": 4,
                 "memory": 82
               },
-              "per_call_measured_on_host": true,
               "workers": 4
             }
           ],
@@ -55032,7 +54648,6 @@
                 "gpus": 4,
                 "memory": 82
               },
-              "per_call_measured_on_host": true,
               "workers": 4
             }
           ],
@@ -56650,7 +56265,6 @@
                 "gpus": 4,
                 "memory": 462
               },
-              "per_call_measured_on_host": true,
               "workers": 4
             }
           ],
@@ -56932,30 +56546,6 @@
           "devices_per_eval": 0,
           "hosts": [
             {
-              "bound_by": "memory",
-              "calls_per_s": 0.0,
-              "host": "laptop",
-              "host_class": "local_laptop",
-              "limits": {
-                "cores": 1,
-                "memory": 0
-              },
-              "per_call_measured_on_host": false,
-              "workers": 0
-            },
-            {
-              "bound_by": "memory",
-              "calls_per_s": 0.4022,
-              "host": "ral_cpu_node",
-              "host_class": "hpc_ral_cpu",
-              "limits": {
-                "cores": 29,
-                "memory": 23
-              },
-              "per_call_measured_on_host": false,
-              "workers": 23
-            },
-            {
               "bound_by": "cores",
               "calls_per_s": 0.2623,
               "host": "ral_gpu_node",
@@ -56964,7 +56554,6 @@
                 "cores": 15,
                 "memory": 22
               },
-              "per_call_measured_on_host": true,
               "workers": 15
             }
           ],
@@ -63837,7 +63426,6 @@
                 "gpus": 4,
                 "memory": 82
               },
-              "per_call_measured_on_host": true,
               "workers": 4
             }
           ],
@@ -71184,30 +70772,6 @@
           "hosts": [
             {
               "bound_by": "cores",
-              "calls_per_s": 0.2134,
-              "host": "laptop",
-              "host_class": "local_laptop",
-              "limits": {
-                "cores": 1,
-                "memory": 4
-              },
-              "per_call_measured_on_host": false,
-              "workers": 1
-            },
-            {
-              "bound_by": "cores",
-              "calls_per_s": 6.189,
-              "host": "ral_cpu_node",
-              "host_class": "hpc_ral_cpu",
-              "limits": {
-                "cores": 29,
-                "memory": 124
-              },
-              "per_call_measured_on_host": false,
-              "workers": 29
-            },
-            {
-              "bound_by": "cores",
               "calls_per_s": 3.201,
               "host": "ral_gpu_node",
               "host_class": "hpc_a100",
@@ -71215,7 +70779,6 @@
                 "cores": 15,
                 "memory": 119
               },
-              "per_call_measured_on_host": true,
               "workers": 15
             }
           ],
@@ -71942,7 +71505,6 @@
                 "gpus": 4,
                 "memory": 22
               },
-              "per_call_measured_on_host": true,
               "workers": 4
             }
           ],
@@ -72764,18 +72326,6 @@
           "hosts": [
             {
               "bound_by": "cores",
-              "calls_per_s": 0.2375,
-              "host": "laptop",
-              "host_class": "local_laptop",
-              "limits": {
-                "cores": 1,
-                "memory": 5
-              },
-              "per_call_measured_on_host": false,
-              "workers": 1
-            },
-            {
-              "bound_by": "cores",
               "calls_per_s": 6.888,
               "host": "ral_cpu_node",
               "host_class": "hpc_ral_cpu",
@@ -72783,20 +72333,7 @@
                 "cores": 29,
                 "memory": 171
               },
-              "per_call_measured_on_host": true,
               "workers": 29
-            },
-            {
-              "bound_by": "cores",
-              "calls_per_s": 3.563,
-              "host": "ral_gpu_node",
-              "host_class": "hpc_a100",
-              "limits": {
-                "cores": 15,
-                "memory": 164
-              },
-              "per_call_measured_on_host": false,
-              "workers": 15
             }
           ],
           "not_modelled": "The sampler's batch ceiling: Nautilus evaluates at most n_batch points in parallel per batch, so a node cannot use more workers than n_batch. Shared memory bandwidth and caches between workers are also not modelled; the declared parallel efficiency stands in for them.",
@@ -74650,30 +74187,6 @@
           "hosts": [
             {
               "bound_by": "cores",
-              "calls_per_s": 1.578,
-              "host": "laptop",
-              "host_class": "local_laptop",
-              "limits": {
-                "cores": 1,
-                "memory": 16
-              },
-              "per_call_measured_on_host": false,
-              "workers": 1
-            },
-            {
-              "bound_by": "cores",
-              "calls_per_s": 45.76,
-              "host": "ral_cpu_node",
-              "host_class": "hpc_ral_cpu",
-              "limits": {
-                "cores": 29,
-                "memory": 481
-              },
-              "per_call_measured_on_host": false,
-              "workers": 29
-            },
-            {
-              "bound_by": "cores",
               "calls_per_s": 23.67,
               "host": "ral_gpu_node",
               "host_class": "hpc_a100",
@@ -74681,7 +74194,6 @@
                 "cores": 15,
                 "memory": 462
               },
-              "per_call_measured_on_host": true,
               "workers": 15
             }
           ],
@@ -78829,30 +78341,6 @@
           "hosts": [
             {
               "bound_by": "cores",
-              "calls_per_s": 1.166,
-              "host": "laptop",
-              "host_class": "local_laptop",
-              "limits": {
-                "cores": 1,
-                "memory": 16
-              },
-              "per_call_measured_on_host": false,
-              "workers": 1
-            },
-            {
-              "bound_by": "cores",
-              "calls_per_s": 33.82,
-              "host": "ral_cpu_node",
-              "host_class": "hpc_ral_cpu",
-              "limits": {
-                "cores": 29,
-                "memory": 481
-              },
-              "per_call_measured_on_host": false,
-              "workers": 29
-            },
-            {
-              "bound_by": "cores",
               "calls_per_s": 17.49,
               "host": "ral_gpu_node",
               "host_class": "hpc_a100",
@@ -78860,7 +78348,6 @@
                 "cores": 15,
                 "memory": 462
               },
-              "per_call_measured_on_host": true,
               "workers": 15
             }
           ],
@@ -83734,18 +83221,6 @@
           "hosts": [
             {
               "bound_by": "cores",
-              "calls_per_s": 1.21,
-              "host": "laptop",
-              "host_class": "local_laptop",
-              "limits": {
-                "cores": 1,
-                "memory": 18
-              },
-              "per_call_measured_on_host": false,
-              "workers": 1
-            },
-            {
-              "bound_by": "cores",
               "calls_per_s": 35.08,
               "host": "ral_cpu_node",
               "host_class": "hpc_ral_cpu",
@@ -83753,20 +83228,7 @@
                 "cores": 29,
                 "memory": 529
               },
-              "per_call_measured_on_host": true,
               "workers": 29
-            },
-            {
-              "bound_by": "cores",
-              "calls_per_s": 18.15,
-              "host": "ral_gpu_node",
-              "host_class": "hpc_a100",
-              "limits": {
-                "cores": 15,
-                "memory": 508
-              },
-              "per_call_measured_on_host": false,
-              "workers": 15
             }
           ],
           "not_modelled": "The sampler's batch ceiling: Nautilus evaluates at most n_batch points in parallel per batch, so a node cannot use more workers than n_batch. Shared memory bandwidth and caches between workers are also not modelled; the declared parallel efficiency stands in for them.",
@@ -84792,18 +84254,6 @@
           "hosts": [
             {
               "bound_by": "cores",
-              "calls_per_s": 0.2293,
-              "host": "laptop",
-              "host_class": "local_laptop",
-              "limits": {
-                "cores": 1,
-                "memory": 5
-              },
-              "per_call_measured_on_host": false,
-              "workers": 1
-            },
-            {
-              "bound_by": "cores",
               "calls_per_s": 6.649,
               "host": "ral_cpu_node",
               "host_class": "hpc_ral_cpu",
@@ -84811,20 +84261,7 @@
                 "cores": 29,
                 "memory": 165
               },
-              "per_call_measured_on_host": true,
               "workers": 29
-            },
-            {
-              "bound_by": "cores",
-              "calls_per_s": 3.439,
-              "host": "ral_gpu_node",
-              "host_class": "hpc_a100",
-              "limits": {
-                "cores": 15,
-                "memory": 158
-              },
-              "per_call_measured_on_host": false,
-              "workers": 15
             }
           ],
           "not_modelled": "The sampler's batch ceiling: Nautilus evaluates at most n_batch points in parallel per batch, so a node cannot use more workers than n_batch. Shared memory bandwidth and caches between workers are also not modelled; the declared parallel efficiency stands in for them.",
@@ -85121,18 +84558,6 @@
           "hosts": [
             {
               "bound_by": "cores",
-              "calls_per_s": 11.48,
-              "host": "laptop",
-              "host_class": "local_laptop",
-              "limits": {
-                "cores": 8,
-                "memory": 31
-              },
-              "per_call_measured_on_host": false,
-              "workers": 8
-            },
-            {
-              "bound_by": "cores",
               "calls_per_s": 338.7,
               "host": "ral_cpu_node",
               "host_class": "hpc_ral_cpu",
@@ -85140,20 +84565,7 @@
                 "cores": 236,
                 "memory": 899
               },
-              "per_call_measured_on_host": true,
               "workers": 236
-            },
-            {
-              "bound_by": "cores",
-              "calls_per_s": 178.0,
-              "host": "ral_gpu_node",
-              "host_class": "hpc_a100",
-              "limits": {
-                "cores": 124,
-                "memory": 864
-              },
-              "per_call_measured_on_host": false,
-              "workers": 124
             }
           ],
           "not_modelled": "The sampler's batch ceiling: Nautilus evaluates at most n_batch points in parallel per batch, so a node cannot use more workers than n_batch. Shared memory bandwidth and caches between workers are also not modelled; the declared parallel efficiency stands in for them.",
@@ -87610,7 +87022,6 @@
                 "gpus": 4,
                 "memory": 462
               },
-              "per_call_measured_on_host": true,
               "workers": 4
             }
           ],
@@ -88727,7 +88138,6 @@
                 "gpus": 4,
                 "memory": 119
               },
-              "per_call_measured_on_host": true,
               "workers": 4
             }
           ],
@@ -90625,7 +90035,6 @@
                 "gpus": 4,
                 "memory": 462
               },
-              "per_call_measured_on_host": true,
               "workers": 4
             }
           ],
@@ -93675,7 +93084,6 @@
                 "gpus": 4,
                 "memory": 82
               },
-              "per_call_measured_on_host": true,
               "workers": 4
             }
           ],
@@ -95875,30 +95283,6 @@
           "hosts": [
             {
               "bound_by": "cores",
-              "calls_per_s": 0.1604,
-              "host": "laptop",
-              "host_class": "local_laptop",
-              "limits": {
-                "cores": 1,
-                "memory": 2
-              },
-              "per_call_measured_on_host": false,
-              "workers": 1
-            },
-            {
-              "bound_by": "cores",
-              "calls_per_s": 4.651,
-              "host": "ral_cpu_node",
-              "host_class": "hpc_ral_cpu",
-              "limits": {
-                "cores": 29,
-                "memory": 85
-              },
-              "per_call_measured_on_host": false,
-              "workers": 29
-            },
-            {
-              "bound_by": "cores",
               "calls_per_s": 2.406,
               "host": "ral_gpu_node",
               "host_class": "hpc_a100",
@@ -95906,7 +95290,6 @@
                 "cores": 15,
                 "memory": 82
               },
-              "per_call_measured_on_host": true,
               "workers": 15
             }
           ],
@@ -96068,7 +95451,6 @@
                 "gpus": 4,
                 "memory": 82
               },
-              "per_call_measured_on_host": true,
               "workers": 4
             }
           ],
@@ -96997,30 +96379,6 @@
           "hosts": [
             {
               "bound_by": "cores",
-              "calls_per_s": 0.2538,
-              "host": "laptop",
-              "host_class": "local_laptop",
-              "limits": {
-                "cores": 1,
-                "memory": 4
-              },
-              "per_call_measured_on_host": false,
-              "workers": 1
-            },
-            {
-              "bound_by": "cores",
-              "calls_per_s": 7.36,
-              "host": "ral_cpu_node",
-              "host_class": "hpc_ral_cpu",
-              "limits": {
-                "cores": 29,
-                "memory": 124
-              },
-              "per_call_measured_on_host": false,
-              "workers": 29
-            },
-            {
-              "bound_by": "cores",
               "calls_per_s": 3.807,
               "host": "ral_gpu_node",
               "host_class": "hpc_a100",
@@ -97028,7 +96386,6 @@
                 "cores": 15,
                 "memory": 119
               },
-              "per_call_measured_on_host": true,
               "workers": 15
             }
           ],
@@ -98607,7 +97964,6 @@
                 "gpus": 4,
                 "memory": 119
               },
-              "per_call_measured_on_host": true,
               "workers": 4
             }
           ],
@@ -100054,7 +99410,6 @@
                 "gpus": 4,
                 "memory": 22
               },
-              "per_call_measured_on_host": true,
               "workers": 4
             }
           ],
@@ -100474,18 +99829,6 @@
           "hosts": [
             {
               "bound_by": "cores",
-              "calls_per_s": 0.02049,
-              "host": "laptop",
-              "host_class": "local_laptop",
-              "limits": {
-                "cores": 1,
-                "memory": 1
-              },
-              "per_call_measured_on_host": false,
-              "workers": 1
-            },
-            {
-              "bound_by": "cores",
               "calls_per_s": 0.5943,
               "host": "ral_cpu_node",
               "host_class": "hpc_ral_cpu",
@@ -100493,20 +99836,7 @@
                 "cores": 29,
                 "memory": 41
               },
-              "per_call_measured_on_host": true,
               "workers": 29
-            },
-            {
-              "bound_by": "cores",
-              "calls_per_s": 0.3074,
-              "host": "ral_gpu_node",
-              "host_class": "hpc_a100",
-              "limits": {
-                "cores": 15,
-                "memory": 39
-              },
-              "per_call_measured_on_host": false,
-              "workers": 15
             }
           ],
           "not_modelled": "The sampler's batch ceiling: Nautilus evaluates at most n_batch points in parallel per batch, so a node cannot use more workers than n_batch. Shared memory bandwidth and caches between workers are also not modelled; the declared parallel efficiency stands in for them.",
@@ -101424,18 +100754,6 @@
           "hosts": [
             {
               "bound_by": "cores",
-              "calls_per_s": 4.586,
-              "host": "laptop",
-              "host_class": "local_laptop",
-              "limits": {
-                "cores": 8,
-                "memory": 16
-              },
-              "per_call_measured_on_host": false,
-              "workers": 8
-            },
-            {
-              "bound_by": "cores",
               "calls_per_s": 135.3,
               "host": "ral_cpu_node",
               "host_class": "hpc_ral_cpu",
@@ -101443,20 +100761,7 @@
                 "cores": 236,
                 "memory": 464
               },
-              "per_call_measured_on_host": true,
               "workers": 236
-            },
-            {
-              "bound_by": "cores",
-              "calls_per_s": 71.08,
-              "host": "ral_gpu_node",
-              "host_class": "hpc_a100",
-              "limits": {
-                "cores": 124,
-                "memory": 446
-              },
-              "per_call_measured_on_host": false,
-              "workers": 124
             }
           ],
           "not_modelled": "The sampler's batch ceiling: Nautilus evaluates at most n_batch points in parallel per batch, so a node cannot use more workers than n_batch. Shared memory bandwidth and caches between workers are also not modelled; the declared parallel efficiency stands in for them.",
@@ -106240,18 +105545,6 @@
           "hosts": [
             {
               "bound_by": "cores",
-              "calls_per_s": 0.01809,
-              "host": "laptop",
-              "host_class": "local_laptop",
-              "limits": {
-                "cores": 1,
-                "memory": 1
-              },
-              "per_call_measured_on_host": false,
-              "workers": 1
-            },
-            {
-              "bound_by": "cores",
               "calls_per_s": 0.5245,
               "host": "ral_cpu_node",
               "host_class": "hpc_ral_cpu",
@@ -106259,20 +105552,7 @@
                 "cores": 29,
                 "memory": 47
               },
-              "per_call_measured_on_host": true,
               "workers": 29
-            },
-            {
-              "bound_by": "cores",
-              "calls_per_s": 0.2713,
-              "host": "ral_gpu_node",
-              "host_class": "hpc_a100",
-              "limits": {
-                "cores": 15,
-                "memory": 45
-              },
-              "per_call_measured_on_host": false,
-              "workers": 15
             }
           ],
           "not_modelled": "The sampler's batch ceiling: Nautilus evaluates at most n_batch points in parallel per batch, so a node cannot use more workers than n_batch. Shared memory bandwidth and caches between workers are also not modelled; the declared parallel efficiency stands in for them.",
@@ -111292,7 +110572,6 @@
                 "gpus": 4,
                 "memory": 119
               },
-              "per_call_measured_on_host": true,
               "workers": 4
             }
           ],
@@ -116334,7 +115613,6 @@
                 "gpus": 4,
                 "memory": 22
               },
-              "per_call_measured_on_host": true,
               "workers": 4
             }
           ],
