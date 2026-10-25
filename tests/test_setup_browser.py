@@ -205,3 +205,18 @@ def test_v3_markdown_marks_projections():
         "333.3 calls/s · 4 workers (gpus-bound) on ral_gpu_node — *projected*, η 1 "
         "(declared, unmeasured (phase 4 measures))" in lines
     )
+
+
+def test_v3_links_the_knowledge_page_from_the_browser_and_markdown():
+    from pulse import ORGAN_ROOT
+
+    assert setup_browser.KNOWLEDGE_URL.endswith(
+        "/blob/main/knowledge/cpu_parallel_vs_gpu_batched.md"
+    )
+    page_path = ORGAN_ROOT / "knowledge/cpu_parallel_vs_gpu_batched.md"
+    assert page_path.read_text().startswith(f"# {setup_browser.KNOWLEDGE_TITLE}\n")
+    page = setup_browser.render(lifecycle_capture())
+    link = re.search(r'data-id="knowledge-link">(.*?)</p>', page, re.S)[1]
+    assert f'href="{setup_browser.KNOWLEDGE_URL}"' in link and 'target="_blank"' in link
+    markdown = "\n".join(setup_browser.markdown(lifecycle_capture()))
+    assert f"[{setup_browser.KNOWLEDGE_TITLE}]({setup_browser.KNOWLEDGE_URL})" in markdown

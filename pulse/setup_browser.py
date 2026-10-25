@@ -113,6 +113,10 @@ VIEW_OPTIONS = (
     ("per_node", "Per node (projected)"),
 )
 PNT = "projected_node_throughput"
+KNOWLEDGE_URL = (
+    "https://github.com/PyAutoLabs/PyAutoPulse/blob/main/knowledge/cpu_parallel_vs_gpu_batched.md"
+)
+KNOWLEDGE_TITLE = "Comparing CPU-parallel and GPU-batched setups"
 
 
 def _number(value):
@@ -252,6 +256,9 @@ def _render_lifecycle(snapshot):
         "÷ peak RSS (one per GPU), times a declared parallel efficiency η, over the per-call "
         "time. η is not yet measured, so these are upper bounds; focus a <b>projected</b> "
         "badge for its basis. Never compare GPU and CPU setups on per-call latency alone.</p>"
+        f'<p class="view-note" data-id="knowledge-link">Read: <a href="{KNOWLEDGE_URL}" '
+        f'target="_blank" rel="noopener" title="Opens in a new tab">{KNOWLEDGE_TITLE}</a> (decision rules, not a '
+        "decision).</p>"
         '<div class="tablewrap"><table class="lifecycle-table"><thead><tr><th>Likelihood</th>'
         "<th>Instrument</th><th>Regime</th><th>Setup</th><th>Hardware class</th>"
         "<th>Model variant</th><th>Measurement</th><th>"
@@ -328,6 +335,9 @@ def _markdown_lifecycle(snapshot):
         f"{counts['current']} current · {counts['superseded']} superseded · "
         f"{counts['archived']} archived (counted, not shown). Class and status are the "
         "producer's declarations.",
+        "",
+        f"Per-node values are the producer's projections, never measurements: read "
+        f"[{KNOWLEDGE_TITLE}]({KNOWLEDGE_URL}) before comparing CPU and GPU setups.",
         "",
         "| Likelihood | Instrument | Setup | Hardware class | Model variant | Measurement "
         "| Value (producer) | Decision | Node throughput (projected) |",

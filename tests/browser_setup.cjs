@@ -677,6 +677,9 @@ const { execFileSync } = require("node:child_process");
     // visibly marked, with η/source/bound in a keyboard-reachable tooltip.
     await life.locator('select[data-filter="instrument"]').selectOption("");
     await life.locator('select[data-filter="measurement"]').selectOption("");
+    const knowledge = life.locator('[data-id="knowledge-link"] a');
+    assert(await knowledge.isVisible());
+    assert.equal(await knowledge.getAttribute("target"), "_blank");
     const view = life.locator("select[data-view]");
     assert.equal(await view.inputValue(), "per_call");
     const ral = row("imaging-delaunay-hst-ral-runtime");

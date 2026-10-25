@@ -305,7 +305,9 @@ bump. Absent is valid. Present but malformed makes the capture **invalid**.
 
 Pulse checks shape and internal consistency only. It never recomputes a
 projection, and the board shows projected values marked **projected** with
-their η, its source and the bounding limit (see Board below).
+their η, its source and the bounding limit (see Board below). The reasoning behind the
+numbers, as decision rules for the autolens_assistant, is the knowledge page
+[Comparing CPU-parallel and GPU-batched setups](knowledge/cpu_parallel_vs_gpu_batched.md).
 
 **Board.** The setup browser's first selector is Class (Optimal by default,
 then Secondary, Experimental, All), then Likelihood (dataset type, variant),
@@ -491,6 +493,14 @@ Rectangular, MGE, KNN, MGE Mass, Sersic, then other families alphabetically.
 
 Sersic retains one plain menu entry when only unclassified latent tools exist;
 this does not assign a backend. Known Sersic variants replace that fallback.
+
+## Knowledge pages
+
+`knowledge/` holds reference pages written as decision rules that agents (the
+autolens_assistant first) read: the reasoning behind how a number should be
+compared, never a human decision. Decisions stay in `decisions/` with their
+`decisions.yaml` index. A knowledge page cites the producer's evidence at pinned
+commits and is linked from the board where its numbers appear.
 
 ## Decision History
 
