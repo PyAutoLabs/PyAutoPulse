@@ -1,6 +1,6 @@
 # PyAutoPulse — profiling dashboard
 
-<!-- pulse-campaigns:534100f0568a525813aff5c2ac922f02789eb6251f61b94cb960a3b0b19be138 -->
+<!-- pulse-campaigns:3283e557de1d110da97abe4c9ffeaed914e3a35fa18b55feff3e32ebb760654d -->
 ## Profiling Check In
 
 <details><summary>Full check-in prompt</summary>
@@ -38,7 +38,6 @@ Reviewed 2026-10-17. Review the Pulse collection choices (candidate input hashes
 ### Active tasks
 
 - [Freeze the setup baseline specification, then collect and review evidence](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/setup_baseline_campaign.md) — needs-decision: HST/MGE raw fixed-parameter CPU runner merged in #416; Pulse handoff #55 merged and Mind implementation closed. Resolve exact production host/stack/data, full settings, independent correctness witness/tolerances and background-load method. No collection, campaign freeze or acceptance authorized; global compile dispatch remains unavailable.
-- [Prepare and review the HST/MGE fp64 CPU pilot](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/hst_mge_cpu_pilot.md) — needs-decision: Review the Pulse collection choices (candidate input hashes and 31-worker resource plan verified without execution) alongside project correctness audit #417. Resolve data origin/suitability, named host/stack/full settings, witness/tolerances and background-load method. No freeze, compute or acceptance authorized. Post-/prm 2026-10-17: #418 merged (QUALIFICATION.md), #417 closed; record https://github.com/PyAutoLabs/PyAutoMind/blob/main/complete/2026/10/hst-mge-pilot-qualification.md. Next bounded step: the synthetic witness harness that also fixes the background-load method and calibrates tolerances; still no collection, freeze or acceptance authorized.
 
 </details>
 

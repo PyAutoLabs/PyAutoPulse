@@ -3,7 +3,7 @@
 Campaign: setup-baseline
 Task: hst_mge_cpu_pilot
 Reviewed: 2026-10-13
-Status: needs-decision
+Status: superseded
 
 The human approved preparation in this chat ("ok go", 2026-10-13). This document
 proposes the experiment; it does not freeze a specification or authorize compute,
@@ -218,3 +218,27 @@ was authorized. This focused preparation does not advance the all-campaign
 - The design (`scripts/misc/jax_compile/QUALIFICATION.md`) derives what the pilot computes, proposes an independent operator + scipy NNLS witness, lists the identities to capture and gives candidate tolerances marked unaccepted. No contradiction with the #416 runner.
 - Carried, not fixed: no background-load method proposed; the 1e-8 relative image L2 budget is likely unattainable against the packaged solver's inactive-column flux allowance, so synthetic-harness calibration must be allowed to revise tolerances; correctness-process feasibility is deferred, so the 32-process / 16 CPU-hour budget stays unfinalized. Witness placement in autolens_workspace_test with a project adapter needs the human's confirmation.
 - No collection, campaign freeze or acceptance authorized.
+
+## Superseded by phase 2a — 2026-10-25
+
+The human chose to adopt the likelihood-lifecycle phase-2a imaging campaign's MGE/HST
+CPU cell as this pilot's answer and close the pilot ("that's what I meant, so do it",
+2026-10-25). The pilot's own protocol was **not** run.
+
+- Answering cell: `results/imaging/mge/hst/jax_cpu_dense_fp64/hpc_ral_cpu/runtime.json`
+  in autolens_profiling, with `breakdown.json`, `fit.png` and `parity.json` (`match`
+  against the eager NumPy reference) beside it. It was measured on RAL `ral` CPU from a
+  private checkout at tag 2026.10.23.1 (batch 1 array 412925) and merged in
+  [autolens_profiling#461](https://github.com/PyAutoLabs/autolens_profiling/pull/461).
+  Campaign issue: [autolens_profiling#456](https://github.com/PyAutoLabs/autolens_profiling/issues/456).
+- How it differs from this proposal: the phase-2a cell runs the standard
+  production MGE at the instrument's seeded prior draw, not the 20+20 Gaussian fixed
+  instance. It records single-jit medians and vmap per-call times, with compile time
+  reported separately, not the cold / warm / persistent-cache stages. It applies no
+  background-load qualification: the dashboard refuses rows whose load average exceeded 8,
+  and the catalogue and coverage still count them. Correctness comes from the
+  per-cell parity witness, not the operator + scipy NNLS witness in QUALIFICATION.md.
+- The open questions above (persistent-cache auditing, background-load method, tolerance
+  calibration) are not answered by this adoption. If they matter again, open a new task;
+  do not reissue this pilot.
+
