@@ -279,6 +279,34 @@ threads}` and the matching `setup_id`, `host_class`, `model_variant` (e.g.
   be kept as `superseded` provenance.
 - An `archived` record inside `records[]` is refused.
 
+**Resources and projected node throughput** (likelihood-lifecycle phase 2x,
+autolens_profiling#463/#465). Two optional, additive record fields; no version
+bump. Absent is valid. Present but malformed makes the capture **invalid**.
+
+- `resources`: what one evaluation occupies. `cpus_per_eval` (positive integer
+  or `null`), `peak_rss_gb` (finite positive GB or `null`) and `source` (string
+  or `null`: `row`, the producer's backfill file, …) are required keys.
+  `devices_per_eval` (non-negative integer or `null`), `peak_rss_basis`
+  (e.g. `sacct_maxrss`, `job_maxrss`), `cpus_per_eval_basis`, `sacct_job` and
+  `peak_rss_note` are optional strings. A `null` `cpus_per_eval` needs a
+  `reason`; a `null` `peak_rss_gb` needs a `reason` or `peak_rss_reason`.
+- `projected_node_throughput` (runtime records only): `basis: projected`
+  (the only accepted value; a projection is never a measurement), `status`
+  `projected` or `not_projected`, `per_call_s` (positive or `null`) with its
+  `per_call_source`, the `resources` keys echoed, `parallel_efficiency`
+  `{value in (0, 1], source[, kind]}` and `not_modelled` (a string or a list of
+  strings). `projected` names exactly one host and a `per_call_s`;
+  `not_projected` names no host and gives a `reason`.
+- A host is `{host, host_class, workers, bound_by, limits, calls_per_s}`.
+  `host_class` must equal the record's own: a per-call time is never projected
+  onto another machine. `limits` maps `cores`, `memory` and (for a `gpu` setup
+  only, and then required) `gpus` to positive integer worker caps; `bound_by`
+  names the smallest and equals `workers`; `calls_per_s` is finite and positive.
+
+Pulse checks shape and internal consistency only. It never recomputes a
+projection, and the board shows projected values marked **projected** with
+their η, its source and the bounding limit (see Board below).
+
 **Board.** The setup browser's first selector is Class (Optimal by default,
 then Secondary, Experimental, All), then Likelihood (dataset type, variant),
 Instrument, Hardware class and Measurement. Only `current` rows show until
