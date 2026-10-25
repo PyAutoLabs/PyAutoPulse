@@ -315,6 +315,16 @@ as a count. A Coverage panel lists optimal `planned_cells` with no current
 record. Research lookups read `class: optimal` + `status: current` unless asked
 otherwise. The v2 eligibility heuristics never apply to a v3 catalogue.
 
+A **View** selector (after History) switches the value column between **Per
+call (measured)**, the default, and **Per node (projected)**. Per node prints the
+producer's `projected_node_throughput` (calls/s, workers, bounding limit, host)
+with a **projected** badge; focusing or hovering the badge shows a tooltip with
+η, its source, the bounding limit and worker caps, the per-call basis and what
+is not modelled (Escape dismisses it). `not_projected` rows print the producer's
+reason; rows without the block print a dash. The default stays per call until
+phase 4 measures η, so a projection never headlines. The Markdown board adds a
+"Node throughput (projected)" column with the same marking.
+
 ## `walltime-validation` v1: full-fit evidence axis
 
 A second evidence axis, produced by autolens_inference and registered as its

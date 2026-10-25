@@ -106,6 +106,62 @@ def _value(record):
     return f"{values.get(metric)} {record.get('unit')} ({metric})"
 
 
+# Per-call (measured, the default) ↔ per-node (the producer's projection). The
+# default stays per-call until phase 4 measures η, so a projection never headlines.
+VIEW_OPTIONS = (
+    ("per_call", "Per call (measured)"),
+    ("per_node", "Per node (projected)"),
+)
+PNT = "projected_node_throughput"
+
+
+def _number(value):
+    return f"{value:g}" if isinstance(value, int | float) and not isinstance(value, bool) else "?"
+
+
+def node_throughput(record):
+    """``(kind, text, detail)`` for the producer's declared projection, never computed here.
+
+    ``kind`` is ``projected``, ``not_projected`` or ``None`` (no block declared).
+    ``detail`` is the tooltip text: η, its source, the bounding limit, the per-call
+    basis and what is not modelled.
+    """
+    block = record.get(PNT)
+    if not isinstance(block, dict):
+        return None, "no node projection declared", ""
+    if block.get("status") != "projected" or not block.get("hosts"):
+        return "not_projected", f"not projected: {block.get('reason') or 'no reason given'}", ""
+    host = block["hosts"][0]
+    eta = block.get("parallel_efficiency") or {}
+    limits = ", ".join(f"{k} {_number(v)}" for k, v in (host.get("limits") or {}).items())
+    modelled = block.get("not_modelled")
+    if isinstance(modelled, list):
+        modelled = "; ".join(str(m) for m in modelled)
+    text = (
+        f"{_number(host.get('calls_per_s'))} calls/s · {_number(host.get('workers'))} workers "
+        f"({host.get('bound_by')}-bound) on {host.get('host')}"
+    )
+    detail = (
+        f"Projected, not measured. η (parallel efficiency) {_number(eta.get('value'))}"
+        + (f" ({eta['kind']})" if eta.get("kind") else "")
+        + f", source: {eta.get('source')}. Bound by {host.get('bound_by')} "
+        f"(worker caps: {limits}). Per call {_number(block.get('per_call_s'))} s from "
+        f"{block.get('per_call_source')}. Not modelled: {modelled}"
+    )
+    return "projected", text, detail
+
+
+def _node_cell(record, tip_id, e):
+    kind, text, detail = node_throughput(record)
+    if kind == "projected":
+        return (
+            f"{e(text)} <span class='projected-wrap'><span class='projected-badge' tabindex='0' "
+            f"aria-describedby='{e(tip_id)}'>projected</span><span class='projected-tip' "
+            f"role='tooltip' id='{e(tip_id)}'>{e(detail)}</span></span>"
+        )
+    return f"<span class='muted'>{e(text)}</span>" if kind else "<span class='muted'>—</span>"
+
+
 def _render_lifecycle(snapshot):
     doc = snapshot.doc
     instance = snapshot.instance
@@ -134,8 +190,17 @@ def _render_lifecycle(snapshot):
         '<label class="history-toggle"><input type="checkbox" data-filter="history"> '
         "History (include superseded)</label>"
     )
+    fields.append(
+        f'<label for="lifecycle-{e(instance.instance)}-view">View'
+        f'<select id="lifecycle-{e(instance.instance)}-view" data-view>'
+        + "".join(
+            f'<option value="{v}"{" selected" if v == "per_call" else ""}>{t}</option>'
+            for v, t in VIEW_OPTIONS
+        )
+        + "</select></label>"
+    )
     rows = []
-    for r in records:
+    for n, r in enumerate(records):
         attrs = "".join(f' data-{k.replace("_", "-")}="{e(v)}"' for k, v in _row_fields(r).items())
         hidden = "" if default_visible(r) else " hidden"
         ev = r.get("evidence") or {}
@@ -153,7 +218,10 @@ def _render_lifecycle(snapshot):
             f"<td>{e(r.get('instrument'))}</td><td>{e(r.get('regime'))}</td>"
             f"<td><code>{e(r.get('setup_id'))}</code></td><td>{e(r.get('host_class'))}</td>"
             f"<td>{e(r.get('model_variant'))}</td><td>{e(r.get('measurement'))}</td>"
-            f"<td class='num'>{e(_value(r))}</td><td>{e(r.get('class'))}</td>"
+            f"<td class='num'><span data-view-value='per_call'>{e(_value(r))}</span>"
+            f"<span data-view-value='per_node' hidden>"
+            f"{_node_cell(r, f'pnt-{instance.instance}-{n}', e)}</span></td>"
+            f"<td>{e(r.get('class'))}</td>"
             f"<td>{e(r.get('status'))}</td><td>{e(r.get('decision_id') or '—')}</td>"
             f"<td>{' · '.join(links) or '—'}</td></tr>"
         )
@@ -178,9 +246,18 @@ def _render_lifecycle(snapshot):
         f'<p data-id="lifecycle-counts">{counts["current"]} current · {counts["superseded"]} '
         f"superseded (shown with History) · {counts['archived']} archived (counted, not shown). "
         "Class and status are the producer's declarations; this board ranks nothing.</p>"
+        '<p class="view-note" data-view-value="per_node" data-id="view-note" hidden>'
+        "Per node shows the producer's <b>projected</b> calls per second on the host class "
+        "each row was measured on: workers capped by cores ÷ CPUs per evaluation and memory "
+        "÷ peak RSS (one per GPU), times a declared parallel efficiency η, over the per-call "
+        "time. η is not yet measured, so these are upper bounds; focus a <b>projected</b> "
+        "badge for its basis. Never compare GPU and CPU setups on per-call latency alone.</p>"
         '<div class="tablewrap"><table class="lifecycle-table"><thead><tr><th>Likelihood</th>'
         "<th>Instrument</th><th>Regime</th><th>Setup</th><th>Hardware class</th>"
-        "<th>Model variant</th><th>Measurement</th><th>Value (producer)</th><th>Class</th>"
+        "<th>Model variant</th><th>Measurement</th><th>"
+        "<span data-view-value='per_call'>Value (producer)</span>"
+        "<span data-view-value='per_node' hidden>Node throughput (producer projection)</span>"
+        "</th><th>Class</th>"
         "<th>Status</th><th>Decision</th><th>Evidence</th></tr></thead>"
         f"<tbody>{''.join(rows)}</tbody></table></div>"
         f'<p class="empty" data-id="no-rows"{" hidden" if visible else ""}>'
@@ -230,6 +307,15 @@ def render(snapshot):
     )
 
 
+def _node_markdown(record):
+    kind, text, detail = node_throughput(record)
+    if kind == "projected":
+        block = record[PNT]
+        eta = block.get("parallel_efficiency") or {}
+        return f"{text} — *projected*, η {_number(eta.get('value'))} ({eta.get('source')})"
+    return text if kind else "—"
+
+
 def _markdown_lifecycle(snapshot):
     doc = snapshot.doc
     counts = catalogue.lifecycle_counts(doc)
@@ -244,8 +330,8 @@ def _markdown_lifecycle(snapshot):
         "producer's declarations.",
         "",
         "| Likelihood | Instrument | Setup | Hardware class | Model variant | Measurement "
-        "| Value (producer) | Decision |",
-        "|---|---|---|---|---|---|---:|---|",
+        "| Value (producer) | Decision | Node throughput (projected) |",
+        "|---|---|---|---|---|---|---:|---|---|",
     ]
     esc = lambda v: html.escape(str(v)).replace("|", "\\|")  # noqa: E731
     for r in doc.get("records") or []:
@@ -256,7 +342,7 @@ def _markdown_lifecycle(snapshot):
             f"| {esc(likelihood.get('dataset_type'))}/{esc(likelihood.get('variant'))} "
             f"| {esc(r.get('instrument'))} | `{esc(r.get('setup_id'))}` | {esc(r.get('host_class'))} "
             f"| {esc(r.get('model_variant'))} | {esc(r.get('measurement'))} | {esc(_value(r))} "
-            f"| {esc(r.get('decision_id'))} |"
+            f"| {esc(r.get('decision_id'))} | {esc(_node_markdown(r))} |"
         )
     missing = not_measured(doc)
     lines += ["", f"Coverage: {len(missing)} optimal cell(s) not measured.", ""]
