@@ -647,6 +647,7 @@ const { execFileSync } = require("node:child_process");
         "Hardware class",
         "Measurement",
         "",
+        "View",
       ],
     );
     const row = (id) => life.locator(`tr[data-record="${id}"]`);
@@ -672,6 +673,76 @@ const { execFileSync } = require("node:child_process");
         "1 optimal cell not measured",
       ),
     );
+    // Per call (measured) by default; per node shows the producer's projection,
+    // visibly marked, with η/source/bound in a keyboard-reachable tooltip.
+    await life.locator('select[data-filter="instrument"]').selectOption("");
+    await life.locator('select[data-filter="measurement"]').selectOption("");
+    const knowledge = life.locator('[data-id="knowledge-link"] a');
+    assert(await knowledge.isVisible());
+    assert.equal(await knowledge.getAttribute("target"), "_blank");
+    const view = life.locator("select[data-view]");
+    assert.equal(await view.inputValue(), "per_call");
+    const ral = row("imaging-delaunay-hst-ral-runtime");
+    const perCall = ral.locator('[data-view-value="per_call"]');
+    const perNode = ral.locator('[data-view-value="per_node"]');
+    assert(await perCall.isVisible());
+    assert(!(await perNode.isVisible()));
+    assert(!(await life.locator('[data-id="view-note"]').isVisible()));
+    await life.locator('input[data-filter="history"]').focus();
+    await page.keyboard.press("Tab");
+    assert.equal(
+      await page.evaluate(() => document.activeElement.hasAttribute("data-view")),
+      true,
+    );
+    await view.selectOption("per_node");
+    assert(!(await perCall.isVisible()));
+    assert(await perNode.isVisible());
+    assert(await life.locator('[data-id="view-note"]').isVisible());
+    assert(
+      (await perNode.textContent()).includes(
+        "190.5 calls/s · 40 workers (memory-bound)",
+      ),
+    );
+    assert(
+      (
+        await row("interferometer-mge-sma-ral-runtime")
+          .locator('[data-view-value="per_node"]')
+          .textContent()
+      ).startsWith("not projected:"),
+    );
+    const badge = perNode.locator(".projected-badge");
+    const tip = perNode.locator(".projected-tip");
+    assert.equal(await badge.textContent(), "projected");
+    assert(!(await tip.isVisible()));
+    await badge.focus();
+    assert(await tip.isVisible());
+    assert.equal(
+      await badge.evaluate((el) =>
+        document.getElementById(el.getAttribute("aria-describedby")).getAttribute("role"),
+      ),
+      "tooltip",
+    );
+    assert((await tip.textContent()).includes("Bound by memory"));
+    for (const width of [390, 1280]) {
+      await page.setViewportSize({ width, height: 1000 });
+      assert(
+        await page.evaluate(
+          () => document.documentElement.scrollWidth <= window.innerWidth,
+        ),
+      );
+    }
+    await page.keyboard.press("Escape");
+    assert(!(await tip.isVisible()));
+    const badgeColor = () =>
+      badge.evaluate((el) => getComputedStyle(el).color);
+    await page.emulateMedia({ colorScheme: "light" });
+    assert.equal(await badgeColor(), "rgb(154, 103, 0)");
+    await page.emulateMedia({ colorScheme: "dark" });
+    assert.equal(await badgeColor(), "rgb(210, 153, 34)");
+    await page.emulateMedia({ colorScheme: "light" });
+    await view.selectOption("per_call");
+    assert(await perCall.isVisible());
+    assert(!(await perNode.isVisible()));
     assert.equal(await page.locator('[data-walltime="walltime"]').count(), 1);
     for (const width of [390, 1280]) {
       await page.setViewportSize({ width, height: 1000 });

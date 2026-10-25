@@ -279,6 +279,36 @@ threads}` and the matching `setup_id`, `host_class`, `model_variant` (e.g.
   be kept as `superseded` provenance.
 - An `archived` record inside `records[]` is refused.
 
+**Resources and projected node throughput** (likelihood-lifecycle phase 2x,
+autolens_profiling#463/#465). Two optional, additive record fields; no version
+bump. Absent is valid. Present but malformed makes the capture **invalid**.
+
+- `resources`: what one evaluation occupies. `cpus_per_eval` (positive integer
+  or `null`), `peak_rss_gb` (finite positive GB or `null`) and `source` (string
+  or `null`: `row`, the producer's backfill file, …) are required keys.
+  `devices_per_eval` (non-negative integer or `null`), `peak_rss_basis`
+  (e.g. `sacct_maxrss`, `job_maxrss`), `cpus_per_eval_basis`, `sacct_job` and
+  `peak_rss_note` are optional strings. A `null` `cpus_per_eval` needs a
+  `reason`; a `null` `peak_rss_gb` needs a `reason` or `peak_rss_reason`.
+- `projected_node_throughput` (runtime records only): `basis: projected`
+  (the only accepted value; a projection is never a measurement), `status`
+  `projected` or `not_projected`, `per_call_s` (positive or `null`) with its
+  `per_call_source`, the `resources` keys echoed, `parallel_efficiency`
+  `{value in (0, 1], source[, kind]}` and `not_modelled` (a string or a list of
+  strings). `projected` names exactly one host and a `per_call_s`;
+  `not_projected` names no host and gives a `reason`.
+- A host is `{host, host_class, workers, bound_by, limits, calls_per_s}`.
+  `host_class` must equal the record's own: a per-call time is never projected
+  onto another machine. `limits` maps `cores`, `memory` and (for a `gpu` setup
+  only, and then required) `gpus` to positive integer worker caps; `bound_by`
+  names the smallest and equals `workers`; `calls_per_s` is finite and positive.
+
+Pulse checks shape and internal consistency only. It never recomputes a
+projection, and the board shows projected values marked **projected** with
+their η, its source and the bounding limit (see Board below). The reasoning behind the
+numbers, as decision rules for the autolens_assistant, is the knowledge page
+[Comparing CPU-parallel and GPU-batched setups](knowledge/cpu_parallel_vs_gpu_batched.md).
+
 **Board.** The setup browser's first selector is Class (Optimal by default,
 then Secondary, Experimental, All), then Likelihood (dataset type, variant),
 Instrument, Hardware class and Measurement. Only `current` rows show until
@@ -286,6 +316,16 @@ History is ticked, which adds `superseded` rows. Archived records appear only
 as a count. A Coverage panel lists optimal `planned_cells` with no current
 record. Research lookups read `class: optimal` + `status: current` unless asked
 otherwise. The v2 eligibility heuristics never apply to a v3 catalogue.
+
+A **View** selector (after History) switches the value column between **Per
+call (measured)**, the default, and **Per node (projected)**. Per node prints the
+producer's `projected_node_throughput` (calls/s, workers, bounding limit, host)
+with a **projected** badge; focusing or hovering the badge shows a tooltip with
+η, its source, the bounding limit and worker caps, the per-call basis and what
+is not modelled (Escape dismisses it). `not_projected` rows print the producer's
+reason; rows without the block print a dash. The default stays per call until
+phase 4 measures η, so a projection never headlines. The Markdown board adds a
+"Node throughput (projected)" column with the same marking.
 
 ## `walltime-validation` v1: full-fit evidence axis
 
@@ -453,6 +493,14 @@ Rectangular, MGE, KNN, MGE Mass, Sersic, then other families alphabetically.
 
 Sersic retains one plain menu entry when only unclassified latent tools exist;
 this does not assign a backend. Known Sersic variants replace that fallback.
+
+## Knowledge pages
+
+`knowledge/` holds reference pages written as decision rules that agents (the
+autolens_assistant first) read: the reasoning behind how a number should be
+compared, never a human decision. Decisions stay in `decisions/` with their
+`decisions.yaml` index. A knowledge page cites the producer's evidence at pinned
+commits and is linked from the board where its numbers appear.
 
 ## Decision History
 

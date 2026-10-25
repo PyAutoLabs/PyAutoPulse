@@ -94,6 +94,43 @@
       "evidence": {
         "path": "results/imaging/delaunay/imaging-delaunay-hst-a100-runtime.json",
         "fragment": "single_call"
+      },
+      "resources": {
+        "cpus_per_eval": 1,
+        "devices_per_eval": 1,
+        "peak_rss_gb": 10.7,
+        "peak_rss_basis": "row",
+        "source": "row"
+      },
+      "projected_node_throughput": {
+        "basis": "projected",
+        "status": "projected",
+        "per_call_s": 0.012,
+        "per_call_source": "vmap.per_call",
+        "cpus_per_eval": 1,
+        "devices_per_eval": 1,
+        "peak_rss_gb": 10.7,
+        "peak_rss_basis": "row",
+        "parallel_efficiency": {
+          "value": 1.0,
+          "kind": "upper bound",
+          "source": "declared, unmeasured (phase 4 measures)"
+        },
+        "not_modelled": "The sampler's batch ceiling (Nautilus n_batch) is not modelled.",
+        "hosts": [
+          {
+            "host": "ral_gpu_node",
+            "host_class": "hpc_a100",
+            "workers": 4,
+            "bound_by": "gpus",
+            "limits": {
+              "gpus": 4,
+              "cores": 124,
+              "memory": 82
+            },
+            "calls_per_s": 333.3
+          }
+        ]
       }
     },
     {
@@ -232,6 +269,13 @@
       "evidence": {
         "path": "results/imaging/delaunay/imaging-delaunay-hst-a100-breakdown.json",
         "fragment": "component_total"
+      },
+      "resources": {
+        "cpus_per_eval": 1,
+        "devices_per_eval": 1,
+        "peak_rss_gb": 10.7,
+        "peak_rss_basis": "row",
+        "source": "row"
       }
     },
     {
@@ -300,6 +344,43 @@
       "evidence": {
         "path": "results/imaging/delaunay/imaging-delaunay-hst-ral-runtime.json",
         "fragment": "single_call"
+      },
+      "resources": {
+        "cpus_per_eval": 1,
+        "devices_per_eval": 0,
+        "peak_rss_gb": 23.0,
+        "peak_rss_basis": "sacct_maxrss",
+        "source": "catalogue/peak_rss_backfill.json",
+        "sacct_job": "1_1"
+      },
+      "projected_node_throughput": {
+        "basis": "projected",
+        "status": "projected",
+        "per_call_s": 0.21,
+        "per_call_source": "warm_iid_median_s",
+        "cpus_per_eval": 1,
+        "devices_per_eval": 0,
+        "peak_rss_gb": 23.0,
+        "peak_rss_basis": "sacct_maxrss",
+        "parallel_efficiency": {
+          "value": 1.0,
+          "kind": "upper bound",
+          "source": "declared, unmeasured (phase 4 measures)"
+        },
+        "not_modelled": "The sampler's batch ceiling (Nautilus n_batch) is not modelled.",
+        "hosts": [
+          {
+            "host": "ral_cpu_node",
+            "host_class": "hpc_ral_cpu",
+            "workers": 40,
+            "bound_by": "memory",
+            "limits": {
+              "cores": 236,
+              "memory": 40
+            },
+            "calls_per_s": 190.5
+          }
+        ]
       }
     },
     {
@@ -436,6 +517,32 @@
       "evidence": {
         "path": "results/interferometer/mge/interferometer-mge-sma-ral-runtime.json",
         "fragment": "single_call"
+      },
+      "resources": {
+        "cpus_per_eval": 8,
+        "devices_per_eval": 0,
+        "peak_rss_gb": null,
+        "peak_rss_basis": null,
+        "peak_rss_reason": "sacct recorded no MaxRSS",
+        "source": "catalogue/peak_rss_backfill.json"
+      },
+      "projected_node_throughput": {
+        "basis": "projected",
+        "status": "not_projected",
+        "reason": "peak_rss_gb not recorded (sacct recorded no MaxRSS)",
+        "per_call_s": 0.4,
+        "per_call_source": "vmap.per_call",
+        "cpus_per_eval": 8,
+        "devices_per_eval": 0,
+        "peak_rss_gb": null,
+        "peak_rss_basis": null,
+        "parallel_efficiency": {
+          "value": 1.0,
+          "kind": "upper bound",
+          "source": "declared, unmeasured (phase 4 measures)"
+        },
+        "not_modelled": "The sampler's batch ceiling (Nautilus n_batch) is not modelled.",
+        "hosts": []
       }
     }
   ],

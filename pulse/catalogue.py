@@ -353,6 +353,187 @@ def _nullable_text(check, item, key, where):
     check.require(value is None or summary._text(value), f"{where}.{key}", "string or null")
 
 
+# ---- likelihood-lifecycle phase 2x: resources and projected node throughput ----
+# Optional on profiling-summary@3 records (additive; REFERENCE.md "Resources and
+# projected node throughput"). The producer declares them; Pulse checks their shape
+# and internal consistency only. It never recomputes a projection.
+NODE_LIMITS = {"cores", "memory", "gpus"}
+PROJECTION_STATUSES = {"projected", "not_projected"}
+
+
+def _positive(value):
+    return _finite(value) and value > 0
+
+
+def _positive_integer(value):
+    return _integer(value) and value > 0
+
+
+def _optional_text(check, block, key, where):
+    if key in block:
+        value = block[key]
+        check.require(value is None or summary._text(value), f"{where}.{key}", "string or null")
+
+
+def _per_eval(check, block, where):
+    """``cpus_per_eval``/``devices_per_eval``/``peak_rss_gb``: shared by both blocks."""
+    check.require("cpus_per_eval" in block, where, "missing cpus_per_eval (null when unknown)")
+    check.require(
+        block.get("cpus_per_eval") is None or _positive_integer(block["cpus_per_eval"]),
+        f"{where}.cpus_per_eval",
+        "must be a positive integer or null",
+    )
+    if "devices_per_eval" in block:
+        check.require(
+            block["devices_per_eval"] is None or _integer(block["devices_per_eval"]),
+            f"{where}.devices_per_eval",
+            "must be a non-negative integer or null",
+        )
+    check.require("peak_rss_gb" in block, where, "missing peak_rss_gb (null when unknown)")
+    check.require(
+        block.get("peak_rss_gb") is None or _positive(block["peak_rss_gb"]),
+        f"{where}.peak_rss_gb",
+        "must be a finite positive number (GB) or null",
+    )
+    _optional_text(check, block, "peak_rss_basis", where)
+
+
+def _resources(check, block, where):
+    """What one evaluation occupies, as the producer declared it."""
+    if not isinstance(block, dict):
+        check.errors.append(f"{where}: must be an object (omit the field when not declared)")
+        return
+    _per_eval(check, block, where)
+    check.require("source" in block, where, "missing source (null when no source exists)")
+    for key in ("source", "cpus_per_eval_basis", "peak_rss_note", "sacct_job"):
+        _optional_text(check, block, key, where)
+    for key in ("reason", "peak_rss_reason"):
+        if key in block:
+            check.text(block[key], f"{where}.{key}")
+    if block.get("cpus_per_eval") is None:
+        check.require(
+            summary._text(block.get("reason")), where, "cpus_per_eval is null without a reason"
+        )
+    if block.get("peak_rss_gb") is None:
+        check.require(
+            summary._text(block.get("reason")) or summary._text(block.get("peak_rss_reason")),
+            where,
+            "peak_rss_gb is null without a reason or peak_rss_reason",
+        )
+    _json_values(check, block, where)
+
+
+def _node_host(check, host, item, where):
+    check.text(host.get("host"), f"{where}.host")
+    check.require(
+        host.get("host_class") == item.get("host_class"),
+        f"{where}.host_class",
+        f"must be the record's own host_class {item.get('host_class')!r}: a per-call time is "
+        "never projected onto another machine",
+    )
+    limits = host.get("limits")
+    device = (
+        (item.get("setup") or {}).get("device") if isinstance(item.get("setup"), dict) else None
+    )
+    if not isinstance(limits, dict) or not limits:
+        check.errors.append(f"{where}.limits: must be a non-empty object of worker caps")
+        limits = {}
+    for key, value in limits.items():
+        check.choice(key, NODE_LIMITS, f"{where}.limits key")
+        check.require(
+            _positive_integer(value), f"{where}.limits.{key}", "must be a positive integer"
+        )
+    check.require(
+        ("gpus" in limits) == (device == "gpu"),
+        f"{where}.limits",
+        "a gpus limit belongs to a gpu setup only (and a gpu setup declares one)",
+    )
+    bound_by = host.get("bound_by")
+    check.choice(bound_by, NODE_LIMITS, f"{where}.bound_by")
+    workers = host.get("workers")
+    check.require(_positive_integer(workers), f"{where}.workers", "must be a positive integer")
+    if isinstance(bound_by, str) and limits and all(_positive_integer(v) for v in limits.values()):
+        check.require(
+            bound_by in limits and limits[bound_by] == workers and workers == min(limits.values()),
+            f"{where}.bound_by",
+            f"must name the smallest limit and equal workers (limits {limits}, workers "
+            f"{workers!r}, bound_by {bound_by!r})",
+        )
+    check.require(
+        _positive(host.get("calls_per_s")), f"{where}.calls_per_s", "must be finite and positive"
+    )
+
+
+def _node_throughput(check, block, item, where):
+    """``projected_node_throughput``: a projection the producer declares, never a measurement."""
+    if not isinstance(block, dict):
+        check.errors.append(f"{where}: must be an object (omit the field when not declared)")
+        return
+    check.require(
+        item.get("measurement") == "runtime",
+        where,
+        "only runtime records carry a node-throughput projection",
+    )
+    check.require(
+        block.get("basis") == "projected",
+        f"{where}.basis",
+        "must be 'projected' (a projection is never presented as a measurement)",
+    )
+    status = block.get("status")
+    check.choice(status, PROJECTION_STATUSES, f"{where}.status")
+    _per_eval(check, block, where)
+    per_call = block.get("per_call_s")
+    check.require(
+        per_call is None or _positive(per_call),
+        f"{where}.per_call_s",
+        "must be a finite positive number of seconds or null",
+    )
+    check.text(block.get("per_call_source"), f"{where}.per_call_source")
+    eta = block.get("parallel_efficiency")
+    if isinstance(eta, dict):
+        value = eta.get("value")
+        check.require(
+            _positive(value) and value <= 1,
+            f"{where}.parallel_efficiency.value",
+            "must be a number in (0, 1]",
+        )
+        check.text(eta.get("source"), f"{where}.parallel_efficiency.source")
+        _optional_text(check, eta, "kind", f"{where}.parallel_efficiency")
+    else:
+        check.errors.append(
+            f"{where}.parallel_efficiency: must be an object {{value, source[, kind]}}"
+        )
+    modelled = block.get("not_modelled")
+    check.require(
+        summary._text(modelled)
+        or (
+            isinstance(modelled, list)
+            and bool(modelled)
+            and all(summary._text(m) for m in modelled)
+        ),
+        f"{where}.not_modelled",
+        "must be a non-empty string or list of strings",
+    )
+    hosts = check.objects(block.get("hosts"), f"{where}.hosts")
+    if status == "projected":
+        check.require(
+            len(hosts) == 1 and len(block.get("hosts") or []) == 1,
+            f"{where}.hosts",
+            "a projected record names exactly one host (the class it was measured on)",
+        )
+        check.require(
+            per_call is not None, f"{where}.per_call_s", "a projected record needs per_call_s"
+        )
+        for i, host in enumerate(hosts):
+            _node_host(check, host, item, f"{where}.hosts[{i}]")
+    elif status == "not_projected":
+        check.require(
+            block.get("hosts") == [], f"{where}.hosts", "a not_projected record names no host"
+        )
+        check.text(block.get("reason"), f"{where}.reason")
+    _json_values(check, block, where)
+
+
 def _record_v3(check, item, ids):
     where = f"record {item['id']!r}"
     _cell_key_fields(check, item, where)
@@ -423,6 +604,12 @@ def _record_v3(check, item, ids):
         sha = fig.get("sha256")
         check.require(
             isinstance(sha, str) and bool(_SHA256.match(sha)), loc, "sha256 is not 64-hex"
+        )
+    if "resources" in item:
+        _resources(check, item["resources"], f"{where}.resources")
+    if "projected_node_throughput" in item:
+        _node_throughput(
+            check, item["projected_node_throughput"], item, f"{where}.projected_node_throughput"
         )
     _record_body(check, item, where)
 

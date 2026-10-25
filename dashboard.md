@@ -196,8 +196,10 @@ Choose a project, dataset and model on the interactive board.
 
 300 current · 379 superseded · 99 archived (counted, not shown). Class and status are the producer's declarations.
 
-| Likelihood | Instrument | Setup | Hardware class | Model variant | Measurement | Value (producer) | Decision |
-|---|---|---|---|---|---|---:|---|
+Per-node values are the producer's projections, never measurements: read [Comparing CPU-parallel and GPU-batched setups](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/knowledge/cpu_parallel_vs_gpu_batched.md) before comparing CPU and GPU setups.
+
+| Likelihood | Instrument | Setup | Hardware class | Model variant | Measurement | Value (producer) | Decision | Node throughput (projected) |
+|---|---|---|---|---|---|---:|---|---|
 
 Coverage: 47 optimal cell(s) not measured.
 

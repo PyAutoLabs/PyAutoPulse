@@ -381,3 +381,87 @@ def test_malformed_v3_fields_return_errors_not_exceptions(v3, value):
         target[path[-1]] = value
         outcome, errors = summary.classify(changed)
         assert outcome in ("ok", "invalid", "unsupported"), (path, outcome, errors)
+
+
+# ------------------- v3 resources and projected node throughput (phase 2x) ---
+
+PNT = "projected_node_throughput"
+
+
+def test_resources_and_node_throughput_are_optional_and_additive(v3):
+    assert summary.classify(v3, V3) == ("ok", [])
+    for record in v3["records"]:
+        record.pop("resources", None)
+        record.pop(PNT, None)
+    assert summary.classify(v3, V3) == ("ok", [])
+
+
+@pytest.mark.parametrize(
+    "path,value,needle",
+    [
+        ((0, "resources"), [], "resources: must be an object"),
+        ((0, "resources", "cpus_per_eval"), 0, "cpus_per_eval"),
+        ((0, "resources", "cpus_per_eval"), 1.5, "cpus_per_eval"),
+        ((0, "resources", "cpus_per_eval"), None, "cpus_per_eval is null without a reason"),
+        ((0, "resources", "devices_per_eval"), -1, "devices_per_eval"),
+        ((0, "resources", "peak_rss_gb"), -2.0, "peak_rss_gb"),
+        ((0, "resources", "peak_rss_gb"), float("nan"), "peak_rss_gb"),
+        ((0, "resources", "peak_rss_gb"), None, "peak_rss_gb is null without a reason"),
+        ((0, "resources", "source"), "", "resources.source"),
+        ((5, "resources", "peak_rss_reason"), "", "peak_rss_reason"),
+        ((0, PNT), "248 calls/s", "projected_node_throughput: must be an object"),
+        ((0, PNT, "basis"), "measured", "must be 'projected'"),
+        ((0, PNT, "status"), "estimated", "status"),
+        ((0, PNT, "per_call_s"), 0, "per_call_s"),
+        ((0, PNT, "per_call_s"), None, "a projected record needs per_call_s"),
+        ((0, PNT, "per_call_source"), None, "per_call_source"),
+        ((0, PNT, "parallel_efficiency"), 1.0, "parallel_efficiency: must be an object"),
+        ((0, PNT, "parallel_efficiency", "value"), 1.2, "in (0, 1]"),
+        ((0, PNT, "parallel_efficiency", "value"), 0, "in (0, 1]"),
+        ((0, PNT, "parallel_efficiency", "source"), "", "parallel_efficiency.source"),
+        ((0, PNT, "not_modelled"), [], "not_modelled"),
+        ((0, PNT, "not_modelled"), None, "not_modelled"),
+        ((0, PNT, "hosts"), [], "exactly one host"),
+        ((0, PNT, "hosts", 0, "host_class"), "hpc_ral_cpu", "never projected onto another"),
+        ((0, PNT, "hosts", 0, "workers"), 0, "workers"),
+        ((0, PNT, "hosts", 0, "workers"), 82, "must name the smallest limit"),
+        ((0, PNT, "hosts", 0, "bound_by"), "memory", "must name the smallest limit"),
+        ((0, PNT, "hosts", 0, "bound_by"), "bandwidth", "bound_by"),
+        ((0, PNT, "hosts", 0, "limits"), {}, "limits"),
+        ((0, PNT, "hosts", 0, "limits", "disk"), 9, "limits key"),
+        ((0, PNT, "hosts", 0, "limits", "cores"), 0, "limits.cores"),
+        ((3, PNT, "hosts", 0, "limits", "gpus"), 4, "a gpus limit belongs to a gpu setup"),
+        ((0, PNT, "hosts", 0, "calls_per_s"), float("inf"), "calls_per_s"),
+        ((0, PNT, "hosts", 0, "calls_per_s"), None, "calls_per_s"),
+        ((5, PNT, "reason"), None, "projected_node_throughput.reason"),
+        ((5, PNT, "hosts"), [{"host": "x"}], "a not_projected record names no host"),
+    ],
+)
+def test_malformed_node_throughput_blocks_are_refused(v3, path, value, needle):
+    target = v3["records"]
+    for key in path[:-1]:
+        target = target[key]
+    target[path[-1]] = value
+    outcome, errors = summary.classify(v3, V3)
+    assert outcome == "invalid"
+    assert any(needle in e for e in errors), errors
+
+
+def test_node_throughput_only_on_runtime_records(v3):
+    v3["records"][2][PNT] = copy.deepcopy(v3["records"][0][PNT])
+    errors = summary.validate(v3)
+    assert any("only runtime records carry" in e for e in errors), errors
+
+
+def test_gpu_projection_must_declare_its_gpu_limit(v3):
+    v3["records"][0][PNT]["hosts"][0]["limits"].pop("gpus")
+    v3["records"][0][PNT]["hosts"][0].update(bound_by="memory", workers=82)
+    errors = summary.validate(v3)
+    assert any("a gpus limit belongs to a gpu setup" in e for e in errors), errors
+
+
+def test_unknown_resources_carry_a_reason(v3):
+    resources = v3["records"][0]["resources"]
+    resources.update(cpus_per_eval=None, peak_rss_gb=None, source=None)
+    resources["reason"] = "The row predates the resources block and has no backfill entry."
+    assert summary.classify(v3, V3) == ("ok", [])

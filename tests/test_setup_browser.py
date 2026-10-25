@@ -150,3 +150,73 @@ def test_v3_bypasses_the_v2_payload_and_heuristics():
     assert "setup-payload" not in page and "data-lifecycle" in page
     v2 = setup_browser.render(capture())
     assert "data-lifecycle" not in v2 and "setup-payload" in v2
+
+
+# ------------------------- v3 per-call ↔ per-node view (phase 2x, Pulse#76) ---
+
+
+def test_v3_view_defaults_to_per_call_and_per_node_is_hidden():
+    page = setup_browser.render(lifecycle_capture())
+    view = re.search(r"<select[^>]*data-view>(.*?)</select>", page, re.S)[1]
+    assert re.findall(r'<option value="([a-z_]+)"( selected)?>', view) == [
+        ("per_call", " selected"),
+        ("per_node", ""),
+    ]
+    for value in re.findall(r"<span data-view-value='per_node'( hidden)?>", page):
+        assert value == " hidden"
+    assert "<span data-view-value='per_call'>" in page
+
+
+def test_v3_projected_values_are_marked_with_their_basis():
+    page = setup_browser.render(lifecycle_capture())
+    row = re.search(r'<tr data-record="imaging-delaunay-hst-ral-runtime".*?</tr>', page, re.S)[0]
+    assert "190.5 calls/s · 40 workers (memory-bound) on ral_cpu_node" in row
+    badge = re.search(r"class='projected-badge' tabindex='0' aria-describedby='([^']+)'", row)
+    tip = re.search(rf"role='tooltip' id='{badge[1]}'>(.*?)</span>", row)[1]
+    for needle in (
+        "Projected, not measured",
+        "η (parallel efficiency) 1 (upper bound)",
+        "source: declared, unmeasured (phase 4 measures)",
+        "Bound by memory (worker caps: cores 236, memory 40)",
+        "warm_iid_median_s",
+        "Not modelled: The sampler",
+    ):
+        assert needle in tip, (needle, tip)
+    # Every badge id is unique on the page.
+    ids = re.findall(r"aria-describedby='([^']+)'", page)
+    assert len(ids) == len(set(ids)) == 2
+
+
+def test_v3_not_projected_and_absent_blocks_say_so():
+    page = setup_browser.render(lifecycle_capture())
+    sma = re.search(r'<tr data-record="interferometer-mge-sma-ral-runtime".*?</tr>', page, re.S)[0]
+    assert "not projected: peak_rss_gb not recorded" in sma and "projected-badge" not in sma
+    breakdown = re.search(
+        r'<tr data-record="imaging-delaunay-hst-a100-breakdown".*?</tr>', page, re.S
+    )[0]
+    assert "no node projection declared" not in breakdown
+    assert "projected-badge" not in breakdown
+
+
+def test_v3_markdown_marks_projections():
+    lines = "\n".join(setup_browser.markdown(lifecycle_capture()))
+    assert "Node throughput (projected)" in lines
+    assert (
+        "333.3 calls/s · 4 workers (gpus-bound) on ral_gpu_node — *projected*, η 1 "
+        "(declared, unmeasured (phase 4 measures))" in lines
+    )
+
+
+def test_v3_links_the_knowledge_page_from_the_browser_and_markdown():
+    from pulse import ORGAN_ROOT
+
+    assert setup_browser.KNOWLEDGE_URL.endswith(
+        "/blob/main/knowledge/cpu_parallel_vs_gpu_batched.md"
+    )
+    page_path = ORGAN_ROOT / "knowledge/cpu_parallel_vs_gpu_batched.md"
+    assert page_path.read_text().startswith(f"# {setup_browser.KNOWLEDGE_TITLE}\n")
+    page = setup_browser.render(lifecycle_capture())
+    link = re.search(r'data-id="knowledge-link">(.*?)</p>', page, re.S)[1]
+    assert f'href="{setup_browser.KNOWLEDGE_URL}"' in link and 'target="_blank"' in link
+    markdown = "\n".join(setup_browser.markdown(lifecycle_capture()))
+    assert f"[{setup_browser.KNOWLEDGE_TITLE}]({setup_browser.KNOWLEDGE_URL})" in markdown

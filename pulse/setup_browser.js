@@ -33,6 +33,25 @@
     for (const control of [...filters, history])
       control.addEventListener("change", apply);
     apply();
+    // Per call (measured, the default) <-> per node (the producer's projection).
+    // Only swaps which server-rendered value shows; nothing is computed here.
+    const view = root.querySelector("select[data-view]");
+    const swap = () => {
+      root.dataset.view = view.value;
+      for (const el of root.querySelectorAll("[data-view-value]"))
+        el.hidden = el.dataset.viewValue !== view.value;
+    };
+    view.addEventListener("change", swap);
+    swap();
+    // Escape dismisses a focused or hovered "projected" tooltip (WCAG 1.4.13).
+    for (const badge of root.querySelectorAll(".projected-badge")) {
+      const wrap = badge.parentElement;
+      badge.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") wrap.classList.add("dismissed");
+      });
+      for (const type of ["blur", "mouseleave"])
+        wrap.addEventListener(type, () => wrap.classList.remove("dismissed"), true);
+    }
   }
   for (const root of document.querySelectorAll("[data-setup-browser]")) {
     if (root.hasAttribute("data-lifecycle")) {
