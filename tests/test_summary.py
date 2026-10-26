@@ -191,6 +191,14 @@ def test_walltime_validation_is_accepted_and_pulse_computes_nothing():
         (lambda d: d["records"].append(copy.deepcopy(d["records"][0])), "duplicate id"),
         (lambda d: d.pop("producer_revision"), "producer_revision"),
         (lambda d: d.update(generated_at="2026-10-21"), "generated_at"),
+        (lambda d: d["records"][0].update(implied_s_per_eval="slow"), "implied_s_per_eval"),
+        (lambda d: d["records"][0].update(profiling_per_call_s=math.nan), "profiling_per_call_s"),
+        (lambda d: d["records"][0].update(profiling_record_id=7), "profiling_record_id"),
+        (lambda d: d["records"][0].update(profiling_unmatched_reason=""), "unmatched_reason"),
+        (lambda d: d["records"][0].update(profiling_status=["current"]), "profiling_status"),
+        (lambda d: d["records"][0].update(size_match="yes"), "size_match"),
+        (lambda d: d["records"][0].update(source_pixels=-4), "source_pixels"),
+        (lambda d: d["records"][0].update(profiling_source_pixels=1.5), "profiling_source_pixels"),
     ],
 )
 def test_walltime_contract_breaks_are_named(mutation, needle):
@@ -206,4 +214,22 @@ def test_null_derived_numbers_are_allowed_when_not_measured():
     doc["records"][0].update(
         predicted_ms_per_eval=None, ratio_measured_over_predicted=None, parallel_efficiency=None
     )
+    assert summary.classify(doc, WALL) == ("ok", [])
+
+
+def test_profiling_join_fields_are_optional_and_nullable():
+    doc = fixture_doc("walltime_validation_v1.json")
+    for field in (
+        "implied_s_per_eval",
+        "profiling_per_call_s",
+        "profiling_record_id",
+        "profiling_unmatched_reason",
+        "profiling_per_call_source",
+        "profiling_status",
+        "size_match",
+        "source_pixels",
+        "profiling_source_pixels",
+    ):
+        doc["records"][0][field] = None
+        doc["records"][1].pop(field, None)
     assert summary.classify(doc, WALL) == ("ok", [])

@@ -353,9 +353,18 @@ example; validation is stdlib-only in `pulse/walltime.py`.
   `release_pin`, `slurm_job_id`: string or `null`.
 - `parity_status` ∈ `match | diverged | not_assessed`.
 
+Additive optional fields (still `@1`; absent is valid, present they are
+type-checked): the producer's join of the run to a profiling runtime record —
+`implied_s_per_eval` and `profiling_per_call_s` (finite number or `null`);
+`profiling_record_id` (the matched `profiling-summary@3` record id),
+`profiling_unmatched_reason`, `profiling_per_call_source`, `profiling_status`
+(string or `null`); `size_match` (boolean or `null`: whether the run's source
+pixels equal the profiling record's size bin); `source_pixels`,
+`profiling_source_pixels` (non-negative integer or `null`).
+
 Every derived number is computed and declared by the producer. Pulse renders
-the records as their own table under Profiling Results and computes nothing;
-the instance has no qualification flag, so it raises no "unqualified" item.
+the records under **Inference Timings** and computes nothing (see Board); the
+instance has no qualification flag, so it raises no "unqualified" item.
 
 ## Ingest
 
