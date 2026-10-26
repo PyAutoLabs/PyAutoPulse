@@ -537,22 +537,28 @@ def _evidence_dir(record) -> str | None:
     return path.rsplit("/", 1)[0] if isinstance(path, str) and "/" in path else None
 
 
+def _day(record) -> str | None:
+    stamp = record.get("measured_at")
+    return stamp[:10] if isinstance(stamp, str) and len(stamp) >= 10 else None
+
+
 def tied_siblings(record, siblings) -> list[dict]:
     """The sibling records the detail page shows beside a runtime row.
 
     A current row shows the current records of its cell. A superseded row shows
     only superseded records tied to the same run: the same ``run_id``, or evidence
-    in the same producer results directory (one run's runtime/breakdown/compile
-    files). Nothing is tied by date.
+    in the same producer results directory measured on the same UTC calendar date
+    (a directory alone can hold several runs). Nothing is tied by date proximity.
     """
     others = [r for r in siblings if r is not record and r.get("status") == record.get("status")]
     if record.get("status") != "superseded":
         return others
-    home = _evidence_dir(record)
+    home, day = _evidence_dir(record), _day(record)
     return [
         r
         for r in others
-        if r.get("run_id") == record.get("run_id") or (home and _evidence_dir(r) == home)
+        if r.get("run_id") == record.get("run_id")
+        or (home and _evidence_dir(r) == home and day and _day(r) == day)
     ]
 
 

@@ -359,13 +359,14 @@ def test_a_raw_key_is_dropped_only_as_the_unambiguous_twin_of_one_step():
 
 
 def test_superseded_pages_show_only_siblings_tied_to_the_same_run():
-    def rec(rid, measurement, status, run, path):
+    def rec(rid, measurement, status, run, path, day="2026-09-08"):
         return {
             "id": rid,
             "measurement": measurement,
             "status": status,
             "run_id": run,
             "evidence": {"path": path},
+            "measured_at": f"{day}T00:00:00Z",
         }
 
     row = rec("r", "runtime", "superseded", "run-a", "results/x/exp1/runtime.json")
@@ -381,3 +382,21 @@ def test_superseded_pages_show_only_siblings_tied_to_the_same_run():
     old = _article(pages, "imaging-delaunay-hst-a100-runtime-old")
     assert "No sibling measurements tied to this run" in old
     assert "No sibling measurements" not in _article(pages, "imaging-delaunay-hst-a100-runtime")
+
+
+def test_a_shared_directory_ties_only_records_from_the_same_day():
+    def rec(rid, measurement, run, day):
+        return {
+            "id": rid,
+            "measurement": measurement,
+            "status": "superseded",
+            "run_id": run,
+            "evidence": {"path": f"results/x/history/{measurement}.json"},
+            "measured_at": f"{day}T00:00:00Z",
+        }
+
+    row = rec("r", "runtime", "run-a", "2026-09-08")
+    same_day = rec("b1", "breakdown", "run-b", "2026-09-08")
+    older = rec("b2", "breakdown", "run-c", "2026-07-11")
+    assert setup_browser.tied_siblings(row, [row, same_day, older]) == [same_day]
+    assert setup_browser.tied_siblings(row, [row, older]) == []
