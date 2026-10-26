@@ -3,15 +3,15 @@
   "organ": "pulse",
   "repo": "PyAutoPulse",
   "status": "yellow",
-  "headline": "3 projects · 766 records · 0 cached",
-  "updated": "2026-10-25T18:24:33Z",
+  "headline": "3 projects · 770 records · 0 cached",
+  "updated": "2026-10-26T14:37:44Z",
   "pages_url": "https://pyautolabs.github.io/PyAutoPulse/",
   "items": [
     {
       "id": "pulse:lens:unqualified",
       "severity": "yellow",
       "state": "unknown",
-      "text": "lens: 679 of 679 records unqualified (producer provenance flags)",
+      "text": "lens: 683 of 683 records unqualified (producer provenance flags)",
       "url": "https://pyautolabs.github.io/autolens_profiling/",
       "prompt": null,
       "actions": [
@@ -27,7 +27,7 @@
     {
       "id": "pulse:lens:census",
       "severity": "info",
-      "text": "lens: 679 records · 0 comparisons · 8 limitations · 0 qualified · 300 current · 379 superseded · 99 archived (producer-declared)",
+      "text": "lens: 683 records · 0 comparisons · 10 limitations · 0 qualified · 302 current · 381 superseded · 99 archived (producer-declared)",
       "url": "https://pyautolabs.github.io/autolens_profiling/",
       "prompt": null
     },
