@@ -246,8 +246,8 @@ def test_v3_status_lines_carry_lifecycle_counts():
     assert board.lifecycle(s) == expected
     md = board.render_markdown([s], NOW, campaign_data={"campaigns": [], "tasks": []})
     assert f"- **Lifecycle:** {expected}" in md
-    assert "optimal, current setups" in md
-    assert "imaging/delaunay | hst | `jax_gpu_dense_fp64`" in md
+    assert "current runtime setups" in md
+    assert "| imaging | delaunay | hst | standard | `jax_gpu_dense` |" in md
     assert "imaging-delaunay-hst-a100-runtime-old" not in md
     assert "Coverage: 1 optimal cell(s) not measured." in md
     state = board.render_state([s], updated=NOW, now=NOW)

@@ -336,17 +336,80 @@ button.retry {
   padding: 0.35rem 0.45rem;
   vertical-align: top;
 }
+/* Headers never wrap; times are right-aligned, bold and tabular. */
+.lifecycle-table th {
+  white-space: nowrap;
+}
+.lifecycle-table .num {
+  text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.lifecycle-table td.num b {
+  font-weight: 700;
+}
+.lifecycle-table .open {
+  position: relative;
+  width: 1.6rem;
+  text-align: center;
+}
+.row-open {
+  display: inline-block;
+  min-width: 1.6rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1;
+  text-decoration: none;
+}
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+.table-tools {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.35rem;
+  margin: 0.2rem 0 0.6rem;
+}
+.tally {
+  color: var(--ok);
+  font-weight: 700;
+  font-size: 0.8rem;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  padding: 0.1rem 0.6rem;
+  white-space: nowrap;
+}
+.history-toggle {
+  font-size: 0.85rem;
+}
+.extra-info {
+  margin: 1.2rem 0 0.3rem;
+  font-size: 0.9rem;
+}
+.size-badge {
+  display: inline-block;
+  margin-left: 0.3rem;
+  padding: 0 0.35rem;
+  border: 1px dashed var(--warn);
+  border-radius: 999px;
+  color: var(--warn);
+  font-size: 0.7rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: help;
+}
 .lifecycle-coverage {
   margin: 1rem 0;
 }
 .lifecycle-coverage summary {
   cursor: pointer;
   font-weight: 600;
-}
-/* Per-node view: the producer's projection, visibly marked and never headline. */
-.lifecycle-browser .view-note {
-  color: var(--muted);
-  font-size: 0.85rem;
 }
 .projected-wrap {
   position: relative;

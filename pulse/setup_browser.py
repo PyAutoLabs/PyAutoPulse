@@ -1,10 +1,12 @@
 """Render setup navigation from captured v2/v3 evidence; never select scientific truth.
 
-A v3 (lifecycle) catalogue renders a Class-first browser: Class (Optimal by
-default) → Likelihood (dataset type → variant) → Instrument → Hardware class →
-Measurement, showing ``status: current`` rows unless History is ticked. The
-producer declares class and status; the board ranks nothing, picks no fastest
-row and shows archived records only as a count.
+A v3 (lifecycle) catalogue renders a runtime-only table: filters Class (All by
+default) → Dataset type → Model → Instrument → Hardware class, one row per
+``runtime`` record showing ``status: current`` rows unless History is ticked.
+Runtime s is the producer's vmap per-call time and Est. 12-core s its
+``estimated_12_core`` value (numba CPU only), both rounded for display; each row
+opens a detail page. The producer declares class and status; the board ranks
+nothing, picks no fastest row and shows archived records only as a count.
 """
 
 from __future__ import annotations
@@ -14,7 +16,7 @@ import importlib.util
 import json
 import os
 from pathlib import Path
-from urllib.parse import quote
+from urllib.parse import quote, urlencode
 
 from pulse import ORGAN_ROOT, catalogue
 
@@ -42,19 +44,25 @@ def assets():
 
 
 CLASS_OPTIONS = (
+    ("all", "All"),
     ("optimal", "Optimal"),
     ("secondary", "Secondary"),
     ("experimental", "Experimental"),
-    ("all", "All"),
 )
 # The selector order after Class; each is a data-* attribute on every row.
 FILTERS = (
-    ("dataset_type", "Likelihood"),
-    ("variant", "Variant"),
+    ("dataset_type", "Dataset type"),
+    ("variant", "Model"),
     ("instrument", "Instrument"),
     ("host_class", "Hardware class"),
-    ("measurement", "Measurement"),
 )
+PRECISIONS = ("fp64", "fp32", "fp16", "bf16", "mixed")
+PNT = "projected_node_throughput"
+KNOWLEDGE_URL = (
+    "https://github.com/PyAutoLabs/PyAutoPulse/blob/main/knowledge/cpu_parallel_vs_gpu_batched.md"
+)
+KNOWLEDGE_TITLE = "Comparing CPU-parallel and GPU-batched setups"
+DP = 5  # display rounding of every per-call time (presentation only)
 
 
 def lifecycle(doc) -> bool:
@@ -70,13 +78,39 @@ def _row_fields(record):
         "variant": likelihood.get("variant"),
         "instrument": record.get("instrument"),
         "host_class": record.get("host_class"),
-        "measurement": record.get("measurement"),
     }
 
 
+def precision(setup_id) -> str | None:
+    """The precision token a setup id carries (``fp64``, ``fp32``, ``mixed``…), if any."""
+    return next((t for t in str(setup_id or "").split("_") if t in PRECISIONS), None)
+
+
+def setup_label(setup_id) -> str:
+    """The setup id without its precision token: ``jax_gpu_sparse_fp64`` → ``jax_gpu_sparse``."""
+    return "_".join(t for t in str(setup_id or "").split("_") if t not in PRECISIONS)
+
+
+def variant_label(model_variant, setup_id) -> str:
+    """The model variant, with a non-fp64 precision appended (``default+mixed``)."""
+    p = precision(setup_id)
+    return str(model_variant) if p in (None, "fp64") else f"{model_variant}+{p}"
+
+
+def runtime_rows(doc) -> list[dict]:
+    """The v3 ``runtime`` records the table shows (current, and superseded with History)."""
+    return [
+        r
+        for r in (doc or {}).get("records") or []
+        if isinstance(r, dict)
+        and r.get("measurement") == "runtime"
+        and r.get("status") in ("current", "superseded")
+    ]
+
+
 def default_visible(record) -> bool:
-    """The default view: Optimal class, current status, no other filter."""
-    return record.get("class") == "optimal" and record.get("status") == "current"
+    """The default view: every class, current status, no other filter."""
+    return record.get("status") == "current"
 
 
 def not_measured(doc) -> list[dict]:
@@ -100,34 +134,36 @@ def _cell_label(cell):
     )
 
 
-def _value(record):
-    values = record.get("values") or {}
-    metric = record.get("metric")
-    return f"{values.get(metric)} {record.get('unit')} ({metric})"
+def _real(value) -> bool:
+    return isinstance(value, int | float) and not isinstance(value, bool)
 
 
-# Per-call (measured, the default) ↔ per-node (the producer's projection). The
-# default stays per-call until phase 4 measures η, so a projection never headlines.
-VIEW_OPTIONS = (
-    ("per_call", "Per call (measured)"),
-    ("per_node", "Per node (projected)"),
-)
-PNT = "projected_node_throughput"
-KNOWLEDGE_URL = (
-    "https://github.com/PyAutoLabs/PyAutoPulse/blob/main/knowledge/cpu_parallel_vs_gpu_batched.md"
-)
-KNOWLEDGE_TITLE = "Comparing CPU-parallel and GPU-batched setups"
+def fixed(value, dp: int = DP) -> str | None:
+    """``value`` rounded to ``dp`` decimal places for display, else None."""
+    return f"{value:.{dp}f}" if _real(value) else None
+
+
+def runtime_s(record):
+    """The producer's vmap per-call time (``projected_node_throughput.per_call_s``)."""
+    block = record.get(PNT)
+    return block.get("per_call_s") if isinstance(block, dict) else None
+
+
+def twelve_core_s(record):
+    """The producer's ``estimated_12_core.value_s`` (numba CPU records only)."""
+    block = record.get("estimated_12_core")
+    return block.get("value_s") if isinstance(block, dict) else None
 
 
 def _number(value):
-    return f"{value:g}" if isinstance(value, int | float) and not isinstance(value, bool) else "?"
+    return f"{value:g}" if _real(value) else "?"
 
 
 def node_throughput(record):
     """``(kind, text, detail)`` for the producer's declared projection, never computed here.
 
     ``kind`` is ``projected``, ``not_projected`` or ``None`` (no block declared).
-    ``detail`` is the tooltip text: η, its source, the bounding limit, the per-call
+    ``detail`` is the explanation: η, its source, the bounding limit, the per-call
     basis and what is not modelled.
     """
     block = record.get(PNT)
@@ -155,79 +191,109 @@ def node_throughput(record):
     return "projected", text, detail
 
 
-def _node_cell(record, tip_id, e):
-    kind, text, detail = node_throughput(record)
-    if kind == "projected":
-        return (
-            f"{e(text)} <span class='projected-wrap'><span class='projected-badge' tabindex='0' "
-            f"aria-describedby='{e(tip_id)}'>projected</span><span class='projected-tip' "
-            f"role='tooltip' id='{e(tip_id)}'>{e(detail)}</span></span>"
+def _e(value) -> str:
+    return html.escape(str(value), quote=True)
+
+
+def time_cell(value, title: str, missing: str) -> str:
+    """A bold, right-aligned 5-DP time cell; the exact value stays in the tooltip."""
+    shown = fixed(value)
+    if shown is None:
+        return f"<td class='num'><span class='muted' title='{_e(missing)}'>—</span></td>"
+    return f"<td class='num'><b title='{_e(f'{value} s · {title}')}'>{shown}</b></td>"
+
+
+def detail_href(view: str, instance: str, record_id: str) -> str:
+    """The same-page route of one detail page (``?view=setup|run&instance=&record=``)."""
+    return "?" + urlencode({"view": view, "instance": instance, "record": record_id})
+
+
+def open_link(view: str, instance: str, record_id: str, label: str) -> str:
+    return (
+        f'<td class="open"><a class="row-open" data-detail-link '
+        f'href="{_e(detail_href(view, instance, record_id))}" '
+        f'aria-label="{_e(label)}" title="{_e(label)}">›</a></td>'
+    )
+
+
+def selectors(instance_key: str, keys, values_of, with_class: bool) -> str:
+    """The filter buttons over server-rendered rows (shared by both timing tables)."""
+    fields = []
+    if with_class:
+        fields.append(
+            f'<label for="lifecycle-{_e(instance_key)}-class">Class'
+            f'<select id="lifecycle-{_e(instance_key)}-class" data-filter="class">'
+            + "".join(
+                f'<option value="{v}"{" selected" if v == "all" else ""}>{t}</option>'
+                for v, t in CLASS_OPTIONS
+            )
+            + "</select></label>"
         )
-    return f"<span class='muted'>{e(text)}</span>" if kind else "<span class='muted'>—</span>"
+    for key, title in keys:
+        fields.append(
+            f'<label for="lifecycle-{_e(instance_key)}-{key}">{title}'
+            f'<select id="lifecycle-{_e(instance_key)}-{key}" data-filter="{key}">'
+            '<option value="" selected>All</option>'
+            + "".join(f'<option value="{_e(v)}">{_e(v)}</option>' for v in values_of(key))
+            + "</select></label>"
+        )
+    return f'<div class="selectors lifecycle-selectors">{"".join(fields)}</div>'
+
+
+def tally(count: int, history: bool) -> str:
+    """The green results tally, top right, above History when there is one."""
+    noun = "result" if count == 1 else "results"
+    tip = "Current results (superseded excluded)" if history else "Results in this table"
+    return (
+        f'<div class="table-tools"><span class="tally" data-id="tally" title="{tip}">'
+        f"{count} {noun}</span>"
+        + (
+            '<label class="history-toggle"><input type="checkbox" data-filter="history"> '
+            "History (include superseded)</label>"
+            if history
+            else ""
+        )
+        + "</div>"
+    )
 
 
 def _render_lifecycle(snapshot):
     doc = snapshot.doc
     instance = snapshot.instance
-    e = lambda v: html.escape(str(v), quote=True)  # noqa: E731
-    records = [r for r in doc.get("records") or [] if isinstance(r, dict)]
-    counts = catalogue.lifecycle_counts(doc)
-    fields = [
-        f'<label for="lifecycle-{e(instance.instance)}-class">Class'
-        f'<select id="lifecycle-{e(instance.instance)}-class" data-filter="class">'
-        + "".join(
-            f'<option value="{v}"{" selected" if v == "optimal" else ""}>{t}</option>'
-            for v, t in CLASS_OPTIONS
-        )
-        + "</select></label>"
-    ]
-    for key, title in FILTERS:
-        values = sorted({str(_row_fields(r)[key]) for r in records})
-        fields.append(
-            f'<label for="lifecycle-{e(instance.instance)}-{key}">{title}'
-            f'<select id="lifecycle-{e(instance.instance)}-{key}" data-filter="{key}">'
-            '<option value="" selected>All</option>'
-            + "".join(f'<option value="{e(v)}">{e(v)}</option>' for v in values)
-            + "</select></label>"
-        )
-    fields.append(
-        '<label class="history-toggle"><input type="checkbox" data-filter="history"> '
-        "History (include superseded)</label>"
-    )
-    fields.append(
-        f'<label for="lifecycle-{e(instance.instance)}-view">View'
-        f'<select id="lifecycle-{e(instance.instance)}-view" data-view>'
-        + "".join(
-            f'<option value="{v}"{" selected" if v == "per_call" else ""}>{t}</option>'
-            for v, t in VIEW_OPTIONS
-        )
-        + "</select></label>"
+    e = _e
+    records = runtime_rows(doc)
+    filters = selectors(
+        instance.instance,
+        FILTERS,
+        lambda key: sorted({str(_row_fields(r)[key]) for r in records}),
+        with_class=True,
     )
     rows = []
-    for n, r in enumerate(records):
+    for r in records:
         attrs = "".join(f' data-{k.replace("_", "-")}="{e(v)}"' for k, v in _row_fields(r).items())
         hidden = "" if default_visible(r) else " hidden"
-        ev = r.get("evidence") or {}
-        links = []
-        if ev.get("path"):
-            url = instance.blob_url(snapshot.commit, quote(ev["path"], safe="/"))
-            links.append(f'<a href="{e(url)}">evidence</a>')
-        for fig in r.get("figures") or []:
-            url = instance.blob_url(snapshot.commit, quote(fig["path"], safe="/"))
-            links.append(f'<a href="{e(url)}">{e(fig["kind"])} figure</a>')
         likelihood = r.get("likelihood") or {}
+        block = r.get(PNT) if isinstance(r.get(PNT), dict) else {}
         rows.append(
             f'<tr data-record="{e(r.get("id"))}"{attrs}{hidden}>'
-            f"<td>{e(likelihood.get('dataset_type'))}/{e(likelihood.get('variant'))}</td>"
+            f"<td>{e(likelihood.get('dataset_type'))}</td><td>{e(likelihood.get('variant'))}</td>"
             f"<td>{e(r.get('instrument'))}</td><td>{e(r.get('regime'))}</td>"
-            f"<td><code>{e(r.get('setup_id'))}</code></td><td>{e(r.get('host_class'))}</td>"
-            f"<td>{e(r.get('model_variant'))}</td><td>{e(r.get('measurement'))}</td>"
-            f"<td class='num'><span data-view-value='per_call'>{e(_value(r))}</span>"
-            f"<span data-view-value='per_node' hidden>"
-            f"{_node_cell(r, f'pnt-{instance.instance}-{n}', e)}</span></td>"
-            f"<td>{e(r.get('class'))}</td>"
-            f"<td>{e(r.get('status'))}</td><td>{e(r.get('decision_id') or '—')}</td>"
-            f"<td>{' · '.join(links) or '—'}</td></tr>"
+            f"<td><code>{e(setup_label(r.get('setup_id')))}</code></td>"
+            f"<td>{e(r.get('host_class'))}</td>"
+            f"<td>{e(variant_label(r.get('model_variant'), r.get('setup_id')))}</td>"
+            + time_cell(
+                runtime_s(r),
+                f"per call, {block.get('per_call_source') or 'source not declared'}",
+                "no vmap per-call time declared",
+            )
+            + time_cell(
+                twelve_core_s(r),
+                "producer estimate at 12 cores",
+                "numba CPU setups only",
+            )
+            + f"<td>{e(r.get('class'))}</td>"
+            + open_link("setup", instance.instance, r.get("id"), "Open this setup's details")
+            + "</tr>"
         )
     visible = sum(default_visible(r) for r in records)
     missing = not_measured(doc)
@@ -241,34 +307,23 @@ def _render_lifecycle(snapshot):
         )
         + "</details>"
     )
-    label = instance.repo.removesuffix("_profiling").replace("autolens", "PyAutoLens")
     return (
         f'<section class="setup-browser lifecycle-browser" data-setup-browser="{e(instance.instance)}" '
         f'data-lifecycle aria-label="{e(instance.repo)} setups">'
-        f"<h3>{e(label)}: setups by class</h3>"
-        f'<div class="selectors lifecycle-selectors">{"".join(fields)}</div>'
-        f'<p data-id="lifecycle-counts">{counts["current"]} current · {counts["superseded"]} '
-        f"superseded (shown with History) · {counts['archived']} archived (counted, not shown). "
-        "Class and status are the producer's declarations; this board ranks nothing.</p>"
-        '<p class="view-note" data-view-value="per_node" data-id="view-note" hidden>'
-        "Per node shows the producer's <b>projected</b> calls per second on the host class "
-        "each row was measured on: workers capped by cores ÷ CPUs per evaluation and memory "
-        "÷ peak RSS (one per GPU), times a declared parallel efficiency η, over the per-call "
-        "time. η is not yet measured, so these are upper bounds; focus a <b>projected</b> "
-        "badge for its basis. Never compare GPU and CPU setups on per-call latency alone.</p>"
-        f'<p class="view-note" data-id="knowledge-link">Read: <a href="{KNOWLEDGE_URL}" '
-        f'target="_blank" rel="noopener" title="Opens in a new tab">{KNOWLEDGE_TITLE}</a> (decision rules, not a '
-        "decision).</p>"
-        '<div class="tablewrap"><table class="lifecycle-table"><thead><tr><th>Likelihood</th>'
-        "<th>Instrument</th><th>Regime</th><th>Setup</th><th>Hardware class</th>"
-        "<th>Model variant</th><th>Measurement</th><th>"
-        "<span data-view-value='per_call'>Value (producer)</span>"
-        "<span data-view-value='per_node' hidden>Node throughput (producer projection)</span>"
-        "</th><th>Class</th>"
-        "<th>Status</th><th>Decision</th><th>Evidence</th></tr></thead>"
-        f"<tbody>{''.join(rows)}</tbody></table></div>"
+        + filters
+        + tally(visible, history=True)
+        + '<div class="tablewrap"><table class="lifecycle-table"><thead><tr><th>Dataset type</th>'
+        "<th>Model</th><th>Instrument</th><th>Regime</th><th>Setup</th><th>Hardware class</th>"
+        "<th>Model variant</th><th class='num'>Runtime s</th><th class='num'>Est. 12-core s</th>"
+        "<th>Class</th><th class='open'><span class='visually-hidden'>Details</span></th>"
+        f"</tr></thead><tbody>{''.join(rows)}</tbody></table></div>"
         f'<p class="empty" data-id="no-rows"{" hidden" if visible else ""}>'
-        "No record matches this selection.</p>" + coverage + "</section>"
+        "No record matches this selection.</p>"
+        + coverage
+        + '<h4 class="extra-info">Extra Information</h4>'
+        f'<p data-id="knowledge-link"><a href="{KNOWLEDGE_URL}" target="_blank" rel="noopener" '
+        f'title="Opens in a new tab">{KNOWLEDGE_TITLE}</a></p>'
+        "</section>"
     )
 
 
@@ -314,49 +369,40 @@ def render(snapshot):
     )
 
 
-def _node_markdown(record):
-    kind, text, detail = node_throughput(record)
-    if kind == "projected":
-        block = record[PNT]
-        eta = block.get("parallel_efficiency") or {}
-        return f"{text} — *projected*, η {_number(eta.get('value'))} ({eta.get('source')})"
-    return text if kind else "—"
+def _md_time(value) -> str:
+    shown = fixed(value)
+    return f"**{shown}**" if shown is not None else "—"
 
 
 def _markdown_lifecycle(snapshot):
     doc = snapshot.doc
-    counts = catalogue.lifecycle_counts(doc)
     name = snapshot.instance.repo.removesuffix("_profiling")
+    current = [r for r in runtime_rows(doc) if default_visible(r)]
     lines = [
-        f"<details><summary>{html.escape(name)} — optimal, current setups</summary>",
+        f"<details><summary>{html.escape(name)} — current runtime setups</summary>",
         "",
         f"[Interactive setup browser]({snapshot.instance.dashboard_url})",
         "",
-        f"{counts['current']} current · {counts['superseded']} superseded · "
-        f"{counts['archived']} archived (counted, not shown). Class and status are the "
-        "producer's declarations.",
+        f"{len(current)} current result{'' if len(current) == 1 else 's'}.",
         "",
-        f"Per-node values are the producer's projections, never measurements: read "
-        f"[{KNOWLEDGE_TITLE}]({KNOWLEDGE_URL}) before comparing CPU and GPU setups.",
-        "",
-        "| Likelihood | Instrument | Setup | Hardware class | Model variant | Measurement "
-        "| Value (producer) | Decision | Node throughput (projected) |",
-        "|---|---|---|---|---|---|---:|---|---|",
+        "| Dataset type | Model | Instrument | Regime | Setup | Hardware class | Model variant "
+        "| Runtime s | Est. 12-core s | Class |",
+        "|---|---|---|---|---|---|---|---:|---:|---|",
     ]
     esc = lambda v: html.escape(str(v)).replace("|", "\\|")  # noqa: E731
-    for r in doc.get("records") or []:
-        if not default_visible(r):
-            continue
+    for r in current:
         likelihood = r.get("likelihood") or {}
         lines.append(
-            f"| {esc(likelihood.get('dataset_type'))}/{esc(likelihood.get('variant'))} "
-            f"| {esc(r.get('instrument'))} | `{esc(r.get('setup_id'))}` | {esc(r.get('host_class'))} "
-            f"| {esc(r.get('model_variant'))} | {esc(r.get('measurement'))} | {esc(_value(r))} "
-            f"| {esc(r.get('decision_id'))} | {esc(_node_markdown(r))} |"
+            f"| {esc(likelihood.get('dataset_type'))} | {esc(likelihood.get('variant'))} "
+            f"| {esc(r.get('instrument'))} | {esc(r.get('regime'))} "
+            f"| `{esc(setup_label(r.get('setup_id')))}` | {esc(r.get('host_class'))} "
+            f"| {esc(variant_label(r.get('model_variant'), r.get('setup_id')))} "
+            f"| {_md_time(runtime_s(r))} | {_md_time(twelve_core_s(r))} | {esc(r.get('class'))} |"
         )
     missing = not_measured(doc)
     lines += ["", f"Coverage: {len(missing)} optimal cell(s) not measured.", ""]
     lines += [f"- {esc(_cell_label(c))}" for c in missing]
+    lines += ["", "#### Extra Information", "", f"[{KNOWLEDGE_TITLE}]({KNOWLEDGE_URL})"]
     lines += ["", "</details>", ""]
     return lines
 

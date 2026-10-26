@@ -624,38 +624,41 @@ const { execFileSync } = require("node:child_process");
         ),
       );
     }
-    // profiling-summary@3: Class first, Optimal + current by default,
-    // superseded rows only with History, archived never rendered.
+    // profiling-summary@3: a runtime-only table. Class first (All by default),
+    // current rows only until History, archived never rendered.
     await page.setViewportSize({ width: 1280, height: 1000 });
     await page.goto(base + "/lifecycle.html");
-    const life = page.locator("[data-lifecycle]");
-    await life.evaluate((el) => {
-      for (let p = el.parentElement; p; p = p.parentElement)
-        if (p.tagName === "DETAILS") p.open = true;
-    });
+    const life = page.locator("[data-lifecycle][data-setup-browser='lens']");
+    const openGroups = (target) =>
+      target.evaluate((el) => {
+        for (let p = el.parentElement; p; p = p.parentElement)
+          if (p.tagName === "DETAILS") p.open = true;
+      });
+    await openGroups(life);
     const firstSelect = life.locator("select").first();
     assert.equal(await firstSelect.getAttribute("data-filter"), "class");
-    assert.equal(await firstSelect.inputValue(), "optimal");
+    assert.equal(await firstSelect.inputValue(), "all");
     assert.deepEqual(
       await life
         .locator(".lifecycle-selectors > label")
         .evaluateAll((els) => els.map((e) => e.firstChild.textContent.trim())),
-      [
-        "Class",
-        "Likelihood",
-        "Variant",
-        "Instrument",
-        "Hardware class",
-        "Measurement",
-        "",
-        "View",
-      ],
+      ["Class", "Dataset type", "Model", "Instrument", "Hardware class"],
     );
     const row = (id) => life.locator(`tr[data-record="${id}"]`);
     const old = row("imaging-delaunay-hst-a100-runtime-old");
     assert(await row("imaging-delaunay-hst-a100-runtime").isVisible());
+    assert(await row("imaging-delaunay-hst-ral-runtime").isVisible());
     assert(!(await old.isVisible()));
-    assert(!(await row("imaging-delaunay-hst-ral-runtime").isVisible()));
+    // The green tally sits top right, above History.
+    const tally = life.locator('[data-id="tally"]');
+    assert(await tally.isVisible());
+    assert.equal(await tally.textContent(), "4 results");
+    const tallyBox = await tally.boundingBox();
+    const historyBox = await life.locator(".history-toggle").boundingBox();
+    assert(tallyBox.y + tallyBox.height <= historyBox.y + 1);
+    assert(
+      Math.abs(tallyBox.x + tallyBox.width - (historyBox.x + historyBox.width)) < 2,
+    );
     await life.locator('input[data-filter="history"]').check();
     assert(await old.isVisible());
     await life.locator('input[data-filter="history"]').uncheck();
@@ -666,64 +669,36 @@ const { execFileSync } = require("node:child_process");
     await firstSelect.selectOption("all");
     await life.locator('select[data-filter="instrument"]').selectOption("sma");
     assert.equal(await life.locator("tr[data-record]:visible").count(), 1);
-    await life.locator('select[data-filter="measurement"]').selectOption("breakdown");
+    await life.locator('select[data-filter="variant"]').selectOption("delaunay");
     assert(await life.locator('[data-id="no-rows"]').isVisible());
+    await life.locator('select[data-filter="instrument"]').selectOption("");
+    await life.locator('select[data-filter="variant"]').selectOption("");
     assert.equal(await life.locator('tr[data-status="archived"]').count(), 0);
     assert(
       (await life.locator('[data-id="coverage"] summary').textContent()).includes(
         "1 optimal cell not measured",
       ),
     );
-    // Per call (measured) by default; per node shows the producer's projection,
-    // visibly marked, with η/source/bound in a keyboard-reachable tooltip.
-    await life.locator('select[data-filter="instrument"]').selectOption("");
-    await life.locator('select[data-filter="measurement"]').selectOption("");
     const knowledge = life.locator('[data-id="knowledge-link"] a');
     assert(await knowledge.isVisible());
     assert.equal(await knowledge.getAttribute("target"), "_blank");
-    const view = life.locator("select[data-view]");
-    assert.equal(await view.inputValue(), "per_call");
-    const ral = row("imaging-delaunay-hst-ral-runtime");
-    const perCall = ral.locator('[data-view-value="per_call"]');
-    const perNode = ral.locator('[data-view-value="per_node"]');
-    assert(await perCall.isVisible());
-    assert(!(await perNode.isVisible()));
-    assert(!(await life.locator('[data-id="view-note"]').isVisible()));
-    await life.locator('input[data-filter="history"]').focus();
-    await page.keyboard.press("Tab");
-    assert.equal(
-      await page.evaluate(() => document.activeElement.hasAttribute("data-view")),
-      true,
-    );
-    await view.selectOption("per_node");
-    assert(!(await perCall.isVisible()));
-    assert(await perNode.isVisible());
-    assert(await life.locator('[data-id="view-note"]').isVisible());
+    // Bold 5-DP runtime; headers on one line (no "Likeliho- od").
+    const runtime = row("imaging-delaunay-hst-ral-runtime").locator("td.num b").first();
+    assert.equal(await runtime.textContent(), "0.21000");
     assert(
-      (await perNode.textContent()).includes(
-        "190.5 calls/s · 40 workers (memory-bound)",
-      ),
+      Number(await runtime.evaluate((el) => getComputedStyle(el).fontWeight)) >= 700,
     );
-    assert(
-      (
-        await row("interferometer-mge-sma-ral-runtime")
-          .locator('[data-view-value="per_node"]')
-          .textContent()
-      ).startsWith("not projected:"),
-    );
-    const badge = perNode.locator(".projected-badge");
-    const tip = perNode.locator(".projected-tip");
-    assert.equal(await badge.textContent(), "projected");
-    assert(!(await tip.isVisible()));
-    await badge.focus();
-    assert(await tip.isVisible());
-    assert.equal(
-      await badge.evaluate((el) =>
-        document.getElementById(el.getAttribute("aria-describedby")).getAttribute("role"),
-      ),
-      "tooltip",
-    );
-    assert((await tip.textContent()).includes("Bound by memory"));
+    const oneLine = async (table) =>
+      table.locator("th").evaluateAll((ths) =>
+        ths.every((th) => {
+          const line = parseFloat(getComputedStyle(th).lineHeight) || 20;
+          const pad =
+            parseFloat(getComputedStyle(th).paddingTop) +
+            parseFloat(getComputedStyle(th).paddingBottom);
+          return th.getBoundingClientRect().height - pad < line * 1.6;
+        }),
+      );
+    assert(await oneLine(life.locator("table")));
     for (const width of [390, 1280]) {
       await page.setViewportSize({ width, height: 1000 });
       assert(
@@ -732,18 +707,7 @@ const { execFileSync } = require("node:child_process");
         ),
       );
     }
-    await page.keyboard.press("Escape");
-    assert(!(await tip.isVisible()));
-    const badgeColor = () =>
-      badge.evaluate((el) => getComputedStyle(el).color);
-    await page.emulateMedia({ colorScheme: "light" });
-    assert.equal(await badgeColor(), "rgb(154, 103, 0)");
-    await page.emulateMedia({ colorScheme: "dark" });
-    assert.equal(await badgeColor(), "rgb(210, 153, 34)");
-    await page.emulateMedia({ colorScheme: "light" });
-    await view.selectOption("per_call");
-    assert(await perCall.isVisible());
-    assert(!(await perNode.isVisible()));
+    await page.setViewportSize({ width: 1280, height: 1000 });
     assert.equal(await page.locator('[data-walltime="walltime"]').count(), 1);
     for (const width of [390, 1280]) {
       await page.setViewportSize({ width, height: 1000 });

@@ -381,6 +381,15 @@
             "calls_per_s": 190.5
           }
         ]
+      },
+      "estimated_12_core": {
+        "basis": "estimate",
+        "cores": 12,
+        "divisor": 6,
+        "per_call_s": 0.21,
+        "per_call_source": "warm_iid_median_s",
+        "ruling": "fixture",
+        "value_s": 0.035
       }
     },
     {

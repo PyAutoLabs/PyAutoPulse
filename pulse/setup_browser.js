@@ -2,8 +2,10 @@
  * Consumes captured producer data only. No cross-setup joins or scientific judgement. */
 (() => {
   "use strict";
-  // profiling-summary@3: the producer declares class and status. Filtering only
-  // shows or hides server-rendered rows; nothing is ranked, joined or chosen.
+  // Server-rendered timing tables (profiling-summary@3 runtime rows and the
+  // walltime-validation runs). Filtering only shows or hides rows; nothing is
+  // ranked, joined or chosen. Rows without data-status (inference runs) and
+  // tables without a History checkbox are handled the same way.
   function lifecycle(root) {
     const filters = [...root.querySelectorAll("select[data-filter]")];
     const history = root.querySelector('input[data-filter="history"]');
@@ -14,8 +16,9 @@
       for (const row of rows) {
         const status = row.getAttribute("data-status");
         const visible =
-          (status === "current" ||
-            (history.checked && status === "superseded")) &&
+          (status === null ||
+            status === "current" ||
+            (history && history.checked && status === "superseded")) &&
           filters.every((select) => {
             const key = select.dataset.filter;
             const value = select.value;
@@ -28,30 +31,11 @@
         row.hidden = !visible;
         if (visible) shown += 1;
       }
-      empty.hidden = shown > 0;
+      if (empty) empty.hidden = shown > 0;
     }
-    for (const control of [...filters, history])
+    for (const control of [...filters, history].filter(Boolean))
       control.addEventListener("change", apply);
     apply();
-    // Per call (measured, the default) <-> per node (the producer's projection).
-    // Only swaps which server-rendered value shows; nothing is computed here.
-    const view = root.querySelector("select[data-view]");
-    const swap = () => {
-      root.dataset.view = view.value;
-      for (const el of root.querySelectorAll("[data-view-value]"))
-        el.hidden = el.dataset.viewValue !== view.value;
-    };
-    view.addEventListener("change", swap);
-    swap();
-    // Escape dismisses a focused or hovered "projected" tooltip (WCAG 1.4.13).
-    for (const badge of root.querySelectorAll(".projected-badge")) {
-      const wrap = badge.parentElement;
-      badge.addEventListener("keydown", (event) => {
-        if (event.key === "Escape") wrap.classList.add("dismissed");
-      });
-      for (const type of ["blur", "mouseleave"])
-        wrap.addEventListener(type, () => wrap.classList.remove("dismissed"), true);
-    }
   }
   for (const root of document.querySelectorAll("[data-setup-browser]")) {
     if (root.hasAttribute("data-lifecycle")) {
