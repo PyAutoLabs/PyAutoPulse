@@ -105,7 +105,7 @@ def lifecycle_capture():
     return replace(snapshot, doc=fixture_doc("setup_summary_v3.json"))
 
 
-def test_v3_first_select_is_class_with_optimal_selected():
+def test_v3_first_select_is_class_with_all_selected():
     page = setup_browser.render(lifecycle_capture())
     selects = re.findall(r"<select[^>]*data-filter=\"([a-z_]+)\"[^>]*>(.*?)</select>", page, re.S)
     assert [key for key, _ in selects] == [
@@ -114,27 +114,88 @@ def test_v3_first_select_is_class_with_optimal_selected():
         "variant",
         "instrument",
         "host_class",
-        "measurement",
     ]
     options = re.findall(r'<option value="([a-z]+)"( selected)?>', selects[0][1])
     assert options == [
-        ("optimal", " selected"),
+        ("all", " selected"),
+        ("optimal", ""),
         ("secondary", ""),
         ("experimental", ""),
-        ("all", ""),
     ]
     assert 'data-filter="history"' in page and "checked" not in page
+    assert "data-view" not in page and "Measurement" not in page
 
 
-def test_v3_superseded_rows_hidden_until_history_and_archived_never_rendered():
+def test_v3_table_is_runtime_only_with_the_human_columns():
     page = setup_browser.render(lifecycle_capture())
+    head = re.findall(r'<span class="th-name">([^<]*)</span>', page)
+    units = re.findall(r'<span class="th-unit">([^<]*)</span>', page)
+    assert units[:10] == ["&nbsp;"] * 7 + ["(s)", "(s)", "&nbsp;"]
+    assert head[:10] == [
+        "Dataset type",
+        "Model",
+        "Instrument",
+        "Source size",
+        "Setup",
+        "Hardware class",
+        "Lens light",
+        "Runtime",
+        "Est. 12 CPU",
+        "Class",
+    ]
     rows = dict(re.findall(r'<tr data-record="([^"]+)"[^>]*?( hidden)?>', page))
+    assert "imaging-delaunay-hst-a100-breakdown" not in rows  # runtime only
     assert rows["imaging-delaunay-hst-a100-runtime"] == ""
-    assert rows["imaging-delaunay-hst-a100-runtime-old"] == " hidden"
-    assert rows["imaging-delaunay-hst-ral-runtime"] == " hidden"  # secondary
-    assert rows["imaging-delaunay-hst-a100-mixed"] == " hidden"  # experimental
-    assert "3 archived (counted, not shown)" in page
+    assert rows["imaging-delaunay-hst-ral-runtime"] == ""  # default class: All
+    assert rows["imaging-delaunay-hst-a100-mixed"] == ""
+    assert rows["imaging-delaunay-hst-a100-runtime-old"] == " hidden"  # superseded
     assert 'data-status="archived"' not in page
+
+
+def _row(page, rid):
+    return re.search(rf'<tr data-record="{rid}".*?</tr>', page, re.S)[0]
+
+
+def test_v3_runtime_is_the_producer_vmap_per_call_in_bold_5dp():
+    doc = lifecycle_capture().doc
+    ral = next(r for r in doc["records"] if r["id"] == "imaging-delaunay-hst-ral-runtime")
+    page = setup_browser.render(lifecycle_capture())
+    row = _row(page, "imaging-delaunay-hst-ral-runtime")
+    cells = re.findall(r"<td class='num'>(.*?)</td>", row)
+    expected = f"{ral['projected_node_throughput']['per_call_s']:.5f}"
+    assert f">{expected}</b>" in cells[0]
+    assert f">{ral['estimated_12_core']['value_s']:.5f}</b>" in cells[1]
+    assert "single_jit" not in row and "(single_call)" not in row
+    a100 = _row(page, "imaging-delaunay-hst-a100-runtime")
+    assert "numba CPU setups only" in re.findall(r"<td class='num'>(.*?)</td>", a100)[1]
+
+
+def test_v3_setup_drops_precision_only_and_precision_becomes_a_variant():
+    assert setup_browser.setup_label("jax_gpu_sparse_fp64") == "jax_gpu_sparse"
+    assert setup_browser.setup_label("numba_cpu_sparse_fp64_wtilde") == "numba_cpu_sparse_wtilde"
+    assert setup_browser.setup_label("jax_gpu_sparse_mixed_wtilde") == "jax_gpu_sparse_wtilde"
+    assert setup_browser.variant_label("default", "jax_gpu_dense_fp64") == "default"
+    assert setup_browser.variant_label("default", "jax_gpu_dense_mixed") == "default · mixed"
+    assert setup_browser.variant_label("light_fixed", "x_fp32") == "light_fixed · fp32"
+    page = setup_browser.render(lifecycle_capture())
+    mixed = _row(page, "imaging-delaunay-hst-a100-mixed")
+    assert "<code>jax_gpu_dense</code>" in mixed and ">default · mixed</td>" in mixed
+
+
+def test_v3_tally_counts_current_results_and_clutter_is_gone():
+    page = setup_browser.render(lifecycle_capture())
+    tally = re.search(r'data-id="tally"[^>]*>([^<]*)<', page)[1]
+    assert tally == "4 results"
+    assert page.index('data-id="tally"') < page.index('data-filter="history"')
+    for clutter in ("superseded (shown with History)", "ranks nothing", "decision rules"):
+        assert clutter not in page
+
+
+def test_v3_every_row_opens_its_detail_page():
+    page = setup_browser.render(lifecycle_capture())
+    row = _row(page, "imaging-delaunay-hst-a100-runtime")
+    href = re.search(r'class="row-open" data-detail-link href="([^"]+)"', row)[1]
+    assert href == "?view=setup&amp;instance=lens&amp;record=imaging-delaunay-hst-a100-runtime"
 
 
 def test_v3_coverage_lists_optimal_cells_without_a_current_record():
@@ -152,62 +213,31 @@ def test_v3_bypasses_the_v2_payload_and_heuristics():
     assert "data-lifecycle" not in v2 and "setup-payload" in v2
 
 
-# ------------------------- v3 per-call ↔ per-node view (phase 2x, Pulse#76) ---
-
-
-def test_v3_view_defaults_to_per_call_and_per_node_is_hidden():
-    page = setup_browser.render(lifecycle_capture())
-    view = re.search(r"<select[^>]*data-view>(.*?)</select>", page, re.S)[1]
-    assert re.findall(r'<option value="([a-z_]+)"( selected)?>', view) == [
-        ("per_call", " selected"),
-        ("per_node", ""),
-    ]
-    for value in re.findall(r"<span data-view-value='per_node'( hidden)?>", page):
-        assert value == " hidden"
-    assert "<span data-view-value='per_call'>" in page
-
-
-def test_v3_projected_values_are_marked_with_their_basis():
-    page = setup_browser.render(lifecycle_capture())
-    row = re.search(r'<tr data-record="imaging-delaunay-hst-ral-runtime".*?</tr>', page, re.S)[0]
-    assert "190.5 calls/s · 40 workers (memory-bound) on ral_cpu_node" in row
-    badge = re.search(r"class='projected-badge' tabindex='0' aria-describedby='([^']+)'", row)
-    tip = re.search(rf"role='tooltip' id='{badge[1]}'>(.*?)</span>", row)[1]
+def test_v3_node_throughput_is_described_with_its_basis():
+    doc = lifecycle_capture().doc
+    ral = next(r for r in doc["records"] if r["id"] == "imaging-delaunay-hst-ral-runtime")
+    kind, text, detail = setup_browser.node_throughput(ral)
+    assert kind == "projected"
+    assert text == "190.5 calls/s · 40 workers (memory-bound) on ral_cpu_node"
     for needle in (
         "Projected, not measured",
         "η (parallel efficiency) 1 (upper bound)",
-        "source: declared, unmeasured (phase 4 measures)",
         "Bound by memory (worker caps: cores 236, memory 40)",
         "warm_iid_median_s",
-        "Not modelled: The sampler",
     ):
-        assert needle in tip, (needle, tip)
-    # Every badge id is unique on the page.
-    ids = re.findall(r"aria-describedby='([^']+)'", page)
-    assert len(ids) == len(set(ids)) == 2
+        assert needle in detail, (needle, detail)
+    sma = next(r for r in doc["records"] if r["id"] == "interferometer-mge-sma-ral-runtime")
+    assert setup_browser.node_throughput(sma)[1].startswith("not projected: peak_rss_gb not")
 
 
-def test_v3_not_projected_and_absent_blocks_say_so():
-    page = setup_browser.render(lifecycle_capture())
-    sma = re.search(r'<tr data-record="interferometer-mge-sma-ral-runtime".*?</tr>', page, re.S)[0]
-    assert "not projected: peak_rss_gb not recorded" in sma and "projected-badge" not in sma
-    breakdown = re.search(
-        r'<tr data-record="imaging-delaunay-hst-a100-breakdown".*?</tr>', page, re.S
-    )[0]
-    assert "no node projection declared" not in breakdown
-    assert "projected-badge" not in breakdown
-
-
-def test_v3_markdown_marks_projections():
+def test_v3_markdown_shows_the_runtime_table():
     lines = "\n".join(setup_browser.markdown(lifecycle_capture()))
-    assert "Node throughput (projected)" in lines
-    assert (
-        "333.3 calls/s · 4 workers (gpus-bound) on ral_gpu_node — *projected*, η 1 "
-        "(declared, unmeasured (phase 4 measures))" in lines
-    )
+    assert "| Runtime (s) | Est. 12 CPU (s) | Class |" in lines
+    assert "| imaging | delaunay | hst | standard | `jax_gpu_dense` | hpc_a100 | default |" in lines
+    assert "imaging-delaunay-hst-a100-runtime-old" not in lines
 
 
-def test_v3_links_the_knowledge_page_from_the_browser_and_markdown():
+def test_v3_links_the_knowledge_page_under_extra_information():
     from pulse import ORGAN_ROOT
 
     assert setup_browser.KNOWLEDGE_URL.endswith(
@@ -216,7 +246,191 @@ def test_v3_links_the_knowledge_page_from_the_browser_and_markdown():
     page_path = ORGAN_ROOT / "knowledge/cpu_parallel_vs_gpu_batched.md"
     assert page_path.read_text().startswith(f"# {setup_browser.KNOWLEDGE_TITLE}\n")
     page = setup_browser.render(lifecycle_capture())
+    assert page.index("Extra Information") < page.index('data-id="knowledge-link"')
     link = re.search(r'data-id="knowledge-link">(.*?)</p>', page, re.S)[1]
     assert f'href="{setup_browser.KNOWLEDGE_URL}"' in link and 'target="_blank"' in link
+    assert f">{setup_browser.KNOWLEDGE_TITLE}</a>" in link
     markdown = "\n".join(setup_browser.markdown(lifecycle_capture()))
     assert f"[{setup_browser.KNOWLEDGE_TITLE}]({setup_browser.KNOWLEDGE_URL})" in markdown
+
+
+# ------------------------------------------- v3: per-row detail pages ---
+
+
+def _article(pages, rid):
+    return re.search(
+        rf'<article class="detail-page"[^>]*data-record="{rid}".*?</article>', pages, re.S
+    )[0]
+
+
+def test_v3_detail_page_per_runtime_row_restores_the_full_breakdown():
+    pages = setup_browser.detail_pages(lifecycle_capture(), "#profiling-pyautolens", "PyAutoLens")
+    ids = re.findall(r'<article class="detail-page"[^>]*data-record="([^"]+)"', pages)
+    assert sorted(ids) == sorted(
+        r["id"] for r in setup_browser.runtime_rows(lifecycle_capture().doc)
+    )
+    assert pages.count("<article") == pages.count(" hidden>")
+    a100 = _article(pages, "imaging-delaunay-hst-a100-runtime")
+    assert (
+        "<h2>PyAutoLens / imaging / delaunay / hst / jax_gpu_dense / hpc_a100 / default</h2>"
+        in a100
+    )
+    breakdown = re.search(r'data-axis="breakdown".*?</details>', a100, re.S)[0]
+    for metric in ("component_total", "mapping", "inversion"):
+        assert f"data-metric='{metric}'" in breakdown
+    assert "width:100.0%" in breakdown  # component_total is the scale
+    assert 'href="#profiling-pyautolens"' in a100 and "← Profiling Timings" in a100
+    # History lists the superseded runtime on the same key as a link to its own page.
+    history = re.search(r'data-axis="history".*?</details>', a100, re.S)[0]
+    assert "record=imaging-delaunay-hst-a100-runtime-old" in history
+    assert "(this page)" in history
+
+
+def test_v3_detail_page_carries_twelve_core_node_throughput_and_status():
+    pages = setup_browser.detail_pages(lifecycle_capture(), "#x", "PyAutoLens")
+    ral = _article(pages, "imaging-delaunay-hst-ral-runtime")
+    assert "Est. 12 CPU" in ral and "0.03500 s" in ral
+    assert "190.5 calls/s · 40 workers (memory-bound) on ral_cpu_node" in ral
+    assert "projected-badge" in ral and "Projected, not measured" in ral
+    for label in ("Class", "Status", "Decision", "Configuration", "Evidence"):
+        assert label in ral
+    assert "single_call" in ral
+    # The superseded page shows only superseded siblings (none here), never current ones.
+    old = _article(pages, "imaging-delaunay-hst-a100-runtime-old")
+    assert "data-metric='mapping'" not in old
+
+
+def test_v3_detail_pages_sit_in_the_hidden_route_container():
+    page = board.render_html([lifecycle_capture()], campaign_data={"campaigns": [], "tasks": []})
+    container = page.index('id="detail-pages"')
+    assert container < page.index('id="profiling-timings"')
+    assert 'id="detail-pages" hidden' in page and 'id="detail-route-status"' in page
+    assert setup_browser.page_ids(lifecycle_capture()) >= {"imaging-delaunay-hst-a100-runtime"}
+
+
+def test_rows_are_ordered_by_likelihood_instrument_setup_hardware_variant():
+    rows = setup_browser.runtime_rows(lifecycle_capture().doc)
+    keys = [setup_browser.row_order(r) for r in rows]
+    assert keys == sorted(keys)
+    assert rows[0]["likelihood"]["dataset_type"] == "imaging"
+    assert rows[-1]["likelihood"]["dataset_type"] == "interferometer"
+
+
+def test_setup_label_drops_an_na_operator_token():
+    assert setup_browser.setup_label("jax_cpu_na_fp64") == "jax_cpu"
+    assert setup_browser.setup_label("jax_gpu_na_fp64") == "jax_gpu"
+
+
+def test_breakdown_shows_one_entry_per_labelled_step():
+    record = {
+        "status": "current",
+        "unit": "s",
+        "values": {
+            "component_total": 0.1,
+            "steps.Regularized reconstruction": 0.03,
+            "reconstruction_jit.steady_per_call_s": 0.03,
+            "steps.Curvature matrix (F)": 0.05,
+            "curvature_matrix_sparse_jit.steady_per_call_s": 0.05,
+            "interpolator_prefix": 0.008,
+        },
+    }
+    panel = setup_browser._metric_panel([record], "Likelihood breakdown", "breakdown")
+    main, rest = panel.split("data-id='recorded-keys'")
+    assert "data-metric='steps.Regularized reconstruction'" in main
+    assert "reconstruction_jit" not in panel and "curvature_matrix_sparse_jit" not in panel
+    assert "data-metric='interpolator_prefix'" in rest and "interpolator_prefix" not in main
+    assert "All recorded keys (1 without a labelled step)" in rest
+    assert "width:30.0%" in main  # scaled to component_total
+
+
+def test_a_raw_key_is_dropped_only_as_the_unambiguous_twin_of_one_step():
+    values = {
+        "component_total": 1.0,
+        "steps.Data vector (D)": 0.2,
+        "data_vector_jit.steady_per_call_s": 0.2,  # the one twin
+        "steps.Lens light images": 0.0,
+        "psf_weighted_data_jit.steady_per_call_s": 0.0,  # unrelated, same value
+        "steps.Ray-trace mesh grid": 0.3,
+        "ray_trace_mesh_jit.steady_per_call_s": 0.3,
+        "ray_trace_mesh_prefix": 0.3,  # several raw keys share 0.3: ambiguous
+        "steps.Curvature matrix (F)": 0.4,
+        "steps.Regularization matrix (H)": 0.4,  # several steps share 0.4
+        "curvature_matrix_jit.steady_per_call_s": 0.4,
+    }
+    assert setup_browser.step_twins(values) == {"data_vector_jit.steady_per_call_s"}
+
+
+def test_superseded_pages_show_only_siblings_tied_to_the_same_run():
+    def rec(rid, measurement, status, run, path, day="2026-09-08"):
+        return {
+            "id": rid,
+            "measurement": measurement,
+            "status": status,
+            "run_id": run,
+            "evidence": {"path": path},
+            "measured_at": f"{day}T00:00:00Z",
+        }
+
+    row = rec("r", "runtime", "superseded", "run-a", "results/x/exp1/runtime.json")
+    same_dir = rec("b1", "breakdown", "superseded", "run-b", "results/x/exp1/breakdown.json")
+    same_run = rec("c1", "compile", "superseded", "run-a", "results/x/exp1/runtime.json")
+    other = rec("b2", "breakdown", "superseded", "run-c", "results/x/exp2/breakdown.json")
+    current = rec("b3", "breakdown", "current", "run-d", "results/x/breakdown.json")
+    siblings = [row, same_dir, same_run, other, current]
+    assert setup_browser.tied_siblings(row, siblings) == [same_dir, same_run]
+    now = rec("n", "runtime", "current", "run-e", "results/x/runtime.json")
+    assert setup_browser.tied_siblings(now, [now, current, other]) == [current]
+    pages = setup_browser.detail_pages(lifecycle_capture(), "#x", "PyAutoLens")
+    old = _article(pages, "imaging-delaunay-hst-a100-runtime-old")
+    assert "No sibling measurements tied to this run" in old
+    assert "No sibling measurements" not in _article(pages, "imaging-delaunay-hst-a100-runtime")
+
+
+def test_a_shared_directory_ties_only_records_from_the_same_day():
+    def rec(rid, measurement, run, day):
+        return {
+            "id": rid,
+            "measurement": measurement,
+            "status": "superseded",
+            "run_id": run,
+            "evidence": {"path": f"results/x/history/{measurement}.json"},
+            "measured_at": f"{day}T00:00:00Z",
+        }
+
+    row = rec("r", "runtime", "run-a", "2026-09-08")
+    same_day = rec("b1", "breakdown", "run-b", "2026-09-08")
+    older = rec("b2", "breakdown", "run-c", "2026-07-11")
+    assert setup_browser.tied_siblings(row, [row, same_day, older]) == [same_day]
+    assert setup_browser.tied_siblings(row, [row, older]) == []
+
+
+def test_constant_columns_are_hidden_server_side_with_a_caption():
+    snapshot = lifecycle_capture()
+    # Keep only current rows sharing one source size, lens light and class.
+    snapshot.doc["records"] = [
+        r
+        for r in snapshot.doc["records"]
+        if r["id"] in ("imaging-delaunay-hst-a100-runtime", "imaging-delaunay-hst-a100-runtime-old")
+    ] + [
+        dict(r, **{"class": "optimal"})
+        for r in snapshot.doc["records"]
+        if r["id"] == "imaging-delaunay-hst-ral-runtime"
+    ]
+    page = setup_browser.render(snapshot)
+    caption = re.search(r'data-id="constant-caption">([^<]*)<', page)[1]
+    assert caption == "All rows: standard size · default lens light · optimal"
+    for key in ("regime", "lens_light", "class"):
+        assert re.search(rf'<th data-col="{key}"[^>]* hidden>', page)
+        assert re.findall(rf'<td data-col="{key}"[^>]*?( hidden)?>', page) == [" hidden"] * 3
+    for name in ("Instrument", "Setup"):  # never hidden
+        assert f'<th><span class="th-name">{name}</span>' in page
+    md = "\n".join(setup_browser.markdown(snapshot))
+    assert "All rows: standard size · default lens light · optimal" in md
+    assert "| Source size |" not in md and "| Lens light |" not in md and "| Class |" not in md
+    assert "| Dataset type | Model | Instrument | Setup | Hardware class | Runtime (s) |" in md
+
+
+def test_columns_with_differing_visible_values_stay():
+    page = setup_browser.render(lifecycle_capture())
+    assert re.search(r'data-id="constant-caption" hidden>', page)
+    assert not re.search(r'<th data-col="[a-z_]+"[^>]* hidden>', page)

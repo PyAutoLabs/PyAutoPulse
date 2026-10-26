@@ -1,6 +1,7 @@
 """The board: three notions, producer comparisons verbatim, cached semantics, state.json."""
 
 import json
+import re
 
 import pytest
 from conftest import SHA_A, SHA_G, fixture_doc
@@ -246,8 +247,8 @@ def test_v3_status_lines_carry_lifecycle_counts():
     assert board.lifecycle(s) == expected
     md = board.render_markdown([s], NOW, campaign_data={"campaigns": [], "tasks": []})
     assert f"- **Lifecycle:** {expected}" in md
-    assert "optimal, current setups" in md
-    assert "imaging/delaunay | hst | `jax_gpu_dense_fp64`" in md
+    assert "current runtime setups" in md
+    assert "| imaging | delaunay | hst | standard | `jax_gpu_dense` |" in md
     assert "imaging-delaunay-hst-a100-runtime-old" not in md
     assert "Coverage: 1 optimal cell(s) not measured." in md
     state = board.render_state([s], updated=NOW, now=NOW)
@@ -262,22 +263,108 @@ def test_v2_status_lines_are_unchanged():
     assert "**Lifecycle:**" not in md
 
 
-def test_walltime_instance_renders_its_own_table_under_profiling_results():
+def test_profiling_and_inference_timings_open_per_project():
     lens = _snapshot("lens", "profiling-summary@3", "setup_summary_v3.json")
     wall = _snapshot("lens-walltime", "walltime-validation@1", "walltime_validation_v1.json")
     data = {"campaigns": [], "tasks": []}
     page = board.render_html([lens, wall], NOW, campaign_data=data)
-    results = page.index('id="evidence"')
-    table = page.index('data-walltime="lens-walltime"')
-    assert results < table
-    assert "Full-fit measurements" in page and "nautilus" in page
+    assert 'id="evidence"' in page  # old links still land
+    profiling = page.index('id="profiling-timings"')
+    inference = page.index('id="inference-timings"')
+    assert profiling < page.index('id="profiling-pyautolens"') < inference
+    assert (
+        inference < page.index('id="inference-pyautofit"') < page.index('id="inference-pyautolens"')
+    )
+    assert inference < page.index('data-walltime="lens-walltime"')
+    assert board.INSIGHT_URL in page and ">Profiling Results</h2>" not in page
+    assert '"#profiling-timings"' in page and '"#inference-timings"' in page
     assert "setup catalogue unavailable" not in page
     md = board.render_markdown([lens, wall], NOW, campaign_data=data)
-    assert md.index("## Profiling Results") < md.index("wall-time validation")
-    assert "| Measured/predicted |" in md and "| 1.26 |" in md
+    assert md.index("## Profiling Timings") < md.index("## Inference Timings")
+    assert md.index("## Inference Timings") < md.index("inference timings</summary>")
     state = board.render_state([wall], updated=NOW, now=NOW)
     assert not any(i["id"].endswith(":unqualified") for i in state["items"])
     assert "full-fit records" in board.qualification(wall)
+
+
+def _inference(page):
+    return re.search(r'data-walltime="lens-walltime".*?</section>', page, re.S)[0]
+
+
+def test_inference_table_is_mass_total_only_with_the_human_columns():
+    lens = _snapshot("lens", "profiling-summary@3", "setup_summary_v3.json")
+    wall = _snapshot("lens-walltime", "walltime-validation@1", "walltime_validation_v1.json")
+    page = board.render_html([lens, wall], NOW, campaign_data={"campaigns": [], "tasks": []})
+    table = _inference(page)
+    head = re.findall(r'<span class="th-name">([^<]*)</span>', table)
+    units = dict(zip(head, re.findall(r'<span class="th-unit">([^<]*)</span>', table)))
+    assert {k: v for k, v in units.items() if v != "&nbsp;"} == {
+        "Profiling runtime": "(s)",
+        "Cores": "(cores)",
+        "Wall": "(s)",
+        "Likelihood evals": "(evals)",
+        "Implied time": "(s / eval)",
+    }
+    assert head == list(board.WALLTIME_HEAD)
+    rows = re.findall(r'<tr data-record="([^"]+)"', table)
+    assert "nautilus-source-pix-s1" not in rows and len(rows) == 4
+    for clutter in (
+        "Full-fit measurements",
+        "Predicted",
+        "Measured/predicted",
+        "Parallel efficiency",
+        "Parity",
+        "Reference runtime",
+        "Release",
+        "mass_total",
+        "Log Likelihood Function Evaluation Time",
+    ):
+        assert clutter not in table, clutter
+    first = re.search(r'<tr data-record="nautilus-1core-s0".*?</tr>', table, re.S)[0]
+    assert 'data-value="nautilus" hidden>nautilus</td>' in first
+    assert ">4200.0</b>" in first and ">0.21000</b>" in first
+    # Sampler is constant (hidden, named in the caption); lens light and cores differ.
+    assert re.search(r'data-id="constant-caption">All rows: nautilus sampler<', table)
+    assert re.search(r'<th data-col="sampler"[^>]* hidden>', table)
+    assert not re.search(r'<th data-col="(lens_light|cores)"[^>]* hidden>', table)
+    assert re.search(r'data-id="tally"[^>]*>4 results<', table)
+    assert 'data-filter="history"' not in table and 'data-filter="class"' not in table
+
+
+def test_inference_profiling_runtime_links_the_profiling_detail_page():
+    lens = _snapshot("lens", "profiling-summary@3", "setup_summary_v3.json")
+    wall = _snapshot("lens-walltime", "walltime-validation@1", "walltime_validation_v1.json")
+    page = board.render_html([lens, wall], NOW, campaign_data={"campaigns": [], "tasks": []})
+    table = _inference(page)
+    row = lambda rid: re.search(rf'<tr data-record="{rid}".*?</tr>', table, re.S)[0]  # noqa: E731
+    linked = row("nautilus-1core-s0")
+    assert (
+        "href='?view=setup&amp;instance=lens&amp;record=imaging-delaunay-hst-ral-runtime'" in linked
+    )
+    assert "≠ size" not in table and "size-badge" not in table
+    differs = row("nautilus-16core-s0")
+    assert "profiling-link" in differs
+    run = re.search(r'<article[^>]*data-record="nautilus-16core-s0".*?</article>', page, re.S)[0]
+    assert "inference 784 px vs profiling 1250 px" in run and "sizes differ" in run
+    unmatched = row("nautilus-light-fixed-s0")
+    assert "title='no profiling runtime record with model_variant light_fixed'>—" in unmatched
+    uncaptured = row("nautilus-gpu-s0")
+    assert (
+        "not in captured catalogue" in uncaptured
+        and "data-detail-link href='?view=setup" not in uncaptured
+    )
+    assert ">default · mixed</td>" in uncaptured and "<code>jax_gpu_dense</code>" in uncaptured
+    # Every row opens its own run page, and the linked profiling page exists.
+    assert 'data-view="run" data-instance="lens-walltime" data-record="nautilus-gpu-s0"' in page
+    assert (
+        'data-view="setup" data-instance="lens" data-record="imaging-delaunay-hst-ral-runtime"'
+        in page
+    )
+    md = board.render_markdown([lens, wall], NOW, campaign_data={"campaigns": [], "tasks": []})
+    assert (
+        f"[**0.21000**]({board.PAGES_URL}?view=setup&instance=lens&record="
+        "imaging-delaunay-hst-ral-runtime)" in md
+    )
 
 
 def test_v3_and_walltime_state_meets_the_brain_contract():

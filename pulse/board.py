@@ -15,10 +15,14 @@ records' evidence at the captured commit and a ``/profiling triage <key>``
 manual handoff. Pairs the reader refuses (axis mismatch, changed hardware,
 missing endpoint) are listed apart with the reason and no ratio.
 
-A ``profiling-summary@3`` instance adds its producer-declared lifecycle counts
-(current / superseded / archived) to its status lines and renders the
-Class-first setup browser; a ``walltime-validation@1`` instance renders its
-full-fit records as their own table under Profiling Results.
+The measurements sit in two sections, each opening per project (PyAutoFit,
+PyAutoLens; the label is the registry row's first ``library_refs`` entry):
+**Profiling Timings** (the ``profiling-summary`` instances: the v2 setup
+browser, or the v3 runtime table with one detail page per row) and
+**Inference Timings** (the ``walltime-validation@1`` instances, one full-fit run
+per row, each opening its own run page). A ``profiling-summary@3`` instance
+also adds its producer-declared lifecycle counts (current / superseded /
+archived) to its status lines.
 
 The board never recomputes a ratio, never combines records whose axis or
 hardware differs, never ranks cells across projects and never emits a
@@ -73,6 +77,37 @@ def is_catalogue(doc: dict | None) -> bool:
     """A setup catalogue (v2/v3) or the wall-time axis: the browser layout."""
     doc = doc or {}
     return doc.get("schema") == "walltime-validation" or doc.get("version") in (2, 3)
+
+
+PROJECTS = ("PyAutoFit", "PyAutoLens")  # section order; other projects follow
+INSIGHT_URL = "https://pyautolabs.github.io/PyAutoInsight/"
+_REPO_PROJECT = {
+    "autofit": "PyAutoFit",
+    "autolens": "PyAutoLens",
+    "autogalaxy": "PyAutoGalaxy",
+    "autoarray": "PyAutoArray",
+    "autocti": "PyAutoCTI",
+}
+
+
+def project_label(instance) -> str:
+    """The project a registry row belongs to: its first ``library_refs`` entry."""
+    refs = getattr(instance, "library_refs", ()) or ()
+    if refs:
+        return refs[0]
+    return _REPO_PROJECT.get(instance.repo.split("_", 1)[0], instance.repo)
+
+
+def project_slug(label: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "-", label.lower()).strip("-")
+
+
+def by_project(views) -> OrderedDict[str, list[Snapshot]]:
+    """Snapshots grouped by project label, PROJECTS order first, registry order kept."""
+    groups: OrderedDict[str, list] = OrderedDict((p, []) for p in PROJECTS)
+    for s in views:
+        groups.setdefault(project_label(s.instance), []).append(s)
+    return groups
 
 
 def lifecycle(s: Snapshot) -> str | None:
@@ -368,70 +403,310 @@ def _md_detail(s: Snapshot, now: str | None = None) -> list[str]:
     return out
 
 
-WALLTIME_COLUMNS = (
-    (
-        "Likelihood",
-        lambda r: (
-            f"{(r.get('likelihood') or {}).get('dataset_type')}/"
-            f"{(r.get('likelihood') or {}).get('variant')}"
+INFERENCE_SAMPLER = "nautilus:mass_total[1]"  # the one result type the table shows
+WALLTIME_FILTERS = setup_browser.FILTERS
+WALLTIME_HEAD = (
+    "Dataset type",
+    "Model",
+    "Instrument",
+    "Setup",
+    "Hardware class",
+    "Lens light",
+    "Profiling runtime",
+    "Sampler",
+    "Seed",
+    "Cores",
+    "Wall",
+    "Likelihood evals",
+    "Implied time",
+)
+WALLTIME_NUMERIC = {
+    "Profiling runtime",
+    "Seed",
+    "Cores",
+    "Wall",
+    "Likelihood evals",
+    "Implied time",
+}
+INSIGHT_POINTER = "PyAutoFit inference benchmarking is collected on the PyAutoInsight board."
+INSIGHT_POINTER_MD = (
+    f"PyAutoFit inference benchmarking is collected on the [PyAutoInsight board]({INSIGHT_URL})."
+)
+
+
+def inference_rows(s: Snapshot) -> list[dict]:
+    """The full-fit runs the Inference Timings table shows (one sampler stage only)."""
+    rows = [r for r in records(s) if r.get("sampler") == INFERENCE_SAMPLER]
+    return sorted(
+        rows,
+        key=lambda r: (
+            *setup_browser.row_order(r),
+            r.get("seed") if isinstance(r.get("seed"), int) else -1,
+            str(r.get("id")),
         ),
-    ),
-    ("Instrument", lambda r: r.get("instrument")),
-    ("Setup", lambda r: r.get("setup_id")),
-    ("Hardware class", lambda r: r.get("host_class")),
-    ("Model variant", lambda r: r.get("model_variant")),
-    ("Sampler", lambda r: r.get("sampler")),
-    ("Seed", lambda r: r.get("seed")),
-    ("Cores", lambda r: r.get("cores")),
-    ("Wall s", lambda r: r.get("wall_s")),
-    ("Likelihood evals", lambda r: r.get("likelihood_evals")),
-    ("Implied ms/eval", lambda r: r.get("implied_ms_per_eval")),
-    ("Predicted ms/eval", lambda r: r.get("predicted_ms_per_eval")),
-    ("Measured/predicted", lambda r: r.get("ratio_measured_over_predicted")),
-    ("Parallel efficiency", lambda r: r.get("parallel_efficiency")),
-    ("Parity", lambda r: r.get("parity_status")),
-    ("Reference runtime record", lambda r: r.get("reference_runtime_record_id")),
-    ("Release", lambda r: r.get("release_pin")),
+    )
+
+
+def sampler_label(record) -> str:
+    return str(record.get("sampler") or "").split(":", 1)[0]
+
+
+def profiling_pages(views) -> dict[str, str]:
+    """``{profiling record id: instance}`` for every captured profiling detail page."""
+    return {
+        rid: s.instance.instance
+        for s in views
+        if not is_walltime(s)
+        for rid in setup_browser.page_ids(s)
+    }
+
+
+def _size_title(record) -> str:
+    return (
+        f"inference {_cell(record.get('source_pixels'))} px vs profiling "
+        f"{_cell(record.get('profiling_source_pixels'))} px"
+    )
+
+
+def _profiling_cell(record, pages: dict[str, str]) -> str:
+    """The producer-joined profiling per-call time, linking to that setup's detail page."""
+    value = record.get("profiling_per_call_s")
+    shown = setup_browser.fixed(value)
+    if shown is None:
+        reason = record.get("profiling_unmatched_reason") or "no profiling record matched"
+        return f"<td class='num'><span class='muted' title='{_e(reason)}'>—</span></td>"
+    rid = record.get("profiling_record_id")
+    tip = f"{value} s · {record.get('profiling_per_call_source') or 'source not declared'}"
+    if rid in pages:
+        href = setup_browser.detail_href("setup", pages[rid], rid)
+        out = (
+            f"<a class='profiling-link' data-detail-link href='{_e(href)}' "
+            f"title='{_e(tip)} · open the profiling setup'><b>{shown}</b></a>"
+        )
+    else:
+        out = (
+            f"<b title='{_e(tip)}'>{shown}</b> <span class='muted' "
+            f"title='{_e(rid)}'>not in captured catalogue</span>"
+        )
+    return f"<td class='num'>{out}</td>"
+
+
+INFERENCE_HIDEABLE = (
+    ("lens_light", setup_browser.lens_light),
+    ("sampler", lambda r: sampler_label(r)),
+    ("cores", lambda r: _cell(r.get("cores"))),
 )
-WALLTIME_NOTE = (
-    "Full-fit measurements: one sampler run per row. Every derived number is the "
-    "producer's; Pulse computes no ratio and never reads a full-fit time as a "
-    "per-likelihood measurement."
-)
+_WALLTIME_KEYS = {"Lens light": "lens_light", "Sampler": "sampler", "Cores": "cores"}
+
+
+def _walltime_cells(r, pages, constants=None) -> str:
+    constants = constants or {}
+    likelihood = r.get("likelihood") or {}
+    text = lambda v: f"<td>{_e(_cell(v))}</td>"  # noqa: E731
+    count = lambda v: f"<td class='num'>{_e(_cell(v))}</td>"  # noqa: E731
+    wall = setup_browser.fixed(r.get("wall_s"), 1)
+    return (
+        text(likelihood.get("dataset_type"))
+        + text(likelihood.get("variant"))
+        + text(r.get("instrument"))
+        + f"<td><code>{_e(setup_browser.setup_label(r.get('setup_id')))}</code></td>"
+        + text(r.get("host_class"))
+        + setup_browser.col_td("lens_light", setup_browser.lens_light(r), constants)
+        + _profiling_cell(r, pages)
+        + setup_browser.col_td("sampler", sampler_label(r), constants)
+        + count(r.get("seed"))
+        + setup_browser.col_td("cores", _cell(r.get("cores")), constants, "num")
+        + (
+            f"<td class='num'><b title='{_e(r.get('wall_s'))} s'>{wall}</b></td>"
+            if wall
+            else "<td class='num'>—</td>"
+        )
+        + count(r.get("likelihood_evals"))
+        + setup_browser.time_cell(
+            r.get("implied_s_per_eval"), "wall s ÷ likelihood evals (producer)", "not recorded"
+        )
+    )
+
+
+def walltime_markdown(s: Snapshot, pages: dict[str, str] | None = None) -> list[str]:
+    pages = pages or {}
+    name = s.instance.repo
+    rows = inference_rows(s)
+    out = [
+        f"<details><summary>{html.escape(name)} — inference timings</summary>",
+        "",
+        f"{len(rows)} result{'' if len(rows) == 1 else 's'}.",
+        "",
+    ]
+    table = []
+    bold = lambda v, dp=5: (  # noqa: E731
+        f"**{setup_browser.fixed(v, dp)}**" if setup_browser.fixed(v, dp) else "—"
+    )
+    for r in rows:
+        likelihood = r.get("likelihood") or {}
+        rid = r.get("profiling_record_id")
+        prof = bold(r.get("profiling_per_call_s"))
+        if prof != "—" and rid in pages:
+            prof = f"[{prof}]({PAGES_URL}{setup_browser.detail_href('setup', pages[rid], rid)})"
+        cells = [
+            likelihood.get("dataset_type"),
+            likelihood.get("variant"),
+            r.get("instrument"),
+            f"`{setup_browser.setup_label(r.get('setup_id'))}`",
+            r.get("host_class"),
+            setup_browser.lens_light(r),
+            prof,
+            sampler_label(r),
+            r.get("seed"),
+            r.get("cores"),
+            bold(r.get("wall_s"), 1),
+            r.get("likelihood_evals"),
+            bold(r.get("implied_s_per_eval")),
+        ]
+        table.append([_md_escape(_cell(c)) for c in cells])
+    head = [
+        (_WALLTIME_KEYS.get(t), t, "r" if t in WALLTIME_NUMERIC else "l") for t in WALLTIME_HEAD
+    ]
+    constants = setup_browser.constant_columns(rows, INFERENCE_HIDEABLE)
+    return out + setup_browser.md_table(head, table, constants) + ["", "</details>", ""]
+
+
+def walltime_html(s: Snapshot, pages: dict[str, str] | None = None) -> str:
+    pages = pages or {}
+    key = s.instance.instance
+    rows = inference_rows(s)
+    filters = setup_browser.selectors(
+        key,
+        WALLTIME_FILTERS,
+        lambda k: sorted({str(_walltime_fields(r)[k]) for r in rows}),
+        with_class=False,
+    )
+    constants = setup_browser.constant_columns(rows, INFERENCE_HIDEABLE)
+    head = "".join(
+        setup_browser.col_th(
+            _WALLTIME_KEYS[t], t, constants, "num" if t in WALLTIME_NUMERIC else ""
+        )
+        if t in _WALLTIME_KEYS
+        else setup_browser.th(t, "num" if t in WALLTIME_NUMERIC else "")
+        for t in WALLTIME_HEAD
+    )
+    body = "".join(
+        f'<tr data-record="{_e(r.get("id"))}"'
+        + "".join(f' data-{k.replace("_", "-")}="{_e(v)}"' for k, v in _walltime_fields(r).items())
+        + ">"
+        + _walltime_cells(r, pages, constants)
+        + setup_browser.open_link("run", key, r.get("id"), "Open this run's details")
+        + "</tr>"
+        for r in rows
+    )
+    return (
+        f'<section class="setup-browser lifecycle-browser walltime-validation" '
+        f'data-setup-browser="{_e(key)}" data-lifecycle data-walltime="{_e(key)}" '
+        f'aria-label="{_e(s.instance.repo)} inference timings">'
+        + filters
+        + setup_browser.tally(len(rows), history=False)
+        + setup_browser.caption_html(constants)
+        + f"<div class='tablewrap'><table class='lifecycle-table'><thead><tr>{head}"
+        "<th class='open'><span class='visually-hidden'>Details</span></th></tr></thead>"
+        f"<tbody>{body}</tbody></table></div>"
+        f'<p class="empty" data-id="no-rows"{" hidden" if rows else ""}>'
+        "No run matches this selection.</p></section>"
+    )
+
+
+def _walltime_fields(record) -> dict:
+    likelihood = record.get("likelihood") or {}
+    return {
+        "dataset_type": likelihood.get("dataset_type"),
+        "variant": likelihood.get("variant"),
+        "instrument": record.get("instrument"),
+        "host_class": record.get("host_class"),
+    }
+
+
+def run_pages(s: Snapshot, pages: dict[str, str], back: str, project: str) -> str:
+    """One hidden detail page per Inference Timings row: every producer field, verbatim."""
+    key = s.instance.instance
+    out = []
+    for r in inference_rows(s):
+        title = (
+            setup_browser.detail_title(project, r)
+            + f" / {sampler_label(r)} {r.get('stage') or r.get('sampler')} / seed {r.get('seed')}"
+        )
+        headline = (
+            setup_browser._headline(
+                "Wall time",
+                _e(f"{setup_browser.fixed(r.get('wall_s'), 1)} s")
+                if setup_browser.fixed(r.get("wall_s"), 1)
+                else "not recorded",
+            )
+            + setup_browser._headline(
+                "Likelihood evaluations", _e(_cell(r.get("likelihood_evals")))
+            )
+            + setup_browser._headline(
+                "Implied s/eval",
+                setup_browser._seconds(r.get("implied_s_per_eval")),
+                "wall s ÷ likelihood evals, as the producer declares it",
+            )
+            + setup_browser._headline(
+                "Profiling runtime",
+                _profiling_cell(r, pages)[len("<td class='num'>") : -len("</td>")],
+                r.get("profiling_unmatched_reason") or (r.get("profiling_status") or ""),
+            )
+            + setup_browser._headline(
+                "Source pixels",
+                _e(_size_title(r)),
+                {True: "sizes match", False: "sizes differ", None: "size match not recorded"}.get(
+                    r.get("size_match"), ""
+                ),
+            )
+            + setup_browser._headline("Cores", _e(_cell(r.get("cores"))))
+        )
+        fields = "".join(
+            f"<dt>{_e(k)}</dt><dd><code>{_e(json.dumps(v) if not isinstance(v, str) else v)}</code></dd>"
+            for k, v in r.items()
+        )
+        evidence = r.get("evidence_path")
+        link = (
+            f'<li><a href="{_e(s.instance.blob_url(s.commit, evidence))}">stages evidence</a> '
+            f"<code>{_e(evidence)}</code></li>"
+            if evidence
+            else "<li>No evidence path recorded.</li>"
+        )
+        out.append(
+            f'<article class="detail-page" data-view="run" data-instance="{_e(key)}" '
+            f'data-record="{_e(r.get("id"))}" data-title="{_e(title)}" hidden>'
+            f'<a class="back-link" data-detail-link data-back href="{_e(back)}">← Inference Timings</a>'
+            f"<h2>{_e(title)}</h2>"
+            '<section class="headline-metrics" aria-label="Headline timings">'
+            f'<dl class="headline-list">{headline}</dl></section>'
+            '<details class="metric-panel" data-axis="fields" open><summary>Every recorded field'
+            f'</summary><dl class="config">{fields}</dl></details>'
+            '<details class="metric-panel" data-axis="evidence" open><summary>Evidence</summary>'
+            f'<ul class="evidence-list">{link}</ul></details></article>'
+        )
+    return "".join(out)
 
 
 def _cell(value) -> str:
     return "—" if value is None else str(value)
 
 
-def walltime_markdown(s: Snapshot) -> list[str]:
-    name = s.instance.repo
-    out = [
-        f"<details><summary>{html.escape(name)} — wall-time validation</summary>",
+def _md_snapshot(snapshot: Snapshot, now: str, pages: dict[str, str] | None = None) -> list[str]:
+    out = []
+    if snapshot.failed or snapshot.cached:
+        out += [f"**{snapshot.instance.instance}: {integrity(snapshot)}**", ""]
+    if is_walltime(snapshot):
+        out += walltime_markdown(snapshot, pages)
+    elif (snapshot.doc or {}).get("version") in (2, 3):
+        out += setup_browser.markdown(snapshot)
+    return out + [
+        "<details><summary>Capture, qualification and legacy diagnostics</summary>",
         "",
-        WALLTIME_NOTE,
+        *_md_detail(snapshot, now),
+        "</details>",
         "",
-        "| " + " | ".join(t for t, _ in WALLTIME_COLUMNS) + " |",
-        "|" + "---|" * len(WALLTIME_COLUMNS),
     ]
-    for r in records(s):
-        out.append("| " + " | ".join(_md_escape(_cell(f(r))) for _, f in WALLTIME_COLUMNS) + " |")
-    return out + ["", "</details>", ""]
-
-
-def walltime_html(s: Snapshot) -> str:
-    head = "".join(f"<th>{_e(t)}</th>" for t, _ in WALLTIME_COLUMNS)
-    body = "".join(
-        "<tr>" + "".join(f"<td>{_e(_cell(f(r)))}</td>" for _, f in WALLTIME_COLUMNS) + "</tr>"
-        for r in records(s)
-    )
-    return (
-        f'<section class="walltime-validation" data-walltime="{_e(s.instance.instance)}" '
-        f'aria-label="{_e(s.instance.repo)} wall-time validation">'
-        f"<h3>{_e(s.instance.repo)}: wall-time validation</h3><p>{_e(WALLTIME_NOTE)}</p>"
-        f"<div class='tablewrap'><table><thead><tr>{head}</tr></thead><tbody>{body}</tbody>"
-        "</table></div></section>"
-    )
 
 
 def render_markdown(views, now: str | None = None, campaign_data: dict | None = None) -> str:
@@ -444,20 +719,22 @@ def render_markdown(views, now: str | None = None, campaign_data: dict | None = 
             f"[Interactive board]({PAGES_URL})",
             "",
         ]
-        for snapshot in views:
-            if snapshot.failed or snapshot.cached:
-                out += [f"**{snapshot.instance.instance}: {integrity(snapshot)}**", ""]
-            if is_walltime(snapshot):
-                out += walltime_markdown(snapshot)
-            elif (snapshot.doc or {}).get("version") in (2, 3):
-                out += setup_browser.markdown(snapshot)
-            out += [
-                "<details><summary>Capture, qualification and legacy diagnostics</summary>",
-                "",
-                *_md_detail(snapshot, now),
-                "</details>",
-                "",
-            ]
+        profiling = by_project(s for s in views if not is_walltime(s))
+        inference = by_project(s for s in views if is_walltime(s))
+        out += ["## Profiling Timings", ""]
+        for label, snaps in profiling.items():
+            if snaps:
+                out += [f"### {label}", ""]
+                for snapshot in snaps:
+                    out += _md_snapshot(snapshot, now)
+        out += ["## Inference Timings", ""]
+        for label, snaps in inference.items():
+            if label == "PyAutoFit" and not snaps:
+                out += [f"### {label}", "", INSIGHT_POINTER_MD, ""]
+            elif snaps:
+                out += [f"### {label}", ""]
+                for snapshot in snaps:
+                    out += _md_snapshot(snapshot, now, profiling_pages(views))
         out += ["", decisions.markdown()]
         return "\n".join(out).rstrip("\n") + "\n"
     out = [
@@ -467,6 +744,8 @@ def render_markdown(views, now: str | None = None, campaign_data: dict | None = 
         "snapshots/. Do not edit by hand. -->",
         "",
         campaigns.markdown(campaign_data if campaign_data is not None else campaigns.load()),
+        "## Profiling Timings",
+        "",
         LEDE,
         f"Live page: [{PAGES_URL}]({PAGES_URL}).",
         "",
@@ -501,7 +780,7 @@ def render_markdown(views, now: str | None = None, campaign_data: dict | None = 
 CSS = """
 .controls{margin:1.2rem 0}.prompt-action{display:flex;flex-wrap:wrap;gap:.5rem .8rem;align-items:center;margin:.7rem 0}.prompt-action details{flex-basis:100%}.prompt-action details:not([open]){flex-basis:auto}.prompt-action summary{cursor:pointer;font-size:.8rem;color:var(--muted)}
 .prompt-action textarea{width:100%;display:block;margin:.5rem 0;padding:.7rem;font:inherit;font-size:.85rem;color:var(--fg);background:var(--btn);border:1px solid var(--line);border-radius:8px;resize:vertical}.review-meta{font-size:.75rem;color:var(--muted)}
-.campaign-table table{width:100%;table-layout:fixed}.campaign-table th:first-child{width:66%}.campaign-table th:nth-child(2){width:21%}.campaign-table th:last-child{width:13%}.campaign-table td{vertical-align:top;padding:.7rem .45rem}.campaign-table strong{font-weight:600}.campaign-detail{margin:.2rem 0 0}.campaign-detail summary{cursor:pointer;font-size:.8rem;padding:.15rem 0}.campaign-detail h3{font-size:.9rem}.campaign-task{border-top:1px solid var(--line);padding:.6rem 0}.campaign-task h4,.campaign-task p{margin:.3rem 0}.campaign-task h4{font-size:.85rem}.campaign-task p{font-size:.8rem}.link-icons{display:flex;gap:.3rem;flex-wrap:wrap}.icon-link{display:inline-flex;justify-content:center;align-items:center;width:2rem;min-height:2rem;border:1px solid var(--line);border-radius:6px;text-decoration:none}.capture-details{margin:1.5rem 0}.capture-details summary{cursor:pointer}.tablewrap{overflow-x:auto}.notions{font-size:.85rem}.warn{color:var(--warn)}.bad{color:var(--bad)}.ok{color:var(--ok)}
+.campaign-table table{width:100%;table-layout:fixed}.campaign-table th:first-child{width:66%}.campaign-table th:nth-child(2){width:21%}.campaign-table th:last-child{width:13%}.campaign-table td{vertical-align:top;padding:.7rem .45rem}.campaign-table strong{font-weight:600}.campaign-detail{margin:.2rem 0 0}.campaign-detail summary{cursor:pointer;font-size:.8rem;padding:.15rem 0}.campaign-detail h3{font-size:.9rem}.campaign-task{border-top:1px solid var(--line);padding:.6rem 0}.campaign-task h4,.campaign-task p{margin:.3rem 0}.campaign-task h4{font-size:.85rem}.campaign-task p{font-size:.8rem}.link-icons{display:flex;gap:.3rem;flex-wrap:wrap}.icon-link{display:inline-flex;justify-content:center;align-items:center;width:2rem;min-height:2rem;border:1px solid var(--line);border-radius:6px;text-decoration:none}.capture-details{margin:1.5rem 0}.capture-details summary{cursor:pointer}.tablewrap{overflow-x:auto}.project-group{margin:.6rem 0;border:1px solid var(--line);border-radius:10px;padding:0 .85rem}.project-group>summary{cursor:pointer;font-weight:650;padding:.7rem 0;font-size:1.02rem}.project-group[open]>summary{border-bottom:1px solid var(--line);margin-bottom:.6rem}.project-body{min-width:0;padding-bottom:.6rem}.notions{font-size:.85rem}.warn{color:var(--warn)}.bad{color:var(--bad)}.ok{color:var(--ok)}
 @media(max-width:34rem){.campaign-table th:first-child{width:57%}.campaign-table th:nth-child(2){width:26%}.campaign-table th:last-child{width:17%}.campaign-table td{padding:.55rem .3rem}.campaign-table .pill{font-size:.65rem;overflow-wrap:anywhere;white-space:normal;text-overflow:clip}.campaign-table{font-size:.8rem}}
 """
 
@@ -646,25 +925,74 @@ def _captured_at(views):
     return min(times) if all(times) else None
 
 
+def _group(kind: str, label: str, body: str) -> str:
+    return (
+        f'<details class="project-group" id="{kind}-{project_slug(label)}" '
+        f'data-project="{_e(label)}"><summary>{_e(label)}</summary>'
+        f'<div class="project-body">{body}</div></details>'
+    )
+
+
+def _warning(snapshot: Snapshot) -> str:
+    if snapshot.failed or snapshot.cached:
+        return (
+            f'<p class="warn">{_e(snapshot.instance.instance)}: {_e(integrity(snapshot))}. '
+            "Displayed evidence retains its captured source.</p>"
+        )
+    return ""
+
+
+def _profiling_html(snapshot: Snapshot) -> str:
+    out = _warning(snapshot) + setup_browser.render(snapshot)
+    if (snapshot.doc or {}).get("version") not in (2, 3):
+        out += (
+            f"<p>{_e(snapshot.instance.instance)}: setup catalogue unavailable; use the project "
+            "dashboard for original evidence.</p>"
+        )
+    return out
+
+
+def _detail_container(pages) -> str:
+    """Every per-row detail page, hidden until ``?view=setup|run`` routes one (JS)."""
+    return (
+        '<div class="detail-pages" id="detail-pages" hidden>'
+        '<p class="detail-status" id="detail-route-status" role="status" hidden></p>'
+        '<a class="back-link" id="detail-route-back" data-detail-link data-back '
+        'href="#profiling-timings" hidden>← Profiling Timings</a>' + "".join(pages) + "</div>"
+    )
+
+
+def _insight_link() -> str:
+    return f'<a href="{_e(INSIGHT_URL)}">PyAutoInsight board</a>'
+
+
 def render_html(views, now: str | None = None, campaign_data: dict | None = None) -> str:
     now = now or _utc_now()
     shared = setup_browser.theme()
     browser_css, browser_js = setup_browser.assets()
-    content = []
-    for snapshot in views:
-        name = snapshot.instance.instance
-        if snapshot.failed or snapshot.cached:
-            content.append(
-                f'<p class="warn">{_e(name)}: {_e(integrity(snapshot))}. Displayed evidence retains its captured source.</p>'
-            )
-        if is_walltime(snapshot):
-            content.append(walltime_html(snapshot))
-            continue
-        content.append(setup_browser.render(snapshot))
-        if (snapshot.doc or {}).get("version") not in (2, 3):
-            content.append(
-                f"<p>{_e(name)}: setup catalogue unavailable; use the project dashboard for original evidence.</p>"
-            )
+    profiling = by_project(s for s in views if not is_walltime(s))
+    inference = by_project(s for s in views if is_walltime(s))
+    sections = ['<a id="evidence"></a><h2 id="profiling-timings">Profiling Timings</h2>']
+    pages = []
+    for label, snaps in profiling.items():
+        if snaps:
+            sections.append(_group("profiling", label, "".join(map(_profiling_html, snaps))))
+            back = f"#profiling-{project_slug(label)}"
+            pages += [setup_browser.detail_pages(s, back, label) for s in snaps]
+    if not any(profiling.values()):
+        sections.append("<p class='muted'>No profiling project is registered.</p>")
+    sections.append('<h2 id="inference-timings">Inference Timings</h2>')
+    for label, snaps in inference.items():
+        if label == "PyAutoFit" and not snaps:
+            body = f"<p>{_e(INSIGHT_POINTER).replace('PyAutoInsight board', _insight_link())}</p>"
+            sections.append(_group("inference", label, body))
+        elif snaps:
+            linked = profiling_pages(views)
+            body = "".join(_warning(s) + walltime_html(s, linked) for s in snaps)
+            sections.append(_group("inference", label, body))
+            back = f"#inference-{project_slug(label)}"
+            pages += [run_pages(s, linked, back, label) for s in snaps]
+    content = [_detail_container(pages), *sections]
     return shared.section_layout(
         '<!doctype html>\n<html lang="en"><head><meta charset="utf-8">'
         '<meta name="viewport" content="width=device-width,initial-scale=1">'
@@ -676,7 +1004,8 @@ def render_html(views, now: str | None = None, campaign_data: dict | None = None
             "Profiling dashboard",
             navigation=[
                 {"href": "#campaigns", "label": "Active campaigns"},
-                {"href": "#evidence", "label": "Profiling Results"},
+                {"href": "#profiling-timings", "label": "Profiling Timings"},
+                {"href": "#inference-timings", "label": "Inference Timings"},
                 {"href": "#decision-history", "label": "Decision History"},
             ],
         )

@@ -100,7 +100,8 @@ const { execFileSync } = require("node:child_process");
       0,
     );
     assert.equal(await page.locator(".capture-details").count(), 0);
-    await page.locator('a[href="#evidence"]').first().click();
+    await page.locator('a[href="#profiling-timings"]').first().click();
+    await page.locator("#profiling-pyautolens > summary").click();
     await root.locator('[data-id="project-picker"] > summary').click();
     await root.locator('[data-family="imaging"] > summary').click();
     const popupEvent = context.waitForEvent("page");
@@ -166,7 +167,7 @@ const { execFileSync } = require("node:child_process");
     ])
       assert(!detailText.includes(absent), absent);
     assert(
-      detailText.includes("Profiling Results") &&
+      detailText.includes("Profiling Timings") &&
         detailText.includes("Profiling scripts"),
     );
     assert.equal(await detail.locator(".measurement-choices").count(), 0);
@@ -623,38 +624,41 @@ const { execFileSync } = require("node:child_process");
         ),
       );
     }
-    // profiling-summary@3: Class first, Optimal + current by default,
-    // superseded rows only with History, archived never rendered.
+    // profiling-summary@3: a runtime-only table. Class first (All by default),
+    // current rows only until History, archived never rendered.
     await page.setViewportSize({ width: 1280, height: 1000 });
     await page.goto(base + "/lifecycle.html");
-    const life = page.locator("[data-lifecycle]");
-    await life.evaluate((el) => {
-      for (let p = el.parentElement; p; p = p.parentElement)
-        if (p.tagName === "DETAILS") p.open = true;
-    });
+    const life = page.locator("[data-lifecycle][data-setup-browser='lens']");
+    const openGroups = (target) =>
+      target.evaluate((el) => {
+        for (let p = el.parentElement; p; p = p.parentElement)
+          if (p.tagName === "DETAILS") p.open = true;
+      });
+    await openGroups(life);
     const firstSelect = life.locator("select").first();
     assert.equal(await firstSelect.getAttribute("data-filter"), "class");
-    assert.equal(await firstSelect.inputValue(), "optimal");
+    assert.equal(await firstSelect.inputValue(), "all");
     assert.deepEqual(
       await life
         .locator(".lifecycle-selectors > label")
         .evaluateAll((els) => els.map((e) => e.firstChild.textContent.trim())),
-      [
-        "Class",
-        "Likelihood",
-        "Variant",
-        "Instrument",
-        "Hardware class",
-        "Measurement",
-        "",
-        "View",
-      ],
+      ["Class", "Dataset type", "Model", "Instrument", "Hardware class"],
     );
     const row = (id) => life.locator(`tr[data-record="${id}"]`);
     const old = row("imaging-delaunay-hst-a100-runtime-old");
     assert(await row("imaging-delaunay-hst-a100-runtime").isVisible());
+    assert(await row("imaging-delaunay-hst-ral-runtime").isVisible());
     assert(!(await old.isVisible()));
-    assert(!(await row("imaging-delaunay-hst-ral-runtime").isVisible()));
+    // The green tally sits top right, above History.
+    const tally = life.locator('[data-id="tally"]');
+    assert(await tally.isVisible());
+    assert.equal(await tally.textContent(), "4 results");
+    const tallyBox = await tally.boundingBox();
+    const historyBox = await life.locator(".history-toggle").boundingBox();
+    assert(tallyBox.y + tallyBox.height <= historyBox.y + 1);
+    assert(
+      Math.abs(tallyBox.x + tallyBox.width - (historyBox.x + historyBox.width)) < 2,
+    );
     await life.locator('input[data-filter="history"]').check();
     assert(await old.isVisible());
     await life.locator('input[data-filter="history"]').uncheck();
@@ -665,64 +669,59 @@ const { execFileSync } = require("node:child_process");
     await firstSelect.selectOption("all");
     await life.locator('select[data-filter="instrument"]').selectOption("sma");
     assert.equal(await life.locator("tr[data-record]:visible").count(), 1);
-    await life.locator('select[data-filter="measurement"]').selectOption("breakdown");
+    await life.locator('select[data-filter="variant"]').selectOption("delaunay");
     assert(await life.locator('[data-id="no-rows"]').isVisible());
+    await life.locator('select[data-filter="instrument"]').selectOption("");
+    await life.locator('select[data-filter="variant"]').selectOption("");
     assert.equal(await life.locator('tr[data-status="archived"]').count(), 0);
     assert(
       (await life.locator('[data-id="coverage"] summary').textContent()).includes(
         "1 optimal cell not measured",
       ),
     );
-    // Per call (measured) by default; per node shows the producer's projection,
-    // visibly marked, with η/source/bound in a keyboard-reachable tooltip.
-    await life.locator('select[data-filter="instrument"]').selectOption("");
-    await life.locator('select[data-filter="measurement"]').selectOption("");
     const knowledge = life.locator('[data-id="knowledge-link"] a');
     assert(await knowledge.isVisible());
     assert.equal(await knowledge.getAttribute("target"), "_blank");
-    const view = life.locator("select[data-view]");
-    assert.equal(await view.inputValue(), "per_call");
-    const ral = row("imaging-delaunay-hst-ral-runtime");
-    const perCall = ral.locator('[data-view-value="per_call"]');
-    const perNode = ral.locator('[data-view-value="per_node"]');
-    assert(await perCall.isVisible());
-    assert(!(await perNode.isVisible()));
-    assert(!(await life.locator('[data-id="view-note"]').isVisible()));
-    await life.locator('input[data-filter="history"]').focus();
-    await page.keyboard.press("Tab");
-    assert.equal(
-      await page.evaluate(() => document.activeElement.hasAttribute("data-view")),
-      true,
-    );
-    await view.selectOption("per_node");
-    assert(!(await perCall.isVisible()));
-    assert(await perNode.isVisible());
-    assert(await life.locator('[data-id="view-note"]').isVisible());
+    // Bold 5-DP runtime; headers on one line (no "Likeliho- od").
+    const runtime = row("imaging-delaunay-hst-ral-runtime").locator("td.num b").first();
+    assert.equal(await runtime.textContent(), "0.21000");
     assert(
-      (await perNode.textContent()).includes(
-        "190.5 calls/s · 40 workers (memory-bound)",
-      ),
+      Number(await runtime.evaluate((el) => getComputedStyle(el).fontWeight)) >= 700,
     );
-    assert(
-      (
-        await row("interferometer-mge-sma-ral-runtime")
-          .locator('[data-view-value="per_node"]')
-          .textContent()
-      ).startsWith("not projected:"),
+    // Headers are two lines: name, then the unit in brackets in italics; each
+    // line stays on one line and every header has the same two-line height.
+    const header = (table) =>
+      table.locator("th:visible").evaluateAll((ths) =>
+        ths
+          .filter((th) => th.querySelector(".th-name"))
+          .map((th) => {
+            const unit = th.querySelector(".th-unit");
+            const style = getComputedStyle(unit);
+            const lineOf = (el) =>
+              el.getBoundingClientRect().height <
+              (parseFloat(getComputedStyle(el).lineHeight) || 20) * 1.5;
+            return {
+              name: th.querySelector(".th-name").textContent,
+              unit: unit.textContent.trim(),
+              italic: style.fontStyle === "italic",
+              below:
+                unit.getBoundingClientRect().top >=
+                th.querySelector(".th-name").getBoundingClientRect().bottom - 1,
+              oneLine: lineOf(th.querySelector(".th-name")) && lineOf(unit),
+              height: Math.round(th.getBoundingClientRect().height),
+            };
+          }),
+      );
+    const lifeHead = await header(life.locator("table"));
+    assert.deepEqual(
+      lifeHead.filter((h) => h.unit).map((h) => [h.name, h.unit]),
+      [
+        ["Runtime", "(s)"],
+        ["Est. 12 CPU", "(s)"],
+      ],
     );
-    const badge = perNode.locator(".projected-badge");
-    const tip = perNode.locator(".projected-tip");
-    assert.equal(await badge.textContent(), "projected");
-    assert(!(await tip.isVisible()));
-    await badge.focus();
-    assert(await tip.isVisible());
-    assert.equal(
-      await badge.evaluate((el) =>
-        document.getElementById(el.getAttribute("aria-describedby")).getAttribute("role"),
-      ),
-      "tooltip",
-    );
-    assert((await tip.textContent()).includes("Bound by memory"));
+    for (const h of lifeHead) assert(h.italic && h.below && h.oneLine, h.name);
+    assert.equal(new Set(lifeHead.map((h) => h.height)).size, 1);
     for (const width of [390, 1280]) {
       await page.setViewportSize({ width, height: 1000 });
       assert(
@@ -731,19 +730,163 @@ const { execFileSync } = require("node:child_process");
         ),
       );
     }
-    await page.keyboard.press("Escape");
-    assert(!(await tip.isVisible()));
-    const badgeColor = () =>
-      badge.evaluate((el) => getComputedStyle(el).color);
-    await page.emulateMedia({ colorScheme: "light" });
-    assert.equal(await badgeColor(), "rgb(154, 103, 0)");
-    await page.emulateMedia({ colorScheme: "dark" });
-    assert.equal(await badgeColor(), "rgb(210, 153, 34)");
-    await page.emulateMedia({ colorScheme: "light" });
-    await view.selectOption("per_call");
-    assert(await perCall.isVisible());
-    assert(!(await perNode.isVisible()));
+    await page.setViewportSize({ width: 1280, height: 1000 });
+    // Each row's › opens its server-rendered detail page; back returns.
+    await row("imaging-delaunay-hst-a100-runtime").locator("a.row-open").click();
+    const detailPage = page.locator(
+      'article.detail-page[data-record="imaging-delaunay-hst-a100-runtime"]',
+    );
+    assert(await detailPage.isVisible());
+    assert(page.url().includes("view=setup"));
+    assert(page.url().includes("record=imaging-delaunay-hst-a100-runtime"));
+    assert(!(await life.isVisible()));
+    assert.equal(await page.locator(".board-nav:visible").count(), 0);
+    assert.equal(await page.locator("article.detail-page:visible").count(), 1);
+    assert(
+      await detailPage
+        .locator('[data-axis="breakdown"] [data-metric="component_total"]')
+        .isVisible(),
+    );
+    assert((await page.title()).startsWith("PyAutoLens / imaging / delaunay"));
+    await detailPage.locator("a.back-link").click();
+    assert(!page.url().includes("view="));
+    assert(page.url().endsWith("#profiling-pyautolens"));
+    assert(await life.isVisible());
+    assert.equal(await page.locator("article.detail-page:visible").count(), 0);
+    // Browser history moves between the board and the page.
+    await page.goBack();
+    assert(await detailPage.isVisible());
+    await page.goForward();
+    assert(await life.isVisible());
+    // A deep link loads straight onto its page; an unknown id says so.
+    await page.goto(
+      base + "/lifecycle.html?view=setup&instance=lens&record=imaging-delaunay-hst-ral-runtime",
+    );
+    assert(
+      await page
+        .locator('article.detail-page[data-record="imaging-delaunay-hst-ral-runtime"]')
+        .isVisible(),
+    );
+    await page.goto(base + "/lifecycle.html?view=setup&instance=lens&record=nope");
+    assert.equal(await page.locator("article.detail-page:visible").count(), 0);
+    assert(
+      (await page.locator("#detail-route-status").textContent()).includes(
+        "not in the captured catalogue",
+      ),
+    );
+    assert(await page.locator("#detail-route-status").isVisible());
+    await page.goto(base + "/lifecycle.html");
     assert.equal(await page.locator('[data-walltime="walltime"]').count(), 1);
+    // Inference Lens light differs (default + light_fixed), so it stays visible;
+    // the constant Sampler column is named in the caption instead.
+    const runsTable = page.locator('[data-walltime="walltime"]');
+    await openGroups(runsTable);
+    assert(await runsTable.locator('th[data-col="lens_light"]').isVisible());
+    assert(!(await runsTable.locator('th[data-col="sampler"]').isVisible()));
+    assert.equal(
+      await runsTable.locator('[data-id="constant-caption"]').textContent(),
+      "All rows: nautilus sampler",
+    );
+    // Inference Timings: same filters, a tally, one-line headers, a page per run,
+    // and the Profiling runtime links to the profiling setup's detail page.
+    const runs = page.locator('[data-walltime="walltime"]');
+    await openGroups(runs);
+    assert(await runs.locator('[data-id="tally"]').isVisible());
+    assert.equal(await runs.locator('[data-id="tally"]').textContent(), "4 results");
+    assert.equal(await runs.locator('input[data-filter="history"]').count(), 0);
+    const runHead = await header(runs.locator("table"));
+    assert.deepEqual(
+      runHead.filter((h) => h.unit).map((h) => [h.name, h.unit]),
+      [
+        ["Profiling runtime", "(s)"],
+        ["Cores", "(cores)"],
+        ["Wall", "(s)"],
+        ["Likelihood evals", "(evals)"],
+        ["Implied time", "(s / eval)"],
+      ],
+    );
+    for (const h of runHead) assert(h.italic && h.below && h.oneLine, h.name);
+    assert.equal(await runs.locator(".size-badge").count(), 0);
+    assert(!(await runs.textContent()).includes("≠ size"));
+    assert.equal(await runs.locator("tr[data-record]:visible").count(), 4);
+    await runs.locator('select[data-filter="host_class"]').selectOption("hpc_a100");
+    assert.equal(await runs.locator("tr[data-record]:visible").count(), 1);
+    await runs.locator('select[data-filter="host_class"]').selectOption("");
+    assert.equal(await runs.locator("tr[data-record]:visible").count(), 4);
+    await runs
+      .locator('tr[data-record="nautilus-1core-s0"] a.profiling-link')
+      .click();
+    assert(
+      await page
+        .locator('article.detail-page[data-view="setup"][data-record="imaging-delaunay-hst-ral-runtime"]')
+        .isVisible(),
+    );
+    await page.goBack();
+    assert(await runs.isVisible());
+    await runs.locator('tr[data-record="nautilus-16core-s0"] a.row-open').click();
+    const run = page.locator(
+      'article.detail-page[data-view="run"][data-record="nautilus-16core-s0"]',
+    );
+    assert(await run.isVisible());
+    assert((await run.textContent()).includes("implied_s_per_eval"));
+    await run.locator("a.back-link").click();
+    assert(page.url().endsWith("#inference-pyautolens"));
+    assert(await runs.isVisible());
+    // Constant columns: hidden with a caption by default; History brings a second
+    // source size, so Source size returns and the caption drops it.
+    await page.goto(base + "/constant.html");
+    const flat = page.locator("[data-lifecycle][data-setup-browser='lens']");
+    await openGroups(flat);
+    const flatCaption = flat.locator('[data-id="constant-caption"]');
+    assert.equal(
+      await flatCaption.textContent(),
+      "All rows: standard size · default lens light · optimal",
+    );
+    for (const key of ["regime", "lens_light", "class"])
+      assert(!(await flat.locator(`th[data-col="${key}"]`).isVisible()), key);
+    assert(await flat.locator("th", { hasText: "Instrument" }).isVisible());
+    await flat.locator('input[data-filter="history"]').check();
+    assert(await flat.locator('th[data-col="regime"]').isVisible());
+    assert(
+      await flat
+        .locator('tr[data-record="imaging-delaunay-hst-a100-runtime-old"] td[data-col="regime"]')
+        .isVisible(),
+    );
+    assert.equal(
+      await flatCaption.textContent(),
+      "All rows: default lens light · optimal",
+    );
+    await flat.locator('input[data-filter="history"]').uncheck();
+    assert(!(await flat.locator('th[data-col="regime"]').isVisible()));
+    // A filter narrowing to one hardware class hides nothing new but keeps the caption.
+    await flat.locator('select[data-filter="host_class"]').selectOption("hpc_a100");
+    assert((await flatCaption.textContent()).startsWith("All rows: standard size"));
+    await page.goto(base + "/lifecycle.html");
+    // Unknown run, then unknown setup: each back link names its own section.
+    await page.goto(base + "/lifecycle.html?view=run&instance=walltime&record=missing");
+    assert(await page.locator("#detail-route-status").isVisible());
+    assert.equal(
+      await page.locator("#detail-route-back").textContent(),
+      "← Inference Timings",
+    );
+    assert.equal(
+      await page.locator("#detail-route-back").getAttribute("href"),
+      "#inference-timings",
+    );
+    await page.evaluate(() => {
+      history.pushState(null, "", "?view=setup&instance=lens&record=missing");
+      dispatchEvent(new PopStateEvent("popstate"));
+    });
+    assert(await page.locator("#detail-route-status").isVisible());
+    assert.equal(
+      await page.locator("#detail-route-back").textContent(),
+      "← Profiling Timings",
+    );
+    assert.equal(
+      await page.locator("#detail-route-back").getAttribute("href"),
+      "#profiling-timings",
+    );
+    await page.goto(base + "/lifecycle.html");
     for (const width of [390, 1280]) {
       await page.setViewportSize({ width, height: 1000 });
       assert(

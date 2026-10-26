@@ -196,4 +196,4 @@ def test_v2_and_walltime_receipts_keep_their_shape(registry_file, fake_mind, web
     assert s.outcome == "ok", s.errors
     receipt = ingest.read_receipt(tmp_path, "lens")
     assert receipt["schema"] == "walltime-validation" and "lifecycle" not in receipt
-    assert receipt["record_count"] == 2
+    assert receipt["record_count"] == 5

@@ -299,6 +299,18 @@ def write(destination):
     )
     (destination / "lifecycle.html").write_text(board.render_html([lifecycle, walltime]))
 
+    # Constant categorical columns: hidden by default, back once History adds a value.
+    constant = copy.deepcopy(lifecycle)
+    keep = ("imaging-delaunay-hst-a100-runtime", "imaging-delaunay-hst-ral-runtime")
+    records = []
+    for record in constant.doc["records"]:
+        if record["id"] in keep:
+            records.append(dict(record, **{"class": "optimal"}))
+        elif record["id"] == "imaging-delaunay-hst-a100-runtime-old":
+            records.append(dict(record, regime="source_pixels_1500"))
+    constant.doc["records"] = records
+    (destination / "constant.html").write_text(board.render_html([constant, walltime]))
+
 
 if __name__ == "__main__":
     write(Path(sys.argv[1]))

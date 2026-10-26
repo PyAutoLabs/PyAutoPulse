@@ -309,23 +309,53 @@ their η, its source and the bounding limit (see Board below). The reasoning beh
 numbers, as decision rules for the autolens_assistant, is the knowledge page
 [Comparing CPU-parallel and GPU-batched setups](knowledge/cpu_parallel_vs_gpu_batched.md).
 
-**Board.** The setup browser's first selector is Class (Optimal by default,
-then Secondary, Experimental, All), then Likelihood (dataset type, variant),
-Instrument, Hardware class and Measurement. Only `current` rows show until
-History is ticked, which adds `superseded` rows. Archived records appear only
-as a count. A Coverage panel lists optimal `planned_cells` with no current
-record. Research lookups read `class: optimal` + `status: current` unless asked
+**Board.** Under **Profiling Timings**, a v3 instance renders a runtime-only
+table: one row per `measurement: runtime` record. Filters: Class (All by
+default, then Optimal, Secondary, Experimental), Dataset type, Model,
+Instrument, Hardware class. Only `current` rows show until History is ticked,
+which adds `superseded` rows; archived records appear only as a count. A green
+tally (top right, above History) counts the current rows. Columns: Dataset type
+| Model | Instrument | Source size | Setup | Hardware class | Lens light |
+**Runtime (s)** | **Est. 12 CPU (s)** | Class | ›. Headers are two lines: the
+name, then the unit in brackets in italics (no unit: an empty line); the
+Markdown board puts the unit after the name. Source size is the record's
+`regime` and Lens light its `model_variant`, values verbatim. Setup is the
+`setup_id` without its precision token or an `na` operator token
+(`jax_gpu_sparse_fp64` → `jax_gpu_sparse`, `jax_cpu_na_fp64` → `jax_cpu`); a
+non-fp64 precision is appended to the lens light (`default · mixed`). Rows sort
+by dataset type → model → instrument → setup → hardware class → lens light.
+**Constant columns:** Source size, Lens light and Class are hidden while every
+visible row shares one value, and a caption above the table names the shared
+values (`All rows: standard size · default lens light · secondary`); the
+script re-evaluates on every filter or History change, so a column returns as
+soon as visible rows differ. The server renders the default view the same way
+and the Markdown board omits the same columns with the same caption. Filters
+and detail pages keep every field.
+Runtime is the producer's vmap per-call time
+`projected_node_throughput.per_call_s`; Est. 12 CPU is the producer's
+`estimated_12_core.value_s` (numba CPU records only, — elsewhere). Both are
+rounded to 5 decimal places for display only, with the exact value in the
+tooltip; Pulse computes neither. A Coverage panel lists optimal `planned_cells`
+with no current record, and "Extra Information" links the knowledge page.
+Research lookups read `class: optimal` + `status: current` unless asked
 otherwise. The v2 eligibility heuristics never apply to a v3 catalogue.
 
-A **View** selector (after History) switches the value column between **Per
-call (measured)**, the default, and **Per node (projected)**. Per node prints the
-producer's `projected_node_throughput` (calls/s, workers, bounding limit, host)
-with a **projected** badge; focusing or hovering the badge shows a tooltip with
-η, its source, the bounding limit and worker caps, the per-call basis and what
-is not modelled (Escape dismisses it). `not_projected` rows print the producer's
-reason; rows without the block print a dash. The default stays per call until
-phase 4 measures η, so a projection never headlines. The Markdown board adds a
-"Node throughput (projected)" column with the same marking.
+**Detail pages.** Each row's › opens that record's detail page on the same
+board (`?view=setup&instance=<instance>&record=<record id>`): its runtime values
+(including `single_jit_median` / `single_jit_block`), the 12-core estimate,
+the breakdown, compile, memory and parity records on the same key
+(`likelihood`, `instrument`, `setup_id`, `host_class`, `model_variant`,
+`regime`) and the same status — for a superseded row only those tied to the
+same run (same `run_id`, or evidence in the same results directory measured
+on the same UTC date; never by date proximity), else a "no sibling measurements tied to this run" note — as bars
+within each panel (the breakdown panel is the producer's labelled `steps.*`
+list; a raw key is folded away only as the unambiguous same-value twin of one
+step, the rest sit under a collapsed "All recorded keys"), the producer's node
+throughput projection marked **projected** with η, its source and bound, class,
+status, decision, validation, limitations, configuration, evidence and figure
+links at the captured commit, and the record's history (every runtime record on
+the key). An id that is not in the captured catalogue shows a status line and no
+substitute.
 
 ## `walltime-validation` v1: full-fit evidence axis
 
@@ -353,9 +383,18 @@ example; validation is stdlib-only in `pulse/walltime.py`.
   `release_pin`, `slurm_job_id`: string or `null`.
 - `parity_status` ∈ `match | diverged | not_assessed`.
 
+Additive optional fields (still `@1`; absent is valid, present they are
+type-checked): the producer's join of the run to a profiling runtime record —
+`implied_s_per_eval` and `profiling_per_call_s` (finite number or `null`);
+`profiling_record_id` (the matched `profiling-summary@3` record id),
+`profiling_unmatched_reason`, `profiling_per_call_source`, `profiling_status`
+(string or `null`); `size_match` (boolean or `null`: whether the run's source
+pixels equal the profiling record's size bin); `source_pixels`,
+`profiling_source_pixels` (non-negative integer or `null`).
+
 Every derived number is computed and declared by the producer. Pulse renders
-the records as their own table under Profiling Results and computes nothing;
-the instance has no qualification flag, so it raises no "unqualified" item.
+the records under **Inference Timings** and computes nothing (see Board); the
+instance has no qualification flag, so it raises no "unqualified" item.
 
 ## Ingest
 
@@ -411,8 +450,32 @@ nothing; a new project commit moves both.
   "freshness policy unspecified · age N d at fetch <date>" (the HTML adds a live
   "N d today"); a passed `valid_until` reads "stale".
 - A v3 instance's status lines add **Lifecycle** (`N current · N superseded ·
-  N archived`), and its census item carries the same counts. A
-  `walltime-validation` instance renders as its own table.
+  N archived`), and its census item carries the same counts.
+- Sections: **Profiling Timings** (`#profiling-timings`; an empty
+  `<a id="evidence">` keeps older links landing) and **Inference Timings**
+  (`#inference-timings`), each a `<details class="project-group">` per project
+  (`#profiling-<project>`, `#inference-<project>`; the label is the registry
+  row's first `library_refs` entry, PyAutoFit then PyAutoLens then the rest).
+  PyAutoFit's inference group points to the PyAutoInsight board. The v3 table
+  and its detail pages are described under the v3 contract above.
+- **Inference Timings table** (a `walltime-validation` instance): only
+  `sampler: nautilus:mass_total[1]` records, Sampler shown as `nautilus`.
+  Columns: Dataset type | Model | Instrument | Setup | Hardware class | Lens
+  light | **Profiling runtime (s)** | Sampler | Seed | Cores (cores) | **Wall
+  (s)** (1 DP) | Likelihood evals (evals) | **Implied time (s / eval)**
+  (`implied_s_per_eval`, 5 DP) | ›.
+  Profiling runtime is the producer's `profiling_per_call_s` (5 DP) linking to
+  `?view=setup&instance=<profiling instance>&record=<profiling_record_id>` when
+  that record has a detail page in a captured profiling snapshot (else plain
+  text marked "not in captured catalogue"); no match shows — titled with
+  `profiling_unmatched_reason`. `size_match` and both source-pixel counts are
+  shown on the run page only. The same filters and a results tally sit above
+  the table; › opens `?view=run&instance=&record=`, a page with every field of
+  the record and its evidence link. Lens light, Sampler and Cores follow the
+  same constant-column rule (hidden with a caption while one value spans the
+  visible rows); rows sort as above, then by seed. All rounding is display only.
+- Detail pages are hidden articles inside `dashboard.html` (Pages publishes one
+  page); the board script shows one for `?view=setup|run` and hides the rest.
 - Instance marker (what `check` compares to the receipt):
   `<!-- pulse:instance name=<instance> receipt=<resolved commit|none> outcome=<outcome> shown=<snapshot commit|none> -->`.
 - `badge.json`: shields endpoint, label `pulse`, message = the state headline.

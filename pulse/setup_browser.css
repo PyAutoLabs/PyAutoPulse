@@ -332,9 +332,77 @@ button.retry {
 }
 .lifecycle-table td,
 .lifecycle-table th {
-  font-size: 0.8rem;
-  padding: 0.35rem 0.45rem;
+  font-size: 0.78rem;
+  padding: 0.35rem 0.25rem;
   vertical-align: top;
+}
+/* Headers and cells never wrap (the table scrolls inside its box); times
+ * are right-aligned, bold and tabular. */
+.lifecycle-table th,
+.lifecycle-table td {
+  white-space: nowrap;
+}
+.lifecycle-table .num {
+  text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.lifecycle-table td.num b {
+  font-weight: 700;
+}
+.lifecycle-table .open {
+  position: relative;
+  width: 1.6rem;
+  text-align: center;
+}
+.row-open {
+  display: inline-block;
+  min-width: 1.6rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1;
+  text-decoration: none;
+}
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+.table-tools {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.35rem;
+  margin: 0.2rem 0 0.6rem;
+}
+.tally {
+  color: var(--ok);
+  font-weight: 700;
+  font-size: 0.8rem;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  padding: 0.1rem 0.6rem;
+  white-space: nowrap;
+}
+.history-toggle {
+  font-size: 0.85rem;
+}
+.extra-info {
+  margin: 1.2rem 0 0.3rem;
+  font-size: 0.9rem;
+}
+.lifecycle-table th .th-name,
+.lifecycle-table th .th-unit {
+  display: block;
+  white-space: nowrap;
+}
+.lifecycle-table th .th-unit {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--muted);
 }
 .lifecycle-coverage {
   margin: 1rem 0;
@@ -342,11 +410,6 @@ button.retry {
 .lifecycle-coverage summary {
   cursor: pointer;
   font-weight: 600;
-}
-/* Per-node view: the producer's projection, visibly marked and never headline. */
-.lifecycle-browser .view-note {
-  color: var(--muted);
-  font-size: 0.85rem;
 }
 .projected-wrap {
   position: relative;
@@ -406,4 +469,39 @@ button.retry {
     width: auto;
     max-width: none;
   }
+}
+/* Per-row detail pages: server-rendered, hidden until ?view=setup|run routes one. */
+.detail-pages[hidden],
+.detail-page[hidden],
+.detail-pages [hidden] {
+  display: none;
+}
+.detail-view header,
+.detail-view .orchestration-panel,
+.detail-view .board-nav,
+.detail-view main > :not(#detail-pages) {
+  display: none;
+}
+.detail-page h2 {
+  font-size: 1.25rem;
+  overflow-wrap: anywhere;
+}
+.detail-page .metric-panel > summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+.back-link {
+  display: inline-block;
+  margin: 0.6rem 0;
+}
+.detail-status {
+  padding: 0.8rem;
+  border: 1px dashed var(--line);
+  border-radius: 8px;
+  color: var(--muted);
+}
+.constant-caption {
+  margin: 0 0 0.4rem;
+  font-size: 0.8rem;
+  color: var(--muted);
 }

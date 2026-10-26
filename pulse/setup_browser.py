@@ -1,10 +1,12 @@
 """Render setup navigation from captured v2/v3 evidence; never select scientific truth.
 
-A v3 (lifecycle) catalogue renders a Class-first browser: Class (Optimal by
-default) → Likelihood (dataset type → variant) → Instrument → Hardware class →
-Measurement, showing ``status: current`` rows unless History is ticked. The
-producer declares class and status; the board ranks nothing, picks no fastest
-row and shows archived records only as a count.
+A v3 (lifecycle) catalogue renders a runtime-only table: filters Class (All by
+default) → Dataset type → Model → Instrument → Hardware class, one row per
+``runtime`` record showing ``status: current`` rows unless History is ticked.
+Runtime is the producer's vmap per-call time and Est. 12 CPU its
+``estimated_12_core`` value (numba CPU only), both rounded for display; each row
+opens a detail page. The producer declares class and status; the board ranks
+nothing, picks no fastest row and shows archived records only as a count.
 """
 
 from __future__ import annotations
@@ -13,8 +15,9 @@ import html
 import importlib.util
 import json
 import os
+import re
 from pathlib import Path
-from urllib.parse import quote
+from urllib.parse import quote, urlencode
 
 from pulse import ORGAN_ROOT, catalogue
 
@@ -42,19 +45,25 @@ def assets():
 
 
 CLASS_OPTIONS = (
+    ("all", "All"),
     ("optimal", "Optimal"),
     ("secondary", "Secondary"),
     ("experimental", "Experimental"),
-    ("all", "All"),
 )
 # The selector order after Class; each is a data-* attribute on every row.
 FILTERS = (
-    ("dataset_type", "Likelihood"),
-    ("variant", "Variant"),
+    ("dataset_type", "Dataset type"),
+    ("variant", "Model"),
     ("instrument", "Instrument"),
     ("host_class", "Hardware class"),
-    ("measurement", "Measurement"),
 )
+PRECISIONS = ("fp64", "fp32", "fp16", "bf16", "mixed")
+PNT = "projected_node_throughput"
+KNOWLEDGE_URL = (
+    "https://github.com/PyAutoLabs/PyAutoPulse/blob/main/knowledge/cpu_parallel_vs_gpu_batched.md"
+)
+KNOWLEDGE_TITLE = "Comparing CPU-parallel and GPU-batched setups"
+DP = 5  # display rounding of every per-call time (presentation only)
 
 
 def lifecycle(doc) -> bool:
@@ -70,13 +79,65 @@ def _row_fields(record):
         "variant": likelihood.get("variant"),
         "instrument": record.get("instrument"),
         "host_class": record.get("host_class"),
-        "measurement": record.get("measurement"),
     }
 
 
+def precision(setup_id) -> str | None:
+    """The precision token a setup id carries (``fp64``, ``fp32``, ``mixed``…), if any."""
+    return next((t for t in str(setup_id or "").split("_") if t in PRECISIONS), None)
+
+
+def setup_label(setup_id) -> str:
+    """The setup id without its precision token or an ``na`` operator token.
+
+    ``jax_gpu_sparse_fp64`` → ``jax_gpu_sparse``; ``jax_cpu_na_fp64`` → ``jax_cpu``.
+    """
+    return "_".join(t for t in str(setup_id or "").split("_") if t not in PRECISIONS and t != "na")
+
+
+def row_order(record) -> tuple:
+    """Display order: dataset type → model → instrument → setup → hardware → variant."""
+    likelihood = record.get("likelihood") or {}
+    return (
+        str(likelihood.get("dataset_type")),
+        str(likelihood.get("variant")),
+        str(record.get("instrument")),
+        setup_label(record.get("setup_id")),
+        str(record.get("host_class")),
+        variant_label(record.get("model_variant"), record.get("setup_id")),
+    )
+
+
+def variant_label(model_variant, setup_id) -> str:
+    """The lens-light variant, with a non-fp64 precision appended (``default · mixed``)."""
+    p = precision(setup_id)
+    return str(model_variant) if p in (None, "fp64") else f"{model_variant} · {p}"
+
+
+def runtime_rows(doc) -> list[dict]:
+    """The v3 ``runtime`` records the table shows (current, and superseded with History)."""
+    rows = [
+        r
+        for r in (doc or {}).get("records") or []
+        if isinstance(r, dict)
+        and r.get("measurement") == "runtime"
+        and r.get("status") in ("current", "superseded")
+    ]
+    return sorted(
+        rows,
+        key=lambda r: (
+            *row_order(r),
+            str(r.get("regime")),
+            r.get("status") != "current",
+            str(r.get("measured_at") or ""),
+            str(r.get("id")),
+        ),
+    )
+
+
 def default_visible(record) -> bool:
-    """The default view: Optimal class, current status, no other filter."""
-    return record.get("class") == "optimal" and record.get("status") == "current"
+    """The default view: every class, current status, no other filter."""
+    return record.get("status") == "current"
 
 
 def not_measured(doc) -> list[dict]:
@@ -100,34 +161,36 @@ def _cell_label(cell):
     )
 
 
-def _value(record):
-    values = record.get("values") or {}
-    metric = record.get("metric")
-    return f"{values.get(metric)} {record.get('unit')} ({metric})"
+def _real(value) -> bool:
+    return isinstance(value, int | float) and not isinstance(value, bool)
 
 
-# Per-call (measured, the default) ↔ per-node (the producer's projection). The
-# default stays per-call until phase 4 measures η, so a projection never headlines.
-VIEW_OPTIONS = (
-    ("per_call", "Per call (measured)"),
-    ("per_node", "Per node (projected)"),
-)
-PNT = "projected_node_throughput"
-KNOWLEDGE_URL = (
-    "https://github.com/PyAutoLabs/PyAutoPulse/blob/main/knowledge/cpu_parallel_vs_gpu_batched.md"
-)
-KNOWLEDGE_TITLE = "Comparing CPU-parallel and GPU-batched setups"
+def fixed(value, dp: int = DP) -> str | None:
+    """``value`` rounded to ``dp`` decimal places for display, else None."""
+    return f"{value:.{dp}f}" if _real(value) else None
+
+
+def runtime_s(record):
+    """The producer's vmap per-call time (``projected_node_throughput.per_call_s``)."""
+    block = record.get(PNT)
+    return block.get("per_call_s") if isinstance(block, dict) else None
+
+
+def twelve_core_s(record):
+    """The producer's ``estimated_12_core.value_s`` (numba CPU records only)."""
+    block = record.get("estimated_12_core")
+    return block.get("value_s") if isinstance(block, dict) else None
 
 
 def _number(value):
-    return f"{value:g}" if isinstance(value, int | float) and not isinstance(value, bool) else "?"
+    return f"{value:g}" if _real(value) else "?"
 
 
 def node_throughput(record):
     """``(kind, text, detail)`` for the producer's declared projection, never computed here.
 
     ``kind`` is ``projected``, ``not_projected`` or ``None`` (no block declared).
-    ``detail`` is the tooltip text: η, its source, the bounding limit, the per-call
+    ``detail`` is the explanation: η, its source, the bounding limit, the per-call
     basis and what is not modelled.
     """
     block = record.get(PNT)
@@ -155,79 +218,205 @@ def node_throughput(record):
     return "projected", text, detail
 
 
-def _node_cell(record, tip_id, e):
-    kind, text, detail = node_throughput(record)
-    if kind == "projected":
-        return (
-            f"{e(text)} <span class='projected-wrap'><span class='projected-badge' tabindex='0' "
-            f"aria-describedby='{e(tip_id)}'>projected</span><span class='projected-tip' "
-            f"role='tooltip' id='{e(tip_id)}'>{e(detail)}</span></span>"
+def _e(value) -> str:
+    return html.escape(str(value), quote=True)
+
+
+def time_cell(value, title: str, missing: str) -> str:
+    """A bold, right-aligned 5-DP time cell; the exact value stays in the tooltip."""
+    shown = fixed(value)
+    if shown is None:
+        return f"<td class='num'><span class='muted' title='{_e(missing)}'>—</span></td>"
+    return f"<td class='num'><b title='{_e(f'{value} s · {title}')}'>{shown}</b></td>"
+
+
+def detail_href(view: str, instance: str, record_id: str) -> str:
+    """The same-page route of one detail page (``?view=setup|run&instance=&record=``)."""
+    return "?" + urlencode({"view": view, "instance": instance, "record": record_id})
+
+
+def open_link(view: str, instance: str, record_id: str, label: str) -> str:
+    return (
+        f'<td class="open"><a class="row-open" data-detail-link '
+        f'href="{_e(detail_href(view, instance, record_id))}" '
+        f'aria-label="{_e(label)}" title="{_e(label)}">›</a></td>'
+    )
+
+
+def selectors(instance_key: str, keys, values_of, with_class: bool) -> str:
+    """The filter buttons over server-rendered rows (shared by both timing tables)."""
+    fields = []
+    if with_class:
+        fields.append(
+            f'<label for="lifecycle-{_e(instance_key)}-class">Class'
+            f'<select id="lifecycle-{_e(instance_key)}-class" data-filter="class">'
+            + "".join(
+                f'<option value="{v}"{" selected" if v == "all" else ""}>{t}</option>'
+                for v, t in CLASS_OPTIONS
+            )
+            + "</select></label>"
         )
-    return f"<span class='muted'>{e(text)}</span>" if kind else "<span class='muted'>—</span>"
+    for key, title in keys:
+        fields.append(
+            f'<label for="lifecycle-{_e(instance_key)}-{key}">{title}'
+            f'<select id="lifecycle-{_e(instance_key)}-{key}" data-filter="{key}">'
+            '<option value="" selected>All</option>'
+            + "".join(f'<option value="{_e(v)}">{_e(v)}</option>' for v in values_of(key))
+            + "</select></label>"
+        )
+    return f'<div class="selectors lifecycle-selectors">{"".join(fields)}</div>'
+
+
+def tally(count: int, history: bool) -> str:
+    """The green results tally, top right, above History when there is one."""
+    noun = "result" if count == 1 else "results"
+    tip = "Current results (superseded excluded)" if history else "Results in this table"
+    return (
+        f'<div class="table-tools"><span class="tally" data-id="tally" title="{tip}">'
+        f"{count} {noun}</span>"
+        + (
+            '<label class="history-toggle"><input type="checkbox" data-filter="history"> '
+            "History (include superseded)</label>"
+            if history
+            else ""
+        )
+        + "</div>"
+    )
+
+
+# Categorical columns hidden while every visible row shares one value; the caption
+# above the table names the shared values. Filters and detail pages keep them all.
+PHRASES = {
+    "regime": "{} size",
+    "lens_light": "{} lens light",
+    "class": "{}",
+    "sampler": "{} sampler",
+    "cores": "{} cores",
+}
+
+
+def constant_columns(rows, columns) -> dict[str, str]:
+    """``{key: value}`` for each ``(key, value_of)`` column one value spans (rows ≥ 1)."""
+    out = {}
+    for key, value_of in columns:
+        values = {str(value_of(r)) for r in rows}
+        if len(values) == 1:
+            out[key] = values.pop()
+    return out
+
+
+def constant_caption(constants: dict[str, str]) -> str:
+    return (
+        "All rows: " + " · ".join(PHRASES[k].format(v) for k, v in constants.items())
+        if constants
+        else ""
+    )
+
+
+def caption_html(constants) -> str:
+    text = constant_caption(constants)
+    return (
+        f'<p class="constant-caption" data-id="constant-caption"{"" if text else " hidden"}>'
+        f"{_e(text)}</p>"
+    )
+
+
+# Column headers are two lines: the name, then its unit in brackets (italic, muted).
+UNITS = {
+    "Runtime": "s",
+    "Est. 12 CPU": "s",
+    "Profiling runtime": "s",
+    "Cores": "cores",
+    "Wall": "s",
+    "Likelihood evals": "evals",
+    "Implied time": "s / eval",
+}
+
+
+def head_label(name: str) -> str:
+    unit = UNITS.get(name)
+    return (
+        f'<span class="th-name">{_e(name)}</span>'
+        f'<span class="th-unit">{"(" + _e(unit) + ")" if unit else "&nbsp;"}</span>'
+    )
+
+
+def md_title(name: str) -> str:
+    """One-line Markdown header: the unit in brackets after the name."""
+    unit = UNITS.get(name)
+    return f"{name} ({unit})" if unit else name
+
+
+def th(name: str, cls: str = "") -> str:
+    klass = f' class="{cls}"' if cls else ""
+    return f"<th{klass}>{head_label(name)}</th>"
+
+
+def col_th(key, title, constants, cls="") -> str:
+    hidden = " hidden" if key in constants else ""
+    klass = f' class="{cls}"' if cls else ""
+    return (
+        f'<th data-col="{key}" data-phrase="{_e(PHRASES[key])}"{klass}{hidden}>'
+        f"{head_label(title)}</th>"
+    )
+
+
+def col_td(key, value, constants, cls="") -> str:
+    hidden = " hidden" if key in constants else ""
+    klass = f' class="{cls}"' if cls else ""
+    return f'<td data-col="{key}" data-value="{_e(value)}"{klass}{hidden}>{_e(value)}</td>'
+
+
+def lens_light(record) -> str:
+    return variant_label(record.get("model_variant"), record.get("setup_id"))
+
+
+PROFILING_HIDEABLE = (
+    ("regime", lambda r: r.get("regime")),
+    ("lens_light", lens_light),
+    ("class", lambda r: r.get("class")),
+)
 
 
 def _render_lifecycle(snapshot):
     doc = snapshot.doc
     instance = snapshot.instance
-    e = lambda v: html.escape(str(v), quote=True)  # noqa: E731
-    records = [r for r in doc.get("records") or [] if isinstance(r, dict)]
-    counts = catalogue.lifecycle_counts(doc)
-    fields = [
-        f'<label for="lifecycle-{e(instance.instance)}-class">Class'
-        f'<select id="lifecycle-{e(instance.instance)}-class" data-filter="class">'
-        + "".join(
-            f'<option value="{v}"{" selected" if v == "optimal" else ""}>{t}</option>'
-            for v, t in CLASS_OPTIONS
-        )
-        + "</select></label>"
-    ]
-    for key, title in FILTERS:
-        values = sorted({str(_row_fields(r)[key]) for r in records})
-        fields.append(
-            f'<label for="lifecycle-{e(instance.instance)}-{key}">{title}'
-            f'<select id="lifecycle-{e(instance.instance)}-{key}" data-filter="{key}">'
-            '<option value="" selected>All</option>'
-            + "".join(f'<option value="{e(v)}">{e(v)}</option>' for v in values)
-            + "</select></label>"
-        )
-    fields.append(
-        '<label class="history-toggle"><input type="checkbox" data-filter="history"> '
-        "History (include superseded)</label>"
+    e = _e
+    records = runtime_rows(doc)
+    filters = selectors(
+        instance.instance,
+        FILTERS,
+        lambda key: sorted({str(_row_fields(r)[key]) for r in records}),
+        with_class=True,
     )
-    fields.append(
-        f'<label for="lifecycle-{e(instance.instance)}-view">View'
-        f'<select id="lifecycle-{e(instance.instance)}-view" data-view>'
-        + "".join(
-            f'<option value="{v}"{" selected" if v == "per_call" else ""}>{t}</option>'
-            for v, t in VIEW_OPTIONS
-        )
-        + "</select></label>"
-    )
+    constants = constant_columns([r for r in records if default_visible(r)], PROFILING_HIDEABLE)
     rows = []
-    for n, r in enumerate(records):
+    for r in records:
         attrs = "".join(f' data-{k.replace("_", "-")}="{e(v)}"' for k, v in _row_fields(r).items())
         hidden = "" if default_visible(r) else " hidden"
-        ev = r.get("evidence") or {}
-        links = []
-        if ev.get("path"):
-            url = instance.blob_url(snapshot.commit, quote(ev["path"], safe="/"))
-            links.append(f'<a href="{e(url)}">evidence</a>')
-        for fig in r.get("figures") or []:
-            url = instance.blob_url(snapshot.commit, quote(fig["path"], safe="/"))
-            links.append(f'<a href="{e(url)}">{e(fig["kind"])} figure</a>')
         likelihood = r.get("likelihood") or {}
+        block = r.get(PNT) if isinstance(r.get(PNT), dict) else {}
         rows.append(
             f'<tr data-record="{e(r.get("id"))}"{attrs}{hidden}>'
-            f"<td>{e(likelihood.get('dataset_type'))}/{e(likelihood.get('variant'))}</td>"
-            f"<td>{e(r.get('instrument'))}</td><td>{e(r.get('regime'))}</td>"
-            f"<td><code>{e(r.get('setup_id'))}</code></td><td>{e(r.get('host_class'))}</td>"
-            f"<td>{e(r.get('model_variant'))}</td><td>{e(r.get('measurement'))}</td>"
-            f"<td class='num'><span data-view-value='per_call'>{e(_value(r))}</span>"
-            f"<span data-view-value='per_node' hidden>"
-            f"{_node_cell(r, f'pnt-{instance.instance}-{n}', e)}</span></td>"
-            f"<td>{e(r.get('class'))}</td>"
-            f"<td>{e(r.get('status'))}</td><td>{e(r.get('decision_id') or '—')}</td>"
-            f"<td>{' · '.join(links) or '—'}</td></tr>"
+            f"<td>{e(likelihood.get('dataset_type'))}</td><td>{e(likelihood.get('variant'))}</td>"
+            f"<td>{e(r.get('instrument'))}</td>"
+            + col_td("regime", r.get("regime"), constants)
+            + f"<td><code>{e(setup_label(r.get('setup_id')))}</code></td>"
+            f"<td>{e(r.get('host_class'))}</td>"
+            + col_td("lens_light", lens_light(r), constants)
+            + time_cell(
+                runtime_s(r),
+                f"per call, {block.get('per_call_source') or 'source not declared'}",
+                "no vmap per-call time declared",
+            )
+            + time_cell(
+                twelve_core_s(r),
+                "producer estimate at 12 cores",
+                "numba CPU setups only",
+            )
+            + col_td("class", r.get("class"), constants)
+            + open_link("setup", instance.instance, r.get("id"), "Open this setup's details")
+            + "</tr>"
         )
     visible = sum(default_visible(r) for r in records)
     missing = not_measured(doc)
@@ -241,35 +430,404 @@ def _render_lifecycle(snapshot):
         )
         + "</details>"
     )
-    label = instance.repo.removesuffix("_profiling").replace("autolens", "PyAutoLens")
     return (
         f'<section class="setup-browser lifecycle-browser" data-setup-browser="{e(instance.instance)}" '
         f'data-lifecycle aria-label="{e(instance.repo)} setups">'
-        f"<h3>{e(label)}: setups by class</h3>"
-        f'<div class="selectors lifecycle-selectors">{"".join(fields)}</div>'
-        f'<p data-id="lifecycle-counts">{counts["current"]} current · {counts["superseded"]} '
-        f"superseded (shown with History) · {counts['archived']} archived (counted, not shown). "
-        "Class and status are the producer's declarations; this board ranks nothing.</p>"
-        '<p class="view-note" data-view-value="per_node" data-id="view-note" hidden>'
-        "Per node shows the producer's <b>projected</b> calls per second on the host class "
-        "each row was measured on: workers capped by cores ÷ CPUs per evaluation and memory "
-        "÷ peak RSS (one per GPU), times a declared parallel efficiency η, over the per-call "
-        "time. η is not yet measured, so these are upper bounds; focus a <b>projected</b> "
-        "badge for its basis. Never compare GPU and CPU setups on per-call latency alone.</p>"
-        f'<p class="view-note" data-id="knowledge-link">Read: <a href="{KNOWLEDGE_URL}" '
-        f'target="_blank" rel="noopener" title="Opens in a new tab">{KNOWLEDGE_TITLE}</a> (decision rules, not a '
-        "decision).</p>"
-        '<div class="tablewrap"><table class="lifecycle-table"><thead><tr><th>Likelihood</th>'
-        "<th>Instrument</th><th>Regime</th><th>Setup</th><th>Hardware class</th>"
-        "<th>Model variant</th><th>Measurement</th><th>"
-        "<span data-view-value='per_call'>Value (producer)</span>"
-        "<span data-view-value='per_node' hidden>Node throughput (producer projection)</span>"
-        "</th><th>Class</th>"
-        "<th>Status</th><th>Decision</th><th>Evidence</th></tr></thead>"
-        f"<tbody>{''.join(rows)}</tbody></table></div>"
+        + filters
+        + tally(visible, history=True)
+        + caption_html(constants)
+        + '<div class="tablewrap"><table class="lifecycle-table"><thead><tr>'
+        + th("Dataset type")
+        + th("Model")
+        + th("Instrument")
+        + col_th("regime", "Source size", constants)
+        + th("Setup")
+        + th("Hardware class")
+        + col_th("lens_light", "Lens light", constants)
+        + th("Runtime", "num")
+        + th("Est. 12 CPU", "num")
+        + col_th("class", "Class", constants)
+        + "<th class='open'><span class='visually-hidden'>Details</span></th>"
+        f"</tr></thead><tbody>{''.join(rows)}</tbody></table></div>"
         f'<p class="empty" data-id="no-rows"{" hidden" if visible else ""}>'
-        "No record matches this selection.</p>" + coverage + "</section>"
+        "No record matches this selection.</p>"
+        + coverage
+        + '<h4 class="extra-info">Extra Information</h4>'
+        f'<p data-id="knowledge-link"><a href="{KNOWLEDGE_URL}" target="_blank" rel="noopener" '
+        f'title="Opens in a new tab">{KNOWLEDGE_TITLE}</a></p>'
+        "</section>"
     )
+
+
+# ------------------------------------------------ v3: per-row detail pages ---
+
+SIBLING_KEY = ("instrument", "setup_id", "host_class", "model_variant", "regime")
+PANELS = (
+    ("runtime", "Likelihood runtime"),
+    ("breakdown", "Likelihood breakdown"),
+    ("compile", "Compilation and setup"),
+    ("memory_host", "Memory (host)"),
+    ("memory_device", "Memory (device)"),
+    ("parity", "Parity"),
+)
+
+
+def sibling_key(record) -> str:
+    """The cell a record belongs to: likelihood, instrument, setup, hardware, variant, regime."""
+    return json.dumps(
+        [record.get("likelihood"), *(record.get(k) for k in SIBLING_KEY)], sort_keys=True
+    )
+
+
+def _fmt(value, unit) -> str:
+    """Four significant figures in the record's own unit (display only)."""
+    return f"{value:.4g} {unit}" if _real(value) else "—"
+
+
+def _metric_label(name: str) -> str:
+    return name.removeprefix("steps.")
+
+
+def _metric_panel(records, title, axis) -> str:
+    """One metric-panel of the old setup page: a bar per value within each record."""
+    e = _e
+    if not records:
+        return (
+            f'<details class="metric-panel" data-axis="{axis}"><summary>{e(title)}</summary>'
+            f'<p class="empty">No {e(title.lower())} recorded for this setup.</p></details>'
+        )
+    parts = [f'<details class="metric-panel" data-axis="{axis}" open><summary>{e(title)}</summary>']
+    for r in records:
+        values = {k: v for k, v in (r.get("values") or {}).items() if _real(v)}
+        unit = r.get("unit")
+        total = values.get("component_total") if axis == "breakdown" else None
+        scale = "component total" if total else "largest value"
+        denominator = total or max((abs(v) for v in values.values()), default=0)
+        caption = f"{scale.capitalize()} · {unit} · {r.get('status')} · measured " + str(
+            r.get("measured_at") or "—"
+        )
+        if axis == "parity":
+            parts.append(
+                f"<p class='metric-meta scale-caption'>{e(unit)} · {e(r.get('status'))}</p>"
+            )
+            parts.append(
+                '<dl class="config">'
+                + "".join(
+                    f"<dt>{e(_metric_label(k))}</dt><dd><strong class='metric-value' "
+                    f"title='{e(v)}'>{e(f'{v:.4g}')}</strong></dd>"
+                    for k, v in values.items()
+                )
+                + "</dl>"
+            )
+            continue
+        parts.append(f"<p class='metric-meta scale-caption'>{e(caption)}</p>")
+        labelled = {k: v for k, v in values.items() if k.startswith("steps.")}
+        if axis == "breakdown" and labelled:
+            # The producer's labelled step list is the panel. A raw key is dropped only
+            # as the unambiguous twin of ONE labelled step (see step_twins).
+            main = {k: v for k, v in values.items() if k == "component_total" or k in labelled}
+            twins = step_twins(values)
+            rest = {k: v for k, v in values.items() if k not in main and k not in twins}
+        else:
+            main, rest = values, {}
+        parts.append(_metric_rows(main, unit, denominator, scale))
+        if rest:
+            parts.append(
+                "<details class='timing-diagnostics' data-id='recorded-keys'>"
+                f"<summary>All recorded keys ({len(rest)} without a labelled step)</summary>"
+                "<p class='metric-meta'>Raw producer keys: cumulative prefixes and sub-steps "
+                "overlap the steps above and are not additional likelihood steps. Keys whose "
+                "value is identical to a labelled step are omitted.</p>"
+                + _metric_rows(rest, unit, denominator, scale)
+                + "</details>"
+            )
+    parts.append("</details>")
+    return "".join(parts)
+
+
+_GENERIC_TOKENS = {"jit", "steady", "per", "call", "s", "steps", "sparse", "dense", "vmap"}
+
+
+def _tokens(name: str) -> set[str]:
+    return {t for t in re.split(r"[^a-z0-9]+", name.lower()) if t} - _GENERIC_TOKENS
+
+
+def step_twins(values: dict) -> set[str]:
+    """Raw keys that duplicate exactly one labelled ``steps.*`` entry.
+
+    A raw key is a twin only when its value equals one labelled step's value, no
+    other step and no other raw key records that value, and its name shares a
+    word with the step label. Any ambiguity keeps every key on show.
+    """
+    steps, raws = {}, {}
+    for k, v in values.items():
+        if k == "component_total":
+            continue
+        (steps if k.startswith("steps.") else raws).setdefault(v, []).append(k)
+    twins = set()
+    for v, labelled in steps.items():
+        candidates = raws.get(v, [])
+        if len(labelled) == 1 and len(candidates) == 1:
+            if _tokens(labelled[0]) & _tokens(candidates[0]):
+                twins.add(candidates[0])
+    return twins
+
+
+def _metric_rows(values, unit, denominator, scale) -> str:
+    e = _e
+    parts = ["<ul class='metric-list'>"]
+    ordered = sorted(values.items(), key=lambda kv: (kv[0] != "component_total", -kv[1]))
+    for k, v in ordered:
+        width = min(100.0, 100 * abs(v) / denominator) if denominator else 0
+        kind = " data-kind='total'" if k == "component_total" else ""
+        parts.append(
+            f"<li class='metric-row' data-metric='{e(k)}'{kind}>"
+            f"<div class='metric-title'><span>{e(_metric_label(k))}</span>"
+            f"<strong class='metric-value' title='Exact recorded value: {e(v)} {e(unit)}'>"
+            f"{e(_fmt(v, unit))}</strong></div>"
+            f"<div class='bar-track' aria-hidden='true'><div class='bar' "
+            f"style='width:{width:.1f}%' data-scale='{e(scale)}'></div></div></li>"
+        )
+    parts.append("</ul>")
+    return "".join(parts)
+
+
+def _dl(pairs) -> str:
+    return (
+        '<dl class="config">'
+        + "".join(f"<dt>{_e(k)}</dt><dd>{v}</dd>" for k, v in pairs if v not in (None, "", "None"))
+        + "</dl>"
+    )
+
+
+def _text(value) -> str:
+    if value is None:
+        return ""
+    if isinstance(value, list):
+        return _e("; ".join(str(v) for v in value))
+    return _e(value)
+
+
+def _headline(label, value_html, note="") -> str:
+    note_html = f"<span class='headline-note'>{_e(note)}</span>" if note else ""
+    return (
+        f"<div class='headline-row'><dt>{_e(label)}</dt><dd>"
+        f"<strong class='headline-value'>{value_html}</strong>{note_html}</dd></div>"
+    )
+
+
+def _seconds(value, missing="not recorded") -> str:
+    shown = fixed(value)
+    return f"<span title='{_e(value)} s'>{shown} s</span>" if shown else _e(missing)
+
+
+def detail_title(project: str, record) -> str:
+    likelihood = record.get("likelihood") or {}
+    return " / ".join(
+        str(x)
+        for x in (
+            project,
+            likelihood.get("dataset_type"),
+            likelihood.get("variant"),
+            record.get("instrument"),
+            setup_label(record.get("setup_id")),
+            record.get("host_class"),
+            variant_label(record.get("model_variant"), record.get("setup_id")),
+        )
+    )
+
+
+def _evidence_dir(record) -> str | None:
+    path = (record.get("evidence") or {}).get("path")
+    return path.rsplit("/", 1)[0] if isinstance(path, str) and "/" in path else None
+
+
+def _day(record) -> str | None:
+    stamp = record.get("measured_at")
+    return stamp[:10] if isinstance(stamp, str) and len(stamp) >= 10 else None
+
+
+def tied_siblings(record, siblings) -> list[dict]:
+    """The sibling records the detail page shows beside a runtime row.
+
+    A current row shows the current records of its cell. A superseded row shows
+    only superseded records tied to the same run: the same ``run_id``, or evidence
+    in the same producer results directory measured on the same UTC calendar date
+    (a directory alone can hold several runs). Nothing is tied by date proximity.
+    """
+    others = [r for r in siblings if r is not record and r.get("status") == record.get("status")]
+    if record.get("status") != "superseded":
+        return others
+    home, day = _evidence_dir(record), _day(record)
+    return [
+        r
+        for r in others
+        if r.get("run_id") == record.get("run_id")
+        or (home and _evidence_dir(r) == home and day and _day(r) == day)
+    ]
+
+
+def detail_page(snapshot, record, siblings, back: str, project: str) -> str:
+    """The old per-setup page, server-rendered for one runtime row (hidden until routed)."""
+    e = _e
+    instance = snapshot.instance
+    title = detail_title(project, record)
+    values = record.get("values") or {}
+    block = record.get(PNT) if isinstance(record.get(PNT), dict) else {}
+    kind, node_text, node_detail = node_throughput(record)
+    node_html = e(node_text) + (
+        " <span class='projected-badge'>projected</span>" if kind == "projected" else ""
+    )
+    headline = [
+        _headline(
+            "Runtime (vmap per call)",
+            _seconds(runtime_s(record), "no vmap per-call time declared"),
+            f"Producer: projected_node_throughput.per_call_s from "
+            f"{block.get('per_call_source') or 'an undeclared source'}",
+        )
+    ]
+    for metric in ("single_jit_median", "single_jit_block", "vmap.per_call", "vmap.batch_time"):
+        if metric in values:
+            headline.append(_headline(metric, _seconds(values[metric])))
+    est = (
+        record.get("estimated_12_core") if isinstance(record.get("estimated_12_core"), dict) else {}
+    )
+    headline.append(
+        _headline(
+            "Est. 12 CPU",
+            _seconds(twelve_core_s(record), "numba CPU setups only"),
+            (est.get("ruling") or "") if est else "",
+        )
+    )
+    headline.append(_headline("Node throughput", node_html, node_detail))
+    same = tied_siblings(record, siblings)
+    untied = record.get("status") == "superseded" and not same
+    panels = []
+    for axis, panel_title in PANELS:
+        rows = [record] if axis == "runtime" else [r for r in same if r.get("measurement") == axis]
+        if axis == "memory_device" and not rows:
+            continue
+        panels.append(_metric_panel(rows, panel_title, axis))
+    validation = record.get("validation") or {}
+    status = _dl(
+        [
+            ("Class", _text(record.get("class"))),
+            ("Status", _text(record.get("status"))),
+            ("Decision", _text(record.get("decision_id") or "—")),
+            (
+                "Validation",
+                _text(
+                    f"{validation.get('status')}: {validation.get('reason')}"
+                    if validation
+                    else None
+                ),
+            ),
+            ("Limitations", _text(record.get("limitations"))),
+            ("Superseded by", _text(record.get("superseded_by"))),
+            ("Source size", _text(record.get("regime"))),
+            ("Lens light", _text(lens_light(record))),
+            ("Release pin", _text(record.get("release_pin"))),
+            ("Measured on release", _text(record.get("measured_release_pin"))),
+            ("Measured at", _text(record.get("measured_at"))),
+            ("Run", f"<code>{_text(record.get('run_id'))}</code>"),
+            ("Record", f"<code>{_text(record.get('id'))}</code>"),
+        ]
+    )
+    identity = record.get("identity") or {}
+    resources = record.get("resources") or {}
+    setup = record.get("setup") or {}
+    config = _dl(
+        [("Setup id", f"<code>{_text(record.get('setup_id'))}</code>")]
+        + [(f"Setup {k}", _text(v)) for k, v in setup.items()]
+        + [
+            ("Device", _text(identity.get("device"))),
+            ("Backend", _text(identity.get("backend"))),
+            ("Precision", _text(identity.get("precision"))),
+            ("Library version", _text(identity.get("library_version"))),
+            ("Host", _text((record.get("provenance") or {}).get("host"))),
+            ("CPUs per evaluation", _text(resources.get("cpus_per_eval"))),
+            ("Peak RSS (GB)", _text(resources.get("peak_rss_gb"))),
+            ("Resources note", _text(resources.get("reason"))),
+        ]
+    )
+    links = {}
+    for r in [record, *same]:
+        ev = r.get("evidence") or {}
+        if ev.get("path"):
+            links.setdefault(ev["path"], f"{r.get('measurement')} evidence")
+        for fig in r.get("figures") or []:
+            links.setdefault(fig["path"], f"{fig.get('kind')} figure")
+    evidence = "".join(
+        f'<li><a href="{e(instance.blob_url(snapshot.commit, quote(path, safe="/")))}">'
+        f"{e(label)}</a> <code>{e(path)}</code></li>"
+        for path, label in links.items()
+    )
+    history = sorted(
+        (r for r in siblings if r.get("measurement") == "runtime"),
+        key=lambda r: str(r.get("measured_at") or ""),
+        reverse=True,
+    )
+    history_items = "".join(
+        "<li>"
+        + (
+            f"<b>{e(r.get('status'))}</b> (this page)"
+            if r is record
+            else f'<a data-detail-link href="{e(detail_href("setup", instance.instance, r.get("id")))}">'
+            f"{e(r.get('status'))}</a>"
+        )
+        + f" · measured {e(r.get('measured_at') or '—')} · runtime "
+        f"{e(fixed(runtime_s(r)) or '—')} s · <code>{e(r.get('id'))}</code></li>"
+        for r in history
+    )
+    return (
+        f'<article class="detail-page" data-view="setup" data-instance="{e(instance.instance)}" '
+        f'data-record="{e(record.get("id"))}" data-title="{e(title)}" hidden>'
+        f'<a class="back-link" data-detail-link data-back href="{e(back)}">← Profiling Timings</a>'
+        f"<h2>{e(title)}</h2>"
+        f"<p class='metric-meta'>Source size {e(record.get('regime'))} · lens light "
+        f"{e(lens_light(record))} · class {e(record.get('class'))} · "
+        f"status {e(record.get('status'))} · measured {e(record.get('measured_at') or '—')}</p>"
+        f'<section class="headline-metrics" aria-label="Headline timings"><dl class="headline-list">'
+        + "".join(headline)
+        + "</dl></section>"
+        + (
+            "<p class='metric-meta' data-id='no-siblings'>No sibling measurements tied to "
+            "this run; see History for the other records of this setup.</p>"
+            if untied
+            else ""
+        )
+        + "".join(panels)
+        + '<details class="metric-panel" data-axis="status" open><summary>Status, decision and '
+        "validation</summary>" + status + "</details>"
+        '<details class="metric-panel" data-axis="configuration"><summary>Configuration</summary>'
+        + config
+        + "</details>"
+        '<details class="metric-panel" data-axis="evidence" open><summary>Evidence</summary>'
+        f'<ul class="evidence-list">{evidence or "<li>No evidence recorded.</li>"}</ul></details>'
+        '<details class="metric-panel" data-axis="history" open><summary>History</summary>'
+        f'<ul class="evidence-list">{history_items}</ul></details>'
+        "</article>"
+    )
+
+
+def detail_pages(snapshot, back: str, project: str) -> str:
+    """One hidden detail page per table row of a v3 capture (empty for other versions)."""
+    doc = snapshot.doc or {}
+    if not lifecycle(doc):
+        return ""
+    by_key: dict[str, list] = {}
+    for r in doc.get("records") or []:
+        if isinstance(r, dict):
+            by_key.setdefault(sibling_key(r), []).append(r)
+    return "".join(
+        detail_page(snapshot, r, by_key.get(sibling_key(r), [r]), back, project)
+        for r in runtime_rows(doc)
+    )
+
+
+def page_ids(snapshot) -> set[str]:
+    """The record ids that have a detail page in this capture."""
+    return {r.get("id") for r in runtime_rows(snapshot.doc)} if lifecycle(snapshot.doc) else set()
 
 
 def render(snapshot):
@@ -314,49 +872,72 @@ def render(snapshot):
     )
 
 
-def _node_markdown(record):
-    kind, text, detail = node_throughput(record)
-    if kind == "projected":
-        block = record[PNT]
-        eta = block.get("parallel_efficiency") or {}
-        return f"{text} — *projected*, η {_number(eta.get('value'))} ({eta.get('source')})"
-    return text if kind else "—"
+def _md_time(value) -> str:
+    shown = fixed(value)
+    return f"**{shown}**" if shown is not None else "—"
+
+
+def md_table(head, rows, constants) -> list[str]:
+    """A Markdown table without the constant columns; ``head`` is ``(key|None, title, align)``."""
+    keep = [i for i, (key, _, _) in enumerate(head) if key not in constants]
+    lines = [
+        "| " + " | ".join(md_title(head[i][1]) for i in keep) + " |",
+        "|" + "".join("---:|" if head[i][2] == "r" else "---|" for i in keep),
+    ]
+    lines += ["| " + " | ".join(str(row[i]) for i in keep) + " |" for row in rows]
+    caption = constant_caption(constants)
+    return ([caption, ""] if caption else []) + lines
+
+
+PROFILING_MD_HEAD = (
+    (None, "Dataset type", "l"),
+    (None, "Model", "l"),
+    (None, "Instrument", "l"),
+    ("regime", "Source size", "l"),
+    (None, "Setup", "l"),
+    (None, "Hardware class", "l"),
+    ("lens_light", "Lens light", "l"),
+    (None, "Runtime", "r"),
+    (None, "Est. 12 CPU", "r"),
+    ("class", "Class", "l"),
+)
 
 
 def _markdown_lifecycle(snapshot):
     doc = snapshot.doc
-    counts = catalogue.lifecycle_counts(doc)
     name = snapshot.instance.repo.removesuffix("_profiling")
+    current = [r for r in runtime_rows(doc) if default_visible(r)]
+    esc = lambda v: html.escape(str(v)).replace("|", "\\|")  # noqa: E731
+    rows = []
+    for r in current:
+        likelihood = r.get("likelihood") or {}
+        rows.append(
+            [
+                esc(likelihood.get("dataset_type")),
+                esc(likelihood.get("variant")),
+                esc(r.get("instrument")),
+                esc(r.get("regime")),
+                f"`{esc(setup_label(r.get('setup_id')))}`",
+                esc(r.get("host_class")),
+                esc(lens_light(r)),
+                _md_time(runtime_s(r)),
+                _md_time(twelve_core_s(r)),
+                esc(r.get("class")),
+            ]
+        )
     lines = [
-        f"<details><summary>{html.escape(name)} — optimal, current setups</summary>",
+        f"<details><summary>{html.escape(name)} — current runtime setups</summary>",
         "",
         f"[Interactive setup browser]({snapshot.instance.dashboard_url})",
         "",
-        f"{counts['current']} current · {counts['superseded']} superseded · "
-        f"{counts['archived']} archived (counted, not shown). Class and status are the "
-        "producer's declarations.",
+        f"{len(current)} current result{'' if len(current) == 1 else 's'}.",
         "",
-        f"Per-node values are the producer's projections, never measurements: read "
-        f"[{KNOWLEDGE_TITLE}]({KNOWLEDGE_URL}) before comparing CPU and GPU setups.",
-        "",
-        "| Likelihood | Instrument | Setup | Hardware class | Model variant | Measurement "
-        "| Value (producer) | Decision | Node throughput (projected) |",
-        "|---|---|---|---|---|---|---:|---|---|",
+        *md_table(PROFILING_MD_HEAD, rows, constant_columns(current, PROFILING_HIDEABLE)),
     ]
-    esc = lambda v: html.escape(str(v)).replace("|", "\\|")  # noqa: E731
-    for r in doc.get("records") or []:
-        if not default_visible(r):
-            continue
-        likelihood = r.get("likelihood") or {}
-        lines.append(
-            f"| {esc(likelihood.get('dataset_type'))}/{esc(likelihood.get('variant'))} "
-            f"| {esc(r.get('instrument'))} | `{esc(r.get('setup_id'))}` | {esc(r.get('host_class'))} "
-            f"| {esc(r.get('model_variant'))} | {esc(r.get('measurement'))} | {esc(_value(r))} "
-            f"| {esc(r.get('decision_id'))} | {esc(_node_markdown(r))} |"
-        )
     missing = not_measured(doc)
     lines += ["", f"Coverage: {len(missing)} optimal cell(s) not measured.", ""]
     lines += [f"- {esc(_cell_label(c))}" for c in missing]
+    lines += ["", "#### Extra Information", "", f"[{KNOWLEDGE_TITLE}]({KNOWLEDGE_URL})"]
     lines += ["", "</details>", ""]
     return lines
 

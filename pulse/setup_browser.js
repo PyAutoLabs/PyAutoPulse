@@ -2,8 +2,10 @@
  * Consumes captured producer data only. No cross-setup joins or scientific judgement. */
 (() => {
   "use strict";
-  // profiling-summary@3: the producer declares class and status. Filtering only
-  // shows or hides server-rendered rows; nothing is ranked, joined or chosen.
+  // Server-rendered timing tables (profiling-summary@3 runtime rows and the
+  // walltime-validation runs). Filtering only shows or hides rows; nothing is
+  // ranked, joined or chosen. Rows without data-status (inference runs) and
+  // tables without a History checkbox are handled the same way.
   function lifecycle(root) {
     const filters = [...root.querySelectorAll("select[data-filter]")];
     const history = root.querySelector('input[data-filter="history"]');
@@ -14,8 +16,9 @@
       for (const row of rows) {
         const status = row.getAttribute("data-status");
         const visible =
-          (status === "current" ||
-            (history.checked && status === "superseded")) &&
+          (status === null ||
+            status === "current" ||
+            (history && history.checked && status === "superseded")) &&
           filters.every((select) => {
             const key = select.dataset.filter;
             const value = select.value;
@@ -28,31 +31,107 @@
         row.hidden = !visible;
         if (visible) shown += 1;
       }
-      empty.hidden = shown > 0;
+      if (empty) empty.hidden = shown > 0;
+      constants();
     }
-    for (const control of [...filters, history])
+    // Hide each listed categorical column while every visible row shares one
+    // value, and name the shared values in the caption above the table.
+    const caption = root.querySelector('[data-id="constant-caption"]');
+    function constants() {
+      const visible = rows.filter((row) => !row.hidden);
+      const parts = [];
+      for (const th of root.querySelectorAll("th[data-col]")) {
+        const key = th.dataset.col;
+        const values = new Set(
+          visible.map(
+            (row) => row.querySelector(`td[data-col="${key}"]`)?.dataset.value,
+          ),
+        );
+        const constant = visible.length > 0 && values.size === 1;
+        th.hidden = constant;
+        for (const td of root.querySelectorAll(`td[data-col="${key}"]`))
+          td.hidden = constant;
+        if (constant) parts.push(th.dataset.phrase.replace("{}", [...values][0]));
+      }
+      if (caption) {
+        caption.textContent = parts.length ? "All rows: " + parts.join(" · ") : "";
+        caption.hidden = !parts.length;
+      }
+    }
+    for (const control of [...filters, history].filter(Boolean))
       control.addEventListener("change", apply);
     apply();
-    // Per call (measured, the default) <-> per node (the producer's projection).
-    // Only swaps which server-rendered value shows; nothing is computed here.
-    const view = root.querySelector("select[data-view]");
-    const swap = () => {
-      root.dataset.view = view.value;
-      for (const el of root.querySelectorAll("[data-view-value]"))
-        el.hidden = el.dataset.viewValue !== view.value;
-    };
-    view.addEventListener("change", swap);
-    swap();
-    // Escape dismisses a focused or hovered "projected" tooltip (WCAG 1.4.13).
-    for (const badge of root.querySelectorAll(".projected-badge")) {
-      const wrap = badge.parentElement;
-      badge.addEventListener("keydown", (event) => {
-        if (event.key === "Escape") wrap.classList.add("dismissed");
-      });
-      for (const type of ["blur", "mouseleave"])
-        wrap.addEventListener(type, () => wrap.classList.remove("dismissed"), true);
-    }
   }
+  // Per-row detail pages (profiling setups and inference runs) are hidden,
+  // server-rendered articles; ?view=setup|run&instance=&record= shows one.
+  const detailPages = document.getElementById("detail-pages");
+  const boardTitle = document.title;
+  function detailRoute() {
+    if (!detailPages) return;
+    const query = new URLSearchParams(location.search);
+    const view = query.get("view");
+    const active = view === "setup" || view === "run";
+    const selected = active
+      ? [...detailPages.querySelectorAll("article.detail-page")].find(
+          (p) =>
+            p.dataset.view === view &&
+            p.dataset.instance === query.get("instance") &&
+            p.dataset.record === query.get("record"),
+        )
+      : null;
+    for (const p of detailPages.querySelectorAll("article.detail-page"))
+      p.hidden = p !== selected;
+    detailPages.hidden = !active;
+    document.body.classList.toggle("detail-view", active);
+    const status = document.getElementById("detail-route-status");
+    const back = document.getElementById("detail-route-back");
+    const missing = active && !selected;
+    status.hidden = back.hidden = !missing;
+    status.textContent = missing
+      ? "This record is not in the captured catalogue. No substitute measurements are shown."
+      : "";
+    if (missing) {
+      const run = view === "run";
+      back.href = run ? "#inference-timings" : "#profiling-timings";
+      back.textContent = run ? "← Inference Timings" : "← Profiling Timings";
+    }
+    document.title = selected
+      ? selected.dataset.title + " · PyAutoPulse"
+      : boardTitle;
+  }
+  function reveal() {
+    const id = decodeURIComponent(location.hash.slice(1));
+    const target = id && document.getElementById(id);
+    if (!target) return;
+    for (let p = target; p; p = p.parentElement)
+      if (p.tagName === "DETAILS") p.open = true;
+    target.scrollIntoView({ block: "start" });
+  }
+  document.addEventListener("click", (event) => {
+    const link = event.target.closest("a[data-detail-link]");
+    if (
+      !link ||
+      event.button ||
+      event.metaKey ||
+      event.ctrlKey ||
+      event.shiftKey ||
+      event.altKey
+    )
+      return;
+    event.preventDefault();
+    const url = link.hasAttribute("data-back")
+      ? location.pathname + link.hash
+      : link.getAttribute("href");
+    history.pushState(null, "", url);
+    detailRoute();
+    if (link.hasAttribute("data-back")) requestAnimationFrame(reveal);
+    else window.scrollTo(0, 0);
+  });
+  addEventListener("popstate", () => {
+    detailRoute();
+    if (!detailPages || detailPages.hidden) reveal();
+  });
+  detailRoute();
   for (const root of document.querySelectorAll("[data-setup-browser]")) {
     if (root.hasAttribute("data-lifecycle")) {
       lifecycle(root);
@@ -524,7 +603,7 @@
       }
     }
     function evidence(setup, records) {
-      const details = disclosure(results, "Profiling Results");
+      const details = disclosure(results, "Profiling Timings");
       const ul = append(details, "ul", "", "evidence-list");
       const anchors = new Map();
       if (setup.evidence)
@@ -893,10 +972,10 @@
       nav.hidden = detailPage;
       results.hidden = !selected;
       if (!selected) return;
-      const back = append(results, "a", "← Profiling Results", "back-link");
+      const back = append(results, "a", "← Profiling Timings", "back-link");
       const home = new URL(location.href);
       home.searchParams.delete("view");
-      home.hash = "evidence";
+      home.hash = "profiling-timings";
       back.href = home.href;
       append(
         results,

@@ -8,6 +8,10 @@ names. Every derived number (``implied_ms_per_eval``, ``predicted_ms_per_eval``,
 declared by the producer; Pulse validates the shape and renders the values. It
 computes no ratio, infers no optimal setup and never reads a full-fit time as a
 per-likelihood measurement (or the reverse). Stdlib only. See REFERENCE.md.
+
+The producer's join to a profiling runtime record (``profiling_record_id``,
+``profiling_per_call_s``, ``size_match`` and friends) and ``implied_s_per_eval``
+are additive optional fields: absent is valid; present, they are type-checked.
 """
 
 from __future__ import annotations
@@ -27,6 +31,15 @@ NUMERIC = (
     "parallel_efficiency",
     "max_log_likelihood",
 )
+# Additive optional fields (still walltime-validation@1): checked only when present.
+OPTIONAL_NUMERIC = ("implied_s_per_eval", "profiling_per_call_s")
+OPTIONAL_TEXT = (
+    "profiling_record_id",
+    "profiling_unmatched_reason",
+    "profiling_per_call_source",
+    "profiling_status",
+)
+OPTIONAL_COUNT = ("source_pixels", "profiling_source_pixels")
 KEY_FIELDS = (
     "likelihood",
     "instrument",
@@ -72,6 +85,28 @@ def _record(check, item, where):
         value = item.get(field)
         check.require(value is None or summary._text(value), f"{where}.{field}", "string or null")
     check.choice(item.get("parity_status"), PARITY_STATUSES, f"{where}.parity_status")
+    for field in OPTIONAL_NUMERIC:
+        if field in item:
+            check.require(
+                summary._finite_or_null(item[field]), f"{where}.{field}", "finite number or null"
+            )
+    for field in OPTIONAL_TEXT:
+        if field in item:
+            value = item[field]
+            check.require(
+                value is None or summary._text(value), f"{where}.{field}", "string or null"
+            )
+    for field in OPTIONAL_COUNT:
+        if field in item:
+            value = item[field]
+            check.require(
+                value is None or _count(value), f"{where}.{field}", "non-negative integer or null"
+            )
+    if "size_match" in item:
+        value = item["size_match"]
+        check.require(
+            value is None or isinstance(value, bool), f"{where}.size_match", "boolean or null"
+        )
 
 
 def validate(doc) -> list[str]:
