@@ -346,6 +346,37 @@ def test_one_current_per_key_counts_host_class_and_variant_as_identity(v3):
     assert any("second current record 'clash'" in e for e in summary.validate(v3))
 
 
+def test_a_size_variant_is_current_beside_its_standard_row(v3):
+    # The regime (source-size bin) is part of the one-current key: a current
+    # source_pixels_784 row validates beside the current standard row.
+    size = copy.deepcopy(v3["records"][0])
+    size.update(id="size-784", regime="source_pixels_784")
+    v3["records"].append(size)
+    v3["coverage"]["observed"].update(records=7, current=6)
+    assert summary.classify(v3, V3) == ("ok", [])
+    clash = copy.deepcopy(size)
+    clash["id"] = "clash-784"
+    v3["records"].append(clash)
+    v3["coverage"]["observed"].update(records=8, current=7)
+    errors = summary.validate(v3)
+    assert any("second current record 'clash-784'" in e for e in errors)
+    assert any(
+        "(likelihood, instrument, setup_id, host_class, model_variant, measurement, regime)" in e
+        for e in errors
+    )
+
+
+def test_a_planned_cell_without_a_regime_is_covered_by_any_regime():
+    cell = {"instrument": "hst", "setup_id": "s", "host_class": "hpc_a100"}
+    cell.update(likelihood={"dataset_type": "imaging", "variant": "x"})
+    cell.update(model_variant="default", measurement="runtime")
+    record = dict(cell, regime="n_vis_lt_1e5")
+    assert catalogue.covers(record, cell)
+    assert catalogue.covers(record, dict(cell, regime="n_vis_lt_1e5"))
+    assert not catalogue.covers(record, dict(cell, regime="standard"))
+    assert catalogue.lifecycle_key(record) != catalogue.lifecycle_key(cell)
+
+
 def test_local_gpu_rows_may_be_kept_but_never_current(v3):
     row = copy.deepcopy(v3["records"][4])
     row.update(id="laptop-gpu", host_class="local_gpu", status="superseded")

@@ -269,8 +269,17 @@ threads}` and the matching `setup_id`, `host_class`, `model_variant` (e.g.
 **Rules.**
 
 - Exactly one `current` record per key (`likelihood`, `instrument`,
-  `setup_id`, `host_class`, `model_variant`, `measurement`). The producer
-  chooses which one under the day-zero rule; a second `current` is refused.
+  `setup_id`, `host_class`, `model_variant`, `measurement`, `regime`). The
+  producer chooses which one under the day-zero rule; a second `current` is
+  refused. `regime` joined the key for the producer's declared size variants
+  (autolens_profiling#468): a `source_pixels_<n>` row is current beside its
+  `standard` row on otherwise equal fields. Two current rows of the same regime
+  are still refused. This only relaxes the rule, so every capture valid before
+  stays valid: no version bump (the same additive convention as the resources
+  fields below).
+- A planned cell may declare a `regime` (non-empty string); it is then part of
+  that cell's key. A cell without one names the cell on the other key fields
+  and is covered by a current record of any regime.
 - `class: optimal` requires a `decision_id`. `pyauto-pulse check` and ingest
   resolve every `decision_id` against this organ's `decisions.yaml`
   (the `designation` decisions below); an unresolved id makes the capture
