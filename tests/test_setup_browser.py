@@ -304,3 +304,38 @@ def test_v3_detail_pages_sit_in_the_hidden_route_container():
     assert container < page.index('id="profiling-timings"')
     assert 'id="detail-pages" hidden' in page and 'id="detail-route-status"' in page
     assert setup_browser.page_ids(lifecycle_capture()) >= {"imaging-delaunay-hst-a100-runtime"}
+
+
+def test_rows_are_ordered_by_likelihood_instrument_setup_hardware_variant():
+    rows = setup_browser.runtime_rows(lifecycle_capture().doc)
+    keys = [setup_browser.row_order(r) for r in rows]
+    assert keys == sorted(keys)
+    assert rows[0]["likelihood"]["dataset_type"] == "imaging"
+    assert rows[-1]["likelihood"]["dataset_type"] == "interferometer"
+
+
+def test_setup_label_drops_an_na_operator_token():
+    assert setup_browser.setup_label("jax_cpu_na_fp64") == "jax_cpu"
+    assert setup_browser.setup_label("jax_gpu_na_fp64") == "jax_gpu"
+
+
+def test_breakdown_shows_one_entry_per_labelled_step():
+    record = {
+        "status": "current",
+        "unit": "s",
+        "values": {
+            "component_total": 0.1,
+            "steps.Regularized reconstruction": 0.03,
+            "reconstruction_jit.steady_per_call_s": 0.03,
+            "steps.Curvature matrix (F)": 0.05,
+            "curvature_matrix_sparse_jit.steady_per_call_s": 0.05,
+            "interpolator_prefix": 0.008,
+        },
+    }
+    panel = setup_browser._metric_panel([record], "Likelihood breakdown", "breakdown")
+    main, rest = panel.split("data-id='recorded-keys'")
+    assert "data-metric='steps.Regularized reconstruction'" in main
+    assert "reconstruction_jit" not in panel and "curvature_matrix_sparse_jit" not in panel
+    assert "data-metric='interpolator_prefix'" in rest and "interpolator_prefix" not in main
+    assert "All recorded keys (1 without a labelled step)" in rest
+    assert "width:30.0%" in main  # scaled to component_total

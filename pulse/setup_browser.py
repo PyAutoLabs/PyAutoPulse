@@ -87,8 +87,24 @@ def precision(setup_id) -> str | None:
 
 
 def setup_label(setup_id) -> str:
-    """The setup id without its precision token: ``jax_gpu_sparse_fp64`` → ``jax_gpu_sparse``."""
-    return "_".join(t for t in str(setup_id or "").split("_") if t not in PRECISIONS)
+    """The setup id without its precision token or an ``na`` operator token.
+
+    ``jax_gpu_sparse_fp64`` → ``jax_gpu_sparse``; ``jax_cpu_na_fp64`` → ``jax_cpu``.
+    """
+    return "_".join(t for t in str(setup_id or "").split("_") if t not in PRECISIONS and t != "na")
+
+
+def row_order(record) -> tuple:
+    """Display order: dataset type → model → instrument → setup → hardware → variant."""
+    likelihood = record.get("likelihood") or {}
+    return (
+        str(likelihood.get("dataset_type")),
+        str(likelihood.get("variant")),
+        str(record.get("instrument")),
+        setup_label(record.get("setup_id")),
+        str(record.get("host_class")),
+        variant_label(record.get("model_variant"), record.get("setup_id")),
+    )
 
 
 def variant_label(model_variant, setup_id) -> str:
@@ -99,13 +115,23 @@ def variant_label(model_variant, setup_id) -> str:
 
 def runtime_rows(doc) -> list[dict]:
     """The v3 ``runtime`` records the table shows (current, and superseded with History)."""
-    return [
+    rows = [
         r
         for r in (doc or {}).get("records") or []
         if isinstance(r, dict)
         and r.get("measurement") == "runtime"
         and r.get("status") in ("current", "superseded")
     ]
+    return sorted(
+        rows,
+        key=lambda r: (
+            *row_order(r),
+            str(r.get("regime")),
+            r.get("status") != "current",
+            str(r.get("measured_at") or ""),
+            str(r.get("id")),
+        ),
+    )
 
 
 def default_visible(record) -> bool:
@@ -388,23 +414,47 @@ def _metric_panel(records, title, axis) -> str:
                 + "</dl>"
             )
             continue
-        parts.append(
-            f"<p class='metric-meta scale-caption'>{e(caption)}</p><ul class='metric-list'>"
-        )
-        ordered = sorted(values.items(), key=lambda kv: (kv[0] != "component_total", -kv[1]))
-        for k, v in ordered:
-            width = min(100.0, 100 * abs(v) / denominator) if denominator else 0
-            kind = " data-kind='total'" if k == "component_total" else ""
+        parts.append(f"<p class='metric-meta scale-caption'>{e(caption)}</p>")
+        labelled = {k: v for k, v in values.items() if k.startswith("steps.")}
+        if axis == "breakdown" and labelled:
+            # The producer's labelled step list is the panel. A raw key recording the
+            # identical value of a labelled step is that step's twin: not repeated.
+            main = {k: v for k, v in values.items() if k == "component_total" or k in labelled}
+            twins = set(labelled.values())
+            rest = {k: v for k, v in values.items() if k not in main and v not in twins}
+        else:
+            main, rest = values, {}
+        parts.append(_metric_rows(main, unit, denominator, scale))
+        if rest:
             parts.append(
-                f"<li class='metric-row' data-metric='{e(k)}'{kind}>"
-                f"<div class='metric-title'><span>{e(_metric_label(k))}</span>"
-                f"<strong class='metric-value' title='Exact recorded value: {e(v)} {e(unit)}'>"
-                f"{e(_fmt(v, unit))}</strong></div>"
-                f"<div class='bar-track' aria-hidden='true'><div class='bar' "
-                f"style='width:{width:.1f}%' data-scale='{e(scale)}'></div></div></li>"
+                "<details class='timing-diagnostics' data-id='recorded-keys'>"
+                f"<summary>All recorded keys ({len(rest)} without a labelled step)</summary>"
+                "<p class='metric-meta'>Raw producer keys: cumulative prefixes and sub-steps "
+                "overlap the steps above and are not additional likelihood steps. Keys whose "
+                "value is identical to a labelled step are omitted.</p>"
+                + _metric_rows(rest, unit, denominator, scale)
+                + "</details>"
             )
-        parts.append("</ul>")
     parts.append("</details>")
+    return "".join(parts)
+
+
+def _metric_rows(values, unit, denominator, scale) -> str:
+    e = _e
+    parts = ["<ul class='metric-list'>"]
+    ordered = sorted(values.items(), key=lambda kv: (kv[0] != "component_total", -kv[1]))
+    for k, v in ordered:
+        width = min(100.0, 100 * abs(v) / denominator) if denominator else 0
+        kind = " data-kind='total'" if k == "component_total" else ""
+        parts.append(
+            f"<li class='metric-row' data-metric='{e(k)}'{kind}>"
+            f"<div class='metric-title'><span>{e(_metric_label(k))}</span>"
+            f"<strong class='metric-value' title='Exact recorded value: {e(v)} {e(unit)}'>"
+            f"{e(_fmt(v, unit))}</strong></div>"
+            f"<div class='bar-track' aria-hidden='true'><div class='bar' "
+            f"style='width:{width:.1f}%' data-scale='{e(scale)}'></div></div></li>"
+        )
+    parts.append("</ul>")
     return "".join(parts)
 
 

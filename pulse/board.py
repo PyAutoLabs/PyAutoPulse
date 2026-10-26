@@ -436,7 +436,15 @@ INSIGHT_POINTER_MD = (
 
 def inference_rows(s: Snapshot) -> list[dict]:
     """The full-fit runs the Inference Timings table shows (one sampler stage only)."""
-    return [r for r in records(s) if r.get("sampler") == INFERENCE_SAMPLER]
+    rows = [r for r in records(s) if r.get("sampler") == INFERENCE_SAMPLER]
+    return sorted(
+        rows,
+        key=lambda r: (
+            *setup_browser.row_order(r),
+            r.get("seed") if isinstance(r.get("seed"), int) else -1,
+            str(r.get("id")),
+        ),
+    )
 
 
 def sampler_label(record) -> str:
