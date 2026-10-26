@@ -333,7 +333,12 @@ board (`?view=setup&instance=<instance>&record=<record id>`): its runtime values
 (including `single_jit_median` / `single_jit_block`), the 12-core estimate,
 the breakdown, compile, memory and parity records on the same key
 (`likelihood`, `instrument`, `setup_id`, `host_class`, `model_variant`,
-`regime`) and the same status, as bars within each panel, the producer's node
+`regime`) and the same status — for a superseded row only those tied to the
+same run (same `run_id`, or evidence in the same results directory; never by
+date), else a "no sibling measurements tied to this run" note — as bars
+within each panel (the breakdown panel is the producer's labelled `steps.*`
+list; a raw key is folded away only as the unambiguous same-value twin of one
+step, the rest sit under a collapsed "All recorded keys"), the producer's node
 throughput projection marked **projected** with η, its source and bound, class,
 status, decision, validation, limitations, configuration, evidence and figure
 links at the captured commit, and the record's history (every runtime record on

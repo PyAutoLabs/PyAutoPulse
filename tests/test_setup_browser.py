@@ -339,3 +339,45 @@ def test_breakdown_shows_one_entry_per_labelled_step():
     assert "data-metric='interpolator_prefix'" in rest and "interpolator_prefix" not in main
     assert "All recorded keys (1 without a labelled step)" in rest
     assert "width:30.0%" in main  # scaled to component_total
+
+
+def test_a_raw_key_is_dropped_only_as_the_unambiguous_twin_of_one_step():
+    values = {
+        "component_total": 1.0,
+        "steps.Data vector (D)": 0.2,
+        "data_vector_jit.steady_per_call_s": 0.2,  # the one twin
+        "steps.Lens light images": 0.0,
+        "psf_weighted_data_jit.steady_per_call_s": 0.0,  # unrelated, same value
+        "steps.Ray-trace mesh grid": 0.3,
+        "ray_trace_mesh_jit.steady_per_call_s": 0.3,
+        "ray_trace_mesh_prefix": 0.3,  # several raw keys share 0.3: ambiguous
+        "steps.Curvature matrix (F)": 0.4,
+        "steps.Regularization matrix (H)": 0.4,  # several steps share 0.4
+        "curvature_matrix_jit.steady_per_call_s": 0.4,
+    }
+    assert setup_browser.step_twins(values) == {"data_vector_jit.steady_per_call_s"}
+
+
+def test_superseded_pages_show_only_siblings_tied_to_the_same_run():
+    def rec(rid, measurement, status, run, path):
+        return {
+            "id": rid,
+            "measurement": measurement,
+            "status": status,
+            "run_id": run,
+            "evidence": {"path": path},
+        }
+
+    row = rec("r", "runtime", "superseded", "run-a", "results/x/exp1/runtime.json")
+    same_dir = rec("b1", "breakdown", "superseded", "run-b", "results/x/exp1/breakdown.json")
+    same_run = rec("c1", "compile", "superseded", "run-a", "results/x/exp1/runtime.json")
+    other = rec("b2", "breakdown", "superseded", "run-c", "results/x/exp2/breakdown.json")
+    current = rec("b3", "breakdown", "current", "run-d", "results/x/breakdown.json")
+    siblings = [row, same_dir, same_run, other, current]
+    assert setup_browser.tied_siblings(row, siblings) == [same_dir, same_run]
+    now = rec("n", "runtime", "current", "run-e", "results/x/runtime.json")
+    assert setup_browser.tied_siblings(now, [now, current, other]) == [current]
+    pages = setup_browser.detail_pages(lifecycle_capture(), "#x", "PyAutoLens")
+    old = _article(pages, "imaging-delaunay-hst-a100-runtime-old")
+    assert "No sibling measurements tied to this run" in old
+    assert "No sibling measurements" not in _article(pages, "imaging-delaunay-hst-a100-runtime")

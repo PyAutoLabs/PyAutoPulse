@@ -15,6 +15,7 @@ import html
 import importlib.util
 import json
 import os
+import re
 from pathlib import Path
 from urllib.parse import quote, urlencode
 
@@ -417,11 +418,11 @@ def _metric_panel(records, title, axis) -> str:
         parts.append(f"<p class='metric-meta scale-caption'>{e(caption)}</p>")
         labelled = {k: v for k, v in values.items() if k.startswith("steps.")}
         if axis == "breakdown" and labelled:
-            # The producer's labelled step list is the panel. A raw key recording the
-            # identical value of a labelled step is that step's twin: not repeated.
+            # The producer's labelled step list is the panel. A raw key is dropped only
+            # as the unambiguous twin of ONE labelled step (see step_twins).
             main = {k: v for k, v in values.items() if k == "component_total" or k in labelled}
-            twins = set(labelled.values())
-            rest = {k: v for k, v in values.items() if k not in main and v not in twins}
+            twins = step_twins(values)
+            rest = {k: v for k, v in values.items() if k not in main and k not in twins}
         else:
             main, rest = values, {}
         parts.append(_metric_rows(main, unit, denominator, scale))
@@ -437,6 +438,34 @@ def _metric_panel(records, title, axis) -> str:
             )
     parts.append("</details>")
     return "".join(parts)
+
+
+_GENERIC_TOKENS = {"jit", "steady", "per", "call", "s", "steps", "sparse", "dense", "vmap"}
+
+
+def _tokens(name: str) -> set[str]:
+    return {t for t in re.split(r"[^a-z0-9]+", name.lower()) if t} - _GENERIC_TOKENS
+
+
+def step_twins(values: dict) -> set[str]:
+    """Raw keys that duplicate exactly one labelled ``steps.*`` entry.
+
+    A raw key is a twin only when its value equals one labelled step's value, no
+    other step and no other raw key records that value, and its name shares a
+    word with the step label. Any ambiguity keeps every key on show.
+    """
+    steps, raws = {}, {}
+    for k, v in values.items():
+        if k == "component_total":
+            continue
+        (steps if k.startswith("steps.") else raws).setdefault(v, []).append(k)
+    twins = set()
+    for v, labelled in steps.items():
+        candidates = raws.get(v, [])
+        if len(labelled) == 1 and len(candidates) == 1:
+            if _tokens(labelled[0]) & _tokens(candidates[0]):
+                twins.add(candidates[0])
+    return twins
 
 
 def _metric_rows(values, unit, denominator, scale) -> str:
@@ -503,6 +532,30 @@ def detail_title(project: str, record) -> str:
     )
 
 
+def _evidence_dir(record) -> str | None:
+    path = (record.get("evidence") or {}).get("path")
+    return path.rsplit("/", 1)[0] if isinstance(path, str) and "/" in path else None
+
+
+def tied_siblings(record, siblings) -> list[dict]:
+    """The sibling records the detail page shows beside a runtime row.
+
+    A current row shows the current records of its cell. A superseded row shows
+    only superseded records tied to the same run: the same ``run_id``, or evidence
+    in the same producer results directory (one run's runtime/breakdown/compile
+    files). Nothing is tied by date.
+    """
+    others = [r for r in siblings if r is not record and r.get("status") == record.get("status")]
+    if record.get("status") != "superseded":
+        return others
+    home = _evidence_dir(record)
+    return [
+        r
+        for r in others
+        if r.get("run_id") == record.get("run_id") or (home and _evidence_dir(r) == home)
+    ]
+
+
 def detail_page(snapshot, record, siblings, back: str, project: str) -> str:
     """The old per-setup page, server-rendered for one runtime row (hidden until routed)."""
     e = _e
@@ -536,7 +589,8 @@ def detail_page(snapshot, record, siblings, back: str, project: str) -> str:
         )
     )
     headline.append(_headline("Node throughput", node_html, node_detail))
-    same = [r for r in siblings if r.get("status") == record.get("status") and r is not record]
+    same = tied_siblings(record, siblings)
+    untied = record.get("status") == "superseded" and not same
     panels = []
     for axis, panel_title in PANELS:
         rows = [record] if axis == "runtime" else [r for r in same if r.get("measurement") == axis]
@@ -623,6 +677,12 @@ def detail_page(snapshot, record, siblings, back: str, project: str) -> str:
         f'<section class="headline-metrics" aria-label="Headline timings"><dl class="headline-list">'
         + "".join(headline)
         + "</dl></section>"
+        + (
+            "<p class='metric-meta' data-id='no-siblings'>No sibling measurements tied to "
+            "this run; see History for the other records of this setup.</p>"
+            if untied
+            else ""
+        )
         + "".join(panels)
         + '<details class="metric-panel" data-axis="status" open><summary>Status, decision and '
         "validation</summary>" + status + "</details>"

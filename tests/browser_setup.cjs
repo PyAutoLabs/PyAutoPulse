@@ -167,7 +167,7 @@ const { execFileSync } = require("node:child_process");
     ])
       assert(!detailText.includes(absent), absent);
     assert(
-      detailText.includes("Profiling Results") &&
+      detailText.includes("Profiling Timings") &&
         detailText.includes("Profiling scripts"),
     );
     assert.equal(await detail.locator(".measurement-choices").count(), 0);
@@ -786,11 +786,29 @@ const { execFileSync } = require("node:child_process");
     await run.locator("a.back-link").click();
     assert(page.url().endsWith("#inference-pyautolens"));
     assert(await runs.isVisible());
+    // Unknown run, then unknown setup: each back link names its own section.
     await page.goto(base + "/lifecycle.html?view=run&instance=walltime&record=missing");
     assert(await page.locator("#detail-route-status").isVisible());
     assert.equal(
       await page.locator("#detail-route-back").textContent(),
       "← Inference Timings",
+    );
+    assert.equal(
+      await page.locator("#detail-route-back").getAttribute("href"),
+      "#inference-timings",
+    );
+    await page.evaluate(() => {
+      history.pushState(null, "", "?view=setup&instance=lens&record=missing");
+      dispatchEvent(new PopStateEvent("popstate"));
+    });
+    assert(await page.locator("#detail-route-status").isVisible());
+    assert.equal(
+      await page.locator("#detail-route-back").textContent(),
+      "← Profiling Timings",
+    );
+    assert.equal(
+      await page.locator("#detail-route-back").getAttribute("href"),
+      "#profiling-timings",
     );
     await page.goto(base + "/lifecycle.html");
     for (const width of [390, 1280]) {

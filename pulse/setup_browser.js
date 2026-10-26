@@ -65,9 +65,10 @@
     status.textContent = missing
       ? "This record is not in the captured catalogue. No substitute measurements are shown."
       : "";
-    if (missing && view === "run") {
-      back.href = "#inference-timings";
-      back.textContent = "← Inference Timings";
+    if (missing) {
+      const run = view === "run";
+      back.href = run ? "#inference-timings" : "#profiling-timings";
+      back.textContent = run ? "← Inference Timings" : "← Profiling Timings";
     }
     document.title = selected
       ? selected.dataset.title + " · PyAutoPulse"
@@ -577,7 +578,7 @@
       }
     }
     function evidence(setup, records) {
-      const details = disclosure(results, "Profiling Results");
+      const details = disclosure(results, "Profiling Timings");
       const ul = append(details, "ul", "", "evidence-list");
       const anchors = new Map();
       if (setup.evidence)
