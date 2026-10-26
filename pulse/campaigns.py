@@ -167,12 +167,6 @@ def markdown(data: dict) -> str:
                     f"- [{_md(task['title'])}]({URL}{task['path']}) — {task['status']}: {_md(task['next'])}"
                 )
         rows += ["", "</details>", ""]
-    rows += [
-        "## Profiling Results",
-        "",
-        "Choose a project, dataset and model on the interactive board.",
-        "",
-    ]
     return "\n".join(rows)
 
 
@@ -227,6 +221,5 @@ def render_html(data: dict, work_links=(), refreshed_at=None) -> str:
         '</tbody></table></div><p class="review-meta">Open means tracked, not necessarily running. <a href="'
         + URL
         + 'campaigns.yaml">Full ledger ↗</a></p>',
-        '<h2 id="evidence">Profiling Results</h2>',
     ]
     return "".join(parts)

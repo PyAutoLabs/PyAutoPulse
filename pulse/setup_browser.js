@@ -893,10 +893,10 @@
       nav.hidden = detailPage;
       results.hidden = !selected;
       if (!selected) return;
-      const back = append(results, "a", "← Profiling Results", "back-link");
+      const back = append(results, "a", "← Profiling Timings", "back-link");
       const home = new URL(location.href);
       home.searchParams.delete("view");
-      home.hash = "evidence";
+      home.hash = "profiling-timings";
       back.href = home.href;
       append(
         results,

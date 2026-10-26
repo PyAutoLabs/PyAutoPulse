@@ -71,7 +71,7 @@ def test_control_room_precedes_measurements_and_escapes():
             text.index("Profiling Check In")
             < text.index("Active campaigns")
             < text.index("Active tasks")
-            < text.index("Profiling Results")
+            < text.index("Profiling Timings")
         )
     page = board.render_html([], campaign_data=data)
     assert "<script>alert(1)</script>" not in page

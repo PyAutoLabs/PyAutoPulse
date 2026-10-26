@@ -100,7 +100,8 @@ const { execFileSync } = require("node:child_process");
       0,
     );
     assert.equal(await page.locator(".capture-details").count(), 0);
-    await page.locator('a[href="#evidence"]').first().click();
+    await page.locator('a[href="#profiling-timings"]').first().click();
+    await page.locator("#profiling-pyautolens > summary").click();
     await root.locator('[data-id="project-picker"] > summary').click();
     await root.locator('[data-family="imaging"] > summary').click();
     const popupEvent = context.waitForEvent("page");

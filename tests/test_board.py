@@ -262,18 +262,26 @@ def test_v2_status_lines_are_unchanged():
     assert "**Lifecycle:**" not in md
 
 
-def test_walltime_instance_renders_its_own_table_under_profiling_results():
+def test_profiling_and_inference_timings_open_per_project():
     lens = _snapshot("lens", "profiling-summary@3", "setup_summary_v3.json")
     wall = _snapshot("lens-walltime", "walltime-validation@1", "walltime_validation_v1.json")
     data = {"campaigns": [], "tasks": []}
     page = board.render_html([lens, wall], NOW, campaign_data=data)
-    results = page.index('id="evidence"')
-    table = page.index('data-walltime="lens-walltime"')
-    assert results < table
+    assert 'id="evidence"' in page  # old links still land
+    profiling = page.index('id="profiling-timings"')
+    inference = page.index('id="inference-timings"')
+    assert profiling < page.index('id="profiling-pyautolens"') < inference
+    assert (
+        inference < page.index('id="inference-pyautofit"') < page.index('id="inference-pyautolens"')
+    )
+    assert inference < page.index('data-walltime="lens-walltime"')
+    assert board.INSIGHT_URL in page and ">Profiling Results</h2>" not in page
+    assert '"#profiling-timings"' in page and '"#inference-timings"' in page
     assert "Full-fit measurements" in page and "nautilus" in page
     assert "setup catalogue unavailable" not in page
     md = board.render_markdown([lens, wall], NOW, campaign_data=data)
-    assert md.index("## Profiling Results") < md.index("wall-time validation")
+    assert md.index("## Profiling Timings") < md.index("## Inference Timings")
+    assert md.index("## Inference Timings") < md.index("wall-time validation")
     assert "| Measured/predicted |" in md and "| 1.26 |" in md
     state = board.render_state([wall], updated=NOW, now=NOW)
     assert not any(i["id"].endswith(":unqualified") for i in state["items"])

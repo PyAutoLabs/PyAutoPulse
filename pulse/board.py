@@ -15,10 +15,14 @@ records' evidence at the captured commit and a ``/profiling triage <key>``
 manual handoff. Pairs the reader refuses (axis mismatch, changed hardware,
 missing endpoint) are listed apart with the reason and no ratio.
 
-A ``profiling-summary@3`` instance adds its producer-declared lifecycle counts
-(current / superseded / archived) to its status lines and renders the
-Class-first setup browser; a ``walltime-validation@1`` instance renders its
-full-fit records as their own table under Profiling Results.
+The measurements sit in two sections, each opening per project (PyAutoFit,
+PyAutoLens; the label is the registry row's first ``library_refs`` entry):
+**Profiling Timings** (the ``profiling-summary`` instances: the v2 setup
+browser, or the v3 runtime table with one detail page per row) and
+**Inference Timings** (the ``walltime-validation@1`` instances, one full-fit run
+per row, each opening its own run page). A ``profiling-summary@3`` instance
+also adds its producer-declared lifecycle counts (current / superseded /
+archived) to its status lines.
 
 The board never recomputes a ratio, never combines records whose axis or
 hardware differs, never ranks cells across projects and never emits a
@@ -73,6 +77,37 @@ def is_catalogue(doc: dict | None) -> bool:
     """A setup catalogue (v2/v3) or the wall-time axis: the browser layout."""
     doc = doc or {}
     return doc.get("schema") == "walltime-validation" or doc.get("version") in (2, 3)
+
+
+PROJECTS = ("PyAutoFit", "PyAutoLens")  # section order; other projects follow
+INSIGHT_URL = "https://pyautolabs.github.io/PyAutoInsight/"
+_REPO_PROJECT = {
+    "autofit": "PyAutoFit",
+    "autolens": "PyAutoLens",
+    "autogalaxy": "PyAutoGalaxy",
+    "autoarray": "PyAutoArray",
+    "autocti": "PyAutoCTI",
+}
+
+
+def project_label(instance) -> str:
+    """The project a registry row belongs to: its first ``library_refs`` entry."""
+    refs = getattr(instance, "library_refs", ()) or ()
+    if refs:
+        return refs[0]
+    return _REPO_PROJECT.get(instance.repo.split("_", 1)[0], instance.repo)
+
+
+def project_slug(label: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "-", label.lower()).strip("-")
+
+
+def by_project(views) -> OrderedDict[str, list[Snapshot]]:
+    """Snapshots grouped by project label, PROJECTS order first, registry order kept."""
+    groups: OrderedDict[str, list] = OrderedDict((p, []) for p in PROJECTS)
+    for s in views:
+        groups.setdefault(project_label(s.instance), []).append(s)
+    return groups
 
 
 def lifecycle(s: Snapshot) -> str | None:
@@ -400,6 +435,12 @@ WALLTIME_NOTE = (
 )
 
 
+INSIGHT_POINTER = "PyAutoFit inference benchmarking is collected on the PyAutoInsight board."
+INSIGHT_POINTER_MD = (
+    f"PyAutoFit inference benchmarking is collected on the [PyAutoInsight board]({INSIGHT_URL})."
+)
+
+
 def _cell(value) -> str:
     return "—" if value is None else str(value)
 
@@ -434,6 +475,23 @@ def walltime_html(s: Snapshot) -> str:
     )
 
 
+def _md_snapshot(snapshot: Snapshot, now: str) -> list[str]:
+    out = []
+    if snapshot.failed or snapshot.cached:
+        out += [f"**{snapshot.instance.instance}: {integrity(snapshot)}**", ""]
+    if is_walltime(snapshot):
+        out += walltime_markdown(snapshot)
+    elif (snapshot.doc or {}).get("version") in (2, 3):
+        out += setup_browser.markdown(snapshot)
+    return out + [
+        "<details><summary>Capture, qualification and legacy diagnostics</summary>",
+        "",
+        *_md_detail(snapshot, now),
+        "</details>",
+        "",
+    ]
+
+
 def render_markdown(views, now: str | None = None, campaign_data: dict | None = None) -> str:
     now = now or _utc_now()
     if any(is_catalogue(s.doc) for s in views):
@@ -444,20 +502,22 @@ def render_markdown(views, now: str | None = None, campaign_data: dict | None = 
             f"[Interactive board]({PAGES_URL})",
             "",
         ]
-        for snapshot in views:
-            if snapshot.failed or snapshot.cached:
-                out += [f"**{snapshot.instance.instance}: {integrity(snapshot)}**", ""]
-            if is_walltime(snapshot):
-                out += walltime_markdown(snapshot)
-            elif (snapshot.doc or {}).get("version") in (2, 3):
-                out += setup_browser.markdown(snapshot)
-            out += [
-                "<details><summary>Capture, qualification and legacy diagnostics</summary>",
-                "",
-                *_md_detail(snapshot, now),
-                "</details>",
-                "",
-            ]
+        profiling = by_project(s for s in views if not is_walltime(s))
+        inference = by_project(s for s in views if is_walltime(s))
+        out += ["## Profiling Timings", ""]
+        for label, snaps in profiling.items():
+            if snaps:
+                out += [f"### {label}", ""]
+                for snapshot in snaps:
+                    out += _md_snapshot(snapshot, now)
+        out += ["## Inference Timings", ""]
+        for label, snaps in inference.items():
+            if label == "PyAutoFit" and not snaps:
+                out += [f"### {label}", "", INSIGHT_POINTER_MD, ""]
+            elif snaps:
+                out += [f"### {label}", ""]
+                for snapshot in snaps:
+                    out += _md_snapshot(snapshot, now)
         out += ["", decisions.markdown()]
         return "\n".join(out).rstrip("\n") + "\n"
     out = [
@@ -467,6 +527,8 @@ def render_markdown(views, now: str | None = None, campaign_data: dict | None = 
         "snapshots/. Do not edit by hand. -->",
         "",
         campaigns.markdown(campaign_data if campaign_data is not None else campaigns.load()),
+        "## Profiling Timings",
+        "",
         LEDE,
         f"Live page: [{PAGES_URL}]({PAGES_URL}).",
         "",
@@ -501,7 +563,7 @@ def render_markdown(views, now: str | None = None, campaign_data: dict | None = 
 CSS = """
 .controls{margin:1.2rem 0}.prompt-action{display:flex;flex-wrap:wrap;gap:.5rem .8rem;align-items:center;margin:.7rem 0}.prompt-action details{flex-basis:100%}.prompt-action details:not([open]){flex-basis:auto}.prompt-action summary{cursor:pointer;font-size:.8rem;color:var(--muted)}
 .prompt-action textarea{width:100%;display:block;margin:.5rem 0;padding:.7rem;font:inherit;font-size:.85rem;color:var(--fg);background:var(--btn);border:1px solid var(--line);border-radius:8px;resize:vertical}.review-meta{font-size:.75rem;color:var(--muted)}
-.campaign-table table{width:100%;table-layout:fixed}.campaign-table th:first-child{width:66%}.campaign-table th:nth-child(2){width:21%}.campaign-table th:last-child{width:13%}.campaign-table td{vertical-align:top;padding:.7rem .45rem}.campaign-table strong{font-weight:600}.campaign-detail{margin:.2rem 0 0}.campaign-detail summary{cursor:pointer;font-size:.8rem;padding:.15rem 0}.campaign-detail h3{font-size:.9rem}.campaign-task{border-top:1px solid var(--line);padding:.6rem 0}.campaign-task h4,.campaign-task p{margin:.3rem 0}.campaign-task h4{font-size:.85rem}.campaign-task p{font-size:.8rem}.link-icons{display:flex;gap:.3rem;flex-wrap:wrap}.icon-link{display:inline-flex;justify-content:center;align-items:center;width:2rem;min-height:2rem;border:1px solid var(--line);border-radius:6px;text-decoration:none}.capture-details{margin:1.5rem 0}.capture-details summary{cursor:pointer}.tablewrap{overflow-x:auto}.notions{font-size:.85rem}.warn{color:var(--warn)}.bad{color:var(--bad)}.ok{color:var(--ok)}
+.campaign-table table{width:100%;table-layout:fixed}.campaign-table th:first-child{width:66%}.campaign-table th:nth-child(2){width:21%}.campaign-table th:last-child{width:13%}.campaign-table td{vertical-align:top;padding:.7rem .45rem}.campaign-table strong{font-weight:600}.campaign-detail{margin:.2rem 0 0}.campaign-detail summary{cursor:pointer;font-size:.8rem;padding:.15rem 0}.campaign-detail h3{font-size:.9rem}.campaign-task{border-top:1px solid var(--line);padding:.6rem 0}.campaign-task h4,.campaign-task p{margin:.3rem 0}.campaign-task h4{font-size:.85rem}.campaign-task p{font-size:.8rem}.link-icons{display:flex;gap:.3rem;flex-wrap:wrap}.icon-link{display:inline-flex;justify-content:center;align-items:center;width:2rem;min-height:2rem;border:1px solid var(--line);border-radius:6px;text-decoration:none}.capture-details{margin:1.5rem 0}.capture-details summary{cursor:pointer}.tablewrap{overflow-x:auto}.project-group{margin:.6rem 0;border:1px solid var(--line);border-radius:10px;padding:0 .85rem}.project-group>summary{cursor:pointer;font-weight:650;padding:.7rem 0;font-size:1.02rem}.project-group[open]>summary{border-bottom:1px solid var(--line);margin-bottom:.6rem}.project-body{min-width:0;padding-bottom:.6rem}.notions{font-size:.85rem}.warn{color:var(--warn)}.bad{color:var(--bad)}.ok{color:var(--ok)}
 @media(max-width:34rem){.campaign-table th:first-child{width:57%}.campaign-table th:nth-child(2){width:26%}.campaign-table th:last-child{width:17%}.campaign-table td{padding:.55rem .3rem}.campaign-table .pill{font-size:.65rem;overflow-wrap:anywhere;white-space:normal;text-overflow:clip}.campaign-table{font-size:.8rem}}
 """
 
@@ -646,25 +708,58 @@ def _captured_at(views):
     return min(times) if all(times) else None
 
 
+def _group(kind: str, label: str, body: str) -> str:
+    return (
+        f'<details class="project-group" id="{kind}-{project_slug(label)}" '
+        f'data-project="{_e(label)}"><summary>{_e(label)}</summary>'
+        f'<div class="project-body">{body}</div></details>'
+    )
+
+
+def _warning(snapshot: Snapshot) -> str:
+    if snapshot.failed or snapshot.cached:
+        return (
+            f'<p class="warn">{_e(snapshot.instance.instance)}: {_e(integrity(snapshot))}. '
+            "Displayed evidence retains its captured source.</p>"
+        )
+    return ""
+
+
+def _profiling_html(snapshot: Snapshot) -> str:
+    out = _warning(snapshot) + setup_browser.render(snapshot)
+    if (snapshot.doc or {}).get("version") not in (2, 3):
+        out += (
+            f"<p>{_e(snapshot.instance.instance)}: setup catalogue unavailable; use the project "
+            "dashboard for original evidence.</p>"
+        )
+    return out
+
+
+def _insight_link() -> str:
+    return f'<a href="{_e(INSIGHT_URL)}">PyAutoInsight board</a>'
+
+
 def render_html(views, now: str | None = None, campaign_data: dict | None = None) -> str:
     now = now or _utc_now()
     shared = setup_browser.theme()
     browser_css, browser_js = setup_browser.assets()
-    content = []
-    for snapshot in views:
-        name = snapshot.instance.instance
-        if snapshot.failed or snapshot.cached:
-            content.append(
-                f'<p class="warn">{_e(name)}: {_e(integrity(snapshot))}. Displayed evidence retains its captured source.</p>'
-            )
-        if is_walltime(snapshot):
-            content.append(walltime_html(snapshot))
-            continue
-        content.append(setup_browser.render(snapshot))
-        if (snapshot.doc or {}).get("version") not in (2, 3):
-            content.append(
-                f"<p>{_e(name)}: setup catalogue unavailable; use the project dashboard for original evidence.</p>"
-            )
+    profiling = by_project(s for s in views if not is_walltime(s))
+    inference = by_project(s for s in views if is_walltime(s))
+    sections = ['<a id="evidence"></a><h2 id="profiling-timings">Profiling Timings</h2>']
+    for label, snaps in profiling.items():
+        if snaps:
+            sections.append(_group("profiling", label, "".join(map(_profiling_html, snaps))))
+    if not any(profiling.values()):
+        sections.append("<p class='muted'>No profiling project is registered.</p>")
+    sections.append('<h2 id="inference-timings">Inference Timings</h2>')
+    for label, snaps in inference.items():
+        if label == "PyAutoFit" and not snaps:
+            body = f"<p>{_e(INSIGHT_POINTER).replace('PyAutoInsight board', _insight_link())}</p>"
+            sections.append(_group("inference", label, body))
+        elif snaps:
+            body = "".join(_warning(s) + walltime_html(s) for s in snaps)
+            sections.append(_group("inference", label, body))
+    content = sections
     return shared.section_layout(
         '<!doctype html>\n<html lang="en"><head><meta charset="utf-8">'
         '<meta name="viewport" content="width=device-width,initial-scale=1">'
@@ -676,7 +771,8 @@ def render_html(views, now: str | None = None, campaign_data: dict | None = None
             "Profiling dashboard",
             navigation=[
                 {"href": "#campaigns", "label": "Active campaigns"},
-                {"href": "#evidence", "label": "Profiling Results"},
+                {"href": "#profiling-timings", "label": "Profiling Timings"},
+                {"href": "#inference-timings", "label": "Inference Timings"},
                 {"href": "#decision-history", "label": "Decision History"},
             ],
         )
