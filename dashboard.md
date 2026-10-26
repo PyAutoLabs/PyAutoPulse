@@ -248,7 +248,7 @@ Project `autofit_profiling`, scope `pyautofit-profiling`, read from [PyAutoLabs/
 
 All rows: standard size · default lens light · secondary
 
-| Dataset type | Model | Instrument | Setup | Hardware class | Runtime s | Est. 12-core s |
+| Dataset type | Model | Instrument | Setup | Hardware class | Runtime (s) | Est. 12 CPU (s) |
 |---|---|---|---|---|---:|---:|
 | imaging | delaunay | ao | `jax_cpu_sparse` | hpc_a100 | **57.17888** | — |
 | imaging | delaunay | ao | `jax_cpu_sparse` | hpc_ral_cpu | **55.29191** | — |
@@ -506,7 +506,7 @@ PyAutoFit inference benchmarking is collected on the [PyAutoInsight board](https
 
 All rows: nautilus sampler
 
-| Dataset type | Model | Instrument | Setup | Hardware class | Lens light | Profiling runtime s | Seed | Cores | Wall s | Likelihood evals | Implied s/eval |
+| Dataset type | Model | Instrument | Setup | Hardware class | Lens light | Profiling runtime (s) | Seed | Cores (cores) | Wall (s) | Likelihood evals (evals) | Implied time (s / eval) |
 |---|---|---|---|---|---|---:|---:|---:|---:|---:|---:|
 | imaging | delaunay | hst | `numba_cpu_sparse` | hpc_ral_cpu | default | [**0.95168**](https://pyautolabs.github.io/PyAutoPulse/?view=setup&instance=lens&record=lifecycle%2F321ec1f6f2a5955a9a20) | 1 | 8 | **8648.2** | 38660 | **0.22370** |
 | imaging | delaunay | hst | `numba_cpu_sparse` | hpc_ral_cpu | light_fixed | — | 1 | 8 | **4563.6** | 34060 | **0.13399** |
@@ -514,17 +514,17 @@ All rows: nautilus sampler
 | imaging | rectangular | hst | `jax_cpu_dense` | hpc_a100 | default | — | 1 | 8 | **24129.2** | 22020 | **1.09579** |
 | imaging | rectangular | hst | `jax_cpu_dense` | hpc_a100 | light_fixed | — | 0 | 8 | **21739.0** | 23780 | **0.91417** |
 | imaging | rectangular | hst | `jax_cpu_dense` | hpc_a100 | light_fixed | — | 1 | 8 | **20092.1** | 20940 | **0.95951** |
-| imaging | rectangular | hst | `jax_cpu_sparse` | hpc_a100 | default | [**1.70914**](https://pyautolabs.github.io/PyAutoPulse/?view=setup&instance=lens&record=lifecycle%2F22c24ae6e2c83dc51d89) ≠ size (inference 784 px vs profiling 1225 px) | 0 | 8 | **36050.5** | 21720 | **1.65978** |
-| imaging | rectangular | hst | `jax_gpu_dense` | hpc_a100 | default | [**0.02550**](https://pyautolabs.github.io/PyAutoPulse/?view=setup&instance=lens&record=lifecycle%2F42f6a707360ce63b8150) ≠ size (inference 784 px vs profiling 1225 px) | 0 | 4 | **558.6** | 23680 | **0.02359** |
-| imaging | rectangular | hst | `jax_gpu_dense` | hpc_a100 | default | [**0.02550**](https://pyautolabs.github.io/PyAutoPulse/?view=setup&instance=lens&record=lifecycle%2F42f6a707360ce63b8150) ≠ size (inference 784 px vs profiling 1225 px) | 1 | 4 | **525.0** | 21640 | **0.02426** |
+| imaging | rectangular | hst | `jax_cpu_sparse` | hpc_a100 | default | [**1.70914**](https://pyautolabs.github.io/PyAutoPulse/?view=setup&instance=lens&record=lifecycle%2F22c24ae6e2c83dc51d89) | 0 | 8 | **36050.5** | 21720 | **1.65978** |
+| imaging | rectangular | hst | `jax_gpu_dense` | hpc_a100 | default | [**0.02550**](https://pyautolabs.github.io/PyAutoPulse/?view=setup&instance=lens&record=lifecycle%2F42f6a707360ce63b8150) | 0 | 4 | **558.6** | 23680 | **0.02359** |
+| imaging | rectangular | hst | `jax_gpu_dense` | hpc_a100 | default | [**0.02550**](https://pyautolabs.github.io/PyAutoPulse/?view=setup&instance=lens&record=lifecycle%2F42f6a707360ce63b8150) | 1 | 4 | **525.0** | 21640 | **0.02426** |
 | imaging | rectangular | hst | `jax_gpu_dense` | hpc_a100 | light_fixed | — | 0 | 4 | **490.5** | 22820 | **0.02149** |
 | imaging | rectangular | hst | `jax_gpu_dense` | hpc_a100 | light_fixed | — | 1 | 4 | **449.7** | 20780 | **0.02164** |
-| imaging | rectangular | hst | `jax_gpu_sparse` | hpc_a100 | default | [**0.04119**](https://pyautolabs.github.io/PyAutoPulse/?view=setup&instance=lens&record=lifecycle%2Fcc3f3365b6ac65388a93) ≠ size (inference 784 px vs profiling 1225 px) | 0 | 4 | **826.9** | 23060 | **0.03586** |
-| imaging | rectangular | hst | `jax_gpu_sparse` | hpc_a100 | default | [**0.04119**](https://pyautolabs.github.io/PyAutoPulse/?view=setup&instance=lens&record=lifecycle%2Fcc3f3365b6ac65388a93) ≠ size (inference 784 px vs profiling 1225 px) | 1 | 4 | **811.5** | 22980 | **0.03531** |
+| imaging | rectangular | hst | `jax_gpu_sparse` | hpc_a100 | default | [**0.04119**](https://pyautolabs.github.io/PyAutoPulse/?view=setup&instance=lens&record=lifecycle%2Fcc3f3365b6ac65388a93) | 0 | 4 | **826.9** | 23060 | **0.03586** |
+| imaging | rectangular | hst | `jax_gpu_sparse` | hpc_a100 | default | [**0.04119**](https://pyautolabs.github.io/PyAutoPulse/?view=setup&instance=lens&record=lifecycle%2Fcc3f3365b6ac65388a93) | 1 | 4 | **811.5** | 22980 | **0.03531** |
 | imaging | rectangular | hst | `jax_gpu_sparse` | hpc_a100 | light_fixed | — | 0 | 4 | **1624.9** | 48700 | **0.03336** |
 | imaging | rectangular | hst | `jax_gpu_sparse` | hpc_a100 | light_fixed | — | 1 | 4 | **1396.9** | 41880 | **0.03336** |
-| imaging | rectangular | hst | `numba_cpu_sparse` | hpc_ral_cpu | default | [**0.69674**](https://pyautolabs.github.io/PyAutoPulse/?view=setup&instance=lens&record=lifecycle%2Fb62534053c00fb102bf4) ≠ size (inference 784 px vs profiling 1225 px) | 0 | 8 | **2605.2** | 22920 | **0.11366** |
-| imaging | rectangular | hst | `numba_cpu_sparse` | hpc_ral_cpu | default | [**0.69674**](https://pyautolabs.github.io/PyAutoPulse/?view=setup&instance=lens&record=lifecycle%2Fb62534053c00fb102bf4) ≠ size (inference 784 px vs profiling 1225 px) | 1 | 8 | **2562.1** | 22240 | **0.11520** |
+| imaging | rectangular | hst | `numba_cpu_sparse` | hpc_ral_cpu | default | [**0.69674**](https://pyautolabs.github.io/PyAutoPulse/?view=setup&instance=lens&record=lifecycle%2Fb62534053c00fb102bf4) | 0 | 8 | **2605.2** | 22920 | **0.11366** |
+| imaging | rectangular | hst | `numba_cpu_sparse` | hpc_ral_cpu | default | [**0.69674**](https://pyautolabs.github.io/PyAutoPulse/?view=setup&instance=lens&record=lifecycle%2Fb62534053c00fb102bf4) | 1 | 8 | **2562.1** | 22240 | **0.11520** |
 | imaging | rectangular | hst | `numba_cpu_sparse` | hpc_ral_cpu | light_fixed | — | 0 | 8 | **2329.4** | 24340 | **0.09570** |
 | imaging | rectangular | hst | `numba_cpu_sparse` | hpc_ral_cpu | light_fixed | — | 1 | 8 | **2076.2** | 21960 | **0.09455** |
 
@@ -535,9 +535,9 @@ All rows: nautilus sampler
 
 ## lens-walltime
 
-<!-- pulse:instance name=lens-walltime receipt=b0527c50361294dd1b74af7a9eacc08527d24818 outcome=ok shown=b0527c50361294dd1b74af7a9eacc08527d24818 -->
+<!-- pulse:instance name=lens-walltime receipt=a2ad83259e8ce1c0abf2af1fd81c48a2401b5d42 outcome=ok shown=a2ad83259e8ce1c0abf2af1fd81c48a2401b5d42 -->
 
-Project `autolens_inference`, scope `None`, read from [PyAutoLabs/autolens_inference](https://github.com/PyAutoLabs/autolens_inference) `dashboard/walltime_validation.json` at [`b0527c50`](https://github.com/PyAutoLabs/autolens_inference/tree/b0527c50361294dd1b74af7a9eacc08527d24818); producer revision `6b19b94e`; generated 2026-10-26T14:32:55Z; comparison policy `None`. [Project dashboard](https://pyautolabs.github.io/autolens_inference/) · [receipt](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/receipts/lens-walltime.json).
+Project `autolens_inference`, scope `None`, read from [PyAutoLabs/autolens_inference](https://github.com/PyAutoLabs/autolens_inference) `dashboard/walltime_validation.json` at [`a2ad8325`](https://github.com/PyAutoLabs/autolens_inference/tree/a2ad83259e8ce1c0abf2af1fd81c48a2401b5d42); producer revision `6b19b94e`; generated 2026-10-26T14:32:55Z; comparison policy `None`. [Project dashboard](https://pyautolabs.github.io/autolens_inference/) · [receipt](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/receipts/lens-walltime.json).
 
 - **Integrity:** ok
 - **Freshness:** freshness policy unspecified · evidence time unknown (evidence unknown (no reason given))
