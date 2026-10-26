@@ -3,7 +3,7 @@
 A v3 (lifecycle) catalogue renders a runtime-only table: filters Class (All by
 default) → Dataset type → Model → Instrument → Hardware class, one row per
 ``runtime`` record showing ``status: current`` rows unless History is ticked.
-Runtime s is the producer's vmap per-call time and Est. 12-core s its
+Runtime is the producer's vmap per-call time and Est. 12 CPU its
 ``estimated_12_core`` value (numba CPU only), both rounded for display; each row
 opens a detail page. The producer declares class and status; the board ranks
 nothing, picks no fastest row and shows archived records only as a count.
@@ -321,10 +321,44 @@ def caption_html(constants) -> str:
     )
 
 
+# Column headers are two lines: the name, then its unit in brackets (italic, muted).
+UNITS = {
+    "Runtime": "s",
+    "Est. 12 CPU": "s",
+    "Profiling runtime": "s",
+    "Cores": "cores",
+    "Wall": "s",
+    "Likelihood evals": "evals",
+    "Implied time": "s / eval",
+}
+
+
+def head_label(name: str) -> str:
+    unit = UNITS.get(name)
+    return (
+        f'<span class="th-name">{_e(name)}</span>'
+        f'<span class="th-unit">{"(" + _e(unit) + ")" if unit else "&nbsp;"}</span>'
+    )
+
+
+def md_title(name: str) -> str:
+    """One-line Markdown header: the unit in brackets after the name."""
+    unit = UNITS.get(name)
+    return f"{name} ({unit})" if unit else name
+
+
+def th(name: str, cls: str = "") -> str:
+    klass = f' class="{cls}"' if cls else ""
+    return f"<th{klass}>{head_label(name)}</th>"
+
+
 def col_th(key, title, constants, cls="") -> str:
     hidden = " hidden" if key in constants else ""
     klass = f' class="{cls}"' if cls else ""
-    return f'<th data-col="{key}" data-phrase="{_e(PHRASES[key])}"{klass}{hidden}>{_e(title)}</th>'
+    return (
+        f'<th data-col="{key}" data-phrase="{_e(PHRASES[key])}"{klass}{hidden}>'
+        f"{head_label(title)}</th>"
+    )
 
 
 def col_td(key, value, constants, cls="") -> str:
@@ -402,12 +436,16 @@ def _render_lifecycle(snapshot):
         + filters
         + tally(visible, history=True)
         + caption_html(constants)
-        + '<div class="tablewrap"><table class="lifecycle-table"><thead><tr><th>Dataset type</th>'
-        "<th>Model</th><th>Instrument</th>"
+        + '<div class="tablewrap"><table class="lifecycle-table"><thead><tr>'
+        + th("Dataset type")
+        + th("Model")
+        + th("Instrument")
         + col_th("regime", "Source size", constants)
-        + "<th>Setup</th><th>Hardware class</th>"
+        + th("Setup")
+        + th("Hardware class")
         + col_th("lens_light", "Lens light", constants)
-        + "<th class='num'>Runtime s</th><th class='num'>Est. 12-core s</th>"
+        + th("Runtime", "num")
+        + th("Est. 12 CPU", "num")
         + col_th("class", "Class", constants)
         + "<th class='open'><span class='visually-hidden'>Details</span></th>"
         f"</tr></thead><tbody>{''.join(rows)}</tbody></table></div>"
@@ -656,7 +694,7 @@ def detail_page(snapshot, record, siblings, back: str, project: str) -> str:
     )
     headline.append(
         _headline(
-            "Est. 12-core",
+            "Est. 12 CPU",
             _seconds(twelve_core_s(record), "numba CPU setups only"),
             (est.get("ruling") or "") if est else "",
         )
@@ -843,7 +881,7 @@ def md_table(head, rows, constants) -> list[str]:
     """A Markdown table without the constant columns; ``head`` is ``(key|None, title, align)``."""
     keep = [i for i, (key, _, _) in enumerate(head) if key not in constants]
     lines = [
-        "| " + " | ".join(head[i][1] for i in keep) + " |",
+        "| " + " | ".join(md_title(head[i][1]) for i in keep) + " |",
         "|" + "".join("---:|" if head[i][2] == "r" else "---|" for i in keep),
     ]
     lines += ["| " + " | ".join(str(row[i]) for i in keep) + " |" for row in rows]
@@ -859,8 +897,8 @@ PROFILING_MD_HEAD = (
     (None, "Setup", "l"),
     (None, "Hardware class", "l"),
     ("lens_light", "Lens light", "l"),
-    (None, "Runtime s", "r"),
-    (None, "Est. 12-core s", "r"),
+    (None, "Runtime", "r"),
+    (None, "Est. 12 CPU", "r"),
     ("class", "Class", "l"),
 )
 

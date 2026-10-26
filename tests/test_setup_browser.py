@@ -128,7 +128,9 @@ def test_v3_first_select_is_class_with_all_selected():
 
 def test_v3_table_is_runtime_only_with_the_human_columns():
     page = setup_browser.render(lifecycle_capture())
-    head = re.findall(r"<th(?: [^>]*)?>(.*?)</th>", page)
+    head = re.findall(r'<span class="th-name">([^<]*)</span>', page)
+    units = re.findall(r'<span class="th-unit">([^<]*)</span>', page)
+    assert units[:10] == ["&nbsp;"] * 7 + ["(s)", "(s)", "&nbsp;"]
     assert head[:10] == [
         "Dataset type",
         "Model",
@@ -137,8 +139,8 @@ def test_v3_table_is_runtime_only_with_the_human_columns():
         "Setup",
         "Hardware class",
         "Lens light",
-        "Runtime s",
-        "Est. 12-core s",
+        "Runtime",
+        "Est. 12 CPU",
         "Class",
     ]
     rows = dict(re.findall(r'<tr data-record="([^"]+)"[^>]*?( hidden)?>', page))
@@ -230,7 +232,7 @@ def test_v3_node_throughput_is_described_with_its_basis():
 
 def test_v3_markdown_shows_the_runtime_table():
     lines = "\n".join(setup_browser.markdown(lifecycle_capture()))
-    assert "| Runtime s | Est. 12-core s | Class |" in lines
+    assert "| Runtime (s) | Est. 12 CPU (s) | Class |" in lines
     assert "| imaging | delaunay | hst | standard | `jax_gpu_dense` | hpc_a100 | default |" in lines
     assert "imaging-delaunay-hst-a100-runtime-old" not in lines
 
@@ -287,7 +289,7 @@ def test_v3_detail_page_per_runtime_row_restores_the_full_breakdown():
 def test_v3_detail_page_carries_twelve_core_node_throughput_and_status():
     pages = setup_browser.detail_pages(lifecycle_capture(), "#x", "PyAutoLens")
     ral = _article(pages, "imaging-delaunay-hst-ral-runtime")
-    assert "Est. 12-core" in ral and "0.03500 s" in ral
+    assert "Est. 12 CPU" in ral and "0.03500 s" in ral
     assert "190.5 calls/s · 40 workers (memory-bound) on ral_cpu_node" in ral
     assert "projected-badge" in ral and "Projected, not measured" in ral
     for label in ("Class", "Status", "Decision", "Configuration", "Evidence"):
@@ -420,11 +422,12 @@ def test_constant_columns_are_hidden_server_side_with_a_caption():
     for key in ("regime", "lens_light", "class"):
         assert re.search(rf'<th data-col="{key}"[^>]* hidden>', page)
         assert re.findall(rf'<td data-col="{key}"[^>]*?( hidden)?>', page) == [" hidden"] * 3
-    assert "<th>Instrument</th>" in page and "<th>Setup</th>" in page  # never hidden
+    for name in ("Instrument", "Setup"):  # never hidden
+        assert f'<th><span class="th-name">{name}</span>' in page
     md = "\n".join(setup_browser.markdown(snapshot))
     assert "All rows: standard size · default lens light · optimal" in md
     assert "| Source size |" not in md and "| Lens light |" not in md and "| Class |" not in md
-    assert "| Dataset type | Model | Instrument | Setup | Hardware class | Runtime s |" in md
+    assert "| Dataset type | Model | Instrument | Setup | Hardware class | Runtime (s) |" in md
 
 
 def test_columns_with_differing_visible_values_stay():

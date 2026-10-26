@@ -316,7 +316,9 @@ Instrument, Hardware class. Only `current` rows show until History is ticked,
 which adds `superseded` rows; archived records appear only as a count. A green
 tally (top right, above History) counts the current rows. Columns: Dataset type
 | Model | Instrument | Source size | Setup | Hardware class | Lens light |
-**Runtime s** | **Est. 12-core s** | Class | ›. Source size is the record's
+**Runtime (s)** | **Est. 12 CPU (s)** | Class | ›. Headers are two lines: the
+name, then the unit in brackets in italics (no unit: an empty line); the
+Markdown board puts the unit after the name. Source size is the record's
 `regime` and Lens light its `model_variant`, values verbatim. Setup is the
 `setup_id` without its precision token or an `na` operator token
 (`jax_gpu_sparse_fp64` → `jax_gpu_sparse`, `jax_cpu_na_fp64` → `jax_cpu`); a
@@ -329,8 +331,8 @@ script re-evaluates on every filter or History change, so a column returns as
 soon as visible rows differ. The server renders the default view the same way
 and the Markdown board omits the same columns with the same caption. Filters
 and detail pages keep every field.
-Runtime s is the producer's vmap per-call time
-`projected_node_throughput.per_call_s`; Est. 12-core s is the producer's
+Runtime is the producer's vmap per-call time
+`projected_node_throughput.per_call_s`; Est. 12 CPU is the producer's
 `estimated_12_core.value_s` (numba CPU records only, — elsewhere). Both are
 rounded to 5 decimal places for display only, with the exact value in the
 tooltip; Pulse computes neither. A Coverage panel lists optimal `planned_cells`
@@ -459,14 +461,15 @@ nothing; a new project commit moves both.
 - **Inference Timings table** (a `walltime-validation` instance): only
   `sampler: nautilus:mass_total[1]` records, Sampler shown as `nautilus`.
   Columns: Dataset type | Model | Instrument | Setup | Hardware class | Lens
-  light | **Profiling runtime s** | Sampler | Seed | Cores | **Wall s** (1
-  DP) | Likelihood evals | **Implied s/eval** (`implied_s_per_eval`, 5 DP) | ›.
+  light | **Profiling runtime (s)** | Sampler | Seed | Cores (cores) | **Wall
+  (s)** (1 DP) | Likelihood evals (evals) | **Implied time (s / eval)**
+  (`implied_s_per_eval`, 5 DP) | ›.
   Profiling runtime is the producer's `profiling_per_call_s` (5 DP) linking to
   `?view=setup&instance=<profiling instance>&record=<profiling_record_id>` when
   that record has a detail page in a captured profiling snapshot (else plain
-  text marked "not in captured catalogue"); `size_match: false` adds a "≠ size"
-  badge titled with both source-pixel counts; no match shows — titled with
-  `profiling_unmatched_reason`. The same filters and a results tally sit above
+  text marked "not in captured catalogue"); no match shows — titled with
+  `profiling_unmatched_reason`. `size_match` and both source-pixel counts are
+  shown on the run page only. The same filters and a results tally sit above
   the table; › opens `?view=run&instance=&record=`, a page with every field of
   the record and its evidence link. Lens light, Sampler and Cores follow the
   same constant-column rule (hidden with a caption while one value spans the

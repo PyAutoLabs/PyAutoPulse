@@ -394,17 +394,15 @@ button.retry {
   margin: 1.2rem 0 0.3rem;
   font-size: 0.9rem;
 }
-.size-badge {
-  display: inline-block;
-  margin-left: 0.15rem;
-  padding: 0 0.35rem;
-  border: 1px dashed var(--warn);
-  border-radius: 999px;
-  color: var(--warn);
-  font-size: 0.7rem;
-  font-weight: 600;
+.lifecycle-table th .th-name,
+.lifecycle-table th .th-unit {
+  display: block;
   white-space: nowrap;
-  cursor: help;
+}
+.lifecycle-table th .th-unit {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--muted);
 }
 .lifecycle-coverage {
   margin: 1rem 0;

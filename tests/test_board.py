@@ -296,7 +296,15 @@ def test_inference_table_is_mass_total_only_with_the_human_columns():
     wall = _snapshot("lens-walltime", "walltime-validation@1", "walltime_validation_v1.json")
     page = board.render_html([lens, wall], NOW, campaign_data={"campaigns": [], "tasks": []})
     table = _inference(page)
-    head = re.findall(r"<th(?: [^>]*)?>([^<]*)</th>", table)
+    head = re.findall(r'<span class="th-name">([^<]*)</span>', table)
+    units = dict(zip(head, re.findall(r'<span class="th-unit">([^<]*)</span>', table)))
+    assert {k: v for k, v in units.items() if v != "&nbsp;"} == {
+        "Profiling runtime": "(s)",
+        "Cores": "(cores)",
+        "Wall": "(s)",
+        "Likelihood evals": "(evals)",
+        "Implied time": "(s / eval)",
+    }
     assert head == list(board.WALLTIME_HEAD)
     rows = re.findall(r'<tr data-record="([^"]+)"', table)
     assert "nautilus-source-pix-s1" not in rows and len(rows) == 4
@@ -333,9 +341,11 @@ def test_inference_profiling_runtime_links_the_profiling_detail_page():
     assert (
         "href='?view=setup&amp;instance=lens&amp;record=imaging-delaunay-hst-ral-runtime'" in linked
     )
-    assert "≠ size" not in linked
+    assert "≠ size" not in table and "size-badge" not in table
     differs = row("nautilus-16core-s0")
-    assert "title='inference 784 px vs profiling 1250 px'>≠ size</span>" in differs
+    assert "profiling-link" in differs
+    run = re.search(r'<article[^>]*data-record="nautilus-16core-s0".*?</article>', page, re.S)[0]
+    assert "inference 784 px vs profiling 1250 px" in run and "sizes differ" in run
     unmatched = row("nautilus-light-fixed-s0")
     assert "title='no profiling runtime record with model_variant light_fixed'>—" in unmatched
     uncaptured = row("nautilus-gpu-s0")

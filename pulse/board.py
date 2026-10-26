@@ -412,21 +412,21 @@ WALLTIME_HEAD = (
     "Setup",
     "Hardware class",
     "Lens light",
-    "Profiling runtime s",
+    "Profiling runtime",
     "Sampler",
     "Seed",
     "Cores",
-    "Wall s",
+    "Wall",
     "Likelihood evals",
-    "Implied s/eval",
+    "Implied time",
 )
 WALLTIME_NUMERIC = {
-    "Profiling runtime s",
+    "Profiling runtime",
     "Seed",
     "Cores",
-    "Wall s",
+    "Wall",
     "Likelihood evals",
-    "Implied s/eval",
+    "Implied time",
 }
 INSIGHT_POINTER = "PyAutoFit inference benchmarking is collected on the PyAutoInsight board."
 INSIGHT_POINTER_MD = (
@@ -488,8 +488,6 @@ def _profiling_cell(record, pages: dict[str, str]) -> str:
             f"<b title='{_e(tip)}'>{shown}</b> <span class='muted' "
             f"title='{_e(rid)}'>not in captured catalogue</span>"
         )
-    if record.get("size_match") is False:
-        out += f" <span class='size-badge' tabindex='0' title='{_e(_size_title(record))}'>≠ size</span>"
     return f"<td class='num'>{out}</td>"
 
 
@@ -550,8 +548,6 @@ def walltime_markdown(s: Snapshot, pages: dict[str, str] | None = None) -> list[
         prof = bold(r.get("profiling_per_call_s"))
         if prof != "—" and rid in pages:
             prof = f"[{prof}]({PAGES_URL}{setup_browser.detail_href('setup', pages[rid], rid)})"
-        if prof != "—" and r.get("size_match") is False:
-            prof += f" ≠ size ({_size_title(r)})"
         cells = [
             likelihood.get("dataset_type"),
             likelihood.get("variant"),
@@ -591,9 +587,7 @@ def walltime_html(s: Snapshot, pages: dict[str, str] | None = None) -> str:
             _WALLTIME_KEYS[t], t, constants, "num" if t in WALLTIME_NUMERIC else ""
         )
         if t in _WALLTIME_KEYS
-        else f"<th class='num'>{_e(t)}</th>"
-        if t in WALLTIME_NUMERIC
-        else f"<th>{_e(t)}</th>"
+        else setup_browser.th(t, "num" if t in WALLTIME_NUMERIC else "")
         for t in WALLTIME_HEAD
     )
     body = "".join(
@@ -658,6 +652,13 @@ def run_pages(s: Snapshot, pages: dict[str, str], back: str, project: str) -> st
                 "Profiling runtime",
                 _profiling_cell(r, pages)[len("<td class='num'>") : -len("</td>")],
                 r.get("profiling_unmatched_reason") or (r.get("profiling_status") or ""),
+            )
+            + setup_browser._headline(
+                "Source pixels",
+                _e(_size_title(r)),
+                {True: "sizes match", False: "sizes differ", None: "size match not recorded"}.get(
+                    r.get("size_match"), ""
+                ),
             )
             + setup_browser._headline("Cores", _e(_cell(r.get("cores"))))
         )

@@ -688,17 +688,40 @@ const { execFileSync } = require("node:child_process");
     assert(
       Number(await runtime.evaluate((el) => getComputedStyle(el).fontWeight)) >= 700,
     );
-    const oneLine = async (table) =>
-      table.locator("th").evaluateAll((ths) =>
-        ths.every((th) => {
-          const line = parseFloat(getComputedStyle(th).lineHeight) || 20;
-          const pad =
-            parseFloat(getComputedStyle(th).paddingTop) +
-            parseFloat(getComputedStyle(th).paddingBottom);
-          return th.getBoundingClientRect().height - pad < line * 1.6;
-        }),
+    // Headers are two lines: name, then the unit in brackets in italics; each
+    // line stays on one line and every header has the same two-line height.
+    const header = (table) =>
+      table.locator("th:visible").evaluateAll((ths) =>
+        ths
+          .filter((th) => th.querySelector(".th-name"))
+          .map((th) => {
+            const unit = th.querySelector(".th-unit");
+            const style = getComputedStyle(unit);
+            const lineOf = (el) =>
+              el.getBoundingClientRect().height <
+              (parseFloat(getComputedStyle(el).lineHeight) || 20) * 1.5;
+            return {
+              name: th.querySelector(".th-name").textContent,
+              unit: unit.textContent.trim(),
+              italic: style.fontStyle === "italic",
+              below:
+                unit.getBoundingClientRect().top >=
+                th.querySelector(".th-name").getBoundingClientRect().bottom - 1,
+              oneLine: lineOf(th.querySelector(".th-name")) && lineOf(unit),
+              height: Math.round(th.getBoundingClientRect().height),
+            };
+          }),
       );
-    assert(await oneLine(life.locator("table")));
+    const lifeHead = await header(life.locator("table"));
+    assert.deepEqual(
+      lifeHead.filter((h) => h.unit).map((h) => [h.name, h.unit]),
+      [
+        ["Runtime", "(s)"],
+        ["Est. 12 CPU", "(s)"],
+      ],
+    );
+    for (const h of lifeHead) assert(h.italic && h.below && h.oneLine, h.name);
+    assert.equal(new Set(lifeHead.map((h) => h.height)).size, 1);
     for (const width of [390, 1280]) {
       await page.setViewportSize({ width, height: 1000 });
       assert(
@@ -771,7 +794,20 @@ const { execFileSync } = require("node:child_process");
     assert(await runs.locator('[data-id="tally"]').isVisible());
     assert.equal(await runs.locator('[data-id="tally"]').textContent(), "4 results");
     assert.equal(await runs.locator('input[data-filter="history"]').count(), 0);
-    assert(await oneLine(runs.locator("table")));
+    const runHead = await header(runs.locator("table"));
+    assert.deepEqual(
+      runHead.filter((h) => h.unit).map((h) => [h.name, h.unit]),
+      [
+        ["Profiling runtime", "(s)"],
+        ["Cores", "(cores)"],
+        ["Wall", "(s)"],
+        ["Likelihood evals", "(evals)"],
+        ["Implied time", "(s / eval)"],
+      ],
+    );
+    for (const h of runHead) assert(h.italic && h.below && h.oneLine, h.name);
+    assert.equal(await runs.locator(".size-badge").count(), 0);
+    assert(!(await runs.textContent()).includes("≠ size"));
     assert.equal(await runs.locator("tr[data-record]:visible").count(), 4);
     await runs.locator('select[data-filter="host_class"]').selectOption("hpc_a100");
     assert.equal(await runs.locator("tr[data-record]:visible").count(), 1);
