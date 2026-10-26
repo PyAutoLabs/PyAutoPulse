@@ -78,10 +78,15 @@ Pulse embeds the validated captured v2 index and loads a chosen evidence shard
 from that **same captured commit**, verifying its SHA-256 and setup identity.
 A failed or cached fetch remains visible; a missing deep link never substitutes a
 different run. Local reads cannot load remote shards as if they were published.
-Inline v2 records and v1 diagnostics remain supported. A v3 catalogue instead
-opens on Class (Optimal by default) → Likelihood → Instrument → Hardware class →
-Measurement, shows current records unless History is ticked, counts archived
-records without showing them and lists optimal cells not yet measured. No rendering action accepts
+Inline v2 records and v1 diagnostics remain supported. The board has two
+sections, **Profiling Timings** and **Inference Timings**, each opening per
+project (PyAutoFit, PyAutoLens). A v3 catalogue renders a runtime-only table
+(filters Class, All by default → Dataset type → Model → Instrument → Hardware
+class), shows current records unless History is ticked, counts archived records
+without showing them and lists optimal cells not yet measured; each row's ›
+opens its detail page with the full breakdown. Inference Timings lists the
+`nautilus:mass_total[1]` runs, each with its own page, and links each run's
+Profiling runtime to the matching profiling detail page. No rendering action accepts
 a baseline, changes campaign state, runs profiling, or selects the fastest run.
 Temporal diagnostics remain collapsed while the front page focuses on setup
 choices. Existing archive evidence still requires scientific review.

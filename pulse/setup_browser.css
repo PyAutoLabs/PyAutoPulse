@@ -332,12 +332,14 @@ button.retry {
 }
 .lifecycle-table td,
 .lifecycle-table th {
-  font-size: 0.8rem;
-  padding: 0.35rem 0.45rem;
+  font-size: 0.78rem;
+  padding: 0.35rem 0.25rem;
   vertical-align: top;
 }
-/* Headers never wrap; times are right-aligned, bold and tabular. */
-.lifecycle-table th {
+/* Headers and cells never wrap (the table scrolls inside its box); times
+ * are right-aligned, bold and tabular. */
+.lifecycle-table th,
+.lifecycle-table td {
   white-space: nowrap;
 }
 .lifecycle-table .num {
@@ -394,7 +396,7 @@ button.retry {
 }
 .size-badge {
   display: inline-block;
-  margin-left: 0.3rem;
+  margin-left: 0.15rem;
   padding: 0 0.35rem;
   border: 1px dashed var(--warn);
   border-radius: 999px;

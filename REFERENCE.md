@@ -433,8 +433,29 @@ nothing; a new project commit moves both.
   "freshness policy unspecified · age N d at fetch <date>" (the HTML adds a live
   "N d today"); a passed `valid_until` reads "stale".
 - A v3 instance's status lines add **Lifecycle** (`N current · N superseded ·
-  N archived`), and its census item carries the same counts. A
-  `walltime-validation` instance renders as its own table.
+  N archived`), and its census item carries the same counts.
+- Sections: **Profiling Timings** (`#profiling-timings`; an empty
+  `<a id="evidence">` keeps older links landing) and **Inference Timings**
+  (`#inference-timings`), each a `<details class="project-group">` per project
+  (`#profiling-<project>`, `#inference-<project>`; the label is the registry
+  row's first `library_refs` entry, PyAutoFit then PyAutoLens then the rest).
+  PyAutoFit's inference group points to the PyAutoInsight board. The v3 table
+  and its detail pages are described under the v3 contract above.
+- **Inference Timings table** (a `walltime-validation` instance): only
+  `sampler: nautilus:mass_total[1]` records, Sampler shown as `nautilus`.
+  Columns: Dataset type | Model | Instrument | Setup | Hardware class | Model
+  variant | **Profiling runtime s** | Sampler | Seed | Cores | **Wall s** (1
+  DP) | Likelihood evals | **Implied s/eval** (`implied_s_per_eval`, 5 DP) | ›.
+  Profiling runtime is the producer's `profiling_per_call_s` (5 DP) linking to
+  `?view=setup&instance=<profiling instance>&record=<profiling_record_id>` when
+  that record has a detail page in a captured profiling snapshot (else plain
+  text marked "not in captured catalogue"); `size_match: false` adds a "≠ size"
+  badge titled with both source-pixel counts; no match shows — titled with
+  `profiling_unmatched_reason`. The same filters and a results tally sit above
+  the table; › opens `?view=run&instance=&record=`, a page with every field of
+  the record and its evidence link. All rounding is display only.
+- Detail pages are hidden articles inside `dashboard.html` (Pages publishes one
+  page); the board script shows one for `?view=setup|run` and hides the rest.
 - Instance marker (what `check` compares to the receipt):
   `<!-- pulse:instance name=<instance> receipt=<resolved commit|none> outcome=<outcome> shown=<snapshot commit|none> -->`.
 - `badge.json`: shields endpoint, label `pulse`, message = the state headline.
