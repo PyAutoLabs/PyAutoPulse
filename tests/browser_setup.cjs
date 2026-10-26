@@ -754,6 +754,45 @@ const { execFileSync } = require("node:child_process");
     assert(await page.locator("#detail-route-status").isVisible());
     await page.goto(base + "/lifecycle.html");
     assert.equal(await page.locator('[data-walltime="walltime"]').count(), 1);
+    // Inference Timings: same filters, a tally, one-line headers, a page per run,
+    // and the Profiling runtime links to the profiling setup's detail page.
+    const runs = page.locator('[data-walltime="walltime"]');
+    await openGroups(runs);
+    assert(await runs.locator('[data-id="tally"]').isVisible());
+    assert.equal(await runs.locator('[data-id="tally"]').textContent(), "4 results");
+    assert.equal(await runs.locator('input[data-filter="history"]').count(), 0);
+    assert(await oneLine(runs.locator("table")));
+    assert.equal(await runs.locator("tr[data-record]:visible").count(), 4);
+    await runs.locator('select[data-filter="host_class"]').selectOption("hpc_a100");
+    assert.equal(await runs.locator("tr[data-record]:visible").count(), 1);
+    await runs.locator('select[data-filter="host_class"]').selectOption("");
+    assert.equal(await runs.locator("tr[data-record]:visible").count(), 4);
+    await runs
+      .locator('tr[data-record="nautilus-1core-s0"] a.profiling-link')
+      .click();
+    assert(
+      await page
+        .locator('article.detail-page[data-view="setup"][data-record="imaging-delaunay-hst-ral-runtime"]')
+        .isVisible(),
+    );
+    await page.goBack();
+    assert(await runs.isVisible());
+    await runs.locator('tr[data-record="nautilus-16core-s0"] a.row-open').click();
+    const run = page.locator(
+      'article.detail-page[data-view="run"][data-record="nautilus-16core-s0"]',
+    );
+    assert(await run.isVisible());
+    assert((await run.textContent()).includes("implied_s_per_eval"));
+    await run.locator("a.back-link").click();
+    assert(page.url().endsWith("#inference-pyautolens"));
+    assert(await runs.isVisible());
+    await page.goto(base + "/lifecycle.html?view=run&instance=walltime&record=missing");
+    assert(await page.locator("#detail-route-status").isVisible());
+    assert.equal(
+      await page.locator("#detail-route-back").textContent(),
+      "← Inference Timings",
+    );
+    await page.goto(base + "/lifecycle.html");
     for (const width of [390, 1280]) {
       await page.setViewportSize({ width, height: 1000 });
       assert(

@@ -403,84 +403,272 @@ def _md_detail(s: Snapshot, now: str | None = None) -> list[str]:
     return out
 
 
-WALLTIME_COLUMNS = (
-    (
-        "Likelihood",
-        lambda r: (
-            f"{(r.get('likelihood') or {}).get('dataset_type')}/"
-            f"{(r.get('likelihood') or {}).get('variant')}"
-        ),
-    ),
-    ("Instrument", lambda r: r.get("instrument")),
-    ("Setup", lambda r: r.get("setup_id")),
-    ("Hardware class", lambda r: r.get("host_class")),
-    ("Model variant", lambda r: r.get("model_variant")),
-    ("Sampler", lambda r: r.get("sampler")),
-    ("Seed", lambda r: r.get("seed")),
-    ("Cores", lambda r: r.get("cores")),
-    ("Wall s", lambda r: r.get("wall_s")),
-    ("Likelihood evals", lambda r: r.get("likelihood_evals")),
-    ("Implied ms/eval", lambda r: r.get("implied_ms_per_eval")),
-    ("Predicted ms/eval", lambda r: r.get("predicted_ms_per_eval")),
-    ("Measured/predicted", lambda r: r.get("ratio_measured_over_predicted")),
-    ("Parallel efficiency", lambda r: r.get("parallel_efficiency")),
-    ("Parity", lambda r: r.get("parity_status")),
-    ("Reference runtime record", lambda r: r.get("reference_runtime_record_id")),
-    ("Release", lambda r: r.get("release_pin")),
+INFERENCE_SAMPLER = "nautilus:mass_total[1]"  # the one result type the table shows
+WALLTIME_FILTERS = setup_browser.FILTERS
+WALLTIME_HEAD = (
+    "Dataset type",
+    "Model",
+    "Instrument",
+    "Setup",
+    "Hardware class",
+    "Model variant",
+    "Profiling runtime s",
+    "Sampler",
+    "Seed",
+    "Cores",
+    "Wall s",
+    "Likelihood evals",
+    "Implied s/eval",
 )
-WALLTIME_NOTE = (
-    "Full-fit measurements: one sampler run per row. Every derived number is the "
-    "producer's; Pulse computes no ratio and never reads a full-fit time as a "
-    "per-likelihood measurement."
-)
-
-
+WALLTIME_NUMERIC = {
+    "Profiling runtime s",
+    "Seed",
+    "Cores",
+    "Wall s",
+    "Likelihood evals",
+    "Implied s/eval",
+}
 INSIGHT_POINTER = "PyAutoFit inference benchmarking is collected on the PyAutoInsight board."
 INSIGHT_POINTER_MD = (
     f"PyAutoFit inference benchmarking is collected on the [PyAutoInsight board]({INSIGHT_URL})."
 )
 
 
+def inference_rows(s: Snapshot) -> list[dict]:
+    """The full-fit runs the Inference Timings table shows (one sampler stage only)."""
+    return [r for r in records(s) if r.get("sampler") == INFERENCE_SAMPLER]
+
+
+def sampler_label(record) -> str:
+    return str(record.get("sampler") or "").split(":", 1)[0]
+
+
+def profiling_pages(views) -> dict[str, str]:
+    """``{profiling record id: instance}`` for every captured profiling detail page."""
+    return {
+        rid: s.instance.instance
+        for s in views
+        if not is_walltime(s)
+        for rid in setup_browser.page_ids(s)
+    }
+
+
+def _size_title(record) -> str:
+    return (
+        f"inference {_cell(record.get('source_pixels'))} px vs profiling "
+        f"{_cell(record.get('profiling_source_pixels'))} px"
+    )
+
+
+def _profiling_cell(record, pages: dict[str, str]) -> str:
+    """The producer-joined profiling per-call time, linking to that setup's detail page."""
+    value = record.get("profiling_per_call_s")
+    shown = setup_browser.fixed(value)
+    if shown is None:
+        reason = record.get("profiling_unmatched_reason") or "no profiling record matched"
+        return f"<td class='num'><span class='muted' title='{_e(reason)}'>—</span></td>"
+    rid = record.get("profiling_record_id")
+    tip = f"{value} s · {record.get('profiling_per_call_source') or 'source not declared'}"
+    if rid in pages:
+        href = setup_browser.detail_href("setup", pages[rid], rid)
+        out = (
+            f"<a class='profiling-link' data-detail-link href='{_e(href)}' "
+            f"title='{_e(tip)} · open the profiling setup'><b>{shown}</b></a>"
+        )
+    else:
+        out = (
+            f"<b title='{_e(tip)}'>{shown}</b> <span class='muted' "
+            f"title='{_e(rid)}'>not in captured catalogue</span>"
+        )
+    if record.get("size_match") is False:
+        out += f" <span class='size-badge' tabindex='0' title='{_e(_size_title(record))}'>≠ size</span>"
+    return f"<td class='num'>{out}</td>"
+
+
+def _walltime_cells(r, pages) -> str:
+    likelihood = r.get("likelihood") or {}
+    text = lambda v: f"<td>{_e(_cell(v))}</td>"  # noqa: E731
+    count = lambda v: f"<td class='num'>{_e(_cell(v))}</td>"  # noqa: E731
+    wall = setup_browser.fixed(r.get("wall_s"), 1)
+    return (
+        text(likelihood.get("dataset_type"))
+        + text(likelihood.get("variant"))
+        + text(r.get("instrument"))
+        + f"<td><code>{_e(setup_browser.setup_label(r.get('setup_id')))}</code></td>"
+        + text(r.get("host_class"))
+        + text(setup_browser.variant_label(r.get("model_variant"), r.get("setup_id")))
+        + _profiling_cell(r, pages)
+        + text(sampler_label(r))
+        + count(r.get("seed"))
+        + count(r.get("cores"))
+        + (
+            f"<td class='num'><b title='{_e(r.get('wall_s'))} s'>{wall}</b></td>"
+            if wall
+            else "<td class='num'>—</td>"
+        )
+        + count(r.get("likelihood_evals"))
+        + setup_browser.time_cell(
+            r.get("implied_s_per_eval"), "wall s ÷ likelihood evals (producer)", "not recorded"
+        )
+    )
+
+
+def walltime_markdown(s: Snapshot, pages: dict[str, str] | None = None) -> list[str]:
+    pages = pages or {}
+    name = s.instance.repo
+    rows = inference_rows(s)
+    out = [
+        f"<details><summary>{html.escape(name)} — inference timings</summary>",
+        "",
+        f"{len(rows)} result{'' if len(rows) == 1 else 's'}.",
+        "",
+        "| " + " | ".join(WALLTIME_HEAD) + " |",
+        "|" + "".join("---:|" if h in WALLTIME_NUMERIC else "---|" for h in WALLTIME_HEAD),
+    ]
+    bold = lambda v, dp=5: (  # noqa: E731
+        f"**{setup_browser.fixed(v, dp)}**" if setup_browser.fixed(v, dp) else "—"
+    )
+    for r in rows:
+        likelihood = r.get("likelihood") or {}
+        rid = r.get("profiling_record_id")
+        prof = bold(r.get("profiling_per_call_s"))
+        if prof != "—" and rid in pages:
+            prof = f"[{prof}]({PAGES_URL}{setup_browser.detail_href('setup', pages[rid], rid)})"
+        if prof != "—" and r.get("size_match") is False:
+            prof += f" ≠ size ({_size_title(r)})"
+        cells = [
+            likelihood.get("dataset_type"),
+            likelihood.get("variant"),
+            r.get("instrument"),
+            f"`{setup_browser.setup_label(r.get('setup_id'))}`",
+            r.get("host_class"),
+            setup_browser.variant_label(r.get("model_variant"), r.get("setup_id")),
+            prof,
+            sampler_label(r),
+            r.get("seed"),
+            r.get("cores"),
+            bold(r.get("wall_s"), 1),
+            r.get("likelihood_evals"),
+            bold(r.get("implied_s_per_eval")),
+        ]
+        out.append("| " + " | ".join(_md_escape(_cell(c)) for c in cells) + " |")
+    return out + ["", "</details>", ""]
+
+
+def walltime_html(s: Snapshot, pages: dict[str, str] | None = None) -> str:
+    pages = pages or {}
+    key = s.instance.instance
+    rows = inference_rows(s)
+    filters = setup_browser.selectors(
+        key,
+        WALLTIME_FILTERS,
+        lambda k: sorted({str(_walltime_fields(r)[k]) for r in rows}),
+        with_class=False,
+    )
+    head = "".join(
+        f"<th class='num'>{_e(t)}</th>" if t in WALLTIME_NUMERIC else f"<th>{_e(t)}</th>"
+        for t in WALLTIME_HEAD
+    )
+    body = "".join(
+        f'<tr data-record="{_e(r.get("id"))}"'
+        + "".join(f' data-{k.replace("_", "-")}="{_e(v)}"' for k, v in _walltime_fields(r).items())
+        + ">"
+        + _walltime_cells(r, pages)
+        + setup_browser.open_link("run", key, r.get("id"), "Open this run's details")
+        + "</tr>"
+        for r in rows
+    )
+    return (
+        f'<section class="setup-browser lifecycle-browser walltime-validation" '
+        f'data-setup-browser="{_e(key)}" data-lifecycle data-walltime="{_e(key)}" '
+        f'aria-label="{_e(s.instance.repo)} inference timings">'
+        + filters
+        + setup_browser.tally(len(rows), history=False)
+        + f"<div class='tablewrap'><table class='lifecycle-table'><thead><tr>{head}"
+        "<th class='open'><span class='visually-hidden'>Details</span></th></tr></thead>"
+        f"<tbody>{body}</tbody></table></div>"
+        f'<p class="empty" data-id="no-rows"{" hidden" if rows else ""}>'
+        "No run matches this selection.</p></section>"
+    )
+
+
+def _walltime_fields(record) -> dict:
+    likelihood = record.get("likelihood") or {}
+    return {
+        "dataset_type": likelihood.get("dataset_type"),
+        "variant": likelihood.get("variant"),
+        "instrument": record.get("instrument"),
+        "host_class": record.get("host_class"),
+    }
+
+
+def run_pages(s: Snapshot, pages: dict[str, str], back: str, project: str) -> str:
+    """One hidden detail page per Inference Timings row: every producer field, verbatim."""
+    key = s.instance.instance
+    out = []
+    for r in inference_rows(s):
+        title = (
+            setup_browser.detail_title(project, r)
+            + f" / {sampler_label(r)} {r.get('stage') or r.get('sampler')} / seed {r.get('seed')}"
+        )
+        headline = (
+            setup_browser._headline(
+                "Wall time",
+                _e(f"{setup_browser.fixed(r.get('wall_s'), 1)} s")
+                if setup_browser.fixed(r.get("wall_s"), 1)
+                else "not recorded",
+            )
+            + setup_browser._headline(
+                "Likelihood evaluations", _e(_cell(r.get("likelihood_evals")))
+            )
+            + setup_browser._headline(
+                "Implied s/eval",
+                setup_browser._seconds(r.get("implied_s_per_eval")),
+                "wall s ÷ likelihood evals, as the producer declares it",
+            )
+            + setup_browser._headline(
+                "Profiling runtime",
+                _profiling_cell(r, pages)[len("<td class='num'>") : -len("</td>")],
+                r.get("profiling_unmatched_reason") or (r.get("profiling_status") or ""),
+            )
+            + setup_browser._headline("Cores", _e(_cell(r.get("cores"))))
+        )
+        fields = "".join(
+            f"<dt>{_e(k)}</dt><dd><code>{_e(json.dumps(v) if not isinstance(v, str) else v)}</code></dd>"
+            for k, v in r.items()
+        )
+        evidence = r.get("evidence_path")
+        link = (
+            f'<li><a href="{_e(s.instance.blob_url(s.commit, evidence))}">stages evidence</a> '
+            f"<code>{_e(evidence)}</code></li>"
+            if evidence
+            else "<li>No evidence path recorded.</li>"
+        )
+        out.append(
+            f'<article class="detail-page" data-view="run" data-instance="{_e(key)}" '
+            f'data-record="{_e(r.get("id"))}" data-title="{_e(title)}" hidden>'
+            f'<a class="back-link" data-detail-link data-back href="{_e(back)}">← Inference Timings</a>'
+            f"<h2>{_e(title)}</h2>"
+            '<section class="headline-metrics" aria-label="Headline timings">'
+            f'<dl class="headline-list">{headline}</dl></section>'
+            '<details class="metric-panel" data-axis="fields" open><summary>Every recorded field'
+            f'</summary><dl class="config">{fields}</dl></details>'
+            '<details class="metric-panel" data-axis="evidence" open><summary>Evidence</summary>'
+            f'<ul class="evidence-list">{link}</ul></details></article>'
+        )
+    return "".join(out)
+
+
 def _cell(value) -> str:
     return "—" if value is None else str(value)
 
 
-def walltime_markdown(s: Snapshot) -> list[str]:
-    name = s.instance.repo
-    out = [
-        f"<details><summary>{html.escape(name)} — wall-time validation</summary>",
-        "",
-        WALLTIME_NOTE,
-        "",
-        "| " + " | ".join(t for t, _ in WALLTIME_COLUMNS) + " |",
-        "|" + "---|" * len(WALLTIME_COLUMNS),
-    ]
-    for r in records(s):
-        out.append("| " + " | ".join(_md_escape(_cell(f(r))) for _, f in WALLTIME_COLUMNS) + " |")
-    return out + ["", "</details>", ""]
-
-
-def walltime_html(s: Snapshot) -> str:
-    head = "".join(f"<th>{_e(t)}</th>" for t, _ in WALLTIME_COLUMNS)
-    body = "".join(
-        "<tr>" + "".join(f"<td>{_e(_cell(f(r)))}</td>" for _, f in WALLTIME_COLUMNS) + "</tr>"
-        for r in records(s)
-    )
-    return (
-        f'<section class="walltime-validation" data-walltime="{_e(s.instance.instance)}" '
-        f'aria-label="{_e(s.instance.repo)} wall-time validation">'
-        f"<h3>{_e(s.instance.repo)}: wall-time validation</h3><p>{_e(WALLTIME_NOTE)}</p>"
-        f"<div class='tablewrap'><table><thead><tr>{head}</tr></thead><tbody>{body}</tbody>"
-        "</table></div></section>"
-    )
-
-
-def _md_snapshot(snapshot: Snapshot, now: str) -> list[str]:
+def _md_snapshot(snapshot: Snapshot, now: str, pages: dict[str, str] | None = None) -> list[str]:
     out = []
     if snapshot.failed or snapshot.cached:
         out += [f"**{snapshot.instance.instance}: {integrity(snapshot)}**", ""]
     if is_walltime(snapshot):
-        out += walltime_markdown(snapshot)
+        out += walltime_markdown(snapshot, pages)
     elif (snapshot.doc or {}).get("version") in (2, 3):
         out += setup_browser.markdown(snapshot)
     return out + [
@@ -517,7 +705,7 @@ def render_markdown(views, now: str | None = None, campaign_data: dict | None = 
             elif snaps:
                 out += [f"### {label}", ""]
                 for snapshot in snaps:
-                    out += _md_snapshot(snapshot, now)
+                    out += _md_snapshot(snapshot, now, profiling_pages(views))
         out += ["", decisions.markdown()]
         return "\n".join(out).rstrip("\n") + "\n"
     out = [
@@ -770,8 +958,11 @@ def render_html(views, now: str | None = None, campaign_data: dict | None = None
             body = f"<p>{_e(INSIGHT_POINTER).replace('PyAutoInsight board', _insight_link())}</p>"
             sections.append(_group("inference", label, body))
         elif snaps:
-            body = "".join(_warning(s) + walltime_html(s) for s in snaps)
+            linked = profiling_pages(views)
+            body = "".join(_warning(s) + walltime_html(s, linked) for s in snaps)
             sections.append(_group("inference", label, body))
+            back = f"#inference-{project_slug(label)}"
+            pages += [run_pages(s, linked, back, label) for s in snaps]
     content = [_detail_container(pages), *sections]
     return shared.section_layout(
         '<!doctype html>\n<html lang="en"><head><meta charset="utf-8">'

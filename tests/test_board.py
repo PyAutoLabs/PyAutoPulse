@@ -1,6 +1,7 @@
 """The board: three notions, producer comparisons verbatim, cached semantics, state.json."""
 
 import json
+import re
 
 import pytest
 from conftest import SHA_A, SHA_G, fixture_doc
@@ -277,15 +278,78 @@ def test_profiling_and_inference_timings_open_per_project():
     assert inference < page.index('data-walltime="lens-walltime"')
     assert board.INSIGHT_URL in page and ">Profiling Results</h2>" not in page
     assert '"#profiling-timings"' in page and '"#inference-timings"' in page
-    assert "Full-fit measurements" in page and "nautilus" in page
     assert "setup catalogue unavailable" not in page
     md = board.render_markdown([lens, wall], NOW, campaign_data=data)
     assert md.index("## Profiling Timings") < md.index("## Inference Timings")
-    assert md.index("## Inference Timings") < md.index("wall-time validation")
-    assert "| Measured/predicted |" in md and "| 1.26 |" in md
+    assert md.index("## Inference Timings") < md.index("inference timings</summary>")
     state = board.render_state([wall], updated=NOW, now=NOW)
     assert not any(i["id"].endswith(":unqualified") for i in state["items"])
     assert "full-fit records" in board.qualification(wall)
+
+
+def _inference(page):
+    return re.search(r'data-walltime="lens-walltime".*?</section>', page, re.S)[0]
+
+
+def test_inference_table_is_mass_total_only_with_the_human_columns():
+    lens = _snapshot("lens", "profiling-summary@3", "setup_summary_v3.json")
+    wall = _snapshot("lens-walltime", "walltime-validation@1", "walltime_validation_v1.json")
+    page = board.render_html([lens, wall], NOW, campaign_data={"campaigns": [], "tasks": []})
+    table = _inference(page)
+    head = re.findall(r"<th(?: [^>]*)?>([^<]*)</th>", table)
+    assert head == list(board.WALLTIME_HEAD)
+    rows = re.findall(r'<tr data-record="([^"]+)"', table)
+    assert "nautilus-source-pix-s1" not in rows and len(rows) == 4
+    for clutter in (
+        "Full-fit measurements",
+        "Predicted",
+        "Measured/predicted",
+        "Parallel efficiency",
+        "Parity",
+        "Reference runtime",
+        "Release",
+        "mass_total",
+        "Log Likelihood Function Evaluation Time",
+    ):
+        assert clutter not in table, clutter
+    first = re.search(r'<tr data-record="nautilus-1core-s0".*?</tr>', table, re.S)[0]
+    assert "<td>nautilus</td>" in first and ">4200.0</b>" in first and ">0.21000</b>" in first
+    assert re.search(r'data-id="tally"[^>]*>4 results<', table)
+    assert 'data-filter="history"' not in table and 'data-filter="class"' not in table
+
+
+def test_inference_profiling_runtime_links_the_profiling_detail_page():
+    lens = _snapshot("lens", "profiling-summary@3", "setup_summary_v3.json")
+    wall = _snapshot("lens-walltime", "walltime-validation@1", "walltime_validation_v1.json")
+    page = board.render_html([lens, wall], NOW, campaign_data={"campaigns": [], "tasks": []})
+    table = _inference(page)
+    row = lambda rid: re.search(rf'<tr data-record="{rid}".*?</tr>', table, re.S)[0]  # noqa: E731
+    linked = row("nautilus-1core-s0")
+    assert (
+        "href='?view=setup&amp;instance=lens&amp;record=imaging-delaunay-hst-ral-runtime'" in linked
+    )
+    assert "≠ size" not in linked
+    differs = row("nautilus-16core-s0")
+    assert "title='inference 784 px vs profiling 1250 px'>≠ size</span>" in differs
+    unmatched = row("nautilus-light-fixed-s0")
+    assert "title='no profiling runtime record with model_variant light_fixed'>—" in unmatched
+    uncaptured = row("nautilus-gpu-s0")
+    assert (
+        "not in captured catalogue" in uncaptured
+        and "data-detail-link href='?view=setup" not in uncaptured
+    )
+    assert "<td>default+mixed</td>" in uncaptured and "<code>jax_gpu_dense</code>" in uncaptured
+    # Every row opens its own run page, and the linked profiling page exists.
+    assert 'data-view="run" data-instance="lens-walltime" data-record="nautilus-gpu-s0"' in page
+    assert (
+        'data-view="setup" data-instance="lens" data-record="imaging-delaunay-hst-ral-runtime"'
+        in page
+    )
+    md = board.render_markdown([lens, wall], NOW, campaign_data={"campaigns": [], "tasks": []})
+    assert (
+        f"[**0.21000**]({board.PAGES_URL}?view=setup&instance=lens&record="
+        "imaging-delaunay-hst-ral-runtime)" in md
+    )
 
 
 def test_v3_and_walltime_state_meets_the_brain_contract():
