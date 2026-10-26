@@ -246,63 +246,65 @@ Project `autofit_profiling`, scope `pyautofit-profiling`, read from [PyAutoLabs/
 
 55 current results.
 
-| Dataset type | Model | Instrument | Regime | Setup | Hardware class | Model variant | Runtime s | Est. 12-core s | Class |
-|---|---|---|---|---|---|---|---:|---:|---|
-| imaging | delaunay | ao | standard | `jax_cpu_sparse` | hpc_a100 | default | **57.17888** | — | secondary |
-| imaging | delaunay | ao | standard | `jax_cpu_sparse` | hpc_ral_cpu | default | **55.29191** | — | secondary |
-| imaging | delaunay | ao | standard | `jax_gpu_dense` | hpc_a100 | default | **0.36693** | — | secondary |
-| imaging | delaunay | ao | standard | `jax_gpu_sparse` | hpc_a100 | default | **0.93534** | — | secondary |
-| imaging | delaunay | ao | standard | `numba_cpu_sparse` | hpc_ral_cpu | default | **8.67130** | **1.44522** | secondary |
-| imaging | delaunay | euclid | standard | `jax_cpu_sparse` | hpc_a100 | default | **0.85744** | — | secondary |
-| imaging | delaunay | euclid | standard | `jax_cpu_sparse` | hpc_ral_cpu | default | **0.82660** | — | secondary |
-| imaging | delaunay | euclid | standard | `jax_gpu_dense` | hpc_a100 | default | **0.01480** | — | secondary |
-| imaging | delaunay | euclid | standard | `jax_gpu_sparse` | hpc_a100 | default | **0.01816** | — | secondary |
-| imaging | delaunay | euclid | standard | `numba_cpu_sparse` | hpc_ral_cpu | default | **0.81997** | **0.13666** | secondary |
-| imaging | delaunay | hst | standard | `jax_cpu_sparse` | hpc_a100 | default | **2.11038** | — | secondary |
-| imaging | delaunay | hst | standard | `jax_cpu_sparse` | hpc_ral_cpu | default | **1.89485** | — | secondary |
-| imaging | delaunay | hst | standard | `jax_gpu_dense` | hpc_a100 | default | **0.03505** | — | secondary |
-| imaging | delaunay | hst | standard | `jax_gpu_sparse` | hpc_a100 | default | **0.04793** | — | secondary |
-| imaging | delaunay | hst | standard | `numba_cpu_sparse` | hpc_ral_cpu | default | **0.95168** | **0.15861** | secondary |
-| imaging | delaunay | jwst | standard | `jax_cpu_sparse` | hpc_a100 | default | **4.68563** | — | secondary |
-| imaging | delaunay | jwst | standard | `jax_cpu_sparse` | hpc_ral_cpu | default | **4.36134** | — | secondary |
-| imaging | delaunay | jwst | standard | `jax_gpu_dense` | hpc_a100 | default | **0.07229** | — | secondary |
-| imaging | delaunay | jwst | standard | `jax_gpu_sparse` | hpc_a100 | default | **0.10811** | — | secondary |
-| imaging | delaunay | jwst | standard | `numba_cpu_sparse` | hpc_ral_cpu | default | **1.74460** | **0.29077** | secondary |
-| imaging | delaunay_nn | hst | standard | `jax_cpu_sparse` | hpc_a100 | default | **6.23459** | — | secondary |
-| imaging | delaunay_nn | hst | standard | `jax_cpu_sparse` | hpc_ral_cpu | default | **6.42673** | — | secondary |
-| imaging | delaunay_nn | hst | standard | `jax_gpu_dense` | hpc_a100 | default | **0.04274** | — | secondary |
-| imaging | delaunay_nn | hst | standard | `jax_gpu_sparse` | hpc_a100 | default | **1.14945** | — | secondary |
-| imaging | delaunay_nn | hst | standard | `numba_cpu_sparse` | hpc_ral_cpu | default | **1.29480** | **0.21580** | secondary |
-| imaging | mge | ao | standard | `jax_cpu_dense` | hpc_ral_cpu | default | **0.32965** | — | secondary |
-| imaging | mge | ao | standard | `jax_gpu_dense` | hpc_a100 | default | **0.01898** | — | secondary |
-| imaging | mge | euclid | standard | `jax_cpu_dense` | hpc_ral_cpu | default | **0.00680** | — | secondary |
-| imaging | mge | euclid | standard | `jax_gpu_dense` | hpc_a100 | default | **0.00020** | — | secondary |
-| imaging | mge | hst | standard | `jax_cpu_dense` | hpc_ral_cpu | default | **0.01439** | — | secondary |
-| imaging | mge | hst | standard | `jax_gpu_dense` | hpc_a100 | default | **0.00041** | — | secondary |
-| imaging | mge | jwst | standard | `jax_cpu_dense` | hpc_ral_cpu | default | **0.04155** | — | secondary |
-| imaging | mge | jwst | standard | `jax_gpu_dense` | hpc_a100 | default | **0.00100** | — | secondary |
-| imaging | rectangular | ao | standard | `jax_cpu_sparse` | hpc_a100 | default | **50.84276** | — | secondary |
-| imaging | rectangular | ao | standard | `jax_cpu_sparse` | hpc_ral_cpu | default | **48.79413** | — | secondary |
-| imaging | rectangular | ao | standard | `jax_gpu_dense` | hpc_a100 | default | **0.31083** | — | secondary |
-| imaging | rectangular | ao | standard | `jax_gpu_sparse` | hpc_a100 | default | **1.05330** | — | secondary |
-| imaging | rectangular | ao | standard | `numba_cpu_sparse` | hpc_ral_cpu | default | **9.98218** | **1.66370** | secondary |
-| imaging | rectangular | euclid | standard | `jax_cpu_sparse` | hpc_a100 | default | **0.63375** | — | secondary |
-| imaging | rectangular | euclid | standard | `jax_cpu_sparse` | hpc_ral_cpu | default | **0.68302** | — | secondary |
-| imaging | rectangular | euclid | standard | `jax_gpu_dense` | hpc_a100 | default | **0.00793** | — | secondary |
-| imaging | rectangular | euclid | standard | `jax_gpu_sparse` | hpc_a100 | default | **0.01319** | — | secondary |
-| imaging | rectangular | euclid | standard | `numba_cpu_sparse` | hpc_ral_cpu | default | **0.28250** | **0.04708** | secondary |
-| imaging | rectangular | hst | standard | `jax_cpu_sparse` | hpc_a100 | default | **1.70914** | — | secondary |
-| imaging | rectangular | hst | standard | `jax_cpu_sparse` | hpc_ral_cpu | default | **2.02948** | — | secondary |
-| imaging | rectangular | hst | standard | `jax_gpu_dense` | hpc_a100 | default | **0.02550** | — | secondary |
-| imaging | rectangular | hst | standard | `jax_gpu_sparse` | hpc_a100 | default | **0.04119** | — | secondary |
-| imaging | rectangular | hst | standard | `numba_cpu_sparse` | hpc_ral_cpu | default | **0.69674** | **0.11612** | secondary |
-| imaging | rectangular | jwst | standard | `jax_cpu_sparse` | hpc_a100 | default | **3.94015** | — | secondary |
-| imaging | rectangular | jwst | standard | `jax_cpu_sparse` | hpc_ral_cpu | default | **4.21035** | — | secondary |
-| imaging | rectangular | jwst | standard | `jax_gpu_dense` | hpc_a100 | default | **0.06284** | — | secondary |
-| imaging | rectangular | jwst | standard | `jax_gpu_sparse` | hpc_a100 | default | **0.10746** | — | secondary |
-| imaging | rectangular | jwst | standard | `numba_cpu_sparse` | hpc_ral_cpu | default | **1.68807** | **0.28135** | secondary |
-| point_source_source | source_plane | simple | standard | `jax_cpu` | hpc_ral_cpu | default | **0.00005** | — | secondary |
-| point_source_source | source_plane | simple | standard | `jax_gpu` | hpc_a100 | default | **0.00000** | — | secondary |
+All rows: standard size · default lens light · secondary
+
+| Dataset type | Model | Instrument | Setup | Hardware class | Runtime s | Est. 12-core s |
+|---|---|---|---|---|---:|---:|
+| imaging | delaunay | ao | `jax_cpu_sparse` | hpc_a100 | **57.17888** | — |
+| imaging | delaunay | ao | `jax_cpu_sparse` | hpc_ral_cpu | **55.29191** | — |
+| imaging | delaunay | ao | `jax_gpu_dense` | hpc_a100 | **0.36693** | — |
+| imaging | delaunay | ao | `jax_gpu_sparse` | hpc_a100 | **0.93534** | — |
+| imaging | delaunay | ao | `numba_cpu_sparse` | hpc_ral_cpu | **8.67130** | **1.44522** |
+| imaging | delaunay | euclid | `jax_cpu_sparse` | hpc_a100 | **0.85744** | — |
+| imaging | delaunay | euclid | `jax_cpu_sparse` | hpc_ral_cpu | **0.82660** | — |
+| imaging | delaunay | euclid | `jax_gpu_dense` | hpc_a100 | **0.01480** | — |
+| imaging | delaunay | euclid | `jax_gpu_sparse` | hpc_a100 | **0.01816** | — |
+| imaging | delaunay | euclid | `numba_cpu_sparse` | hpc_ral_cpu | **0.81997** | **0.13666** |
+| imaging | delaunay | hst | `jax_cpu_sparse` | hpc_a100 | **2.11038** | — |
+| imaging | delaunay | hst | `jax_cpu_sparse` | hpc_ral_cpu | **1.89485** | — |
+| imaging | delaunay | hst | `jax_gpu_dense` | hpc_a100 | **0.03505** | — |
+| imaging | delaunay | hst | `jax_gpu_sparse` | hpc_a100 | **0.04793** | — |
+| imaging | delaunay | hst | `numba_cpu_sparse` | hpc_ral_cpu | **0.95168** | **0.15861** |
+| imaging | delaunay | jwst | `jax_cpu_sparse` | hpc_a100 | **4.68563** | — |
+| imaging | delaunay | jwst | `jax_cpu_sparse` | hpc_ral_cpu | **4.36134** | — |
+| imaging | delaunay | jwst | `jax_gpu_dense` | hpc_a100 | **0.07229** | — |
+| imaging | delaunay | jwst | `jax_gpu_sparse` | hpc_a100 | **0.10811** | — |
+| imaging | delaunay | jwst | `numba_cpu_sparse` | hpc_ral_cpu | **1.74460** | **0.29077** |
+| imaging | delaunay_nn | hst | `jax_cpu_sparse` | hpc_a100 | **6.23459** | — |
+| imaging | delaunay_nn | hst | `jax_cpu_sparse` | hpc_ral_cpu | **6.42673** | — |
+| imaging | delaunay_nn | hst | `jax_gpu_dense` | hpc_a100 | **0.04274** | — |
+| imaging | delaunay_nn | hst | `jax_gpu_sparse` | hpc_a100 | **1.14945** | — |
+| imaging | delaunay_nn | hst | `numba_cpu_sparse` | hpc_ral_cpu | **1.29480** | **0.21580** |
+| imaging | mge | ao | `jax_cpu_dense` | hpc_ral_cpu | **0.32965** | — |
+| imaging | mge | ao | `jax_gpu_dense` | hpc_a100 | **0.01898** | — |
+| imaging | mge | euclid | `jax_cpu_dense` | hpc_ral_cpu | **0.00680** | — |
+| imaging | mge | euclid | `jax_gpu_dense` | hpc_a100 | **0.00020** | — |
+| imaging | mge | hst | `jax_cpu_dense` | hpc_ral_cpu | **0.01439** | — |
+| imaging | mge | hst | `jax_gpu_dense` | hpc_a100 | **0.00041** | — |
+| imaging | mge | jwst | `jax_cpu_dense` | hpc_ral_cpu | **0.04155** | — |
+| imaging | mge | jwst | `jax_gpu_dense` | hpc_a100 | **0.00100** | — |
+| imaging | rectangular | ao | `jax_cpu_sparse` | hpc_a100 | **50.84276** | — |
+| imaging | rectangular | ao | `jax_cpu_sparse` | hpc_ral_cpu | **48.79413** | — |
+| imaging | rectangular | ao | `jax_gpu_dense` | hpc_a100 | **0.31083** | — |
+| imaging | rectangular | ao | `jax_gpu_sparse` | hpc_a100 | **1.05330** | — |
+| imaging | rectangular | ao | `numba_cpu_sparse` | hpc_ral_cpu | **9.98218** | **1.66370** |
+| imaging | rectangular | euclid | `jax_cpu_sparse` | hpc_a100 | **0.63375** | — |
+| imaging | rectangular | euclid | `jax_cpu_sparse` | hpc_ral_cpu | **0.68302** | — |
+| imaging | rectangular | euclid | `jax_gpu_dense` | hpc_a100 | **0.00793** | — |
+| imaging | rectangular | euclid | `jax_gpu_sparse` | hpc_a100 | **0.01319** | — |
+| imaging | rectangular | euclid | `numba_cpu_sparse` | hpc_ral_cpu | **0.28250** | **0.04708** |
+| imaging | rectangular | hst | `jax_cpu_sparse` | hpc_a100 | **1.70914** | — |
+| imaging | rectangular | hst | `jax_cpu_sparse` | hpc_ral_cpu | **2.02948** | — |
+| imaging | rectangular | hst | `jax_gpu_dense` | hpc_a100 | **0.02550** | — |
+| imaging | rectangular | hst | `jax_gpu_sparse` | hpc_a100 | **0.04119** | — |
+| imaging | rectangular | hst | `numba_cpu_sparse` | hpc_ral_cpu | **0.69674** | **0.11612** |
+| imaging | rectangular | jwst | `jax_cpu_sparse` | hpc_a100 | **3.94015** | — |
+| imaging | rectangular | jwst | `jax_cpu_sparse` | hpc_ral_cpu | **4.21035** | — |
+| imaging | rectangular | jwst | `jax_gpu_dense` | hpc_a100 | **0.06284** | — |
+| imaging | rectangular | jwst | `jax_gpu_sparse` | hpc_a100 | **0.10746** | — |
+| imaging | rectangular | jwst | `numba_cpu_sparse` | hpc_ral_cpu | **1.68807** | **0.28135** |
+| point_source_source | source_plane | simple | `jax_cpu` | hpc_ral_cpu | **0.00005** | — |
+| point_source_source | source_plane | simple | `jax_gpu` | hpc_a100 | **0.00000** | — |
 
 Coverage: 45 optimal cell(s) not measured.
 
@@ -502,27 +504,29 @@ PyAutoFit inference benchmarking is collected on the [PyAutoInsight board](https
 
 19 results.
 
-| Dataset type | Model | Instrument | Setup | Hardware class | Model variant | Profiling runtime s | Sampler | Seed | Cores | Wall s | Likelihood evals | Implied s/eval |
-|---|---|---|---|---|---|---:|---|---:|---:|---:|---:|---:|
-| imaging | delaunay | hst | `numba_cpu_sparse` | hpc_ral_cpu | default | [**0.95168**](https://pyautolabs.github.io/PyAutoPulse/?view=setup&instance=lens&record=lifecycle%2F321ec1f6f2a5955a9a20) | nautilus | 1 | 8 | **8648.2** | 38660 | **0.22370** |
-| imaging | delaunay | hst | `numba_cpu_sparse` | hpc_ral_cpu | light_fixed | — | nautilus | 1 | 8 | **4563.6** | 34060 | **0.13399** |
-| imaging | rectangular | hst | `jax_cpu_dense` | hpc_a100 | default | — | nautilus | 0 | 8 | **32440.9** | 30400 | **1.06713** |
-| imaging | rectangular | hst | `jax_cpu_dense` | hpc_a100 | default | — | nautilus | 1 | 8 | **24129.2** | 22020 | **1.09579** |
-| imaging | rectangular | hst | `jax_cpu_dense` | hpc_a100 | light_fixed | — | nautilus | 0 | 8 | **21739.0** | 23780 | **0.91417** |
-| imaging | rectangular | hst | `jax_cpu_dense` | hpc_a100 | light_fixed | — | nautilus | 1 | 8 | **20092.1** | 20940 | **0.95951** |
-| imaging | rectangular | hst | `jax_cpu_sparse` | hpc_a100 | default | [**1.70914**](https://pyautolabs.github.io/PyAutoPulse/?view=setup&instance=lens&record=lifecycle%2F22c24ae6e2c83dc51d89) ≠ size (inference 784 px vs profiling 1225 px) | nautilus | 0 | 8 | **36050.5** | 21720 | **1.65978** |
-| imaging | rectangular | hst | `jax_gpu_dense` | hpc_a100 | default | [**0.02550**](https://pyautolabs.github.io/PyAutoPulse/?view=setup&instance=lens&record=lifecycle%2F42f6a707360ce63b8150) ≠ size (inference 784 px vs profiling 1225 px) | nautilus | 0 | 4 | **558.6** | 23680 | **0.02359** |
-| imaging | rectangular | hst | `jax_gpu_dense` | hpc_a100 | default | [**0.02550**](https://pyautolabs.github.io/PyAutoPulse/?view=setup&instance=lens&record=lifecycle%2F42f6a707360ce63b8150) ≠ size (inference 784 px vs profiling 1225 px) | nautilus | 1 | 4 | **525.0** | 21640 | **0.02426** |
-| imaging | rectangular | hst | `jax_gpu_dense` | hpc_a100 | light_fixed | — | nautilus | 0 | 4 | **490.5** | 22820 | **0.02149** |
-| imaging | rectangular | hst | `jax_gpu_dense` | hpc_a100 | light_fixed | — | nautilus | 1 | 4 | **449.7** | 20780 | **0.02164** |
-| imaging | rectangular | hst | `jax_gpu_sparse` | hpc_a100 | default | [**0.04119**](https://pyautolabs.github.io/PyAutoPulse/?view=setup&instance=lens&record=lifecycle%2Fcc3f3365b6ac65388a93) ≠ size (inference 784 px vs profiling 1225 px) | nautilus | 0 | 4 | **826.9** | 23060 | **0.03586** |
-| imaging | rectangular | hst | `jax_gpu_sparse` | hpc_a100 | default | [**0.04119**](https://pyautolabs.github.io/PyAutoPulse/?view=setup&instance=lens&record=lifecycle%2Fcc3f3365b6ac65388a93) ≠ size (inference 784 px vs profiling 1225 px) | nautilus | 1 | 4 | **811.5** | 22980 | **0.03531** |
-| imaging | rectangular | hst | `jax_gpu_sparse` | hpc_a100 | light_fixed | — | nautilus | 0 | 4 | **1624.9** | 48700 | **0.03336** |
-| imaging | rectangular | hst | `jax_gpu_sparse` | hpc_a100 | light_fixed | — | nautilus | 1 | 4 | **1396.9** | 41880 | **0.03336** |
-| imaging | rectangular | hst | `numba_cpu_sparse` | hpc_ral_cpu | default | [**0.69674**](https://pyautolabs.github.io/PyAutoPulse/?view=setup&instance=lens&record=lifecycle%2Fb62534053c00fb102bf4) ≠ size (inference 784 px vs profiling 1225 px) | nautilus | 0 | 8 | **2605.2** | 22920 | **0.11366** |
-| imaging | rectangular | hst | `numba_cpu_sparse` | hpc_ral_cpu | default | [**0.69674**](https://pyautolabs.github.io/PyAutoPulse/?view=setup&instance=lens&record=lifecycle%2Fb62534053c00fb102bf4) ≠ size (inference 784 px vs profiling 1225 px) | nautilus | 1 | 8 | **2562.1** | 22240 | **0.11520** |
-| imaging | rectangular | hst | `numba_cpu_sparse` | hpc_ral_cpu | light_fixed | — | nautilus | 0 | 8 | **2329.4** | 24340 | **0.09570** |
-| imaging | rectangular | hst | `numba_cpu_sparse` | hpc_ral_cpu | light_fixed | — | nautilus | 1 | 8 | **2076.2** | 21960 | **0.09455** |
+All rows: nautilus sampler
+
+| Dataset type | Model | Instrument | Setup | Hardware class | Lens light | Profiling runtime s | Seed | Cores | Wall s | Likelihood evals | Implied s/eval |
+|---|---|---|---|---|---|---:|---:|---:|---:|---:|---:|
+| imaging | delaunay | hst | `numba_cpu_sparse` | hpc_ral_cpu | default | [**0.95168**](https://pyautolabs.github.io/PyAutoPulse/?view=setup&instance=lens&record=lifecycle%2F321ec1f6f2a5955a9a20) | 1 | 8 | **8648.2** | 38660 | **0.22370** |
+| imaging | delaunay | hst | `numba_cpu_sparse` | hpc_ral_cpu | light_fixed | — | 1 | 8 | **4563.6** | 34060 | **0.13399** |
+| imaging | rectangular | hst | `jax_cpu_dense` | hpc_a100 | default | — | 0 | 8 | **32440.9** | 30400 | **1.06713** |
+| imaging | rectangular | hst | `jax_cpu_dense` | hpc_a100 | default | — | 1 | 8 | **24129.2** | 22020 | **1.09579** |
+| imaging | rectangular | hst | `jax_cpu_dense` | hpc_a100 | light_fixed | — | 0 | 8 | **21739.0** | 23780 | **0.91417** |
+| imaging | rectangular | hst | `jax_cpu_dense` | hpc_a100 | light_fixed | — | 1 | 8 | **20092.1** | 20940 | **0.95951** |
+| imaging | rectangular | hst | `jax_cpu_sparse` | hpc_a100 | default | [**1.70914**](https://pyautolabs.github.io/PyAutoPulse/?view=setup&instance=lens&record=lifecycle%2F22c24ae6e2c83dc51d89) ≠ size (inference 784 px vs profiling 1225 px) | 0 | 8 | **36050.5** | 21720 | **1.65978** |
+| imaging | rectangular | hst | `jax_gpu_dense` | hpc_a100 | default | [**0.02550**](https://pyautolabs.github.io/PyAutoPulse/?view=setup&instance=lens&record=lifecycle%2F42f6a707360ce63b8150) ≠ size (inference 784 px vs profiling 1225 px) | 0 | 4 | **558.6** | 23680 | **0.02359** |
+| imaging | rectangular | hst | `jax_gpu_dense` | hpc_a100 | default | [**0.02550**](https://pyautolabs.github.io/PyAutoPulse/?view=setup&instance=lens&record=lifecycle%2F42f6a707360ce63b8150) ≠ size (inference 784 px vs profiling 1225 px) | 1 | 4 | **525.0** | 21640 | **0.02426** |
+| imaging | rectangular | hst | `jax_gpu_dense` | hpc_a100 | light_fixed | — | 0 | 4 | **490.5** | 22820 | **0.02149** |
+| imaging | rectangular | hst | `jax_gpu_dense` | hpc_a100 | light_fixed | — | 1 | 4 | **449.7** | 20780 | **0.02164** |
+| imaging | rectangular | hst | `jax_gpu_sparse` | hpc_a100 | default | [**0.04119**](https://pyautolabs.github.io/PyAutoPulse/?view=setup&instance=lens&record=lifecycle%2Fcc3f3365b6ac65388a93) ≠ size (inference 784 px vs profiling 1225 px) | 0 | 4 | **826.9** | 23060 | **0.03586** |
+| imaging | rectangular | hst | `jax_gpu_sparse` | hpc_a100 | default | [**0.04119**](https://pyautolabs.github.io/PyAutoPulse/?view=setup&instance=lens&record=lifecycle%2Fcc3f3365b6ac65388a93) ≠ size (inference 784 px vs profiling 1225 px) | 1 | 4 | **811.5** | 22980 | **0.03531** |
+| imaging | rectangular | hst | `jax_gpu_sparse` | hpc_a100 | light_fixed | — | 0 | 4 | **1624.9** | 48700 | **0.03336** |
+| imaging | rectangular | hst | `jax_gpu_sparse` | hpc_a100 | light_fixed | — | 1 | 4 | **1396.9** | 41880 | **0.03336** |
+| imaging | rectangular | hst | `numba_cpu_sparse` | hpc_ral_cpu | default | [**0.69674**](https://pyautolabs.github.io/PyAutoPulse/?view=setup&instance=lens&record=lifecycle%2Fb62534053c00fb102bf4) ≠ size (inference 784 px vs profiling 1225 px) | 0 | 8 | **2605.2** | 22920 | **0.11366** |
+| imaging | rectangular | hst | `numba_cpu_sparse` | hpc_ral_cpu | default | [**0.69674**](https://pyautolabs.github.io/PyAutoPulse/?view=setup&instance=lens&record=lifecycle%2Fb62534053c00fb102bf4) ≠ size (inference 784 px vs profiling 1225 px) | 1 | 8 | **2562.1** | 22240 | **0.11520** |
+| imaging | rectangular | hst | `numba_cpu_sparse` | hpc_ral_cpu | light_fixed | — | 0 | 8 | **2329.4** | 24340 | **0.09570** |
+| imaging | rectangular | hst | `numba_cpu_sparse` | hpc_ral_cpu | light_fixed | — | 1 | 8 | **2076.2** | 21960 | **0.09455** |
 
 </details>
 
