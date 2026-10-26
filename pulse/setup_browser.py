@@ -327,6 +327,286 @@ def _render_lifecycle(snapshot):
     )
 
 
+# ------------------------------------------------ v3: per-row detail pages ---
+
+SIBLING_KEY = ("instrument", "setup_id", "host_class", "model_variant", "regime")
+PANELS = (
+    ("runtime", "Likelihood runtime"),
+    ("breakdown", "Likelihood breakdown"),
+    ("compile", "Compilation and setup"),
+    ("memory_host", "Memory (host)"),
+    ("memory_device", "Memory (device)"),
+    ("parity", "Parity"),
+)
+
+
+def sibling_key(record) -> str:
+    """The cell a record belongs to: likelihood, instrument, setup, hardware, variant, regime."""
+    return json.dumps(
+        [record.get("likelihood"), *(record.get(k) for k in SIBLING_KEY)], sort_keys=True
+    )
+
+
+def _fmt(value, unit) -> str:
+    """Four significant figures in the record's own unit (display only)."""
+    return f"{value:.4g} {unit}" if _real(value) else "—"
+
+
+def _metric_label(name: str) -> str:
+    return name.removeprefix("steps.")
+
+
+def _metric_panel(records, title, axis) -> str:
+    """One metric-panel of the old setup page: a bar per value within each record."""
+    e = _e
+    if not records:
+        return (
+            f'<details class="metric-panel" data-axis="{axis}"><summary>{e(title)}</summary>'
+            f'<p class="empty">No {e(title.lower())} recorded for this setup.</p></details>'
+        )
+    parts = [f'<details class="metric-panel" data-axis="{axis}" open><summary>{e(title)}</summary>']
+    for r in records:
+        values = {k: v for k, v in (r.get("values") or {}).items() if _real(v)}
+        unit = r.get("unit")
+        total = values.get("component_total") if axis == "breakdown" else None
+        scale = "component total" if total else "largest value"
+        denominator = total or max((abs(v) for v in values.values()), default=0)
+        caption = f"{scale.capitalize()} · {unit} · {r.get('status')} · measured " + str(
+            r.get("measured_at") or "—"
+        )
+        if axis == "parity":
+            parts.append(
+                f"<p class='metric-meta scale-caption'>{e(unit)} · {e(r.get('status'))}</p>"
+            )
+            parts.append(
+                '<dl class="config">'
+                + "".join(
+                    f"<dt>{e(_metric_label(k))}</dt><dd><strong class='metric-value' "
+                    f"title='{e(v)}'>{e(f'{v:.4g}')}</strong></dd>"
+                    for k, v in values.items()
+                )
+                + "</dl>"
+            )
+            continue
+        parts.append(
+            f"<p class='metric-meta scale-caption'>{e(caption)}</p><ul class='metric-list'>"
+        )
+        ordered = sorted(values.items(), key=lambda kv: (kv[0] != "component_total", -kv[1]))
+        for k, v in ordered:
+            width = min(100.0, 100 * abs(v) / denominator) if denominator else 0
+            kind = " data-kind='total'" if k == "component_total" else ""
+            parts.append(
+                f"<li class='metric-row' data-metric='{e(k)}'{kind}>"
+                f"<div class='metric-title'><span>{e(_metric_label(k))}</span>"
+                f"<strong class='metric-value' title='Exact recorded value: {e(v)} {e(unit)}'>"
+                f"{e(_fmt(v, unit))}</strong></div>"
+                f"<div class='bar-track' aria-hidden='true'><div class='bar' "
+                f"style='width:{width:.1f}%' data-scale='{e(scale)}'></div></div></li>"
+            )
+        parts.append("</ul>")
+    parts.append("</details>")
+    return "".join(parts)
+
+
+def _dl(pairs) -> str:
+    return (
+        '<dl class="config">'
+        + "".join(f"<dt>{_e(k)}</dt><dd>{v}</dd>" for k, v in pairs if v not in (None, "", "None"))
+        + "</dl>"
+    )
+
+
+def _text(value) -> str:
+    if value is None:
+        return ""
+    if isinstance(value, list):
+        return _e("; ".join(str(v) for v in value))
+    return _e(value)
+
+
+def _headline(label, value_html, note="") -> str:
+    note_html = f"<span class='headline-note'>{_e(note)}</span>" if note else ""
+    return (
+        f"<div class='headline-row'><dt>{_e(label)}</dt><dd>"
+        f"<strong class='headline-value'>{value_html}</strong>{note_html}</dd></div>"
+    )
+
+
+def _seconds(value, missing="not recorded") -> str:
+    shown = fixed(value)
+    return f"<span title='{_e(value)} s'>{shown} s</span>" if shown else _e(missing)
+
+
+def detail_title(project: str, record) -> str:
+    likelihood = record.get("likelihood") or {}
+    return " / ".join(
+        str(x)
+        for x in (
+            project,
+            likelihood.get("dataset_type"),
+            likelihood.get("variant"),
+            record.get("instrument"),
+            setup_label(record.get("setup_id")),
+            record.get("host_class"),
+            variant_label(record.get("model_variant"), record.get("setup_id")),
+        )
+    )
+
+
+def detail_page(snapshot, record, siblings, back: str, project: str) -> str:
+    """The old per-setup page, server-rendered for one runtime row (hidden until routed)."""
+    e = _e
+    instance = snapshot.instance
+    title = detail_title(project, record)
+    values = record.get("values") or {}
+    block = record.get(PNT) if isinstance(record.get(PNT), dict) else {}
+    kind, node_text, node_detail = node_throughput(record)
+    node_html = e(node_text) + (
+        " <span class='projected-badge'>projected</span>" if kind == "projected" else ""
+    )
+    headline = [
+        _headline(
+            "Runtime (vmap per call)",
+            _seconds(runtime_s(record), "no vmap per-call time declared"),
+            f"Producer: projected_node_throughput.per_call_s from "
+            f"{block.get('per_call_source') or 'an undeclared source'}",
+        )
+    ]
+    for metric in ("single_jit_median", "single_jit_block", "vmap.per_call", "vmap.batch_time"):
+        if metric in values:
+            headline.append(_headline(metric, _seconds(values[metric])))
+    est = (
+        record.get("estimated_12_core") if isinstance(record.get("estimated_12_core"), dict) else {}
+    )
+    headline.append(
+        _headline(
+            "Est. 12-core",
+            _seconds(twelve_core_s(record), "numba CPU setups only"),
+            (est.get("ruling") or "") if est else "",
+        )
+    )
+    headline.append(_headline("Node throughput", node_html, node_detail))
+    same = [r for r in siblings if r.get("status") == record.get("status") and r is not record]
+    panels = []
+    for axis, panel_title in PANELS:
+        rows = [record] if axis == "runtime" else [r for r in same if r.get("measurement") == axis]
+        if axis == "memory_device" and not rows:
+            continue
+        panels.append(_metric_panel(rows, panel_title, axis))
+    validation = record.get("validation") or {}
+    status = _dl(
+        [
+            ("Class", _text(record.get("class"))),
+            ("Status", _text(record.get("status"))),
+            ("Decision", _text(record.get("decision_id") or "—")),
+            (
+                "Validation",
+                _text(
+                    f"{validation.get('status')}: {validation.get('reason')}"
+                    if validation
+                    else None
+                ),
+            ),
+            ("Limitations", _text(record.get("limitations"))),
+            ("Superseded by", _text(record.get("superseded_by"))),
+            ("Regime", _text(record.get("regime"))),
+            ("Release pin", _text(record.get("release_pin"))),
+            ("Measured on release", _text(record.get("measured_release_pin"))),
+            ("Measured at", _text(record.get("measured_at"))),
+            ("Run", f"<code>{_text(record.get('run_id'))}</code>"),
+            ("Record", f"<code>{_text(record.get('id'))}</code>"),
+        ]
+    )
+    identity = record.get("identity") or {}
+    resources = record.get("resources") or {}
+    setup = record.get("setup") or {}
+    config = _dl(
+        [("Setup id", f"<code>{_text(record.get('setup_id'))}</code>")]
+        + [(f"Setup {k}", _text(v)) for k, v in setup.items()]
+        + [
+            ("Device", _text(identity.get("device"))),
+            ("Backend", _text(identity.get("backend"))),
+            ("Precision", _text(identity.get("precision"))),
+            ("Library version", _text(identity.get("library_version"))),
+            ("Host", _text((record.get("provenance") or {}).get("host"))),
+            ("CPUs per evaluation", _text(resources.get("cpus_per_eval"))),
+            ("Peak RSS (GB)", _text(resources.get("peak_rss_gb"))),
+            ("Resources note", _text(resources.get("reason"))),
+        ]
+    )
+    links = {}
+    for r in [record, *same]:
+        ev = r.get("evidence") or {}
+        if ev.get("path"):
+            links.setdefault(ev["path"], f"{r.get('measurement')} evidence")
+        for fig in r.get("figures") or []:
+            links.setdefault(fig["path"], f"{fig.get('kind')} figure")
+    evidence = "".join(
+        f'<li><a href="{e(instance.blob_url(snapshot.commit, quote(path, safe="/")))}">'
+        f"{e(label)}</a> <code>{e(path)}</code></li>"
+        for path, label in links.items()
+    )
+    history = sorted(
+        (r for r in siblings if r.get("measurement") == "runtime"),
+        key=lambda r: str(r.get("measured_at") or ""),
+        reverse=True,
+    )
+    history_items = "".join(
+        "<li>"
+        + (
+            f"<b>{e(r.get('status'))}</b> (this page)"
+            if r is record
+            else f'<a data-detail-link href="{e(detail_href("setup", instance.instance, r.get("id")))}">'
+            f"{e(r.get('status'))}</a>"
+        )
+        + f" · measured {e(r.get('measured_at') or '—')} · runtime "
+        f"{e(fixed(runtime_s(r)) or '—')} s · <code>{e(r.get('id'))}</code></li>"
+        for r in history
+    )
+    return (
+        f'<article class="detail-page" data-view="setup" data-instance="{e(instance.instance)}" '
+        f'data-record="{e(record.get("id"))}" data-title="{e(title)}" hidden>'
+        f'<a class="back-link" data-detail-link data-back href="{e(back)}">← Profiling Timings</a>'
+        f"<h2>{e(title)}</h2>"
+        f"<p class='metric-meta'>Regime {e(record.get('regime'))} · class {e(record.get('class'))} · "
+        f"status {e(record.get('status'))} · measured {e(record.get('measured_at') or '—')}</p>"
+        f'<section class="headline-metrics" aria-label="Headline timings"><dl class="headline-list">'
+        + "".join(headline)
+        + "</dl></section>"
+        + "".join(panels)
+        + '<details class="metric-panel" data-axis="status" open><summary>Status, decision and '
+        "validation</summary>" + status + "</details>"
+        '<details class="metric-panel" data-axis="configuration"><summary>Configuration</summary>'
+        + config
+        + "</details>"
+        '<details class="metric-panel" data-axis="evidence" open><summary>Evidence</summary>'
+        f'<ul class="evidence-list">{evidence or "<li>No evidence recorded.</li>"}</ul></details>'
+        '<details class="metric-panel" data-axis="history" open><summary>History</summary>'
+        f'<ul class="evidence-list">{history_items}</ul></details>'
+        "</article>"
+    )
+
+
+def detail_pages(snapshot, back: str, project: str) -> str:
+    """One hidden detail page per table row of a v3 capture (empty for other versions)."""
+    doc = snapshot.doc or {}
+    if not lifecycle(doc):
+        return ""
+    by_key: dict[str, list] = {}
+    for r in doc.get("records") or []:
+        if isinstance(r, dict):
+            by_key.setdefault(sibling_key(r), []).append(r)
+    return "".join(
+        detail_page(snapshot, r, by_key.get(sibling_key(r), [r]), back, project)
+        for r in runtime_rows(doc)
+    )
+
+
+def page_ids(snapshot) -> set[str]:
+    """The record ids that have a detail page in this capture."""
+    return {r.get("id") for r in runtime_rows(snapshot.doc)} if lifecycle(snapshot.doc) else set()
+
+
 def render(snapshot):
     doc = snapshot.doc or {}
     if lifecycle(doc):

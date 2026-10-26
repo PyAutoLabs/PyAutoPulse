@@ -708,6 +708,51 @@ const { execFileSync } = require("node:child_process");
       );
     }
     await page.setViewportSize({ width: 1280, height: 1000 });
+    // Each row's › opens its server-rendered detail page; back returns.
+    await row("imaging-delaunay-hst-a100-runtime").locator("a.row-open").click();
+    const detailPage = page.locator(
+      'article.detail-page[data-record="imaging-delaunay-hst-a100-runtime"]',
+    );
+    assert(await detailPage.isVisible());
+    assert(page.url().includes("view=setup"));
+    assert(page.url().includes("record=imaging-delaunay-hst-a100-runtime"));
+    assert(!(await life.isVisible()));
+    assert.equal(await page.locator(".board-nav:visible").count(), 0);
+    assert.equal(await page.locator("article.detail-page:visible").count(), 1);
+    assert(
+      await detailPage
+        .locator('[data-axis="breakdown"] [data-metric="component_total"]')
+        .isVisible(),
+    );
+    assert((await page.title()).startsWith("PyAutoLens / imaging / delaunay"));
+    await detailPage.locator("a.back-link").click();
+    assert(!page.url().includes("view="));
+    assert(page.url().endsWith("#profiling-pyautolens"));
+    assert(await life.isVisible());
+    assert.equal(await page.locator("article.detail-page:visible").count(), 0);
+    // Browser history moves between the board and the page.
+    await page.goBack();
+    assert(await detailPage.isVisible());
+    await page.goForward();
+    assert(await life.isVisible());
+    // A deep link loads straight onto its page; an unknown id says so.
+    await page.goto(
+      base + "/lifecycle.html?view=setup&instance=lens&record=imaging-delaunay-hst-ral-runtime",
+    );
+    assert(
+      await page
+        .locator('article.detail-page[data-record="imaging-delaunay-hst-ral-runtime"]')
+        .isVisible(),
+    );
+    await page.goto(base + "/lifecycle.html?view=setup&instance=lens&record=nope");
+    assert.equal(await page.locator("article.detail-page:visible").count(), 0);
+    assert(
+      (await page.locator("#detail-route-status").textContent()).includes(
+        "not in the captured catalogue",
+      ),
+    );
+    assert(await page.locator("#detail-route-status").isVisible());
+    await page.goto(base + "/lifecycle.html");
     assert.equal(await page.locator('[data-walltime="walltime"]').count(), 1);
     for (const width of [390, 1280]) {
       await page.setViewportSize({ width, height: 1000 });

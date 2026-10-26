@@ -250,3 +250,57 @@ def test_v3_links_the_knowledge_page_under_extra_information():
     assert f">{setup_browser.KNOWLEDGE_TITLE}</a>" in link
     markdown = "\n".join(setup_browser.markdown(lifecycle_capture()))
     assert f"[{setup_browser.KNOWLEDGE_TITLE}]({setup_browser.KNOWLEDGE_URL})" in markdown
+
+
+# ------------------------------------------- v3: per-row detail pages ---
+
+
+def _article(pages, rid):
+    return re.search(
+        rf'<article class="detail-page"[^>]*data-record="{rid}".*?</article>', pages, re.S
+    )[0]
+
+
+def test_v3_detail_page_per_runtime_row_restores_the_full_breakdown():
+    pages = setup_browser.detail_pages(lifecycle_capture(), "#profiling-pyautolens", "PyAutoLens")
+    ids = re.findall(r'<article class="detail-page"[^>]*data-record="([^"]+)"', pages)
+    assert sorted(ids) == sorted(
+        r["id"] for r in setup_browser.runtime_rows(lifecycle_capture().doc)
+    )
+    assert pages.count("<article") == pages.count(" hidden>")
+    a100 = _article(pages, "imaging-delaunay-hst-a100-runtime")
+    assert (
+        "<h2>PyAutoLens / imaging / delaunay / hst / jax_gpu_dense / hpc_a100 / default</h2>"
+        in a100
+    )
+    breakdown = re.search(r'data-axis="breakdown".*?</details>', a100, re.S)[0]
+    for metric in ("component_total", "mapping", "inversion"):
+        assert f"data-metric='{metric}'" in breakdown
+    assert "width:100.0%" in breakdown  # component_total is the scale
+    assert 'href="#profiling-pyautolens"' in a100 and "← Profiling Timings" in a100
+    # History lists the superseded runtime on the same key as a link to its own page.
+    history = re.search(r'data-axis="history".*?</details>', a100, re.S)[0]
+    assert "record=imaging-delaunay-hst-a100-runtime-old" in history
+    assert "(this page)" in history
+
+
+def test_v3_detail_page_carries_twelve_core_node_throughput_and_status():
+    pages = setup_browser.detail_pages(lifecycle_capture(), "#x", "PyAutoLens")
+    ral = _article(pages, "imaging-delaunay-hst-ral-runtime")
+    assert "Est. 12-core" in ral and "0.03500 s" in ral
+    assert "190.5 calls/s · 40 workers (memory-bound) on ral_cpu_node" in ral
+    assert "projected-badge" in ral and "Projected, not measured" in ral
+    for label in ("Class", "Status", "Decision", "Configuration", "Evidence"):
+        assert label in ral
+    assert "single_call" in ral
+    # The superseded page shows only superseded siblings (none here), never current ones.
+    old = _article(pages, "imaging-delaunay-hst-a100-runtime-old")
+    assert "data-metric='mapping'" not in old
+
+
+def test_v3_detail_pages_sit_in_the_hidden_route_container():
+    page = board.render_html([lifecycle_capture()], campaign_data={"campaigns": [], "tasks": []})
+    container = page.index('id="detail-pages"')
+    assert container < page.index('id="profiling-timings"')
+    assert 'id="detail-pages" hidden' in page and 'id="detail-route-status"' in page
+    assert setup_browser.page_ids(lifecycle_capture()) >= {"imaging-delaunay-hst-a100-runtime"}

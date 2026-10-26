@@ -470,3 +470,33 @@ button.retry {
     max-width: none;
   }
 }
+/* Per-row detail pages: server-rendered, hidden until ?view=setup|run routes one. */
+.detail-pages[hidden],
+.detail-page[hidden],
+.detail-pages [hidden] {
+  display: none;
+}
+.detail-view header,
+.detail-view .orchestration-panel,
+.detail-view .board-nav,
+.detail-view main > :not(#detail-pages) {
+  display: none;
+}
+.detail-page h2 {
+  font-size: 1.25rem;
+  overflow-wrap: anywhere;
+}
+.detail-page .metric-panel > summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+.back-link {
+  display: inline-block;
+  margin: 0.6rem 0;
+}
+.detail-status {
+  padding: 0.8rem;
+  border: 1px dashed var(--line);
+  border-radius: 8px;
+  color: var(--muted);
+}

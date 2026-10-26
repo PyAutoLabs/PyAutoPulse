@@ -37,6 +37,75 @@
       control.addEventListener("change", apply);
     apply();
   }
+  // Per-row detail pages (profiling setups and inference runs) are hidden,
+  // server-rendered articles; ?view=setup|run&instance=&record= shows one.
+  const detailPages = document.getElementById("detail-pages");
+  const boardTitle = document.title;
+  function detailRoute() {
+    if (!detailPages) return;
+    const query = new URLSearchParams(location.search);
+    const view = query.get("view");
+    const active = view === "setup" || view === "run";
+    const selected = active
+      ? [...detailPages.querySelectorAll("article.detail-page")].find(
+          (p) =>
+            p.dataset.view === view &&
+            p.dataset.instance === query.get("instance") &&
+            p.dataset.record === query.get("record"),
+        )
+      : null;
+    for (const p of detailPages.querySelectorAll("article.detail-page"))
+      p.hidden = p !== selected;
+    detailPages.hidden = !active;
+    document.body.classList.toggle("detail-view", active);
+    const status = document.getElementById("detail-route-status");
+    const back = document.getElementById("detail-route-back");
+    const missing = active && !selected;
+    status.hidden = back.hidden = !missing;
+    status.textContent = missing
+      ? "This record is not in the captured catalogue. No substitute measurements are shown."
+      : "";
+    if (missing && view === "run") {
+      back.href = "#inference-timings";
+      back.textContent = "← Inference Timings";
+    }
+    document.title = selected
+      ? selected.dataset.title + " · PyAutoPulse"
+      : boardTitle;
+  }
+  function reveal() {
+    const id = decodeURIComponent(location.hash.slice(1));
+    const target = id && document.getElementById(id);
+    if (!target) return;
+    for (let p = target; p; p = p.parentElement)
+      if (p.tagName === "DETAILS") p.open = true;
+    target.scrollIntoView({ block: "start" });
+  }
+  document.addEventListener("click", (event) => {
+    const link = event.target.closest("a[data-detail-link]");
+    if (
+      !link ||
+      event.button ||
+      event.metaKey ||
+      event.ctrlKey ||
+      event.shiftKey ||
+      event.altKey
+    )
+      return;
+    event.preventDefault();
+    const url = link.hasAttribute("data-back")
+      ? location.pathname + link.hash
+      : link.getAttribute("href");
+    history.pushState(null, "", url);
+    detailRoute();
+    if (link.hasAttribute("data-back")) requestAnimationFrame(reveal);
+    else window.scrollTo(0, 0);
+  });
+  addEventListener("popstate", () => {
+    detailRoute();
+    if (!detailPages || detailPages.hidden) reveal();
+  });
+  detailRoute();
   for (const root of document.querySelectorAll("[data-setup-browser]")) {
     if (root.hasAttribute("data-lifecycle")) {
       lifecycle(root);

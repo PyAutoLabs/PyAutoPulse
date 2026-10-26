@@ -735,6 +735,16 @@ def _profiling_html(snapshot: Snapshot) -> str:
     return out
 
 
+def _detail_container(pages) -> str:
+    """Every per-row detail page, hidden until ``?view=setup|run`` routes one (JS)."""
+    return (
+        '<div class="detail-pages" id="detail-pages" hidden>'
+        '<p class="detail-status" id="detail-route-status" role="status" hidden></p>'
+        '<a class="back-link" id="detail-route-back" data-detail-link data-back '
+        'href="#profiling-timings" hidden>← Profiling Timings</a>' + "".join(pages) + "</div>"
+    )
+
+
 def _insight_link() -> str:
     return f'<a href="{_e(INSIGHT_URL)}">PyAutoInsight board</a>'
 
@@ -746,9 +756,12 @@ def render_html(views, now: str | None = None, campaign_data: dict | None = None
     profiling = by_project(s for s in views if not is_walltime(s))
     inference = by_project(s for s in views if is_walltime(s))
     sections = ['<a id="evidence"></a><h2 id="profiling-timings">Profiling Timings</h2>']
+    pages = []
     for label, snaps in profiling.items():
         if snaps:
             sections.append(_group("profiling", label, "".join(map(_profiling_html, snaps))))
+            back = f"#profiling-{project_slug(label)}"
+            pages += [setup_browser.detail_pages(s, back, label) for s in snaps]
     if not any(profiling.values()):
         sections.append("<p class='muted'>No profiling project is registered.</p>")
     sections.append('<h2 id="inference-timings">Inference Timings</h2>')
@@ -759,7 +772,7 @@ def render_html(views, now: str | None = None, campaign_data: dict | None = None
         elif snaps:
             body = "".join(_warning(s) + walltime_html(s) for s in snaps)
             sections.append(_group("inference", label, body))
-    content = sections
+    content = [_detail_container(pages), *sections]
     return shared.section_layout(
         '<!doctype html>\n<html lang="en"><head><meta charset="utf-8">'
         '<meta name="viewport" content="width=device-width,initial-scale=1">'
