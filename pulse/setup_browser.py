@@ -142,13 +142,11 @@ def default_visible(record) -> bool:
 
 def not_measured(doc) -> list[dict]:
     """Optimal planned cells with no current record on their key (producer-declared)."""
-    current = {
-        catalogue.lifecycle_key(r) for r in doc.get("records") or [] if r.get("status") == "current"
-    }
+    current = [r for r in doc.get("records") or [] if r.get("status") == "current"]
     return [
         cell
         for cell in doc.get("planned_cells") or []
-        if cell.get("class") == "optimal" and catalogue.lifecycle_key(cell) not in current
+        if cell.get("class") == "optimal" and not any(catalogue.covers(r, cell) for r in current)
     ]
 
 

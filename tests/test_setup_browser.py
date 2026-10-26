@@ -434,3 +434,55 @@ def test_columns_with_differing_visible_values_stay():
     page = setup_browser.render(lifecycle_capture())
     assert re.search(r'data-id="constant-caption" hidden>', page)
     assert not re.search(r'<th data-col="[a-z_]+"[^>]* hidden>', page)
+
+
+def size_variant_capture():
+    """The A100 runtime + breakdown also measured at a declared size (regime source_pixels_784)."""
+    snapshot = lifecycle_capture()
+    doc = snapshot.doc
+    for rid in ("imaging-delaunay-hst-a100-runtime", "imaging-delaunay-hst-a100-breakdown"):
+        record = next(r for r in doc["records"] if r["id"] == rid)
+        doc["records"].append(
+            dict(record, id=rid + "-784", regime="source_pixels_784", run_id="run-784")
+        )
+    doc["coverage"]["observed"].update(records=8, current=7)
+    return snapshot
+
+
+def test_a_size_variant_row_renders_beside_its_standard_row():
+    from pulse import summary
+
+    snapshot = size_variant_capture()
+    assert summary.validate(snapshot.doc) == []
+    # The size variant neither opens nor closes a coverage gap (coverage stays as before).
+    assert [c["instrument"] for c in setup_browser.not_measured(snapshot.doc)] == ["euclid"]
+    page = setup_browser.render(snapshot)
+    for rid in ("imaging-delaunay-hst-a100-runtime", "imaging-delaunay-hst-a100-runtime-784"):
+        assert _row(page, rid)
+    assert 'data-value="source_pixels_784"' in _row(page, "imaging-delaunay-hst-a100-runtime-784")
+    # Only the two sizes of one cell visible: Source size differs, so it is not hidden.
+    snapshot.doc["records"] = [
+        r
+        for r in snapshot.doc["records"]
+        if r["id"] in ("imaging-delaunay-hst-a100-runtime", "imaging-delaunay-hst-a100-runtime-784")
+    ]
+    page = setup_browser.render(snapshot)
+    assert re.search(r'<th data-col="regime"[^>]*>', page)
+    assert not re.search(r'<th data-col="regime"[^>]* hidden>', page)
+    assert re.search(r'<th data-col="lens_light"[^>]* hidden>', page)
+    md = "\n".join(setup_browser.markdown(snapshot))
+    assert "| Source size |" in md and "source_pixels_784" in md
+
+
+def test_detail_pages_never_mix_two_source_sizes():
+    pages = setup_browser.detail_pages(size_variant_capture(), "#x", "PyAutoLens")
+    standard = _article(pages, "imaging-delaunay-hst-a100-runtime")
+    size = _article(pages, "imaging-delaunay-hst-a100-runtime-784")
+    assert "imaging-delaunay-hst-a100-runtime-784" not in standard
+    assert "record=imaging-delaunay-hst-a100-runtime-old" in standard
+    assert "record=imaging-delaunay-hst-a100-runtime-old" not in size
+    assert "Source size source_pixels_784" in size
+    assert "source_pixels_784" not in standard
+    for article in (standard, size):  # each size shows its own breakdown, once
+        breakdown = re.search(r'data-axis="breakdown".*?</details>', article, re.S)[0]
+        assert breakdown.count("data-metric='mapping'") == 1

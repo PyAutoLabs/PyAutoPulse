@@ -70,9 +70,25 @@ def setup_id(setup: dict) -> str:
     return "_".join(parts)
 
 
+CURRENT_KEY_FIELDS = (*KEY_FIELDS, "regime")
+
+
 def lifecycle_key(item: dict) -> str:
-    """The one-``current``-per-key identity of a v3 record or planned cell."""
-    return json.dumps({k: item.get(k) for k in KEY_FIELDS}, sort_keys=True)
+    """The one-``current``-per-key identity of a v3 record or planned cell.
+
+    ``regime`` (the source-size bin) is part of the key when the item declares
+    one: a record always does, so a ``source_pixels_<n>`` size variant is current
+    beside its ``standard`` row. A planned cell may omit it and then names the
+    cell on the other key fields alone (see ``covers``).
+    """
+    fields = CURRENT_KEY_FIELDS if "regime" in item else KEY_FIELDS
+    return json.dumps({k: item.get(k) for k in fields}, sort_keys=True)
+
+
+def covers(record: dict, cell: dict) -> bool:
+    """Whether ``record`` sits on planned ``cell``: every key field the cell declares."""
+    fields = CURRENT_KEY_FIELDS if "regime" in cell else KEY_FIELDS
+    return all(record.get(k) == cell.get(k) for k in fields)
 
 
 class _Check:
@@ -630,13 +646,15 @@ def _validate_v3(check, doc):
                 "records",
                 f"second current record {item['id']!r} on the key of {prior!r}; the producer "
                 "declares exactly one current per (likelihood, instrument, setup_id, host_class, "
-                "model_variant, measurement)",
+                "model_variant, measurement, regime)",
             )
     planned = check.objects(doc.get("planned_cells", []), "planned_cells")
     seen = set()
     for i, cell in enumerate(planned):
         where = f"planned_cells[{i}]"
         _cell_key_fields(check, cell, where)
+        if "regime" in cell:
+            check.text(cell.get("regime"), f"{where}.regime")
         key = lifecycle_key(cell)
         check.require(key not in seen, where, "duplicate planned cell")
         seen.add(key)
