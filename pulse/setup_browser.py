@@ -109,9 +109,9 @@ def row_order(record) -> tuple:
 
 
 def variant_label(model_variant, setup_id) -> str:
-    """The model variant, with a non-fp64 precision appended (``default+mixed``)."""
+    """The lens-light variant, with a non-fp64 precision appended (``default · mixed``)."""
     p = precision(setup_id)
-    return str(model_variant) if p in (None, "fp64") else f"{model_variant}+{p}"
+    return str(model_variant) if p in (None, "fp64") else f"{model_variant} · {p}"
 
 
 def runtime_rows(doc) -> list[dict]:
@@ -284,6 +284,66 @@ def tally(count: int, history: bool) -> str:
     )
 
 
+# Categorical columns hidden while every visible row shares one value; the caption
+# above the table names the shared values. Filters and detail pages keep them all.
+PHRASES = {
+    "regime": "{} size",
+    "lens_light": "{} lens light",
+    "class": "{}",
+    "sampler": "{} sampler",
+    "cores": "{} cores",
+}
+
+
+def constant_columns(rows, columns) -> dict[str, str]:
+    """``{key: value}`` for each ``(key, value_of)`` column one value spans (rows ≥ 1)."""
+    out = {}
+    for key, value_of in columns:
+        values = {str(value_of(r)) for r in rows}
+        if len(values) == 1:
+            out[key] = values.pop()
+    return out
+
+
+def constant_caption(constants: dict[str, str]) -> str:
+    return (
+        "All rows: " + " · ".join(PHRASES[k].format(v) for k, v in constants.items())
+        if constants
+        else ""
+    )
+
+
+def caption_html(constants) -> str:
+    text = constant_caption(constants)
+    return (
+        f'<p class="constant-caption" data-id="constant-caption"{"" if text else " hidden"}>'
+        f"{_e(text)}</p>"
+    )
+
+
+def col_th(key, title, constants, cls="") -> str:
+    hidden = " hidden" if key in constants else ""
+    klass = f' class="{cls}"' if cls else ""
+    return f'<th data-col="{key}" data-phrase="{_e(PHRASES[key])}"{klass}{hidden}>{_e(title)}</th>'
+
+
+def col_td(key, value, constants, cls="") -> str:
+    hidden = " hidden" if key in constants else ""
+    klass = f' class="{cls}"' if cls else ""
+    return f'<td data-col="{key}" data-value="{_e(value)}"{klass}{hidden}>{_e(value)}</td>'
+
+
+def lens_light(record) -> str:
+    return variant_label(record.get("model_variant"), record.get("setup_id"))
+
+
+PROFILING_HIDEABLE = (
+    ("regime", lambda r: r.get("regime")),
+    ("lens_light", lens_light),
+    ("class", lambda r: r.get("class")),
+)
+
+
 def _render_lifecycle(snapshot):
     doc = snapshot.doc
     instance = snapshot.instance
@@ -295,6 +355,7 @@ def _render_lifecycle(snapshot):
         lambda key: sorted({str(_row_fields(r)[key]) for r in records}),
         with_class=True,
     )
+    constants = constant_columns([r for r in records if default_visible(r)], PROFILING_HIDEABLE)
     rows = []
     for r in records:
         attrs = "".join(f' data-{k.replace("_", "-")}="{e(v)}"' for k, v in _row_fields(r).items())
@@ -304,10 +365,11 @@ def _render_lifecycle(snapshot):
         rows.append(
             f'<tr data-record="{e(r.get("id"))}"{attrs}{hidden}>'
             f"<td>{e(likelihood.get('dataset_type'))}</td><td>{e(likelihood.get('variant'))}</td>"
-            f"<td>{e(r.get('instrument'))}</td><td>{e(r.get('regime'))}</td>"
-            f"<td><code>{e(setup_label(r.get('setup_id')))}</code></td>"
+            f"<td>{e(r.get('instrument'))}</td>"
+            + col_td("regime", r.get("regime"), constants)
+            + f"<td><code>{e(setup_label(r.get('setup_id')))}</code></td>"
             f"<td>{e(r.get('host_class'))}</td>"
-            f"<td>{e(variant_label(r.get('model_variant'), r.get('setup_id')))}</td>"
+            + col_td("lens_light", lens_light(r), constants)
             + time_cell(
                 runtime_s(r),
                 f"per call, {block.get('per_call_source') or 'source not declared'}",
@@ -318,7 +380,7 @@ def _render_lifecycle(snapshot):
                 "producer estimate at 12 cores",
                 "numba CPU setups only",
             )
-            + f"<td>{e(r.get('class'))}</td>"
+            + col_td("class", r.get("class"), constants)
             + open_link("setup", instance.instance, r.get("id"), "Open this setup's details")
             + "</tr>"
         )
@@ -339,10 +401,15 @@ def _render_lifecycle(snapshot):
         f'data-lifecycle aria-label="{e(instance.repo)} setups">'
         + filters
         + tally(visible, history=True)
+        + caption_html(constants)
         + '<div class="tablewrap"><table class="lifecycle-table"><thead><tr><th>Dataset type</th>'
-        "<th>Model</th><th>Instrument</th><th>Regime</th><th>Setup</th><th>Hardware class</th>"
-        "<th>Model variant</th><th class='num'>Runtime s</th><th class='num'>Est. 12-core s</th>"
-        "<th>Class</th><th class='open'><span class='visually-hidden'>Details</span></th>"
+        "<th>Model</th><th>Instrument</th>"
+        + col_th("regime", "Source size", constants)
+        + "<th>Setup</th><th>Hardware class</th>"
+        + col_th("lens_light", "Lens light", constants)
+        + "<th class='num'>Runtime s</th><th class='num'>Est. 12-core s</th>"
+        + col_th("class", "Class", constants)
+        + "<th class='open'><span class='visually-hidden'>Details</span></th>"
         f"</tr></thead><tbody>{''.join(rows)}</tbody></table></div>"
         f'<p class="empty" data-id="no-rows"{" hidden" if visible else ""}>'
         "No record matches this selection.</p>"
@@ -619,7 +686,8 @@ def detail_page(snapshot, record, siblings, back: str, project: str) -> str:
             ),
             ("Limitations", _text(record.get("limitations"))),
             ("Superseded by", _text(record.get("superseded_by"))),
-            ("Regime", _text(record.get("regime"))),
+            ("Source size", _text(record.get("regime"))),
+            ("Lens light", _text(lens_light(record))),
             ("Release pin", _text(record.get("release_pin"))),
             ("Measured on release", _text(record.get("measured_release_pin"))),
             ("Measured at", _text(record.get("measured_at"))),
@@ -678,7 +746,8 @@ def detail_page(snapshot, record, siblings, back: str, project: str) -> str:
         f'data-record="{e(record.get("id"))}" data-title="{e(title)}" hidden>'
         f'<a class="back-link" data-detail-link data-back href="{e(back)}">← Profiling Timings</a>'
         f"<h2>{e(title)}</h2>"
-        f"<p class='metric-meta'>Regime {e(record.get('regime'))} · class {e(record.get('class'))} · "
+        f"<p class='metric-meta'>Source size {e(record.get('regime'))} · lens light "
+        f"{e(lens_light(record))} · class {e(record.get('class'))} · "
         f"status {e(record.get('status'))} · measured {e(record.get('measured_at') or '—')}</p>"
         f'<section class="headline-metrics" aria-label="Headline timings"><dl class="headline-list">'
         + "".join(headline)
@@ -770,10 +839,54 @@ def _md_time(value) -> str:
     return f"**{shown}**" if shown is not None else "—"
 
 
+def md_table(head, rows, constants) -> list[str]:
+    """A Markdown table without the constant columns; ``head`` is ``(key|None, title, align)``."""
+    keep = [i for i, (key, _, _) in enumerate(head) if key not in constants]
+    lines = [
+        "| " + " | ".join(head[i][1] for i in keep) + " |",
+        "|" + "".join("---:|" if head[i][2] == "r" else "---|" for i in keep),
+    ]
+    lines += ["| " + " | ".join(str(row[i]) for i in keep) + " |" for row in rows]
+    caption = constant_caption(constants)
+    return ([caption, ""] if caption else []) + lines
+
+
+PROFILING_MD_HEAD = (
+    (None, "Dataset type", "l"),
+    (None, "Model", "l"),
+    (None, "Instrument", "l"),
+    ("regime", "Source size", "l"),
+    (None, "Setup", "l"),
+    (None, "Hardware class", "l"),
+    ("lens_light", "Lens light", "l"),
+    (None, "Runtime s", "r"),
+    (None, "Est. 12-core s", "r"),
+    ("class", "Class", "l"),
+)
+
+
 def _markdown_lifecycle(snapshot):
     doc = snapshot.doc
     name = snapshot.instance.repo.removesuffix("_profiling")
     current = [r for r in runtime_rows(doc) if default_visible(r)]
+    esc = lambda v: html.escape(str(v)).replace("|", "\\|")  # noqa: E731
+    rows = []
+    for r in current:
+        likelihood = r.get("likelihood") or {}
+        rows.append(
+            [
+                esc(likelihood.get("dataset_type")),
+                esc(likelihood.get("variant")),
+                esc(r.get("instrument")),
+                esc(r.get("regime")),
+                f"`{esc(setup_label(r.get('setup_id')))}`",
+                esc(r.get("host_class")),
+                esc(lens_light(r)),
+                _md_time(runtime_s(r)),
+                _md_time(twelve_core_s(r)),
+                esc(r.get("class")),
+            ]
+        )
     lines = [
         f"<details><summary>{html.escape(name)} — current runtime setups</summary>",
         "",
@@ -781,20 +894,8 @@ def _markdown_lifecycle(snapshot):
         "",
         f"{len(current)} current result{'' if len(current) == 1 else 's'}.",
         "",
-        "| Dataset type | Model | Instrument | Regime | Setup | Hardware class | Model variant "
-        "| Runtime s | Est. 12-core s | Class |",
-        "|---|---|---|---|---|---|---|---:|---:|---|",
+        *md_table(PROFILING_MD_HEAD, rows, constant_columns(current, PROFILING_HIDEABLE)),
     ]
-    esc = lambda v: html.escape(str(v)).replace("|", "\\|")  # noqa: E731
-    for r in current:
-        likelihood = r.get("likelihood") or {}
-        lines.append(
-            f"| {esc(likelihood.get('dataset_type'))} | {esc(likelihood.get('variant'))} "
-            f"| {esc(r.get('instrument'))} | {esc(r.get('regime'))} "
-            f"| `{esc(setup_label(r.get('setup_id')))}` | {esc(r.get('host_class'))} "
-            f"| {esc(variant_label(r.get('model_variant'), r.get('setup_id')))} "
-            f"| {_md_time(runtime_s(r))} | {_md_time(twelve_core_s(r))} | {esc(r.get('class'))} |"
-        )
     missing = not_measured(doc)
     lines += ["", f"Coverage: {len(missing)} optimal cell(s) not measured.", ""]
     lines += [f"- {esc(_cell_label(c))}" for c in missing]

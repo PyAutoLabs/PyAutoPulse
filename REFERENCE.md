@@ -315,10 +315,20 @@ default, then Optimal, Secondary, Experimental), Dataset type, Model,
 Instrument, Hardware class. Only `current` rows show until History is ticked,
 which adds `superseded` rows; archived records appear only as a count. A green
 tally (top right, above History) counts the current rows. Columns: Dataset type
-| Model | Instrument | Regime | Setup | Hardware class | Model variant |
-**Runtime s** | **Est. 12-core s** | Class | ›. Setup is the `setup_id`
-without its precision token (`jax_gpu_sparse_fp64` → `jax_gpu_sparse`); a
-non-fp64 precision is appended to the model variant (`default+mixed`).
+| Model | Instrument | Source size | Setup | Hardware class | Lens light |
+**Runtime s** | **Est. 12-core s** | Class | ›. Source size is the record's
+`regime` and Lens light its `model_variant`, values verbatim. Setup is the
+`setup_id` without its precision token or an `na` operator token
+(`jax_gpu_sparse_fp64` → `jax_gpu_sparse`, `jax_cpu_na_fp64` → `jax_cpu`); a
+non-fp64 precision is appended to the lens light (`default · mixed`). Rows sort
+by dataset type → model → instrument → setup → hardware class → lens light.
+**Constant columns:** Source size, Lens light and Class are hidden while every
+visible row shares one value, and a caption above the table names the shared
+values (`All rows: standard size · default lens light · secondary`); the
+script re-evaluates on every filter or History change, so a column returns as
+soon as visible rows differ. The server renders the default view the same way
+and the Markdown board omits the same columns with the same caption. Filters
+and detail pages keep every field.
 Runtime s is the producer's vmap per-call time
 `projected_node_throughput.per_call_s`; Est. 12-core s is the producer's
 `estimated_12_core.value_s` (numba CPU records only, — elsewhere). Both are
@@ -448,8 +458,8 @@ nothing; a new project commit moves both.
   and its detail pages are described under the v3 contract above.
 - **Inference Timings table** (a `walltime-validation` instance): only
   `sampler: nautilus:mass_total[1]` records, Sampler shown as `nautilus`.
-  Columns: Dataset type | Model | Instrument | Setup | Hardware class | Model
-  variant | **Profiling runtime s** | Sampler | Seed | Cores | **Wall s** (1
+  Columns: Dataset type | Model | Instrument | Setup | Hardware class | Lens
+  light | **Profiling runtime s** | Sampler | Seed | Cores | **Wall s** (1
   DP) | Likelihood evals | **Implied s/eval** (`implied_s_per_eval`, 5 DP) | ›.
   Profiling runtime is the producer's `profiling_per_call_s` (5 DP) linking to
   `?view=setup&instance=<profiling instance>&record=<profiling_record_id>` when
@@ -458,7 +468,9 @@ nothing; a new project commit moves both.
   badge titled with both source-pixel counts; no match shows — titled with
   `profiling_unmatched_reason`. The same filters and a results tally sit above
   the table; › opens `?view=run&instance=&record=`, a page with every field of
-  the record and its evidence link. All rounding is display only.
+  the record and its evidence link. Lens light, Sampler and Cores follow the
+  same constant-column rule (hidden with a caption while one value spans the
+  visible rows); rows sort as above, then by seed. All rounding is display only.
 - Detail pages are hidden articles inside `dashboard.html` (Pages publishes one
   page); the board script shows one for `?view=setup|run` and hides the rest.
 - Instance marker (what `check` compares to the receipt):

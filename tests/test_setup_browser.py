@@ -133,10 +133,10 @@ def test_v3_table_is_runtime_only_with_the_human_columns():
         "Dataset type",
         "Model",
         "Instrument",
-        "Regime",
+        "Source size",
         "Setup",
         "Hardware class",
-        "Model variant",
+        "Lens light",
         "Runtime s",
         "Est. 12-core s",
         "Class",
@@ -173,11 +173,11 @@ def test_v3_setup_drops_precision_only_and_precision_becomes_a_variant():
     assert setup_browser.setup_label("numba_cpu_sparse_fp64_wtilde") == "numba_cpu_sparse_wtilde"
     assert setup_browser.setup_label("jax_gpu_sparse_mixed_wtilde") == "jax_gpu_sparse_wtilde"
     assert setup_browser.variant_label("default", "jax_gpu_dense_fp64") == "default"
-    assert setup_browser.variant_label("default", "jax_gpu_dense_mixed") == "default+mixed"
-    assert setup_browser.variant_label("light_fixed", "x_fp32") == "light_fixed+fp32"
+    assert setup_browser.variant_label("default", "jax_gpu_dense_mixed") == "default · mixed"
+    assert setup_browser.variant_label("light_fixed", "x_fp32") == "light_fixed · fp32"
     page = setup_browser.render(lifecycle_capture())
     mixed = _row(page, "imaging-delaunay-hst-a100-mixed")
-    assert "<code>jax_gpu_dense</code>" in mixed and "<td>default+mixed</td>" in mixed
+    assert "<code>jax_gpu_dense</code>" in mixed and ">default · mixed</td>" in mixed
 
 
 def test_v3_tally_counts_current_results_and_clutter_is_gone():
@@ -400,3 +400,34 @@ def test_a_shared_directory_ties_only_records_from_the_same_day():
     older = rec("b2", "breakdown", "run-c", "2026-07-11")
     assert setup_browser.tied_siblings(row, [row, same_day, older]) == [same_day]
     assert setup_browser.tied_siblings(row, [row, older]) == []
+
+
+def test_constant_columns_are_hidden_server_side_with_a_caption():
+    snapshot = lifecycle_capture()
+    # Keep only current rows sharing one source size, lens light and class.
+    snapshot.doc["records"] = [
+        r
+        for r in snapshot.doc["records"]
+        if r["id"] in ("imaging-delaunay-hst-a100-runtime", "imaging-delaunay-hst-a100-runtime-old")
+    ] + [
+        dict(r, **{"class": "optimal"})
+        for r in snapshot.doc["records"]
+        if r["id"] == "imaging-delaunay-hst-ral-runtime"
+    ]
+    page = setup_browser.render(snapshot)
+    caption = re.search(r'data-id="constant-caption">([^<]*)<', page)[1]
+    assert caption == "All rows: standard size · default lens light · optimal"
+    for key in ("regime", "lens_light", "class"):
+        assert re.search(rf'<th data-col="{key}"[^>]* hidden>', page)
+        assert re.findall(rf'<td data-col="{key}"[^>]*?( hidden)?>', page) == [" hidden"] * 3
+    assert "<th>Instrument</th>" in page and "<th>Setup</th>" in page  # never hidden
+    md = "\n".join(setup_browser.markdown(snapshot))
+    assert "All rows: standard size · default lens light · optimal" in md
+    assert "| Source size |" not in md and "| Lens light |" not in md and "| Class |" not in md
+    assert "| Dataset type | Model | Instrument | Setup | Hardware class | Runtime s |" in md
+
+
+def test_columns_with_differing_visible_values_stay():
+    page = setup_browser.render(lifecycle_capture())
+    assert re.search(r'data-id="constant-caption" hidden>', page)
+    assert not re.search(r'<th data-col="[a-z_]+"[^>]* hidden>', page)

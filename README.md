@@ -83,7 +83,9 @@ sections, **Profiling Timings** and **Inference Timings**, each opening per
 project (PyAutoFit, PyAutoLens). A v3 catalogue renders a runtime-only table
 (filters Class, All by default → Dataset type → Model → Instrument → Hardware
 class), shows current records unless History is ticked, counts archived records
-without showing them and lists optimal cells not yet measured; each row's ›
+without showing them and lists optimal cells not yet measured. A categorical
+column (Source size, Lens light, Class) whose value every visible row shares is
+hidden and named in a caption above the table instead; each row's ›
 opens its detail page with the full breakdown. Inference Timings lists the
 `nautilus:mass_total[1]` runs, each with its own page, and links each run's
 Profiling runtime to the matching profiling detail page. No rendering action accepts

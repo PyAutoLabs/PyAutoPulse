@@ -502,3 +502,8 @@ button.retry {
   border-radius: 8px;
   color: var(--muted);
 }
+.constant-caption {
+  margin: 0 0 0.4rem;
+  font-size: 0.8rem;
+  color: var(--muted);
+}

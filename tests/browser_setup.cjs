@@ -754,6 +754,16 @@ const { execFileSync } = require("node:child_process");
     assert(await page.locator("#detail-route-status").isVisible());
     await page.goto(base + "/lifecycle.html");
     assert.equal(await page.locator('[data-walltime="walltime"]').count(), 1);
+    // Inference Lens light differs (default + light_fixed), so it stays visible;
+    // the constant Sampler column is named in the caption instead.
+    const runsTable = page.locator('[data-walltime="walltime"]');
+    await openGroups(runsTable);
+    assert(await runsTable.locator('th[data-col="lens_light"]').isVisible());
+    assert(!(await runsTable.locator('th[data-col="sampler"]').isVisible()));
+    assert.equal(
+      await runsTable.locator('[data-id="constant-caption"]').textContent(),
+      "All rows: nautilus sampler",
+    );
     // Inference Timings: same filters, a tally, one-line headers, a page per run,
     // and the Profiling runtime links to the profiling setup's detail page.
     const runs = page.locator('[data-walltime="walltime"]');
@@ -786,6 +796,36 @@ const { execFileSync } = require("node:child_process");
     await run.locator("a.back-link").click();
     assert(page.url().endsWith("#inference-pyautolens"));
     assert(await runs.isVisible());
+    // Constant columns: hidden with a caption by default; History brings a second
+    // source size, so Source size returns and the caption drops it.
+    await page.goto(base + "/constant.html");
+    const flat = page.locator("[data-lifecycle][data-setup-browser='lens']");
+    await openGroups(flat);
+    const flatCaption = flat.locator('[data-id="constant-caption"]');
+    assert.equal(
+      await flatCaption.textContent(),
+      "All rows: standard size · default lens light · optimal",
+    );
+    for (const key of ["regime", "lens_light", "class"])
+      assert(!(await flat.locator(`th[data-col="${key}"]`).isVisible()), key);
+    assert(await flat.locator("th", { hasText: "Instrument" }).isVisible());
+    await flat.locator('input[data-filter="history"]').check();
+    assert(await flat.locator('th[data-col="regime"]').isVisible());
+    assert(
+      await flat
+        .locator('tr[data-record="imaging-delaunay-hst-a100-runtime-old"] td[data-col="regime"]')
+        .isVisible(),
+    );
+    assert.equal(
+      await flatCaption.textContent(),
+      "All rows: default lens light · optimal",
+    );
+    await flat.locator('input[data-filter="history"]').uncheck();
+    assert(!(await flat.locator('th[data-col="regime"]').isVisible()));
+    // A filter narrowing to one hardware class hides nothing new but keeps the caption.
+    await flat.locator('select[data-filter="host_class"]').selectOption("hpc_a100");
+    assert((await flatCaption.textContent()).startsWith("All rows: standard size"));
+    await page.goto(base + "/lifecycle.html");
     // Unknown run, then unknown setup: each back link names its own section.
     await page.goto(base + "/lifecycle.html?view=run&instance=walltime&record=missing");
     assert(await page.locator("#detail-route-status").isVisible());

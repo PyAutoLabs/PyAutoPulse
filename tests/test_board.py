@@ -313,7 +313,12 @@ def test_inference_table_is_mass_total_only_with_the_human_columns():
     ):
         assert clutter not in table, clutter
     first = re.search(r'<tr data-record="nautilus-1core-s0".*?</tr>', table, re.S)[0]
-    assert "<td>nautilus</td>" in first and ">4200.0</b>" in first and ">0.21000</b>" in first
+    assert 'data-value="nautilus" hidden>nautilus</td>' in first
+    assert ">4200.0</b>" in first and ">0.21000</b>" in first
+    # Sampler is constant (hidden, named in the caption); lens light and cores differ.
+    assert re.search(r'data-id="constant-caption">All rows: nautilus sampler<', table)
+    assert re.search(r'<th data-col="sampler"[^>]* hidden>', table)
+    assert not re.search(r'<th data-col="(lens_light|cores)"[^>]* hidden>', table)
     assert re.search(r'data-id="tally"[^>]*>4 results<', table)
     assert 'data-filter="history"' not in table and 'data-filter="class"' not in table
 
@@ -338,7 +343,7 @@ def test_inference_profiling_runtime_links_the_profiling_detail_page():
         "not in captured catalogue" in uncaptured
         and "data-detail-link href='?view=setup" not in uncaptured
     )
-    assert "<td>default+mixed</td>" in uncaptured and "<code>jax_gpu_dense</code>" in uncaptured
+    assert ">default · mixed</td>" in uncaptured and "<code>jax_gpu_dense</code>" in uncaptured
     # Every row opens its own run page, and the linked profiling page exists.
     assert 'data-view="run" data-instance="lens-walltime" data-record="nautilus-gpu-s0"' in page
     assert (

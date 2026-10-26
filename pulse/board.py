@@ -411,7 +411,7 @@ WALLTIME_HEAD = (
     "Instrument",
     "Setup",
     "Hardware class",
-    "Model variant",
+    "Lens light",
     "Profiling runtime s",
     "Sampler",
     "Seed",
@@ -493,7 +493,16 @@ def _profiling_cell(record, pages: dict[str, str]) -> str:
     return f"<td class='num'>{out}</td>"
 
 
-def _walltime_cells(r, pages) -> str:
+INFERENCE_HIDEABLE = (
+    ("lens_light", setup_browser.lens_light),
+    ("sampler", lambda r: sampler_label(r)),
+    ("cores", lambda r: _cell(r.get("cores"))),
+)
+_WALLTIME_KEYS = {"Lens light": "lens_light", "Sampler": "sampler", "Cores": "cores"}
+
+
+def _walltime_cells(r, pages, constants=None) -> str:
+    constants = constants or {}
     likelihood = r.get("likelihood") or {}
     text = lambda v: f"<td>{_e(_cell(v))}</td>"  # noqa: E731
     count = lambda v: f"<td class='num'>{_e(_cell(v))}</td>"  # noqa: E731
@@ -504,11 +513,11 @@ def _walltime_cells(r, pages) -> str:
         + text(r.get("instrument"))
         + f"<td><code>{_e(setup_browser.setup_label(r.get('setup_id')))}</code></td>"
         + text(r.get("host_class"))
-        + text(setup_browser.variant_label(r.get("model_variant"), r.get("setup_id")))
+        + setup_browser.col_td("lens_light", setup_browser.lens_light(r), constants)
         + _profiling_cell(r, pages)
-        + text(sampler_label(r))
+        + setup_browser.col_td("sampler", sampler_label(r), constants)
         + count(r.get("seed"))
-        + count(r.get("cores"))
+        + setup_browser.col_td("cores", _cell(r.get("cores")), constants, "num")
         + (
             f"<td class='num'><b title='{_e(r.get('wall_s'))} s'>{wall}</b></td>"
             if wall
@@ -530,9 +539,8 @@ def walltime_markdown(s: Snapshot, pages: dict[str, str] | None = None) -> list[
         "",
         f"{len(rows)} result{'' if len(rows) == 1 else 's'}.",
         "",
-        "| " + " | ".join(WALLTIME_HEAD) + " |",
-        "|" + "".join("---:|" if h in WALLTIME_NUMERIC else "---|" for h in WALLTIME_HEAD),
     ]
+    table = []
     bold = lambda v, dp=5: (  # noqa: E731
         f"**{setup_browser.fixed(v, dp)}**" if setup_browser.fixed(v, dp) else "—"
     )
@@ -550,7 +558,7 @@ def walltime_markdown(s: Snapshot, pages: dict[str, str] | None = None) -> list[
             r.get("instrument"),
             f"`{setup_browser.setup_label(r.get('setup_id'))}`",
             r.get("host_class"),
-            setup_browser.variant_label(r.get("model_variant"), r.get("setup_id")),
+            setup_browser.lens_light(r),
             prof,
             sampler_label(r),
             r.get("seed"),
@@ -559,8 +567,12 @@ def walltime_markdown(s: Snapshot, pages: dict[str, str] | None = None) -> list[
             r.get("likelihood_evals"),
             bold(r.get("implied_s_per_eval")),
         ]
-        out.append("| " + " | ".join(_md_escape(_cell(c)) for c in cells) + " |")
-    return out + ["", "</details>", ""]
+        table.append([_md_escape(_cell(c)) for c in cells])
+    head = [
+        (_WALLTIME_KEYS.get(t), t, "r" if t in WALLTIME_NUMERIC else "l") for t in WALLTIME_HEAD
+    ]
+    constants = setup_browser.constant_columns(rows, INFERENCE_HIDEABLE)
+    return out + setup_browser.md_table(head, table, constants) + ["", "</details>", ""]
 
 
 def walltime_html(s: Snapshot, pages: dict[str, str] | None = None) -> str:
@@ -573,15 +585,22 @@ def walltime_html(s: Snapshot, pages: dict[str, str] | None = None) -> str:
         lambda k: sorted({str(_walltime_fields(r)[k]) for r in rows}),
         with_class=False,
     )
+    constants = setup_browser.constant_columns(rows, INFERENCE_HIDEABLE)
     head = "".join(
-        f"<th class='num'>{_e(t)}</th>" if t in WALLTIME_NUMERIC else f"<th>{_e(t)}</th>"
+        setup_browser.col_th(
+            _WALLTIME_KEYS[t], t, constants, "num" if t in WALLTIME_NUMERIC else ""
+        )
+        if t in _WALLTIME_KEYS
+        else f"<th class='num'>{_e(t)}</th>"
+        if t in WALLTIME_NUMERIC
+        else f"<th>{_e(t)}</th>"
         for t in WALLTIME_HEAD
     )
     body = "".join(
         f'<tr data-record="{_e(r.get("id"))}"'
         + "".join(f' data-{k.replace("_", "-")}="{_e(v)}"' for k, v in _walltime_fields(r).items())
         + ">"
-        + _walltime_cells(r, pages)
+        + _walltime_cells(r, pages, constants)
         + setup_browser.open_link("run", key, r.get("id"), "Open this run's details")
         + "</tr>"
         for r in rows
@@ -592,6 +611,7 @@ def walltime_html(s: Snapshot, pages: dict[str, str] | None = None) -> str:
         f'aria-label="{_e(s.instance.repo)} inference timings">'
         + filters
         + setup_browser.tally(len(rows), history=False)
+        + setup_browser.caption_html(constants)
         + f"<div class='tablewrap'><table class='lifecycle-table'><thead><tr>{head}"
         "<th class='open'><span class='visually-hidden'>Details</span></th></tr></thead>"
         f"<tbody>{body}</tbody></table></div>"

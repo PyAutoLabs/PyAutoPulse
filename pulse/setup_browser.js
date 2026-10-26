@@ -32,6 +32,31 @@
         if (visible) shown += 1;
       }
       if (empty) empty.hidden = shown > 0;
+      constants();
+    }
+    // Hide each listed categorical column while every visible row shares one
+    // value, and name the shared values in the caption above the table.
+    const caption = root.querySelector('[data-id="constant-caption"]');
+    function constants() {
+      const visible = rows.filter((row) => !row.hidden);
+      const parts = [];
+      for (const th of root.querySelectorAll("th[data-col]")) {
+        const key = th.dataset.col;
+        const values = new Set(
+          visible.map(
+            (row) => row.querySelector(`td[data-col="${key}"]`)?.dataset.value,
+          ),
+        );
+        const constant = visible.length > 0 && values.size === 1;
+        th.hidden = constant;
+        for (const td of root.querySelectorAll(`td[data-col="${key}"]`))
+          td.hidden = constant;
+        if (constant) parts.push(th.dataset.phrase.replace("{}", [...values][0]));
+      }
+      if (caption) {
+        caption.textContent = parts.length ? "All rows: " + parts.join(" · ") : "";
+        caption.hidden = !parts.length;
+      }
     }
     for (const control of [...filters, history].filter(Boolean))
       control.addEventListener("change", apply);
