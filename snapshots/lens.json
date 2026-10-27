@@ -3,8 +3,8 @@
   "repo": "autolens_profiling",
   "github": "PyAutoLabs/autolens_profiling",
   "summary_path": "dashboard/catalogue.json",
-  "commit": "5263ac7f31717f93d4bc485b6bec666213ffa6c3",
-  "fetched_at": "2026-10-26T14:37:40Z",
+  "commit": "a1a4ccf16fd6c30ce0a3d14e6ec0aec382d7099c",
+  "fetched_at": "2026-10-27T13:08:04Z",
   "summary": {
     "archive_record_count": 99,
     "comparison_policy": {
@@ -1937,14 +1937,14 @@
         "cells": 246
       },
       "observed": {
-        "current": 302,
-        "records": 683,
-        "superseded": 381
+        "current": 317,
+        "records": 701,
+        "superseded": 384
       }
     },
     "evidence_updated_at": null,
     "evidence_updated_at_reason": "No common measurement wall-clock across legacy evidence; inspect each record's measured_at.",
-    "generated_at": "2026-10-26T12:27:37Z",
+    "generated_at": "2026-10-27T12:25:45Z",
     "hazards": [],
     "limitations": [
       "Phase-0 labels (autolens_profiling#442): nothing was re-measured. A current record is the canonical cell row on a reference host class for a planned baseline cell; it is not an accepted baseline and carries no day_zero stamp.",
@@ -2576,6 +2576,21 @@
         "status": "match"
       },
       {
+        "host_class": "hpc_a100",
+        "instrument": "hst",
+        "likelihood": {
+          "dataset_type": "imaging",
+          "variant": "rectangular"
+        },
+        "location": "cell",
+        "model_variant": "default",
+        "path": "results/imaging/rectangular/hst/jax_cpu_sparse_fp64/hpc_a100/source_pixels_784/parity.json",
+        "record_id": "lifecycle/0b43689b6e8f601ade78",
+        "setup_id": "jax_cpu_sparse_fp64",
+        "size_variant": "source_pixels_784",
+        "status": "match"
+      },
+      {
         "host_class": "hpc_ral_cpu",
         "instrument": "hst",
         "likelihood": {
@@ -2612,9 +2627,39 @@
         },
         "location": "cell",
         "model_variant": "default",
+        "path": "results/imaging/rectangular/hst/jax_gpu_dense_fp64/hpc_a100/source_pixels_784/parity.json",
+        "record_id": "lifecycle/51cd6f8ab1edb2761cb8",
+        "setup_id": "jax_gpu_dense_fp64",
+        "size_variant": "source_pixels_784",
+        "status": "match"
+      },
+      {
+        "host_class": "hpc_a100",
+        "instrument": "hst",
+        "likelihood": {
+          "dataset_type": "imaging",
+          "variant": "rectangular"
+        },
+        "location": "cell",
+        "model_variant": "default",
         "path": "results/imaging/rectangular/hst/jax_gpu_sparse_fp64/hpc_a100/parity.json",
         "record_id": "lifecycle/27f711205e5a76c127cb",
         "setup_id": "jax_gpu_sparse_fp64",
+        "status": "match"
+      },
+      {
+        "host_class": "hpc_a100",
+        "instrument": "hst",
+        "likelihood": {
+          "dataset_type": "imaging",
+          "variant": "rectangular"
+        },
+        "location": "cell",
+        "model_variant": "default",
+        "path": "results/imaging/rectangular/hst/jax_gpu_sparse_fp64/hpc_a100/source_pixels_784/parity.json",
+        "record_id": "lifecycle/d1a3e06d7571bd6b5eba",
+        "setup_id": "jax_gpu_sparse_fp64",
+        "size_variant": "source_pixels_784",
         "status": "match"
       },
       {
@@ -2629,6 +2674,21 @@
         "path": "results/imaging/rectangular/hst/numba_cpu_sparse_fp64/hpc_ral_cpu/parity.json",
         "record_id": "lifecycle/9e90c7a031fd6370f9af",
         "setup_id": "numba_cpu_sparse_fp64",
+        "status": "match"
+      },
+      {
+        "host_class": "hpc_ral_cpu",
+        "instrument": "hst",
+        "likelihood": {
+          "dataset_type": "imaging",
+          "variant": "rectangular"
+        },
+        "location": "cell",
+        "model_variant": "default",
+        "path": "results/imaging/rectangular/hst/numba_cpu_sparse_fp64/hpc_ral_cpu/source_pixels_784/parity.json",
+        "record_id": "lifecycle/8db1316c3491c8569223",
+        "setup_id": "numba_cpu_sparse_fp64",
+        "size_variant": "source_pixels_784",
         "status": "match"
       },
       {
@@ -5656,7 +5716,7 @@
         "setup_id": "jax_gpu_na_fp64"
       }
     ],
-    "producer_revision": "5b1a93df280e5233f239258526e2e968595295ef",
+    "producer_revision": "5bcbe790ce0dd7128ba6efc1f73f5f82c52dbb8e",
     "project": "autolens_profiling",
     "recommendations": [],
     "records": [
@@ -10425,6 +10485,105 @@
           "sparse_triplets.compile_s": 0.06361386600474361,
           "sparse_triplets.first_call_s": 0.0008600289875175804,
           "sparse_triplets.lower_s": 0.014328325996757485
+        }
+      },
+      {
+        "class": "secondary",
+        "day_zero": null,
+        "decision_id": null,
+        "evidence": {
+          "fragment": null,
+          "path": "results/imaging/rectangular/hst/jax_cpu_sparse_fp64/hpc_a100/source_pixels_784/parity.json"
+        },
+        "figures": [],
+        "host_class": "hpc_a100",
+        "id": "lifecycle/0b43689b6e8f601ade78",
+        "identity": {
+          "backend": null,
+          "device": "a100",
+          "hardware_details": {},
+          "library_version": "2026.10.25.1",
+          "precision": "float64",
+          "software": {
+            "PyAutoLens": "2026.10.25.1",
+            "release_pin_basis": "library_revisions equal tag 2026.10.25.1's SHAs (catalogue/release_revisions.json); the source checkout stamped autolens_version 2026.8.17.1"
+          },
+          "unknowns": {
+            "backend": "Not recorded in this legacy evidence; no current default substituted."
+          }
+        },
+        "instrument": "hst",
+        "likelihood": {
+          "dataset_type": "imaging",
+          "variant": "rectangular"
+        },
+        "limitations": [
+          "provisional_secondary: true",
+          "size_variant: a declared size measured beside the standard 1225 source pixels (catalogue/size_variants.json, human 2026-10-26, autolens_profiling#468 (\"Profile 28² too\")): 784 source pixels, the rectangular mesh the SLaM inference runs use (mesh_shape 28x28 = 784; the standard-size production cell is otherwise unchanged: hst_rect_adapt 32x32 resized to 28x28 instead of 35x35), so the autolens_inference wall-time rows pair with a profiling runtime row of the same size (autolens_inference#47 size_match)"
+        ],
+        "location": "cell",
+        "measured_at": "2026-10-27T10:57:49Z",
+        "measurement": "parity",
+        "method": {
+          "cache_state": null,
+          "id": "parity-witness",
+          "repetitions": null,
+          "statistic": null,
+          "synchronization": null,
+          "unknowns": {
+            "cache_state": "A parity witness compares one log-likelihood evaluation; not a timing.",
+            "repetitions": "A parity witness compares one log-likelihood evaluation; not a timing.",
+            "statistic": "A parity witness compares one log-likelihood evaluation; not a timing.",
+            "synchronization": "A parity witness compares one log-likelihood evaluation; not a timing.",
+            "warmup": "A parity witness compares one log-likelihood evaluation; not a timing."
+          },
+          "warmup": null
+        },
+        "metric": "abs_delta_log_likelihood",
+        "model_variant": "default",
+        "parity": {
+          "log_likelihood": 27202.80233601378,
+          "reference": {
+            "date": "2026-10-27",
+            "source": "eager NumPy dense-mapping al.AnalysisImaging(use_jax=False, no sparse operator) in the same process: hst, 784 source pixels, same dataset, model and instance"
+          },
+          "reference_log_likelihood": 27202.802336013636,
+          "status": "match"
+        },
+        "pointers": {
+          "tolerance": "/tolerance"
+        },
+        "provenance": {
+          "has_provenance": false,
+          "host": null,
+          "measured_at": "2026-10-27T10:57:49Z",
+          "qualified": false,
+          "unknowns": {
+            "host": "Not recorded in this legacy evidence; no current default substituted."
+          }
+        },
+        "regime": "source_pixels_784",
+        "release_pin": "2026.10.25.1",
+        "run_id": "parity/75473530e3068e2aaff1",
+        "setup": {
+          "backend": "jax",
+          "device": "cpu",
+          "operator": "sparse",
+          "precision": "fp64",
+          "threads": null,
+          "transformer": "na"
+        },
+        "setup_id": "jax_cpu_sparse_fp64",
+        "status": "current",
+        "superseded_by": null,
+        "unit": "dimensionless",
+        "validation": {
+          "reason": "Parity witness status match (|delta log L| against tolerance, recorded by the producing run); not an accepted baseline.",
+          "status": "unreviewed"
+        },
+        "values": {
+          "abs_delta_log_likelihood": 1.4551915228366852e-10,
+          "tolerance": 2.720280233601364
         }
       },
       {
@@ -22396,6 +22555,274 @@
         "values": {
           "abs_delta_log_likelihood": 1.0186340659856796e-10,
           "tolerance": 2.7090868779801283
+        }
+      },
+      {
+        "class": "secondary",
+        "day_zero": null,
+        "decision_id": null,
+        "evidence": {
+          "fragment": null,
+          "path": "results/imaging/rectangular/hst/jax_cpu_sparse_fp64/hpc_a100/source_pixels_784/breakdown.json"
+        },
+        "figures": [
+          {
+            "kind": "fit",
+            "path": "results/imaging/rectangular/hst/jax_cpu_sparse_fp64/hpc_a100/source_pixels_784/fit.png",
+            "sha256": "3185f83bdbc94790f6beaf99d38cffd67b4d4cd6a95ef92a3d2daa81e5aa4c10"
+          }
+        ],
+        "host_class": "hpc_a100",
+        "id": "lifecycle/296aeebbf26ba23b8df3",
+        "identity": {
+          "backend": "cpu",
+          "device": "a100",
+          "hardware_details": {
+            "autotune_cache_entries_at_start": 0,
+            "backend": "cpu",
+            "cache_fresh": true,
+            "cpu_count": 124,
+            "device": "cpu:0",
+            "hostname": "euclid-ral-gpu-1",
+            "omp_num_threads": "1",
+            "xla_flags": "--xla_disable_hlo_passes=constant_folding --xla_gpu_autotune_level=0 --xla_gpu_enable_triton_gemm=false"
+          },
+          "library_version": "2026.10.25.1",
+          "precision": "float64",
+          "software": {
+            "PyAutoArray.library_revisions": "0f12fac7789c81d0fdaa324508ced5b4c434d42a",
+            "PyAutoArray.library_versions": "2026.8.17.1",
+            "PyAutoFit.library_revisions": "8cb533a605f556d85012d5eb7ed8d4f3c2a4dcf6",
+            "PyAutoFit.library_versions": "2026.8.17.1",
+            "PyAutoGalaxy.library_revisions": "7472211470b9d2b3a76bb12dcacbac51ab4de06f",
+            "PyAutoGalaxy.library_versions": "2026.8.17.1",
+            "PyAutoLens": "2026.10.25.1",
+            "PyAutoLens.library_revisions": "c6927eeb33724c2de2f2e2c773ba3ebe651943a8",
+            "PyAutoLens.library_versions": "2026.8.17.1",
+            "PyAutoNerves.library_revisions": "ec8b5c1e5f17ac03ac5246b5fbc322624a6cd3f6",
+            "PyAutoNerves.library_versions": "2026.8.17.1",
+            "autolens_profiling.library_revisions": "5bcbe790ce0dd7128ba6efc1f73f5f82c52dbb8e",
+            "jax.dependency_versions": "0.10.2",
+            "jaxlib.dependency_versions": "0.10.2",
+            "nufftax.dependency_versions": "0.6.1",
+            "numba.dependency_versions": "0.65.1",
+            "numpy.dependency_versions": "2.2.6",
+            "release_pin_basis": "library_revisions equal tag 2026.10.25.1's SHAs (catalogue/release_revisions.json); the source checkout stamped autolens_version 2026.8.17.1",
+            "scipy.dependency_versions": "1.17.1"
+          },
+          "unknowns": {}
+        },
+        "instrument": "hst",
+        "likelihood": {
+          "dataset_type": "imaging",
+          "variant": "rectangular"
+        },
+        "limitations": [
+          "provisional_secondary: true",
+          "size_variant: a declared size measured beside the standard 1225 source pixels (catalogue/size_variants.json, human 2026-10-26, autolens_profiling#468 (\"Profile 28² too\")): 784 source pixels, the rectangular mesh the SLaM inference runs use (mesh_shape 28x28 = 784; the standard-size production cell is otherwise unchanged: hst_rect_adapt 32x32 resized to 28x28 instead of 35x35), so the autolens_inference wall-time rows pair with a profiling runtime row of the same size (autolens_inference#47 size_match)"
+        ],
+        "location": "cell",
+        "measured_at": "2026-10-27T10:55:42Z",
+        "measurement": "compile",
+        "method": {
+          "cache_state": null,
+          "id": "legacy/e8692393883aaf44a046",
+          "repetitions": null,
+          "statistic": null,
+          "synchronization": null,
+          "unknowns": {
+            "cache_state": "Not recorded in this legacy evidence; no current default substituted.",
+            "repetitions": "Not recorded in this legacy evidence; no current default substituted.",
+            "statistic": "Not recorded in this legacy evidence; no current default substituted.",
+            "synchronization": "Not recorded in this legacy evidence; no current default substituted.",
+            "warmup": "Not recorded in this legacy evidence; no current default substituted."
+          },
+          "warmup": null
+        },
+        "metric": "blurred_image_jit.compile_s",
+        "model_variant": "default",
+        "pointers": {
+          "blurred_image_jit.compile_s": "/jit_phases/blurred_image_jit/compile_s",
+          "blurred_image_jit.first_call_s": "/jit_phases/blurred_image_jit/first_call_s",
+          "blurred_image_jit.lower_s": "/jit_phases/blurred_image_jit/lower_s",
+          "cholesky_curvature_reg_jit.compile_s": "/jit_phases/cholesky_curvature_reg_jit/compile_s",
+          "cholesky_curvature_reg_jit.first_call_s": "/jit_phases/cholesky_curvature_reg_jit/first_call_s",
+          "cholesky_curvature_reg_jit.lower_s": "/jit_phases/cholesky_curvature_reg_jit/lower_s",
+          "cholesky_solve_jit.compile_s": "/jit_phases/cholesky_solve_jit/compile_s",
+          "cholesky_solve_jit.first_call_s": "/jit_phases/cholesky_solve_jit/first_call_s",
+          "cholesky_solve_jit.lower_s": "/jit_phases/cholesky_solve_jit/lower_s",
+          "curvature_F_diag_jit.compile_s": "/jit_phases/curvature_F_diag_jit/compile_s",
+          "curvature_F_diag_jit.first_call_s": "/jit_phases/curvature_F_diag_jit/first_call_s",
+          "curvature_F_diag_jit.lower_s": "/jit_phases/curvature_F_diag_jit/lower_s",
+          "curvature_F_func_func_jit.compile_s": "/jit_phases/curvature_F_func_func_jit/compile_s",
+          "curvature_F_func_func_jit.first_call_s": "/jit_phases/curvature_F_func_func_jit/first_call_s",
+          "curvature_F_func_func_jit.lower_s": "/jit_phases/curvature_F_func_func_jit/lower_s",
+          "curvature_F_off_diag_jit.compile_s": "/jit_phases/curvature_F_off_diag_jit/compile_s",
+          "curvature_F_off_diag_jit.first_call_s": "/jit_phases/curvature_F_off_diag_jit/first_call_s",
+          "curvature_F_off_diag_jit.lower_s": "/jit_phases/curvature_F_off_diag_jit/lower_s",
+          "curvature_matrix_sparse_jit.compile_s": "/jit_phases/curvature_matrix_sparse_jit/compile_s",
+          "curvature_matrix_sparse_jit.first_call_s": "/jit_phases/curvature_matrix_sparse_jit/first_call_s",
+          "curvature_matrix_sparse_jit.lower_s": "/jit_phases/curvature_matrix_sparse_jit/lower_s",
+          "data_vector_sparse_jit.compile_s": "/jit_phases/data_vector_sparse_jit/compile_s",
+          "data_vector_sparse_jit.first_call_s": "/jit_phases/data_vector_sparse_jit/first_call_s",
+          "data_vector_sparse_jit.lower_s": "/jit_phases/data_vector_sparse_jit/lower_s",
+          "inversion_setup_sparse_jit.compile_s": "/jit_phases/inversion_setup_sparse_jit/compile_s",
+          "inversion_setup_sparse_jit.first_call_s": "/jit_phases/inversion_setup_sparse_jit/first_call_s",
+          "inversion_setup_sparse_jit.lower_s": "/jit_phases/inversion_setup_sparse_jit/lower_s",
+          "lens_image_jit.compile_s": "/jit_phases/lens_image_jit/compile_s",
+          "lens_image_jit.first_call_s": "/jit_phases/lens_image_jit/first_call_s",
+          "lens_image_jit.lower_s": "/jit_phases/lens_image_jit/lower_s",
+          "log_det_curvature_reg_jit.compile_s": "/jit_phases/log_det_curvature_reg_jit/compile_s",
+          "log_det_curvature_reg_jit.first_call_s": "/jit_phases/log_det_curvature_reg_jit/first_call_s",
+          "log_det_curvature_reg_jit.lower_s": "/jit_phases/log_det_curvature_reg_jit/lower_s",
+          "log_det_regularization_jit.compile_s": "/jit_phases/log_det_regularization_jit/compile_s",
+          "log_det_regularization_jit.first_call_s": "/jit_phases/log_det_regularization_jit/first_call_s",
+          "log_det_regularization_jit.lower_s": "/jit_phases/log_det_regularization_jit/lower_s",
+          "log_evidence_sparse_jit.compile_s": "/jit_phases/log_evidence_sparse_jit/compile_s",
+          "log_evidence_sparse_jit.first_call_s": "/jit_phases/log_evidence_sparse_jit/first_call_s",
+          "log_evidence_sparse_jit.lower_s": "/jit_phases/log_evidence_sparse_jit/lower_s",
+          "mge_operated_basis_jit.compile_s": "/jit_phases/mge_operated_basis_jit/compile_s",
+          "mge_operated_basis_jit.first_call_s": "/jit_phases/mge_operated_basis_jit/first_call_s",
+          "mge_operated_basis_jit.lower_s": "/jit_phases/mge_operated_basis_jit/lower_s",
+          "nnls_pdip_jit.compile_s": "/jit_phases/nnls_pdip_jit/compile_s",
+          "nnls_pdip_jit.first_call_s": "/jit_phases/nnls_pdip_jit/first_call_s",
+          "nnls_pdip_jit.lower_s": "/jit_phases/nnls_pdip_jit/lower_s",
+          "nnls_pdip_one_iteration_jit.compile_s": "/jit_phases/nnls_pdip_one_iteration_jit/compile_s",
+          "nnls_pdip_one_iteration_jit.first_call_s": "/jit_phases/nnls_pdip_one_iteration_jit/first_call_s",
+          "nnls_pdip_one_iteration_jit.lower_s": "/jit_phases/nnls_pdip_one_iteration_jit/lower_s",
+          "overlay_grid_jit.compile_s": "/jit_phases/overlay_grid_jit/compile_s",
+          "overlay_grid_jit.first_call_s": "/jit_phases/overlay_grid_jit/first_call_s",
+          "overlay_grid_jit.lower_s": "/jit_phases/overlay_grid_jit/lower_s",
+          "profile_subtract_jit.compile_s": "/jit_phases/profile_subtract_jit/compile_s",
+          "profile_subtract_jit.first_call_s": "/jit_phases/profile_subtract_jit/first_call_s",
+          "profile_subtract_jit.lower_s": "/jit_phases/profile_subtract_jit/lower_s",
+          "psf_weighted_data_jit.compile_s": "/jit_phases/psf_weighted_data_jit/compile_s",
+          "psf_weighted_data_jit.first_call_s": "/jit_phases/psf_weighted_data_jit/first_call_s",
+          "psf_weighted_data_jit.lower_s": "/jit_phases/psf_weighted_data_jit/lower_s",
+          "ray_trace_jit.compile_s": "/jit_phases/ray_trace_jit/compile_s",
+          "ray_trace_jit.first_call_s": "/jit_phases/ray_trace_jit/first_call_s",
+          "ray_trace_jit.lower_s": "/jit_phases/ray_trace_jit/lower_s",
+          "reconstruction_jit.compile_s": "/jit_phases/reconstruction_jit/compile_s",
+          "reconstruction_jit.first_call_s": "/jit_phases/reconstruction_jit/first_call_s",
+          "reconstruction_jit.lower_s": "/jit_phases/reconstruction_jit/lower_s",
+          "regularization_matrix_jit.compile_s": "/jit_phases/regularization_matrix_jit/compile_s",
+          "regularization_matrix_jit.first_call_s": "/jit_phases/regularization_matrix_jit/first_call_s",
+          "regularization_matrix_jit.lower_s": "/jit_phases/regularization_matrix_jit/lower_s",
+          "setup_prefix_6.compile_s": "/jit_phases/setup_prefix_6/compile_s",
+          "setup_prefix_6.first_call_s": "/jit_phases/setup_prefix_6/first_call_s",
+          "setup_prefix_6.lower_s": "/jit_phases/setup_prefix_6/lower_s",
+          "sparse_triplets_jit.compile_s": "/jit_phases/sparse_triplets_jit/compile_s",
+          "sparse_triplets_jit.first_call_s": "/jit_phases/sparse_triplets_jit/first_call_s",
+          "sparse_triplets_jit.lower_s": "/jit_phases/sparse_triplets_jit/lower_s"
+        },
+        "provenance": {
+          "has_provenance": true,
+          "host": "euclid-ral-gpu-1",
+          "measured_at": "2026-10-27T10:55:42Z",
+          "qualified": false,
+          "unknowns": {}
+        },
+        "regime": "source_pixels_784",
+        "release_pin": "2026.10.25.1",
+        "resources": {
+          "cpus_per_eval": 8,
+          "cpus_per_eval_basis": "jax cpu: NPROC threads in XLA's CPU intra-op pool",
+          "devices_per_eval": 0,
+          "peak_rss_basis": "in_process_ru_maxrss",
+          "peak_rss_gb": 2.240307,
+          "peak_rss_note": "resource.getrusage(RUSAGE_SELF).ru_maxrss when the row was built: this process's peak resident set (children excluded), GB = 1e9 bytes",
+          "source": "row"
+        },
+        "run_id": "legacy/544829f50246728c8c44",
+        "setup": {
+          "backend": "jax",
+          "device": "cpu",
+          "operator": "sparse",
+          "precision": "fp64",
+          "threads": null,
+          "transformer": "na"
+        },
+        "setup_id": "jax_cpu_sparse_fp64",
+        "status": "superseded",
+        "superseded_by": "lifecycle/88a510abd855ec1f0a80",
+        "unit": "s",
+        "validation": {
+          "reason": "Legacy evidence labelled by the phase-0 day-zero rule; not an accepted baseline.",
+          "status": "unreviewed"
+        },
+        "values": {
+          "blurred_image_jit.compile_s": 0.13628149701980874,
+          "blurred_image_jit.first_call_s": 0.002470912004355341,
+          "blurred_image_jit.lower_s": 0.05801774497376755,
+          "cholesky_curvature_reg_jit.compile_s": 0.05769048095680773,
+          "cholesky_curvature_reg_jit.first_call_s": 0.00873860198771581,
+          "cholesky_curvature_reg_jit.lower_s": 0.009343053039629012,
+          "cholesky_solve_jit.compile_s": 0.0738975889980793,
+          "cholesky_solve_jit.first_call_s": 0.008841330010909587,
+          "cholesky_solve_jit.lower_s": 0.010407320049125701,
+          "curvature_F_diag_jit.compile_s": 0.16773854900384322,
+          "curvature_F_diag_jit.first_call_s": 1.0295231249765493,
+          "curvature_F_diag_jit.lower_s": 0.028385894955135882,
+          "curvature_F_func_func_jit.compile_s": 0.04248144099256024,
+          "curvature_F_func_func_jit.first_call_s": 0.0026864460087381303,
+          "curvature_F_func_func_jit.lower_s": 0.005476841994095594,
+          "curvature_F_off_diag_jit.compile_s": 0.08970478200353682,
+          "curvature_F_off_diag_jit.first_call_s": 0.050177615019492805,
+          "curvature_F_off_diag_jit.lower_s": 0.0163628559675999,
+          "curvature_matrix_sparse_jit.compile_s": 0.25827812001807615,
+          "curvature_matrix_sparse_jit.first_call_s": 1.0741652279975824,
+          "curvature_matrix_sparse_jit.lower_s": 0.046256614034064114,
+          "data_vector_sparse_jit.compile_s": 0.07380384998396039,
+          "data_vector_sparse_jit.first_call_s": 0.0018615470035001636,
+          "data_vector_sparse_jit.lower_s": 0.010201393044553697,
+          "inversion_setup_sparse_jit.compile_s": 7.612910816038493,
+          "inversion_setup_sparse_jit.first_call_s": 0.08367326599545777,
+          "inversion_setup_sparse_jit.lower_s": 3.5932915420271456,
+          "lens_image_jit.compile_s": 0.03139080503024161,
+          "lens_image_jit.first_call_s": 0.00026973697822541,
+          "lens_image_jit.lower_s": 0.06493698299163952,
+          "log_det_curvature_reg_jit.compile_s": 0.06226127303671092,
+          "log_det_curvature_reg_jit.first_call_s": 0.006193212990183383,
+          "log_det_curvature_reg_jit.lower_s": 0.011704315023962408,
+          "log_det_regularization_jit.compile_s": 8.500006515532732e-06,
+          "log_det_regularization_jit.first_call_s": 0.006676486984360963,
+          "log_det_regularization_jit.lower_s": 0.0002643470070324838,
+          "log_evidence_sparse_jit.compile_s": 0.19015054003102705,
+          "log_evidence_sparse_jit.first_call_s": 0.009546291024889797,
+          "log_evidence_sparse_jit.lower_s": 0.028855089971330017,
+          "mge_operated_basis_jit.compile_s": 6.355459693993907,
+          "mge_operated_basis_jit.first_call_s": 0.025542041985318065,
+          "mge_operated_basis_jit.lower_s": 2.335522363020573,
+          "nnls_pdip_jit.compile_s": 0.2524549619993195,
+          "nnls_pdip_jit.first_call_s": 0.18142678902950138,
+          "nnls_pdip_jit.lower_s": 0.022400019981432706,
+          "nnls_pdip_one_iteration_jit.compile_s": 0.2508926009759307,
+          "nnls_pdip_one_iteration_jit.first_call_s": 0.020280016993638128,
+          "nnls_pdip_one_iteration_jit.lower_s": 0.022632277046795934,
+          "overlay_grid_jit.compile_s": 0.05553311499534175,
+          "overlay_grid_jit.first_call_s": 0.0012693550088442862,
+          "overlay_grid_jit.lower_s": 0.012500579992774874,
+          "profile_subtract_jit.compile_s": 0.03270442801294848,
+          "profile_subtract_jit.first_call_s": 0.0003070959937758744,
+          "profile_subtract_jit.lower_s": 0.004875352024100721,
+          "psf_weighted_data_jit.compile_s": 0.05246132501633838,
+          "psf_weighted_data_jit.first_call_s": 0.025630880962125957,
+          "psf_weighted_data_jit.lower_s": 0.012559612980112433,
+          "ray_trace_jit.compile_s": 0.17952697904547676,
+          "ray_trace_jit.first_call_s": 0.0018001989810727537,
+          "ray_trace_jit.lower_s": 0.08834431099239737,
+          "reconstruction_jit.compile_s": 0.2653700110386126,
+          "reconstruction_jit.first_call_s": 0.17836591601371765,
+          "reconstruction_jit.lower_s": 0.027420928003266454,
+          "regularization_matrix_jit.compile_s": 1.1750260799890384,
+          "regularization_matrix_jit.first_call_s": 0.04369693499756977,
+          "regularization_matrix_jit.lower_s": 0.2635626250412315,
+          "setup_prefix_6.compile_s": 0.8305142860044725,
+          "setup_prefix_6.first_call_s": 0.04311459296150133,
+          "setup_prefix_6.lower_s": 0.22528933000285178,
+          "sparse_triplets_jit.compile_s": 0.07125535100931302,
+          "sparse_triplets_jit.first_call_s": 0.0023557699751108885,
+          "sparse_triplets_jit.lower_s": 0.014535508991684765
         }
       },
       {
@@ -42639,6 +43066,105 @@
         "decision_id": null,
         "evidence": {
           "fragment": null,
+          "path": "results/imaging/rectangular/hst/jax_gpu_dense_fp64/hpc_a100/source_pixels_784/parity.json"
+        },
+        "figures": [],
+        "host_class": "hpc_a100",
+        "id": "lifecycle/51cd6f8ab1edb2761cb8",
+        "identity": {
+          "backend": null,
+          "device": "a100",
+          "hardware_details": {},
+          "library_version": "2026.10.25.1",
+          "precision": "float64",
+          "software": {
+            "PyAutoLens": "2026.10.25.1",
+            "release_pin_basis": "library_revisions equal tag 2026.10.25.1's SHAs (catalogue/release_revisions.json); the source checkout stamped autolens_version 2026.8.17.1"
+          },
+          "unknowns": {
+            "backend": "Not recorded in this legacy evidence; no current default substituted."
+          }
+        },
+        "instrument": "hst",
+        "likelihood": {
+          "dataset_type": "imaging",
+          "variant": "rectangular"
+        },
+        "limitations": [
+          "provisional_optimal: true",
+          "size_variant: a declared size measured beside the standard 1225 source pixels (catalogue/size_variants.json, human 2026-10-26, autolens_profiling#468 (\"Profile 28² too\")): 784 source pixels, the rectangular mesh the SLaM inference runs use (mesh_shape 28x28 = 784; the standard-size production cell is otherwise unchanged: hst_rect_adapt 32x32 resized to 28x28 instead of 35x35), so the autolens_inference wall-time rows pair with a profiling runtime row of the same size (autolens_inference#47 size_match)"
+        ],
+        "location": "cell",
+        "measured_at": "2026-10-27T10:59:22Z",
+        "measurement": "parity",
+        "method": {
+          "cache_state": null,
+          "id": "parity-witness",
+          "repetitions": null,
+          "statistic": null,
+          "synchronization": null,
+          "unknowns": {
+            "cache_state": "A parity witness compares one log-likelihood evaluation; not a timing.",
+            "repetitions": "A parity witness compares one log-likelihood evaluation; not a timing.",
+            "statistic": "A parity witness compares one log-likelihood evaluation; not a timing.",
+            "synchronization": "A parity witness compares one log-likelihood evaluation; not a timing.",
+            "warmup": "A parity witness compares one log-likelihood evaluation; not a timing."
+          },
+          "warmup": null
+        },
+        "metric": "abs_delta_log_likelihood",
+        "model_variant": "default",
+        "parity": {
+          "log_likelihood": 27202.80233602312,
+          "reference": {
+            "date": "2026-10-27",
+            "source": "eager NumPy dense-mapping al.AnalysisImaging(use_jax=False, no sparse operator) in the same process: hst, 784 source pixels, same dataset, model and instance"
+          },
+          "reference_log_likelihood": 27202.802336013636,
+          "status": "match"
+        },
+        "pointers": {
+          "tolerance": "/tolerance"
+        },
+        "provenance": {
+          "has_provenance": false,
+          "host": null,
+          "measured_at": "2026-10-27T10:59:22Z",
+          "qualified": false,
+          "unknowns": {
+            "host": "Not recorded in this legacy evidence; no current default substituted."
+          }
+        },
+        "regime": "source_pixels_784",
+        "release_pin": "2026.10.25.1",
+        "run_id": "parity/2efb1323ee6f054952de",
+        "setup": {
+          "backend": "jax",
+          "device": "gpu",
+          "operator": "dense",
+          "precision": "fp64",
+          "threads": null,
+          "transformer": "na"
+        },
+        "setup_id": "jax_gpu_dense_fp64",
+        "status": "current",
+        "superseded_by": null,
+        "unit": "dimensionless",
+        "validation": {
+          "reason": "Parity witness status match (|delta log L| against tolerance, recorded by the producing run); not an accepted baseline.",
+          "status": "unreviewed"
+        },
+        "values": {
+          "abs_delta_log_likelihood": 9.484210750088096e-09,
+          "tolerance": 2.720280233601364
+        }
+      },
+      {
+        "class": "secondary",
+        "day_zero": null,
+        "decision_id": null,
+        "evidence": {
+          "fragment": null,
           "path": "results/imaging/delaunay/euclid/jax_gpu_sparse_fp64/hpc_a100/breakdown.json"
         },
         "figures": [
@@ -44086,6 +44612,239 @@
         "decision_id": null,
         "evidence": {
           "fragment": null,
+          "path": "results/imaging/rectangular/hst/jax_gpu_dense_fp64/hpc_a100/source_pixels_784/breakdown.json"
+        },
+        "figures": [
+          {
+            "kind": "fit",
+            "path": "results/imaging/rectangular/hst/jax_gpu_dense_fp64/hpc_a100/source_pixels_784/fit.png",
+            "sha256": "3185f83bdbc94790f6beaf99d38cffd67b4d4cd6a95ef92a3d2daa81e5aa4c10"
+          }
+        ],
+        "host_class": "hpc_a100",
+        "id": "lifecycle/55f10b0ab55778ed0280",
+        "identity": {
+          "backend": "gpu",
+          "device": "a100",
+          "hardware_details": {
+            "autotune_cache_entries_at_start": 0,
+            "backend": "gpu",
+            "cache_fresh": true,
+            "cpu_count": 124,
+            "device": "cuda:0",
+            "hostname": "euclid-ral-gpu-1",
+            "nvidia_smi": "NVIDIA A100 80GB PCIe, 2587 MiB, 81920 MiB",
+            "omp_num_threads": "1",
+            "xla_flags": "--xla_disable_hlo_passes=constant_folding --xla_gpu_autotune_level=0 --xla_gpu_enable_triton_gemm=false"
+          },
+          "library_version": "2026.10.25.1",
+          "precision": "float64",
+          "software": {
+            "PyAutoArray.library_revisions": "0f12fac7789c81d0fdaa324508ced5b4c434d42a",
+            "PyAutoArray.library_versions": "2026.8.17.1",
+            "PyAutoFit.library_revisions": "8cb533a605f556d85012d5eb7ed8d4f3c2a4dcf6",
+            "PyAutoFit.library_versions": "2026.8.17.1",
+            "PyAutoGalaxy.library_revisions": "7472211470b9d2b3a76bb12dcacbac51ab4de06f",
+            "PyAutoGalaxy.library_versions": "2026.8.17.1",
+            "PyAutoLens": "2026.10.25.1",
+            "PyAutoLens.library_revisions": "c6927eeb33724c2de2f2e2c773ba3ebe651943a8",
+            "PyAutoLens.library_versions": "2026.8.17.1",
+            "PyAutoNerves.library_revisions": "ec8b5c1e5f17ac03ac5246b5fbc322624a6cd3f6",
+            "PyAutoNerves.library_versions": "2026.8.17.1",
+            "autolens_profiling.library_revisions": "5bcbe790ce0dd7128ba6efc1f73f5f82c52dbb8e",
+            "jax.dependency_versions": "0.10.2",
+            "jaxlib.dependency_versions": "0.10.2",
+            "nufftax.dependency_versions": "0.6.1",
+            "numba.dependency_versions": "0.65.1",
+            "numpy.dependency_versions": "2.2.6",
+            "release_pin_basis": "library_revisions equal tag 2026.10.25.1's SHAs (catalogue/release_revisions.json); the source checkout stamped autolens_version 2026.8.17.1",
+            "scipy.dependency_versions": "1.17.1"
+          },
+          "unknowns": {}
+        },
+        "instrument": "hst",
+        "likelihood": {
+          "dataset_type": "imaging",
+          "variant": "rectangular"
+        },
+        "limitations": [
+          "provisional_optimal: true",
+          "size_variant: a declared size measured beside the standard 1225 source pixels (catalogue/size_variants.json, human 2026-10-26, autolens_profiling#468 (\"Profile 28² too\")): 784 source pixels, the rectangular mesh the SLaM inference runs use (mesh_shape 28x28 = 784; the standard-size production cell is otherwise unchanged: hst_rect_adapt 32x32 resized to 28x28 instead of 35x35), so the autolens_inference wall-time rows pair with a profiling runtime row of the same size (autolens_inference#47 size_match)"
+        ],
+        "location": "cell",
+        "measured_at": "2026-10-27T10:58:31Z",
+        "measurement": "compile",
+        "method": {
+          "cache_state": null,
+          "id": "legacy/e8692393883aaf44a046",
+          "repetitions": null,
+          "statistic": null,
+          "synchronization": null,
+          "unknowns": {
+            "cache_state": "Not recorded in this legacy evidence; no current default substituted.",
+            "repetitions": "Not recorded in this legacy evidence; no current default substituted.",
+            "statistic": "Not recorded in this legacy evidence; no current default substituted.",
+            "synchronization": "Not recorded in this legacy evidence; no current default substituted.",
+            "warmup": "Not recorded in this legacy evidence; no current default substituted."
+          },
+          "warmup": null
+        },
+        "metric": "blurred_image_jit.compile_s",
+        "model_variant": "default",
+        "pointers": {
+          "blurred_image_jit.compile_s": "/jit_phases/blurred_image_jit/compile_s",
+          "blurred_image_jit.first_call_s": "/jit_phases/blurred_image_jit/first_call_s",
+          "blurred_image_jit.lower_s": "/jit_phases/blurred_image_jit/lower_s",
+          "cholesky_curvature_reg_jit.compile_s": "/jit_phases/cholesky_curvature_reg_jit/compile_s",
+          "cholesky_curvature_reg_jit.first_call_s": "/jit_phases/cholesky_curvature_reg_jit/first_call_s",
+          "cholesky_curvature_reg_jit.lower_s": "/jit_phases/cholesky_curvature_reg_jit/lower_s",
+          "cholesky_solve_jit.compile_s": "/jit_phases/cholesky_solve_jit/compile_s",
+          "cholesky_solve_jit.first_call_s": "/jit_phases/cholesky_solve_jit/first_call_s",
+          "cholesky_solve_jit.lower_s": "/jit_phases/cholesky_solve_jit/lower_s",
+          "curvature_matrix_jit.compile_s": "/jit_phases/curvature_matrix_jit/compile_s",
+          "curvature_matrix_jit.first_call_s": "/jit_phases/curvature_matrix_jit/first_call_s",
+          "curvature_matrix_jit.lower_s": "/jit_phases/curvature_matrix_jit/lower_s",
+          "data_vector_jit.compile_s": "/jit_phases/data_vector_jit/compile_s",
+          "data_vector_jit.first_call_s": "/jit_phases/data_vector_jit/first_call_s",
+          "data_vector_jit.lower_s": "/jit_phases/data_vector_jit/lower_s",
+          "inversion_setup_jit.compile_s": "/jit_phases/inversion_setup_jit/compile_s",
+          "inversion_setup_jit.first_call_s": "/jit_phases/inversion_setup_jit/first_call_s",
+          "inversion_setup_jit.lower_s": "/jit_phases/inversion_setup_jit/lower_s",
+          "lens_image_jit.compile_s": "/jit_phases/lens_image_jit/compile_s",
+          "lens_image_jit.first_call_s": "/jit_phases/lens_image_jit/first_call_s",
+          "lens_image_jit.lower_s": "/jit_phases/lens_image_jit/lower_s",
+          "log_det_curvature_reg_jit.compile_s": "/jit_phases/log_det_curvature_reg_jit/compile_s",
+          "log_det_curvature_reg_jit.first_call_s": "/jit_phases/log_det_curvature_reg_jit/first_call_s",
+          "log_det_curvature_reg_jit.lower_s": "/jit_phases/log_det_curvature_reg_jit/lower_s",
+          "log_det_regularization_jit.compile_s": "/jit_phases/log_det_regularization_jit/compile_s",
+          "log_det_regularization_jit.first_call_s": "/jit_phases/log_det_regularization_jit/first_call_s",
+          "log_det_regularization_jit.lower_s": "/jit_phases/log_det_regularization_jit/lower_s",
+          "log_evidence_jit.compile_s": "/jit_phases/log_evidence_jit/compile_s",
+          "log_evidence_jit.first_call_s": "/jit_phases/log_evidence_jit/first_call_s",
+          "log_evidence_jit.lower_s": "/jit_phases/log_evidence_jit/lower_s",
+          "nnls_pdip_jit.compile_s": "/jit_phases/nnls_pdip_jit/compile_s",
+          "nnls_pdip_jit.first_call_s": "/jit_phases/nnls_pdip_jit/first_call_s",
+          "nnls_pdip_jit.lower_s": "/jit_phases/nnls_pdip_jit/lower_s",
+          "nnls_pdip_one_iteration_jit.compile_s": "/jit_phases/nnls_pdip_one_iteration_jit/compile_s",
+          "nnls_pdip_one_iteration_jit.first_call_s": "/jit_phases/nnls_pdip_one_iteration_jit/first_call_s",
+          "nnls_pdip_one_iteration_jit.lower_s": "/jit_phases/nnls_pdip_one_iteration_jit/lower_s",
+          "overlay_grid_jit.compile_s": "/jit_phases/overlay_grid_jit/compile_s",
+          "overlay_grid_jit.first_call_s": "/jit_phases/overlay_grid_jit/first_call_s",
+          "overlay_grid_jit.lower_s": "/jit_phases/overlay_grid_jit/lower_s",
+          "profile_subtract_jit.compile_s": "/jit_phases/profile_subtract_jit/compile_s",
+          "profile_subtract_jit.first_call_s": "/jit_phases/profile_subtract_jit/first_call_s",
+          "profile_subtract_jit.lower_s": "/jit_phases/profile_subtract_jit/lower_s",
+          "ray_trace_jit.compile_s": "/jit_phases/ray_trace_jit/compile_s",
+          "ray_trace_jit.first_call_s": "/jit_phases/ray_trace_jit/first_call_s",
+          "ray_trace_jit.lower_s": "/jit_phases/ray_trace_jit/lower_s",
+          "reconstruction_jit.compile_s": "/jit_phases/reconstruction_jit/compile_s",
+          "reconstruction_jit.first_call_s": "/jit_phases/reconstruction_jit/first_call_s",
+          "reconstruction_jit.lower_s": "/jit_phases/reconstruction_jit/lower_s",
+          "regularization_matrix_jit.compile_s": "/jit_phases/regularization_matrix_jit/compile_s",
+          "regularization_matrix_jit.first_call_s": "/jit_phases/regularization_matrix_jit/first_call_s",
+          "regularization_matrix_jit.lower_s": "/jit_phases/regularization_matrix_jit/lower_s",
+          "setup_prefix_6.compile_s": "/jit_phases/setup_prefix_6/compile_s",
+          "setup_prefix_6.first_call_s": "/jit_phases/setup_prefix_6/first_call_s",
+          "setup_prefix_6.lower_s": "/jit_phases/setup_prefix_6/lower_s"
+        },
+        "provenance": {
+          "has_provenance": true,
+          "host": "euclid-ral-gpu-1",
+          "measured_at": "2026-10-27T10:58:31Z",
+          "qualified": false,
+          "unknowns": {}
+        },
+        "regime": "source_pixels_784",
+        "release_pin": "2026.10.25.1",
+        "resources": {
+          "cpus_per_eval": 8,
+          "cpus_per_eval_basis": "jax gpu: one device; cpus_per_eval = NPROC host threads",
+          "devices_per_eval": 1,
+          "peak_rss_basis": "in_process_ru_maxrss",
+          "peak_rss_gb": 2.171449,
+          "peak_rss_note": "resource.getrusage(RUSAGE_SELF).ru_maxrss when the row was built: this process's peak resident set (children excluded), GB = 1e9 bytes",
+          "source": "row"
+        },
+        "run_id": "legacy/064ace83961230685e71",
+        "setup": {
+          "backend": "jax",
+          "device": "gpu",
+          "operator": "dense",
+          "precision": "fp64",
+          "threads": null,
+          "transformer": "na"
+        },
+        "setup_id": "jax_gpu_dense_fp64",
+        "status": "superseded",
+        "superseded_by": "lifecycle/74edd14ae3ea595b81f5",
+        "unit": "s",
+        "validation": {
+          "reason": "Legacy evidence labelled by the phase-0 day-zero rule; not an accepted baseline.",
+          "status": "unreviewed"
+        },
+        "values": {
+          "blurred_image_jit.compile_s": 0.17624722298933193,
+          "blurred_image_jit.first_call_s": 0.008028059964999557,
+          "blurred_image_jit.lower_s": 0.06064101401716471,
+          "cholesky_curvature_reg_jit.compile_s": 0.071933202969376,
+          "cholesky_curvature_reg_jit.first_call_s": 0.0013714130036532879,
+          "cholesky_curvature_reg_jit.lower_s": 0.009535090008284897,
+          "cholesky_solve_jit.compile_s": 0.07310216897167265,
+          "cholesky_solve_jit.first_call_s": 0.001474620949011296,
+          "cholesky_solve_jit.lower_s": 0.010976432997267693,
+          "curvature_matrix_jit.compile_s": 0.06060833501396701,
+          "curvature_matrix_jit.first_call_s": 0.002415679977275431,
+          "curvature_matrix_jit.lower_s": 0.010970413975883275,
+          "data_vector_jit.compile_s": 0.055365669017191976,
+          "data_vector_jit.first_call_s": 0.0007572310278192163,
+          "data_vector_jit.lower_s": 0.006103274004999548,
+          "inversion_setup_jit.compile_s": 10.137880087015219,
+          "inversion_setup_jit.first_call_s": 0.48064771795179695,
+          "inversion_setup_jit.lower_s": 3.5940199610195123,
+          "lens_image_jit.compile_s": 0.03645199601305649,
+          "lens_image_jit.first_call_s": 0.0006271610036492348,
+          "lens_image_jit.lower_s": 0.06733673001872376,
+          "log_det_curvature_reg_jit.compile_s": 0.07715906895464286,
+          "log_det_curvature_reg_jit.first_call_s": 0.001319894043263048,
+          "log_det_curvature_reg_jit.lower_s": 0.011901371995918453,
+          "log_det_regularization_jit.compile_s": 9.4299903139472e-06,
+          "log_det_regularization_jit.first_call_s": 0.0007785309571772814,
+          "log_det_regularization_jit.lower_s": 0.0002611369709484279,
+          "log_evidence_jit.compile_s": 0.18306268798187375,
+          "log_evidence_jit.first_call_s": 0.0022378420107997954,
+          "log_evidence_jit.lower_s": 0.020605393045116216,
+          "nnls_pdip_jit.compile_s": 0.31499488302506506,
+          "nnls_pdip_jit.first_call_s": 0.018710656033363193,
+          "nnls_pdip_jit.lower_s": 0.023054661985952407,
+          "nnls_pdip_one_iteration_jit.compile_s": 0.3129685779567808,
+          "nnls_pdip_one_iteration_jit.first_call_s": 0.0034167380072176456,
+          "nnls_pdip_one_iteration_jit.lower_s": 0.02320433099521324,
+          "overlay_grid_jit.compile_s": 0.12852422700962052,
+          "overlay_grid_jit.first_call_s": 0.0007360710296779871,
+          "overlay_grid_jit.lower_s": 0.013293805008288473,
+          "profile_subtract_jit.compile_s": 0.024917788978200406,
+          "profile_subtract_jit.first_call_s": 0.0005706729716621339,
+          "profile_subtract_jit.lower_s": 0.004647002962883562,
+          "ray_trace_jit.compile_s": 0.3089635889627971,
+          "ray_trace_jit.first_call_s": 0.001607090001925826,
+          "ray_trace_jit.lower_s": 0.08969745202921331,
+          "reconstruction_jit.compile_s": 0.3050787060055882,
+          "reconstruction_jit.first_call_s": 0.018702887988183647,
+          "reconstruction_jit.lower_s": 0.0293734340230003,
+          "regularization_matrix_jit.compile_s": 2.6101364190108143,
+          "regularization_matrix_jit.first_call_s": 0.009720477974042296,
+          "regularization_matrix_jit.lower_s": 0.2603916240041144,
+          "setup_prefix_6.compile_s": 2.2136722410214134,
+          "setup_prefix_6.first_call_s": 0.008752681023906916,
+          "setup_prefix_6.lower_s": 0.2240897660376504
+        }
+      },
+      {
+        "class": "secondary",
+        "day_zero": null,
+        "decision_id": null,
+        "evidence": {
+          "fragment": null,
           "path": "results/imaging/rectangular/euclid/numba_cpu_sparse_fp64/hpc_ral_cpu/breakdown.json"
         },
         "figures": [
@@ -44782,6 +45541,180 @@
           "sparse_triplets.compile_s": 0.06490639800904319,
           "sparse_triplets.first_call_s": 0.0008875839994288981,
           "sparse_triplets.lower_s": 0.013900222009397112
+        }
+      },
+      {
+        "class": "secondary",
+        "day_zero": null,
+        "decision_id": null,
+        "evidence": {
+          "fragment": null,
+          "path": "results/imaging/rectangular/hst/numba_cpu_sparse_fp64/hpc_ral_cpu/source_pixels_784/breakdown.json"
+        },
+        "figures": [
+          {
+            "kind": "fit",
+            "path": "results/imaging/rectangular/hst/numba_cpu_sparse_fp64/hpc_ral_cpu/source_pixels_784/fit.png",
+            "sha256": "3185f83bdbc94790f6beaf99d38cffd67b4d4cd6a95ef92a3d2daa81e5aa4c10"
+          }
+        ],
+        "host_class": "hpc_ral_cpu",
+        "id": "lifecycle/57f9aed6ffffec12476e",
+        "identity": {
+          "backend": "cpu",
+          "device": "cpu",
+          "hardware_details": {
+            "autotune_cache_entries_at_start": 0,
+            "backend": "cpu",
+            "cache_fresh": true,
+            "cpu_count": 252,
+            "device": "cpu:0",
+            "hostname": "euclid-ral-compute-1",
+            "omp_num_threads": "1",
+            "xla_flags": "--xla_disable_hlo_passes=constant_folding --xla_gpu_autotune_level=0 --xla_gpu_enable_triton_gemm=false"
+          },
+          "library_version": "2026.10.25.1",
+          "precision": "float64",
+          "software": {
+            "PyAutoArray.library_revisions": "0f12fac7789c81d0fdaa324508ced5b4c434d42a",
+            "PyAutoArray.library_versions": "2026.8.17.1",
+            "PyAutoFit.library_revisions": "8cb533a605f556d85012d5eb7ed8d4f3c2a4dcf6",
+            "PyAutoFit.library_versions": "2026.8.17.1",
+            "PyAutoGalaxy.library_revisions": "7472211470b9d2b3a76bb12dcacbac51ab4de06f",
+            "PyAutoGalaxy.library_versions": "2026.8.17.1",
+            "PyAutoLens": "2026.10.25.1",
+            "PyAutoLens.library_revisions": "c6927eeb33724c2de2f2e2c773ba3ebe651943a8",
+            "PyAutoLens.library_versions": "2026.8.17.1",
+            "PyAutoNerves.library_revisions": "ec8b5c1e5f17ac03ac5246b5fbc322624a6cd3f6",
+            "PyAutoNerves.library_versions": "2026.8.17.1",
+            "autolens_profiling.library_revisions": "5bcbe790ce0dd7128ba6efc1f73f5f82c52dbb8e",
+            "jax.dependency_versions": "0.10.2",
+            "jaxlib.dependency_versions": "0.10.2",
+            "nufftax.dependency_versions": "0.6.1",
+            "numba.dependency_versions": "0.65.1",
+            "numpy.dependency_versions": "2.2.6",
+            "release_pin_basis": "library_revisions equal tag 2026.10.25.1's SHAs (catalogue/release_revisions.json); the source checkout stamped autolens_version 2026.8.17.1",
+            "scipy.dependency_versions": "1.17.1"
+          },
+          "unknowns": {}
+        },
+        "instrument": "hst",
+        "likelihood": {
+          "dataset_type": "imaging",
+          "variant": "rectangular"
+        },
+        "limitations": [
+          "provisional_optimal: true",
+          "size_variant: a declared size measured beside the standard 1225 source pixels (catalogue/size_variants.json, human 2026-10-26, autolens_profiling#468 (\"Profile 28² too\")): 784 source pixels, the rectangular mesh the SLaM inference runs use (mesh_shape 28x28 = 784; the standard-size production cell is otherwise unchanged: hst_rect_adapt 32x32 resized to 28x28 instead of 35x35), so the autolens_inference wall-time rows pair with a profiling runtime row of the same size (autolens_inference#47 size_match)"
+        ],
+        "location": "cell",
+        "measured_at": "2026-10-27T10:54:34Z",
+        "measurement": "breakdown",
+        "method": {
+          "cache_state": null,
+          "id": "legacy/e7a018ac254a602f17bc",
+          "repetitions": null,
+          "statistic": null,
+          "synchronization": null,
+          "unknowns": {
+            "cache_state": "Not recorded in this legacy evidence; no current default substituted.",
+            "repetitions": "Not recorded in this legacy evidence; no current default substituted.",
+            "statistic": "Not recorded in this legacy evidence; no current default substituted.",
+            "synchronization": "Not recorded in this legacy evidence; no current default substituted.",
+            "warmup": "Not recorded in this legacy evidence; no current default substituted."
+          },
+          "warmup": null
+        },
+        "metric": "component_total",
+        "model_variant": "default",
+        "pointers": {
+          "component_total": "/total_step_by_step",
+          "direct_call": "/direct_log_likelihood_function_per_call",
+          "steps.Blurred image (FFT convolve)": "/steps/Blurred image (FFT convolve)",
+          "steps.Data vector D [numba]": "/steps/Data vector D [numba]",
+          "steps.F + H": "/steps/F + H",
+          "steps.F: linear-func×linear-func block [BLAS]": "/steps/F: linear-func×linear-func block [BLAS]",
+          "steps.F: mapper×linear-func block [FFT conv + scatter]": "/steps/F: mapper×linear-func block [FFT conv + scatter]",
+          "steps.F: mapper×mapper block [sparse-op]": "/steps/F: mapper×mapper block [sparse-op]",
+          "steps.FitImaging construct": "/steps/FitImaging construct",
+          "steps.Inversion build (trace+mesh+mapper)": "/steps/Inversion build (trace+mesh+mapper)",
+          "steps.Log evidence (figure of merit)": "/steps/Log evidence (figure of merit)",
+          "steps.MGE operated mapping matrix [residual: dict assembly]": "/steps/MGE operated mapping matrix [residual: dict assembly]",
+          "steps.MGE: batched PSF convolution [real-space np]": "/steps/MGE: batched PSF convolution [real-space np]",
+          "steps.MGE: image_2d_from(blurring_grid) x60 [numpy]": "/steps/MGE: image_2d_from(blurring_grid) x60 [numpy]",
+          "steps.MGE: image_2d_from(grid) x60 [numpy]": "/steps/MGE: image_2d_from(grid) x60 [numpy]",
+          "steps.Mapped reconstruction [numba+FFT]": "/steps/Mapped reconstruction [numba+FFT]",
+          "steps.Mapper sparse triplets": "/steps/Mapper sparse triplets",
+          "steps.Model data + chi^2": "/steps/Model data + chi^2",
+          "steps.PSF-weighted data [numba]": "/steps/PSF-weighted data [numba]",
+          "steps.Profile subtracted image": "/steps/Profile subtracted image",
+          "steps.Reconstruction solve (BLAS)": "/steps/Reconstruction solve (BLAS)",
+          "steps.Regularization matrix H": "/steps/Regularization matrix H",
+          "steps.Regularization term s'Hs": "/steps/Regularization term s'Hs",
+          "steps.log det (F+H) [Cholesky]": "/steps/log det (F+H) [Cholesky]",
+          "steps.log det H [Cholesky]": "/steps/log det H [Cholesky]"
+        },
+        "provenance": {
+          "has_provenance": true,
+          "host": "euclid-ral-compute-1",
+          "measured_at": "2026-10-27T10:54:34Z",
+          "qualified": false,
+          "unknowns": {}
+        },
+        "regime": "source_pixels_784",
+        "release_pin": "2026.10.25.1",
+        "resources": {
+          "cpus_per_eval": 1,
+          "cpus_per_eval_basis": "numba: one serial evaluation, numba and BLAS threads pinned to 1",
+          "devices_per_eval": 0,
+          "peak_rss_basis": "in_process_ru_maxrss",
+          "peak_rss_gb": 1.078272,
+          "peak_rss_note": "resource.getrusage(RUSAGE_SELF).ru_maxrss when the row was built: this process's peak resident set (children excluded), GB = 1e9 bytes",
+          "source": "row"
+        },
+        "run_id": "legacy/537f604bb53122282f1a",
+        "setup": {
+          "backend": "numba",
+          "device": "cpu",
+          "operator": "sparse",
+          "precision": "fp64",
+          "threads": null,
+          "transformer": "na"
+        },
+        "setup_id": "numba_cpu_sparse_fp64",
+        "status": "current",
+        "superseded_by": null,
+        "unit": "s",
+        "validation": {
+          "reason": "Legacy evidence labelled by the phase-0 day-zero rule; not an accepted baseline.",
+          "status": "unreviewed"
+        },
+        "values": {
+          "component_total": 0.6289117442211136,
+          "direct_call": 0.5459726149856579,
+          "steps.Blurred image (FFT convolve)": 0.011936658680497203,
+          "steps.Data vector D [numba]": 0.009248000376828713,
+          "steps.F + H": 0.000638938246993348,
+          "steps.F: linear-func×linear-func block [BLAS]": 0.00365474944919697,
+          "steps.F: mapper×linear-func block [FFT conv + scatter]": 0.05632079731367412,
+          "steps.F: mapper×mapper block [sparse-op]": 0.19184696387310396,
+          "steps.FitImaging construct": 0.00012035962572554126,
+          "steps.Inversion build (trace+mesh+mapper)": 0.03425180437625386,
+          "steps.Log evidence (figure of merit)": 0.011786385308369063,
+          "steps.MGE operated mapping matrix [residual: dict assembly]": 0.006385472501278855,
+          "steps.MGE: batched PSF convolution [real-space np]": 0.04930404974584235,
+          "steps.MGE: image_2d_from(blurring_grid) x60 [numpy]": 0.011255752691795351,
+          "steps.MGE: image_2d_from(grid) x60 [numpy]": 0.06069767618100741,
+          "steps.Mapped reconstruction [numba+FFT]": 0.004810378435649909,
+          "steps.Mapper sparse triplets": 0.021620112620439613,
+          "steps.Model data + chi^2": 0.004034520188724855,
+          "steps.PSF-weighted data [numba]": 0.007746212497295346,
+          "steps.Profile subtracted image": 5.183594475965947e-05,
+          "steps.Reconstruction solve (BLAS)": 0.12840097012667684,
+          "steps.Regularization matrix H": 0.0026319262469769455,
+          "steps.Regularization term s'Hs": 0.00025021742840181105,
+          "steps.log det (F+H) [Cholesky]": 0.009297595122916391,
+          "steps.log det H [Cholesky]": 0.004264528499334119
         }
       },
       {
@@ -47447,6 +48380,168 @@
         "decision_id": null,
         "evidence": {
           "fragment": null,
+          "path": "results/imaging/rectangular/hst/jax_gpu_dense_fp64/hpc_a100/source_pixels_784/runtime.json"
+        },
+        "figures": [
+          {
+            "kind": "fit",
+            "path": "results/imaging/rectangular/hst/jax_gpu_dense_fp64/hpc_a100/source_pixels_784/fit.png",
+            "sha256": "3185f83bdbc94790f6beaf99d38cffd67b4d4cd6a95ef92a3d2daa81e5aa4c10"
+          }
+        ],
+        "host_class": "hpc_a100",
+        "id": "lifecycle/5d93f1a08e8a7d5e3c9e",
+        "identity": {
+          "backend": "gpu",
+          "device": "a100",
+          "hardware_details": {
+            "autotune_cache_entries_at_start": 0,
+            "backend": "gpu",
+            "cache_fresh": true,
+            "cpu_count": 124,
+            "device": "cuda:0",
+            "hostname": "euclid-ral-gpu-1",
+            "nvidia_smi": "NVIDIA A100 80GB PCIe, 17947 MiB, 81920 MiB",
+            "omp_num_threads": "1",
+            "xla_flags": "--xla_disable_hlo_passes=constant_folding --xla_gpu_autotune_level=0 --xla_gpu_enable_triton_gemm=false"
+          },
+          "library_version": "2026.10.25.1",
+          "precision": "float64",
+          "software": {
+            "PyAutoArray.library_revisions": "0f12fac7789c81d0fdaa324508ced5b4c434d42a",
+            "PyAutoArray.library_versions": "2026.8.17.1",
+            "PyAutoFit.library_revisions": "8cb533a605f556d85012d5eb7ed8d4f3c2a4dcf6",
+            "PyAutoFit.library_versions": "2026.8.17.1",
+            "PyAutoGalaxy.library_revisions": "7472211470b9d2b3a76bb12dcacbac51ab4de06f",
+            "PyAutoGalaxy.library_versions": "2026.8.17.1",
+            "PyAutoLens": "2026.10.25.1",
+            "PyAutoLens.library_revisions": "c6927eeb33724c2de2f2e2c773ba3ebe651943a8",
+            "PyAutoLens.library_versions": "2026.8.17.1",
+            "PyAutoNerves.library_revisions": "ec8b5c1e5f17ac03ac5246b5fbc322624a6cd3f6",
+            "PyAutoNerves.library_versions": "2026.8.17.1",
+            "autolens_profiling.library_revisions": "5bcbe790ce0dd7128ba6efc1f73f5f82c52dbb8e",
+            "jax.dependency_versions": "0.10.2",
+            "jaxlib.dependency_versions": "0.10.2",
+            "nufftax.dependency_versions": "0.6.1",
+            "numba.dependency_versions": "0.65.1",
+            "numpy.dependency_versions": "2.2.6",
+            "release_pin_basis": "library_revisions equal tag 2026.10.25.1's SHAs (catalogue/release_revisions.json); the source checkout stamped autolens_version 2026.8.17.1",
+            "scipy.dependency_versions": "1.17.1"
+          },
+          "unknowns": {}
+        },
+        "instrument": "hst",
+        "likelihood": {
+          "dataset_type": "imaging",
+          "variant": "rectangular"
+        },
+        "limitations": [
+          "provisional_optimal: true",
+          "size_variant: a declared size measured beside the standard 1225 source pixels (catalogue/size_variants.json, human 2026-10-26, autolens_profiling#468 (\"Profile 28² too\")): 784 source pixels, the rectangular mesh the SLaM inference runs use (mesh_shape 28x28 = 784; the standard-size production cell is otherwise unchanged: hst_rect_adapt 32x32 resized to 28x28 instead of 35x35), so the autolens_inference wall-time rows pair with a profiling runtime row of the same size (autolens_inference#47 size_match)"
+        ],
+        "location": "cell",
+        "measured_at": "2026-10-27T10:59:21Z",
+        "measurement": "runtime",
+        "method": {
+          "cache_state": null,
+          "id": "legacy/7ccaf802e198af9ef0dd",
+          "repetitions": null,
+          "statistic": "median",
+          "synchronization": null,
+          "unknowns": {
+            "cache_state": "Not recorded in this legacy evidence; no current default substituted.",
+            "repetitions": "Not recorded in this legacy evidence; no current default substituted.",
+            "synchronization": "Not recorded in this legacy evidence; no current default substituted.",
+            "warmup": "Not recorded in this legacy evidence; no current default substituted."
+          },
+          "warmup": null
+        },
+        "metric": "single_jit_median",
+        "model_variant": "default",
+        "pointers": {
+          "single_jit_block": "/full_pipeline_single_jit",
+          "single_jit_median": "/full_pipeline_single_jit_median",
+          "vmap.batch_time": "/vmap/batch_time",
+          "vmap.per_call": "/vmap/per_call"
+        },
+        "projected_node_throughput": {
+          "basis": "projected",
+          "cpus_per_eval": 8,
+          "devices_per_eval": 1,
+          "hosts": [
+            {
+              "bound_by": "gpus",
+              "calls_per_s": 301.1,
+              "host": "ral_gpu_node",
+              "host_class": "hpc_a100",
+              "limits": {
+                "cores": 15,
+                "gpus": 4,
+                "memory": 348
+              },
+              "workers": 4
+            }
+          ],
+          "not_modelled": "The sampler's batch ceiling: Nautilus evaluates at most n_batch points in parallel per batch, so a node cannot use more workers than n_batch. Shared memory bandwidth and caches between workers are also not modelled; the declared parallel efficiency stands in for them.",
+          "parallel_efficiency": {
+            "kind": "upper bound",
+            "source": "declared, unmeasured (phase 4 measures)",
+            "value": 1.0
+          },
+          "peak_rss_basis": "in_process_ru_maxrss",
+          "peak_rss_gb": 2.540941,
+          "per_call_s": 0.013282744462412666,
+          "per_call_source": "vmap.per_call",
+          "status": "projected"
+        },
+        "provenance": {
+          "has_provenance": true,
+          "host": "euclid-ral-gpu-1",
+          "measured_at": "2026-10-27T10:59:21Z",
+          "qualified": false,
+          "unknowns": {}
+        },
+        "regime": "source_pixels_784",
+        "release_pin": "2026.10.25.1",
+        "resources": {
+          "cpus_per_eval": 8,
+          "cpus_per_eval_basis": "jax gpu: one device; cpus_per_eval = NPROC host threads",
+          "devices_per_eval": 1,
+          "peak_rss_basis": "in_process_ru_maxrss",
+          "peak_rss_gb": 2.540941,
+          "peak_rss_note": "resource.getrusage(RUSAGE_SELF).ru_maxrss when the row was built: this process's peak resident set (children excluded), GB = 1e9 bytes",
+          "source": "row"
+        },
+        "run_id": "legacy/e84fc4639ae88e1cb236",
+        "setup": {
+          "backend": "jax",
+          "device": "gpu",
+          "operator": "dense",
+          "precision": "fp64",
+          "threads": null,
+          "transformer": "na"
+        },
+        "setup_id": "jax_gpu_dense_fp64",
+        "status": "current",
+        "superseded_by": null,
+        "unit": "s",
+        "validation": {
+          "reason": "Legacy evidence labelled by the phase-0 day-zero rule; not an accepted baseline.",
+          "status": "unreviewed"
+        },
+        "values": {
+          "single_jit_block": 0.028170150803634896,
+          "single_jit_median": 0.028088995022699237,
+          "vmap.batch_time": 0.21252391139860266,
+          "vmap.per_call": 0.013282744462412666
+        }
+      },
+      {
+        "class": "secondary",
+        "day_zero": null,
+        "decision_id": null,
+        "evidence": {
+          "fragment": null,
           "path": "results/interferometer/delaunay/alma_high/jax_cpu_sparse_fp64_wtilde/hpc_ral_cpu/breakdown.json"
         },
         "figures": [],
@@ -47602,6 +48697,166 @@
           "steps.Ray-trace grids (data + mesh vertices)": 0.0022231933350364366,
           "steps.Reconstruction (pdip)": 0.5577230260047751,
           "steps.Sparse triplets (extent grid)": 0.0004204379996129622
+        }
+      },
+      {
+        "class": "secondary",
+        "day_zero": null,
+        "decision_id": null,
+        "evidence": {
+          "fragment": null,
+          "path": "results/imaging/rectangular/hst/jax_cpu_sparse_fp64/hpc_a100/source_pixels_784/runtime.json"
+        },
+        "figures": [
+          {
+            "kind": "fit",
+            "path": "results/imaging/rectangular/hst/jax_cpu_sparse_fp64/hpc_a100/source_pixels_784/fit.png",
+            "sha256": "3185f83bdbc94790f6beaf99d38cffd67b4d4cd6a95ef92a3d2daa81e5aa4c10"
+          }
+        ],
+        "host_class": "hpc_a100",
+        "id": "lifecycle/5e126050d5a2da290c4f",
+        "identity": {
+          "backend": "cpu",
+          "device": "a100",
+          "hardware_details": {
+            "autotune_cache_entries_at_start": 0,
+            "backend": "cpu",
+            "cache_fresh": true,
+            "cpu_count": 124,
+            "device": "cpu:0",
+            "hostname": "euclid-ral-gpu-1",
+            "omp_num_threads": "1",
+            "xla_flags": "--xla_disable_hlo_passes=constant_folding --xla_gpu_autotune_level=0 --xla_gpu_enable_triton_gemm=false"
+          },
+          "library_version": "2026.10.25.1",
+          "precision": "float64",
+          "software": {
+            "PyAutoArray.library_revisions": "0f12fac7789c81d0fdaa324508ced5b4c434d42a",
+            "PyAutoArray.library_versions": "2026.8.17.1",
+            "PyAutoFit.library_revisions": "8cb533a605f556d85012d5eb7ed8d4f3c2a4dcf6",
+            "PyAutoFit.library_versions": "2026.8.17.1",
+            "PyAutoGalaxy.library_revisions": "7472211470b9d2b3a76bb12dcacbac51ab4de06f",
+            "PyAutoGalaxy.library_versions": "2026.8.17.1",
+            "PyAutoLens": "2026.10.25.1",
+            "PyAutoLens.library_revisions": "c6927eeb33724c2de2f2e2c773ba3ebe651943a8",
+            "PyAutoLens.library_versions": "2026.8.17.1",
+            "PyAutoNerves.library_revisions": "ec8b5c1e5f17ac03ac5246b5fbc322624a6cd3f6",
+            "PyAutoNerves.library_versions": "2026.8.17.1",
+            "autolens_profiling.library_revisions": "5bcbe790ce0dd7128ba6efc1f73f5f82c52dbb8e",
+            "jax.dependency_versions": "0.10.2",
+            "jaxlib.dependency_versions": "0.10.2",
+            "nufftax.dependency_versions": "0.6.1",
+            "numba.dependency_versions": "0.65.1",
+            "numpy.dependency_versions": "2.2.6",
+            "release_pin_basis": "library_revisions equal tag 2026.10.25.1's SHAs (catalogue/release_revisions.json); the source checkout stamped autolens_version 2026.8.17.1",
+            "scipy.dependency_versions": "1.17.1"
+          },
+          "unknowns": {}
+        },
+        "instrument": "hst",
+        "likelihood": {
+          "dataset_type": "imaging",
+          "variant": "rectangular"
+        },
+        "limitations": [
+          "provisional_secondary: true",
+          "size_variant: a declared size measured beside the standard 1225 source pixels (catalogue/size_variants.json, human 2026-10-26, autolens_profiling#468 (\"Profile 28² too\")): 784 source pixels, the rectangular mesh the SLaM inference runs use (mesh_shape 28x28 = 784; the standard-size production cell is otherwise unchanged: hst_rect_adapt 32x32 resized to 28x28 instead of 35x35), so the autolens_inference wall-time rows pair with a profiling runtime row of the same size (autolens_inference#47 size_match)"
+        ],
+        "location": "cell",
+        "measured_at": "2026-10-27T10:57:47Z",
+        "measurement": "runtime",
+        "method": {
+          "cache_state": null,
+          "id": "legacy/7ccaf802e198af9ef0dd",
+          "repetitions": null,
+          "statistic": "median",
+          "synchronization": null,
+          "unknowns": {
+            "cache_state": "Not recorded in this legacy evidence; no current default substituted.",
+            "repetitions": "Not recorded in this legacy evidence; no current default substituted.",
+            "synchronization": "Not recorded in this legacy evidence; no current default substituted.",
+            "warmup": "Not recorded in this legacy evidence; no current default substituted."
+          },
+          "warmup": null
+        },
+        "metric": "single_jit_median",
+        "model_variant": "default",
+        "pointers": {
+          "single_jit_block": "/full_pipeline_single_jit",
+          "single_jit_median": "/full_pipeline_single_jit_median",
+          "vmap.batch_time": "/vmap/batch_time",
+          "vmap.per_call": "/vmap/per_call"
+        },
+        "projected_node_throughput": {
+          "basis": "projected",
+          "cpus_per_eval": 8,
+          "devices_per_eval": 0,
+          "hosts": [
+            {
+              "bound_by": "cores",
+              "calls_per_s": 12.98,
+              "host": "ral_gpu_node",
+              "host_class": "hpc_a100",
+              "limits": {
+                "cores": 15,
+                "memory": 293
+              },
+              "workers": 15
+            }
+          ],
+          "not_modelled": "The sampler's batch ceiling: Nautilus evaluates at most n_batch points in parallel per batch, so a node cannot use more workers than n_batch. Shared memory bandwidth and caches between workers are also not modelled; the declared parallel efficiency stands in for them.",
+          "parallel_efficiency": {
+            "kind": "upper bound",
+            "source": "declared, unmeasured (phase 4 measures)",
+            "value": 1.0
+          },
+          "peak_rss_basis": "in_process_ru_maxrss",
+          "peak_rss_gb": 3.018609,
+          "per_call_s": 1.1555811246003336,
+          "per_call_source": "vmap.per_call",
+          "status": "projected"
+        },
+        "provenance": {
+          "has_provenance": true,
+          "host": "euclid-ral-gpu-1",
+          "measured_at": "2026-10-27T10:57:47Z",
+          "qualified": false,
+          "unknowns": {}
+        },
+        "regime": "source_pixels_784",
+        "release_pin": "2026.10.25.1",
+        "resources": {
+          "cpus_per_eval": 8,
+          "cpus_per_eval_basis": "jax cpu: NPROC threads in XLA's CPU intra-op pool",
+          "devices_per_eval": 0,
+          "peak_rss_basis": "in_process_ru_maxrss",
+          "peak_rss_gb": 3.018609,
+          "peak_rss_note": "resource.getrusage(RUSAGE_SELF).ru_maxrss when the row was built: this process's peak resident set (children excluded), GB = 1e9 bytes",
+          "source": "row"
+        },
+        "run_id": "legacy/c3d73586e628cb3507cb",
+        "setup": {
+          "backend": "jax",
+          "device": "cpu",
+          "operator": "sparse",
+          "precision": "fp64",
+          "threads": null,
+          "transformer": "na"
+        },
+        "setup_id": "jax_cpu_sparse_fp64",
+        "status": "current",
+        "superseded_by": null,
+        "unit": "s",
+        "validation": {
+          "reason": "Legacy evidence labelled by the phase-0 day-zero rule; not an accepted baseline.",
+          "status": "unreviewed"
+        },
+        "values": {
+          "single_jit_block": 1.2780963614990468,
+          "single_jit_median": 1.2794252700405195,
+          "vmap.batch_time": 3.4667433738010005,
+          "vmap.per_call": 1.1555811246003336
         }
       },
       {
@@ -48407,6 +49662,170 @@
         },
         "values": {
           "operator_setup": 16.720286474970635
+        }
+      },
+      {
+        "class": "secondary",
+        "day_zero": null,
+        "decision_id": null,
+        "estimated_12_core": {
+          "basis": "estimate",
+          "cores": 12,
+          "divisor": 6,
+          "per_call_s": 0.5665083820058499,
+          "per_call_source": "warm_iid_median_s",
+          "ruling": "human 2026-10-26: per-call / 6 at 12 cores",
+          "value_s": 0.09441806366764165
+        },
+        "evidence": {
+          "fragment": null,
+          "path": "results/imaging/rectangular/hst/numba_cpu_sparse_fp64/hpc_ral_cpu/source_pixels_784/runtime.json"
+        },
+        "figures": [
+          {
+            "kind": "fit",
+            "path": "results/imaging/rectangular/hst/numba_cpu_sparse_fp64/hpc_ral_cpu/source_pixels_784/fit.png",
+            "sha256": "3185f83bdbc94790f6beaf99d38cffd67b4d4cd6a95ef92a3d2daa81e5aa4c10"
+          }
+        ],
+        "host_class": "hpc_ral_cpu",
+        "id": "lifecycle/5f82f2a2be617991560c",
+        "identity": {
+          "backend": "cpu",
+          "device": "cpu",
+          "hardware_details": {
+            "autotune_cache_entries_at_start": 0,
+            "backend": "cpu",
+            "cache_fresh": true,
+            "cpu_count": 252,
+            "device": "cpu:0",
+            "hostname": "euclid-ral-compute-1",
+            "omp_num_threads": "1",
+            "xla_flags": "--xla_disable_hlo_passes=constant_folding --xla_gpu_autotune_level=0 --xla_gpu_enable_triton_gemm=false"
+          },
+          "library_version": "2026.10.25.1",
+          "precision": "float64",
+          "software": {
+            "PyAutoArray.library_revisions": "0f12fac7789c81d0fdaa324508ced5b4c434d42a",
+            "PyAutoArray.library_versions": "2026.8.17.1",
+            "PyAutoFit.library_revisions": "8cb533a605f556d85012d5eb7ed8d4f3c2a4dcf6",
+            "PyAutoFit.library_versions": "2026.8.17.1",
+            "PyAutoGalaxy.library_revisions": "7472211470b9d2b3a76bb12dcacbac51ab4de06f",
+            "PyAutoGalaxy.library_versions": "2026.8.17.1",
+            "PyAutoLens": "2026.10.25.1",
+            "PyAutoLens.library_revisions": "c6927eeb33724c2de2f2e2c773ba3ebe651943a8",
+            "PyAutoLens.library_versions": "2026.8.17.1",
+            "PyAutoNerves.library_revisions": "ec8b5c1e5f17ac03ac5246b5fbc322624a6cd3f6",
+            "PyAutoNerves.library_versions": "2026.8.17.1",
+            "autolens_profiling.library_revisions": "5bcbe790ce0dd7128ba6efc1f73f5f82c52dbb8e",
+            "jax.dependency_versions": "0.10.2",
+            "jaxlib.dependency_versions": "0.10.2",
+            "nufftax.dependency_versions": "0.6.1",
+            "numba.dependency_versions": "0.65.1",
+            "numpy.dependency_versions": "2.2.6",
+            "release_pin_basis": "library_revisions equal tag 2026.10.25.1's SHAs (catalogue/release_revisions.json); the source checkout stamped autolens_version 2026.8.17.1",
+            "scipy.dependency_versions": "1.17.1"
+          },
+          "unknowns": {}
+        },
+        "instrument": "hst",
+        "likelihood": {
+          "dataset_type": "imaging",
+          "variant": "rectangular"
+        },
+        "limitations": [
+          "provisional_optimal: true",
+          "size_variant: a declared size measured beside the standard 1225 source pixels (catalogue/size_variants.json, human 2026-10-26, autolens_profiling#468 (\"Profile 28² too\")): 784 source pixels, the rectangular mesh the SLaM inference runs use (mesh_shape 28x28 = 784; the standard-size production cell is otherwise unchanged: hst_rect_adapt 32x32 resized to 28x28 instead of 35x35), so the autolens_inference wall-time rows pair with a profiling runtime row of the same size (autolens_inference#47 size_match)"
+        ],
+        "location": "cell",
+        "measured_at": "2026-10-27T10:54:23Z",
+        "measurement": "runtime",
+        "method": {
+          "cache_state": null,
+          "id": "legacy/269c49df32f77f4631a5",
+          "repetitions": null,
+          "statistic": null,
+          "synchronization": null,
+          "unknowns": {
+            "cache_state": "Not recorded in this legacy evidence; no current default substituted.",
+            "repetitions": "Not recorded in this legacy evidence; no current default substituted.",
+            "statistic": "Not recorded in this legacy evidence; no current default substituted.",
+            "synchronization": "Not recorded in this legacy evidence; no current default substituted.",
+            "warmup": "Not recorded in this legacy evidence; no current default substituted."
+          },
+          "warmup": null
+        },
+        "metric": "single_jit_block",
+        "model_variant": "default",
+        "pointers": {
+          "single_jit_block": "/full_pipeline_single_jit"
+        },
+        "projected_node_throughput": {
+          "basis": "projected",
+          "cpus_per_eval": 1,
+          "devices_per_eval": 0,
+          "hosts": [
+            {
+              "bound_by": "cores",
+              "calls_per_s": 416.6,
+              "host": "ral_cpu_node",
+              "host_class": "hpc_ral_cpu",
+              "limits": {
+                "cores": 236,
+                "memory": 867
+              },
+              "workers": 236
+            }
+          ],
+          "not_modelled": "The sampler's batch ceiling: Nautilus evaluates at most n_batch points in parallel per batch, so a node cannot use more workers than n_batch. Shared memory bandwidth and caches between workers are also not modelled; the declared parallel efficiency stands in for them.",
+          "parallel_efficiency": {
+            "kind": "upper bound",
+            "source": "declared, unmeasured (phase 4 measures)",
+            "value": 1.0
+          },
+          "peak_rss_basis": "in_process_ru_maxrss",
+          "peak_rss_gb": 1.061528,
+          "per_call_s": 0.5665083820058499,
+          "per_call_source": "warm_iid_median_s",
+          "status": "projected"
+        },
+        "provenance": {
+          "has_provenance": true,
+          "host": "euclid-ral-compute-1",
+          "measured_at": "2026-10-27T10:54:23Z",
+          "qualified": false,
+          "unknowns": {}
+        },
+        "regime": "source_pixels_784",
+        "release_pin": "2026.10.25.1",
+        "resources": {
+          "cpus_per_eval": 1,
+          "cpus_per_eval_basis": "numba: one serial evaluation, numba and BLAS threads pinned to 1",
+          "devices_per_eval": 0,
+          "peak_rss_basis": "in_process_ru_maxrss",
+          "peak_rss_gb": 1.061528,
+          "peak_rss_note": "resource.getrusage(RUSAGE_SELF).ru_maxrss when the row was built: this process's peak resident set (children excluded), GB = 1e9 bytes",
+          "source": "row"
+        },
+        "run_id": "legacy/f010901d5c9410a9cec8",
+        "setup": {
+          "backend": "numba",
+          "device": "cpu",
+          "operator": "sparse",
+          "precision": "fp64",
+          "threads": null,
+          "transformer": "na"
+        },
+        "setup_id": "numba_cpu_sparse_fp64",
+        "status": "current",
+        "superseded_by": null,
+        "unit": "s",
+        "validation": {
+          "reason": "Legacy evidence labelled by the phase-0 day-zero rule; not an accepted baseline.",
+          "status": "unreviewed"
+        },
+        "values": {
+          "single_jit_block": 0.5665083820058499
         }
       },
       {
@@ -55819,6 +57238,137 @@
         },
         "values": {
           "host_peak_rss": 1315.86328125
+        }
+      },
+      {
+        "class": "secondary",
+        "day_zero": null,
+        "decision_id": null,
+        "evidence": {
+          "fragment": null,
+          "path": "results/imaging/rectangular/hst/jax_gpu_dense_fp64/hpc_a100/source_pixels_784/runtime.json"
+        },
+        "figures": [
+          {
+            "kind": "fit",
+            "path": "results/imaging/rectangular/hst/jax_gpu_dense_fp64/hpc_a100/source_pixels_784/fit.png",
+            "sha256": "3185f83bdbc94790f6beaf99d38cffd67b4d4cd6a95ef92a3d2daa81e5aa4c10"
+          }
+        ],
+        "host_class": "hpc_a100",
+        "id": "lifecycle/74edd14ae3ea595b81f5",
+        "identity": {
+          "backend": "gpu",
+          "device": "a100",
+          "hardware_details": {
+            "autotune_cache_entries_at_start": 0,
+            "backend": "gpu",
+            "cache_fresh": true,
+            "cpu_count": 124,
+            "device": "cuda:0",
+            "hostname": "euclid-ral-gpu-1",
+            "nvidia_smi": "NVIDIA A100 80GB PCIe, 17947 MiB, 81920 MiB",
+            "omp_num_threads": "1",
+            "xla_flags": "--xla_disable_hlo_passes=constant_folding --xla_gpu_autotune_level=0 --xla_gpu_enable_triton_gemm=false"
+          },
+          "library_version": "2026.10.25.1",
+          "precision": "float64",
+          "software": {
+            "PyAutoArray.library_revisions": "0f12fac7789c81d0fdaa324508ced5b4c434d42a",
+            "PyAutoArray.library_versions": "2026.8.17.1",
+            "PyAutoFit.library_revisions": "8cb533a605f556d85012d5eb7ed8d4f3c2a4dcf6",
+            "PyAutoFit.library_versions": "2026.8.17.1",
+            "PyAutoGalaxy.library_revisions": "7472211470b9d2b3a76bb12dcacbac51ab4de06f",
+            "PyAutoGalaxy.library_versions": "2026.8.17.1",
+            "PyAutoLens": "2026.10.25.1",
+            "PyAutoLens.library_revisions": "c6927eeb33724c2de2f2e2c773ba3ebe651943a8",
+            "PyAutoLens.library_versions": "2026.8.17.1",
+            "PyAutoNerves.library_revisions": "ec8b5c1e5f17ac03ac5246b5fbc322624a6cd3f6",
+            "PyAutoNerves.library_versions": "2026.8.17.1",
+            "autolens_profiling.library_revisions": "5bcbe790ce0dd7128ba6efc1f73f5f82c52dbb8e",
+            "jax.dependency_versions": "0.10.2",
+            "jaxlib.dependency_versions": "0.10.2",
+            "nufftax.dependency_versions": "0.6.1",
+            "numba.dependency_versions": "0.65.1",
+            "numpy.dependency_versions": "2.2.6",
+            "release_pin_basis": "library_revisions equal tag 2026.10.25.1's SHAs (catalogue/release_revisions.json); the source checkout stamped autolens_version 2026.8.17.1",
+            "scipy.dependency_versions": "1.17.1"
+          },
+          "unknowns": {}
+        },
+        "instrument": "hst",
+        "likelihood": {
+          "dataset_type": "imaging",
+          "variant": "rectangular"
+        },
+        "limitations": [
+          "provisional_optimal: true",
+          "size_variant: a declared size measured beside the standard 1225 source pixels (catalogue/size_variants.json, human 2026-10-26, autolens_profiling#468 (\"Profile 28² too\")): 784 source pixels, the rectangular mesh the SLaM inference runs use (mesh_shape 28x28 = 784; the standard-size production cell is otherwise unchanged: hst_rect_adapt 32x32 resized to 28x28 instead of 35x35), so the autolens_inference wall-time rows pair with a profiling runtime row of the same size (autolens_inference#47 size_match)"
+        ],
+        "location": "cell",
+        "measured_at": "2026-10-27T10:59:21Z",
+        "measurement": "compile",
+        "method": {
+          "cache_state": null,
+          "id": "legacy/457eb6b102dc37981ebb",
+          "repetitions": null,
+          "statistic": null,
+          "synchronization": null,
+          "unknowns": {
+            "cache_state": "Not recorded in this legacy evidence; no current default substituted.",
+            "repetitions": "Not recorded in this legacy evidence; no current default substituted.",
+            "statistic": "Not recorded in this legacy evidence; no current default substituted.",
+            "synchronization": "Not recorded in this legacy evidence; no current default substituted.",
+            "warmup": "Not recorded in this legacy evidence; no current default substituted."
+          },
+          "warmup": null
+        },
+        "metric": "full_pipeline.compile",
+        "model_variant": "default",
+        "pointers": {
+          "full_pipeline.compile": "/full_pipeline_compile_s",
+          "full_pipeline.first_call": "/full_pipeline_first_call_s",
+          "full_pipeline.lower": "/full_pipeline_lower_s"
+        },
+        "provenance": {
+          "has_provenance": true,
+          "host": "euclid-ral-gpu-1",
+          "measured_at": "2026-10-27T10:59:21Z",
+          "qualified": false,
+          "unknowns": {}
+        },
+        "regime": "source_pixels_784",
+        "release_pin": "2026.10.25.1",
+        "resources": {
+          "cpus_per_eval": 8,
+          "cpus_per_eval_basis": "jax gpu: one device; cpus_per_eval = NPROC host threads",
+          "devices_per_eval": 1,
+          "peak_rss_basis": "in_process_ru_maxrss",
+          "peak_rss_gb": 2.540941,
+          "peak_rss_note": "resource.getrusage(RUSAGE_SELF).ru_maxrss when the row was built: this process's peak resident set (children excluded), GB = 1e9 bytes",
+          "source": "row"
+        },
+        "run_id": "legacy/e84fc4639ae88e1cb236",
+        "setup": {
+          "backend": "jax",
+          "device": "gpu",
+          "operator": "dense",
+          "precision": "fp64",
+          "threads": null,
+          "transformer": "na"
+        },
+        "setup_id": "jax_gpu_dense_fp64",
+        "status": "current",
+        "superseded_by": null,
+        "unit": "s",
+        "validation": {
+          "reason": "Legacy evidence labelled by the phase-0 day-zero rule; not an accepted baseline.",
+          "status": "unreviewed"
+        },
+        "values": {
+          "full_pipeline.compile": 12.177500099001918,
+          "full_pipeline.first_call": 0.3039512900286354,
+          "full_pipeline.lower": 3.6049084570258856
         }
       },
       {
@@ -63656,6 +65206,136 @@
         "decision_id": null,
         "evidence": {
           "fragment": null,
+          "path": "results/imaging/rectangular/hst/jax_cpu_sparse_fp64/hpc_a100/source_pixels_784/runtime.json"
+        },
+        "figures": [
+          {
+            "kind": "fit",
+            "path": "results/imaging/rectangular/hst/jax_cpu_sparse_fp64/hpc_a100/source_pixels_784/fit.png",
+            "sha256": "3185f83bdbc94790f6beaf99d38cffd67b4d4cd6a95ef92a3d2daa81e5aa4c10"
+          }
+        ],
+        "host_class": "hpc_a100",
+        "id": "lifecycle/88a510abd855ec1f0a80",
+        "identity": {
+          "backend": "cpu",
+          "device": "a100",
+          "hardware_details": {
+            "autotune_cache_entries_at_start": 0,
+            "backend": "cpu",
+            "cache_fresh": true,
+            "cpu_count": 124,
+            "device": "cpu:0",
+            "hostname": "euclid-ral-gpu-1",
+            "omp_num_threads": "1",
+            "xla_flags": "--xla_disable_hlo_passes=constant_folding --xla_gpu_autotune_level=0 --xla_gpu_enable_triton_gemm=false"
+          },
+          "library_version": "2026.10.25.1",
+          "precision": "float64",
+          "software": {
+            "PyAutoArray.library_revisions": "0f12fac7789c81d0fdaa324508ced5b4c434d42a",
+            "PyAutoArray.library_versions": "2026.8.17.1",
+            "PyAutoFit.library_revisions": "8cb533a605f556d85012d5eb7ed8d4f3c2a4dcf6",
+            "PyAutoFit.library_versions": "2026.8.17.1",
+            "PyAutoGalaxy.library_revisions": "7472211470b9d2b3a76bb12dcacbac51ab4de06f",
+            "PyAutoGalaxy.library_versions": "2026.8.17.1",
+            "PyAutoLens": "2026.10.25.1",
+            "PyAutoLens.library_revisions": "c6927eeb33724c2de2f2e2c773ba3ebe651943a8",
+            "PyAutoLens.library_versions": "2026.8.17.1",
+            "PyAutoNerves.library_revisions": "ec8b5c1e5f17ac03ac5246b5fbc322624a6cd3f6",
+            "PyAutoNerves.library_versions": "2026.8.17.1",
+            "autolens_profiling.library_revisions": "5bcbe790ce0dd7128ba6efc1f73f5f82c52dbb8e",
+            "jax.dependency_versions": "0.10.2",
+            "jaxlib.dependency_versions": "0.10.2",
+            "nufftax.dependency_versions": "0.6.1",
+            "numba.dependency_versions": "0.65.1",
+            "numpy.dependency_versions": "2.2.6",
+            "release_pin_basis": "library_revisions equal tag 2026.10.25.1's SHAs (catalogue/release_revisions.json); the source checkout stamped autolens_version 2026.8.17.1",
+            "scipy.dependency_versions": "1.17.1"
+          },
+          "unknowns": {}
+        },
+        "instrument": "hst",
+        "likelihood": {
+          "dataset_type": "imaging",
+          "variant": "rectangular"
+        },
+        "limitations": [
+          "provisional_secondary: true",
+          "size_variant: a declared size measured beside the standard 1225 source pixels (catalogue/size_variants.json, human 2026-10-26, autolens_profiling#468 (\"Profile 28² too\")): 784 source pixels, the rectangular mesh the SLaM inference runs use (mesh_shape 28x28 = 784; the standard-size production cell is otherwise unchanged: hst_rect_adapt 32x32 resized to 28x28 instead of 35x35), so the autolens_inference wall-time rows pair with a profiling runtime row of the same size (autolens_inference#47 size_match)"
+        ],
+        "location": "cell",
+        "measured_at": "2026-10-27T10:57:47Z",
+        "measurement": "compile",
+        "method": {
+          "cache_state": null,
+          "id": "legacy/457eb6b102dc37981ebb",
+          "repetitions": null,
+          "statistic": null,
+          "synchronization": null,
+          "unknowns": {
+            "cache_state": "Not recorded in this legacy evidence; no current default substituted.",
+            "repetitions": "Not recorded in this legacy evidence; no current default substituted.",
+            "statistic": "Not recorded in this legacy evidence; no current default substituted.",
+            "synchronization": "Not recorded in this legacy evidence; no current default substituted.",
+            "warmup": "Not recorded in this legacy evidence; no current default substituted."
+          },
+          "warmup": null
+        },
+        "metric": "full_pipeline.compile",
+        "model_variant": "default",
+        "pointers": {
+          "full_pipeline.compile": "/full_pipeline_compile_s",
+          "full_pipeline.first_call": "/full_pipeline_first_call_s",
+          "full_pipeline.lower": "/full_pipeline_lower_s"
+        },
+        "provenance": {
+          "has_provenance": true,
+          "host": "euclid-ral-gpu-1",
+          "measured_at": "2026-10-27T10:57:47Z",
+          "qualified": false,
+          "unknowns": {}
+        },
+        "regime": "source_pixels_784",
+        "release_pin": "2026.10.25.1",
+        "resources": {
+          "cpus_per_eval": 8,
+          "cpus_per_eval_basis": "jax cpu: NPROC threads in XLA's CPU intra-op pool",
+          "devices_per_eval": 0,
+          "peak_rss_basis": "in_process_ru_maxrss",
+          "peak_rss_gb": 3.018609,
+          "peak_rss_note": "resource.getrusage(RUSAGE_SELF).ru_maxrss when the row was built: this process's peak resident set (children excluded), GB = 1e9 bytes",
+          "source": "row"
+        },
+        "run_id": "legacy/c3d73586e628cb3507cb",
+        "setup": {
+          "backend": "jax",
+          "device": "cpu",
+          "operator": "sparse",
+          "precision": "fp64",
+          "threads": null,
+          "transformer": "na"
+        },
+        "setup_id": "jax_cpu_sparse_fp64",
+        "status": "current",
+        "superseded_by": null,
+        "unit": "s",
+        "validation": {
+          "reason": "Legacy evidence labelled by the phase-0 day-zero rule; not an accepted baseline.",
+          "status": "unreviewed"
+        },
+        "values": {
+          "full_pipeline.compile": 8.788383111997973,
+          "full_pipeline.first_call": 1.3048928109928966,
+          "full_pipeline.lower": 3.841014573001303
+        }
+      },
+      {
+        "class": "secondary",
+        "day_zero": null,
+        "decision_id": null,
+        "evidence": {
+          "fragment": null,
           "path": "results/interferometer/rectangular/sma/numba_cpu_sparse_fp64_wtilde/hpc_ral_cpu/breakdown.json"
         },
         "figures": [],
@@ -66084,6 +67764,106 @@
           "full_pipeline.compile": 9.73463320400333,
           "full_pipeline.first_call": 2.271392169990577,
           "full_pipeline.lower": 5.127346272987779
+        }
+      },
+      {
+        "class": "secondary",
+        "day_zero": null,
+        "decision_id": null,
+        "evidence": {
+          "fragment": null,
+          "path": "results/imaging/rectangular/hst/numba_cpu_sparse_fp64/hpc_ral_cpu/source_pixels_784/parity.json"
+        },
+        "figures": [],
+        "host_class": "hpc_ral_cpu",
+        "id": "lifecycle/8db1316c3491c8569223",
+        "identity": {
+          "backend": null,
+          "device": null,
+          "hardware_details": {},
+          "library_version": "2026.10.25.1",
+          "precision": "float64",
+          "software": {
+            "PyAutoLens": "2026.10.25.1",
+            "release_pin_basis": "library_revisions equal tag 2026.10.25.1's SHAs (catalogue/release_revisions.json); the source checkout stamped autolens_version 2026.8.17.1"
+          },
+          "unknowns": {
+            "backend": "Not recorded in this legacy evidence; no current default substituted.",
+            "device": "Not recorded in this legacy evidence; no current default substituted."
+          }
+        },
+        "instrument": "hst",
+        "likelihood": {
+          "dataset_type": "imaging",
+          "variant": "rectangular"
+        },
+        "limitations": [
+          "provisional_optimal: true",
+          "size_variant: a declared size measured beside the standard 1225 source pixels (catalogue/size_variants.json, human 2026-10-26, autolens_profiling#468 (\"Profile 28² too\")): 784 source pixels, the rectangular mesh the SLaM inference runs use (mesh_shape 28x28 = 784; the standard-size production cell is otherwise unchanged: hst_rect_adapt 32x32 resized to 28x28 instead of 35x35), so the autolens_inference wall-time rows pair with a profiling runtime row of the same size (autolens_inference#47 size_match)"
+        ],
+        "location": "cell",
+        "measured_at": "2026-10-27T10:54:25Z",
+        "measurement": "parity",
+        "method": {
+          "cache_state": null,
+          "id": "parity-witness",
+          "repetitions": null,
+          "statistic": null,
+          "synchronization": null,
+          "unknowns": {
+            "cache_state": "A parity witness compares one log-likelihood evaluation; not a timing.",
+            "repetitions": "A parity witness compares one log-likelihood evaluation; not a timing.",
+            "statistic": "A parity witness compares one log-likelihood evaluation; not a timing.",
+            "synchronization": "A parity witness compares one log-likelihood evaluation; not a timing.",
+            "warmup": "A parity witness compares one log-likelihood evaluation; not a timing."
+          },
+          "warmup": null
+        },
+        "metric": "abs_delta_log_likelihood",
+        "model_variant": "default",
+        "parity": {
+          "log_likelihood": 27202.80233601364,
+          "reference": {
+            "date": "2026-10-27",
+            "source": "eager NumPy dense-mapping al.AnalysisImaging(use_jax=False, no sparse operator) in the same process: hst, 784 source pixels, same dataset, mesh, model and instance"
+          },
+          "reference_log_likelihood": 27202.802336013636,
+          "status": "match"
+        },
+        "pointers": {
+          "tolerance": "/tolerance"
+        },
+        "provenance": {
+          "has_provenance": false,
+          "host": null,
+          "measured_at": "2026-10-27T10:54:25Z",
+          "qualified": false,
+          "unknowns": {
+            "host": "Not recorded in this legacy evidence; no current default substituted."
+          }
+        },
+        "regime": "source_pixels_784",
+        "release_pin": "2026.10.25.1",
+        "run_id": "parity/3d3050708a6743213a1a",
+        "setup": {
+          "backend": "numba",
+          "device": "cpu",
+          "operator": "sparse",
+          "precision": "fp64",
+          "threads": null,
+          "transformer": "na"
+        },
+        "setup_id": "numba_cpu_sparse_fp64",
+        "status": "current",
+        "superseded_by": null,
+        "unit": "dimensionless",
+        "validation": {
+          "reason": "Parity witness status match (|delta log L| against tolerance, recorded by the producing run); not an accepted baseline.",
+          "status": "unreviewed"
+        },
+        "values": {
+          "abs_delta_log_likelihood": 3.637978807091713e-12,
+          "tolerance": 2.720280233601364
         }
       },
       {
@@ -70662,6 +72442,207 @@
           "sparse_triplets_jit.compile_s": 0.07339572900673375,
           "sparse_triplets_jit.first_call_s": 0.0014082130219321698,
           "sparse_triplets_jit.lower_s": 0.015589488000841811
+        }
+      },
+      {
+        "class": "secondary",
+        "day_zero": null,
+        "decision_id": null,
+        "evidence": {
+          "fragment": null,
+          "path": "results/imaging/rectangular/hst/jax_gpu_sparse_fp64/hpc_a100/source_pixels_784/breakdown.json"
+        },
+        "figures": [
+          {
+            "kind": "fit",
+            "path": "results/imaging/rectangular/hst/jax_gpu_sparse_fp64/hpc_a100/source_pixels_784/fit.png",
+            "sha256": "3185f83bdbc94790f6beaf99d38cffd67b4d4cd6a95ef92a3d2daa81e5aa4c10"
+          }
+        ],
+        "host_class": "hpc_a100",
+        "id": "lifecycle/95da76c53b5debb0bb31",
+        "identity": {
+          "backend": "gpu",
+          "device": "a100",
+          "hardware_details": {
+            "autotune_cache_entries_at_start": 0,
+            "backend": "gpu",
+            "cache_fresh": true,
+            "cpu_count": 124,
+            "device": "cuda:0",
+            "hostname": "euclid-ral-gpu-1",
+            "nvidia_smi": "NVIDIA A100 80GB PCIe, 1573 MiB, 81920 MiB",
+            "omp_num_threads": "1",
+            "xla_flags": "--xla_disable_hlo_passes=constant_folding --xla_gpu_autotune_level=0 --xla_gpu_enable_triton_gemm=false"
+          },
+          "library_version": "2026.10.25.1",
+          "precision": "float64",
+          "software": {
+            "PyAutoArray.library_revisions": "0f12fac7789c81d0fdaa324508ced5b4c434d42a",
+            "PyAutoArray.library_versions": "2026.8.17.1",
+            "PyAutoFit.library_revisions": "8cb533a605f556d85012d5eb7ed8d4f3c2a4dcf6",
+            "PyAutoFit.library_versions": "2026.8.17.1",
+            "PyAutoGalaxy.library_revisions": "7472211470b9d2b3a76bb12dcacbac51ab4de06f",
+            "PyAutoGalaxy.library_versions": "2026.8.17.1",
+            "PyAutoLens": "2026.10.25.1",
+            "PyAutoLens.library_revisions": "c6927eeb33724c2de2f2e2c773ba3ebe651943a8",
+            "PyAutoLens.library_versions": "2026.8.17.1",
+            "PyAutoNerves.library_revisions": "ec8b5c1e5f17ac03ac5246b5fbc322624a6cd3f6",
+            "PyAutoNerves.library_versions": "2026.8.17.1",
+            "autolens_profiling.library_revisions": "5bcbe790ce0dd7128ba6efc1f73f5f82c52dbb8e",
+            "jax.dependency_versions": "0.10.2",
+            "jaxlib.dependency_versions": "0.10.2",
+            "nufftax.dependency_versions": "0.6.1",
+            "numba.dependency_versions": "0.65.1",
+            "numpy.dependency_versions": "2.2.6",
+            "release_pin_basis": "library_revisions equal tag 2026.10.25.1's SHAs (catalogue/release_revisions.json); the source checkout stamped autolens_version 2026.8.17.1",
+            "scipy.dependency_versions": "1.17.1"
+          },
+          "unknowns": {}
+        },
+        "instrument": "hst",
+        "likelihood": {
+          "dataset_type": "imaging",
+          "variant": "rectangular"
+        },
+        "limitations": [
+          "provisional_secondary: true",
+          "size_variant: a declared size measured beside the standard 1225 source pixels (catalogue/size_variants.json, human 2026-10-26, autolens_profiling#468 (\"Profile 28² too\")): 784 source pixels, the rectangular mesh the SLaM inference runs use (mesh_shape 28x28 = 784; the standard-size production cell is otherwise unchanged: hst_rect_adapt 32x32 resized to 28x28 instead of 35x35), so the autolens_inference wall-time rows pair with a profiling runtime row of the same size (autolens_inference#47 size_match)"
+        ],
+        "location": "cell",
+        "measured_at": "2026-10-27T11:00:16Z",
+        "measurement": "breakdown",
+        "method": {
+          "cache_state": null,
+          "id": "legacy/e7a018ac254a602f17bc",
+          "repetitions": null,
+          "statistic": null,
+          "synchronization": null,
+          "unknowns": {
+            "cache_state": "Not recorded in this legacy evidence; no current default substituted.",
+            "repetitions": "Not recorded in this legacy evidence; no current default substituted.",
+            "statistic": "Not recorded in this legacy evidence; no current default substituted.",
+            "synchronization": "Not recorded in this legacy evidence; no current default substituted.",
+            "warmup": "Not recorded in this legacy evidence; no current default substituted."
+          },
+          "warmup": null
+        },
+        "metric": "component_total",
+        "model_variant": "default",
+        "pointers": {
+          "blurred_image_jit.steady_per_call_s": "/jit_phases/blurred_image_jit/steady_per_call_s",
+          "cholesky_curvature_reg_jit.steady_per_call_s": "/jit_phases/cholesky_curvature_reg_jit/steady_per_call_s",
+          "cholesky_solve_jit.steady_per_call_s": "/jit_phases/cholesky_solve_jit/steady_per_call_s",
+          "component_total": "/total_step_by_step",
+          "curvature_F_diag_jit.steady_per_call_s": "/jit_phases/curvature_F_diag_jit/steady_per_call_s",
+          "curvature_F_func_func_jit.steady_per_call_s": "/jit_phases/curvature_F_func_func_jit/steady_per_call_s",
+          "curvature_F_off_diag_jit.steady_per_call_s": "/jit_phases/curvature_F_off_diag_jit/steady_per_call_s",
+          "curvature_matrix_sparse_jit.steady_per_call_s": "/jit_phases/curvature_matrix_sparse_jit/steady_per_call_s",
+          "data_vector_sparse_jit.steady_per_call_s": "/jit_phases/data_vector_sparse_jit/steady_per_call_s",
+          "interpolator_prefix": "/interpolator_prefix_s",
+          "inversion_setup_sparse_jit.steady_per_call_s": "/jit_phases/inversion_setup_sparse_jit/steady_per_call_s",
+          "lens_image_jit.steady_per_call_s": "/jit_phases/lens_image_jit/steady_per_call_s",
+          "log_det_curvature_reg_jit.steady_per_call_s": "/jit_phases/log_det_curvature_reg_jit/steady_per_call_s",
+          "log_det_regularization_jit.steady_per_call_s": "/jit_phases/log_det_regularization_jit/steady_per_call_s",
+          "log_evidence_sparse_jit.steady_per_call_s": "/jit_phases/log_evidence_sparse_jit/steady_per_call_s",
+          "mge_operated_basis_jit.steady_per_call_s": "/jit_phases/mge_operated_basis_jit/steady_per_call_s",
+          "nnls_pdip_jit.steady_per_call_s": "/jit_phases/nnls_pdip_jit/steady_per_call_s",
+          "nnls_pdip_one_iteration_jit.steady_per_call_s": "/jit_phases/nnls_pdip_one_iteration_jit/steady_per_call_s",
+          "overlay_grid_jit.steady_per_call_s": "/jit_phases/overlay_grid_jit/steady_per_call_s",
+          "profile_subtract_jit.steady_per_call_s": "/jit_phases/profile_subtract_jit/steady_per_call_s",
+          "psf_weighted_data_jit.steady_per_call_s": "/jit_phases/psf_weighted_data_jit/steady_per_call_s",
+          "ray_trace_jit.steady_per_call_s": "/jit_phases/ray_trace_jit/steady_per_call_s",
+          "reconstruction_jit.steady_per_call_s": "/jit_phases/reconstruction_jit/steady_per_call_s",
+          "regularization_matrix_jit.steady_per_call_s": "/jit_phases/regularization_matrix_jit/steady_per_call_s",
+          "regularization_matrix_prefix": "/regularization_matrix_prefix_s",
+          "setup_prefix_6.steady_per_call_s": "/jit_phases/setup_prefix_6/steady_per_call_s",
+          "sparse_triplets_jit.steady_per_call_s": "/jit_phases/sparse_triplets_jit/steady_per_call_s",
+          "steps.Blurred image (PSF convolution)": "/steps/Blurred image (PSF convolution)",
+          "steps.Curvature matrix (F, w-tilde)": "/steps/Curvature matrix (F, w-tilde)",
+          "steps.Data vector (D, w-tilde)": "/steps/Data vector (D, w-tilde)",
+          "steps.Inversion setup (sparse, steps 4-8 combined)": "/steps/Inversion setup (sparse, steps 4-8 combined)",
+          "steps.Lens light images (pre-PSF)": "/steps/Lens light images (pre-PSF)",
+          "steps.Mapped recon + log evidence (sparse)": "/steps/Mapped recon + log evidence (sparse)",
+          "steps.Overlay grid (source pixel centres)": "/steps/Overlay grid (source pixel centres)",
+          "steps.Profile-subtracted image": "/steps/Profile-subtracted image",
+          "steps.Ray-trace grids": "/steps/Ray-trace grids",
+          "steps.Regularization matrix (H)": "/steps/Regularization matrix (H)",
+          "steps.Regularized reconstruction": "/steps/Regularized reconstruction"
+        },
+        "provenance": {
+          "has_provenance": true,
+          "host": "euclid-ral-gpu-1",
+          "measured_at": "2026-10-27T11:00:16Z",
+          "qualified": false,
+          "unknowns": {}
+        },
+        "regime": "source_pixels_784",
+        "release_pin": "2026.10.25.1",
+        "resources": {
+          "cpus_per_eval": 8,
+          "cpus_per_eval_basis": "jax gpu: one device; cpus_per_eval = NPROC host threads",
+          "devices_per_eval": 1,
+          "peak_rss_basis": "in_process_ru_maxrss",
+          "peak_rss_gb": 2.007314,
+          "peak_rss_note": "resource.getrusage(RUSAGE_SELF).ru_maxrss when the row was built: this process's peak resident set (children excluded), GB = 1e9 bytes",
+          "source": "row"
+        },
+        "run_id": "legacy/7f57e5de09795f4d32b8",
+        "setup": {
+          "backend": "jax",
+          "device": "gpu",
+          "operator": "sparse",
+          "precision": "fp64",
+          "threads": null,
+          "transformer": "na"
+        },
+        "setup_id": "jax_gpu_sparse_fp64",
+        "status": "current",
+        "superseded_by": null,
+        "unit": "s",
+        "validation": {
+          "reason": "Legacy evidence labelled by the phase-0 day-zero rule; not an accepted baseline.",
+          "status": "unreviewed"
+        },
+        "values": {
+          "blurred_image_jit.steady_per_call_s": 0.0008402645005844533,
+          "cholesky_curvature_reg_jit.steady_per_call_s": 0.0007289099041372538,
+          "cholesky_solve_jit.steady_per_call_s": 0.0009098185983020812,
+          "component_total": 0.04992260581930168,
+          "curvature_F_diag_jit.steady_per_call_s": 0.022482788801426068,
+          "curvature_F_func_func_jit.steady_per_call_s": 0.0004162558005191386,
+          "curvature_F_off_diag_jit.steady_per_call_s": 0.0016218997014220804,
+          "curvature_matrix_sparse_jit.steady_per_call_s": 0.023334484203951435,
+          "data_vector_sparse_jit.steady_per_call_s": 0.00025778780109249056,
+          "interpolator_prefix": 0.002037675597239286,
+          "inversion_setup_sparse_jit.steady_per_call_s": 0.006379581504734233,
+          "lens_image_jit.steady_per_call_s": 0.0001380912959575653,
+          "log_det_curvature_reg_jit.steady_per_call_s": 0.000669727602507919,
+          "log_det_regularization_jit.steady_per_call_s": 0.0006630268006119877,
+          "log_evidence_sparse_jit.steady_per_call_s": 0.0012782090983819217,
+          "mge_operated_basis_jit.steady_per_call_s": 0.005102549400180578,
+          "nnls_pdip_jit.steady_per_call_s": 0.017195670504588634,
+          "nnls_pdip_one_iteration_jit.steady_per_call_s": 0.0018333330983296037,
+          "overlay_grid_jit.steady_per_call_s": 0.00013544540270231663,
+          "profile_subtract_jit.steady_per_call_s": 0.0001305882993619889,
+          "psf_weighted_data_jit.steady_per_call_s": 0.0001909435959532857,
+          "ray_trace_jit.steady_per_call_s": 0.00015987289953045547,
+          "reconstruction_jit.steady_per_call_s": 0.017105791805079207,
+          "regularization_matrix_jit.steady_per_call_s": 0.0022001646051649005,
+          "regularization_matrix_prefix": 0.0022001646051649005,
+          "setup_prefix_6.steady_per_call_s": 0.002037675597239286,
+          "sparse_triplets_jit.steady_per_call_s": 0.00017122189747169613,
+          "steps.Blurred image (PSF convolution)": 0.0008402645005844533,
+          "steps.Curvature matrix (F, w-tilde)": 0.023334484203951435,
+          "steps.Data vector (D, w-tilde)": 0.00025778780109249056,
+          "steps.Inversion setup (sparse, steps 4-8 combined)": 0.006379581504734233,
+          "steps.Lens light images (pre-PSF)": 0.0001380912959575653,
+          "steps.Mapped recon + log evidence (sparse)": 0.0012782090983819217,
+          "steps.Overlay grid (source pixel centres)": 0.00013544540270231663,
+          "steps.Profile-subtracted image": 0.0001305882993619889,
+          "steps.Ray-trace grids": 0.00015987289953045547,
+          "steps.Regularization matrix (H)": 0.00016248900792561463,
+          "steps.Regularized reconstruction": 0.017105791805079207
         }
       },
       {
@@ -78502,6 +80483,206 @@
         "decision_id": null,
         "evidence": {
           "fragment": null,
+          "path": "results/imaging/rectangular/hst/jax_cpu_sparse_fp64/hpc_a100/source_pixels_784/breakdown.json"
+        },
+        "figures": [
+          {
+            "kind": "fit",
+            "path": "results/imaging/rectangular/hst/jax_cpu_sparse_fp64/hpc_a100/source_pixels_784/fit.png",
+            "sha256": "3185f83bdbc94790f6beaf99d38cffd67b4d4cd6a95ef92a3d2daa81e5aa4c10"
+          }
+        ],
+        "host_class": "hpc_a100",
+        "id": "lifecycle/a68d54378199b7a6a53d",
+        "identity": {
+          "backend": "cpu",
+          "device": "a100",
+          "hardware_details": {
+            "autotune_cache_entries_at_start": 0,
+            "backend": "cpu",
+            "cache_fresh": true,
+            "cpu_count": 124,
+            "device": "cpu:0",
+            "hostname": "euclid-ral-gpu-1",
+            "omp_num_threads": "1",
+            "xla_flags": "--xla_disable_hlo_passes=constant_folding --xla_gpu_autotune_level=0 --xla_gpu_enable_triton_gemm=false"
+          },
+          "library_version": "2026.10.25.1",
+          "precision": "float64",
+          "software": {
+            "PyAutoArray.library_revisions": "0f12fac7789c81d0fdaa324508ced5b4c434d42a",
+            "PyAutoArray.library_versions": "2026.8.17.1",
+            "PyAutoFit.library_revisions": "8cb533a605f556d85012d5eb7ed8d4f3c2a4dcf6",
+            "PyAutoFit.library_versions": "2026.8.17.1",
+            "PyAutoGalaxy.library_revisions": "7472211470b9d2b3a76bb12dcacbac51ab4de06f",
+            "PyAutoGalaxy.library_versions": "2026.8.17.1",
+            "PyAutoLens": "2026.10.25.1",
+            "PyAutoLens.library_revisions": "c6927eeb33724c2de2f2e2c773ba3ebe651943a8",
+            "PyAutoLens.library_versions": "2026.8.17.1",
+            "PyAutoNerves.library_revisions": "ec8b5c1e5f17ac03ac5246b5fbc322624a6cd3f6",
+            "PyAutoNerves.library_versions": "2026.8.17.1",
+            "autolens_profiling.library_revisions": "5bcbe790ce0dd7128ba6efc1f73f5f82c52dbb8e",
+            "jax.dependency_versions": "0.10.2",
+            "jaxlib.dependency_versions": "0.10.2",
+            "nufftax.dependency_versions": "0.6.1",
+            "numba.dependency_versions": "0.65.1",
+            "numpy.dependency_versions": "2.2.6",
+            "release_pin_basis": "library_revisions equal tag 2026.10.25.1's SHAs (catalogue/release_revisions.json); the source checkout stamped autolens_version 2026.8.17.1",
+            "scipy.dependency_versions": "1.17.1"
+          },
+          "unknowns": {}
+        },
+        "instrument": "hst",
+        "likelihood": {
+          "dataset_type": "imaging",
+          "variant": "rectangular"
+        },
+        "limitations": [
+          "provisional_secondary: true",
+          "size_variant: a declared size measured beside the standard 1225 source pixels (catalogue/size_variants.json, human 2026-10-26, autolens_profiling#468 (\"Profile 28² too\")): 784 source pixels, the rectangular mesh the SLaM inference runs use (mesh_shape 28x28 = 784; the standard-size production cell is otherwise unchanged: hst_rect_adapt 32x32 resized to 28x28 instead of 35x35), so the autolens_inference wall-time rows pair with a profiling runtime row of the same size (autolens_inference#47 size_match)"
+        ],
+        "location": "cell",
+        "measured_at": "2026-10-27T10:55:42Z",
+        "measurement": "breakdown",
+        "method": {
+          "cache_state": null,
+          "id": "legacy/e7a018ac254a602f17bc",
+          "repetitions": null,
+          "statistic": null,
+          "synchronization": null,
+          "unknowns": {
+            "cache_state": "Not recorded in this legacy evidence; no current default substituted.",
+            "repetitions": "Not recorded in this legacy evidence; no current default substituted.",
+            "statistic": "Not recorded in this legacy evidence; no current default substituted.",
+            "synchronization": "Not recorded in this legacy evidence; no current default substituted.",
+            "warmup": "Not recorded in this legacy evidence; no current default substituted."
+          },
+          "warmup": null
+        },
+        "metric": "component_total",
+        "model_variant": "default",
+        "pointers": {
+          "blurred_image_jit.steady_per_call_s": "/jit_phases/blurred_image_jit/steady_per_call_s",
+          "cholesky_curvature_reg_jit.steady_per_call_s": "/jit_phases/cholesky_curvature_reg_jit/steady_per_call_s",
+          "cholesky_solve_jit.steady_per_call_s": "/jit_phases/cholesky_solve_jit/steady_per_call_s",
+          "component_total": "/total_step_by_step",
+          "curvature_F_diag_jit.steady_per_call_s": "/jit_phases/curvature_F_diag_jit/steady_per_call_s",
+          "curvature_F_func_func_jit.steady_per_call_s": "/jit_phases/curvature_F_func_func_jit/steady_per_call_s",
+          "curvature_F_off_diag_jit.steady_per_call_s": "/jit_phases/curvature_F_off_diag_jit/steady_per_call_s",
+          "curvature_matrix_sparse_jit.steady_per_call_s": "/jit_phases/curvature_matrix_sparse_jit/steady_per_call_s",
+          "data_vector_sparse_jit.steady_per_call_s": "/jit_phases/data_vector_sparse_jit/steady_per_call_s",
+          "interpolator_prefix": "/interpolator_prefix_s",
+          "inversion_setup_sparse_jit.steady_per_call_s": "/jit_phases/inversion_setup_sparse_jit/steady_per_call_s",
+          "lens_image_jit.steady_per_call_s": "/jit_phases/lens_image_jit/steady_per_call_s",
+          "log_det_curvature_reg_jit.steady_per_call_s": "/jit_phases/log_det_curvature_reg_jit/steady_per_call_s",
+          "log_det_regularization_jit.steady_per_call_s": "/jit_phases/log_det_regularization_jit/steady_per_call_s",
+          "log_evidence_sparse_jit.steady_per_call_s": "/jit_phases/log_evidence_sparse_jit/steady_per_call_s",
+          "mge_operated_basis_jit.steady_per_call_s": "/jit_phases/mge_operated_basis_jit/steady_per_call_s",
+          "nnls_pdip_jit.steady_per_call_s": "/jit_phases/nnls_pdip_jit/steady_per_call_s",
+          "nnls_pdip_one_iteration_jit.steady_per_call_s": "/jit_phases/nnls_pdip_one_iteration_jit/steady_per_call_s",
+          "overlay_grid_jit.steady_per_call_s": "/jit_phases/overlay_grid_jit/steady_per_call_s",
+          "profile_subtract_jit.steady_per_call_s": "/jit_phases/profile_subtract_jit/steady_per_call_s",
+          "psf_weighted_data_jit.steady_per_call_s": "/jit_phases/psf_weighted_data_jit/steady_per_call_s",
+          "ray_trace_jit.steady_per_call_s": "/jit_phases/ray_trace_jit/steady_per_call_s",
+          "reconstruction_jit.steady_per_call_s": "/jit_phases/reconstruction_jit/steady_per_call_s",
+          "regularization_matrix_jit.steady_per_call_s": "/jit_phases/regularization_matrix_jit/steady_per_call_s",
+          "regularization_matrix_prefix": "/regularization_matrix_prefix_s",
+          "setup_prefix_6.steady_per_call_s": "/jit_phases/setup_prefix_6/steady_per_call_s",
+          "sparse_triplets_jit.steady_per_call_s": "/jit_phases/sparse_triplets_jit/steady_per_call_s",
+          "steps.Blurred image (PSF convolution)": "/steps/Blurred image (PSF convolution)",
+          "steps.Curvature matrix (F, w-tilde)": "/steps/Curvature matrix (F, w-tilde)",
+          "steps.Data vector (D, w-tilde)": "/steps/Data vector (D, w-tilde)",
+          "steps.Inversion setup (sparse, steps 4-8 combined)": "/steps/Inversion setup (sparse, steps 4-8 combined)",
+          "steps.Lens light images (pre-PSF)": "/steps/Lens light images (pre-PSF)",
+          "steps.Mapped recon + log evidence (sparse)": "/steps/Mapped recon + log evidence (sparse)",
+          "steps.Overlay grid (source pixel centres)": "/steps/Overlay grid (source pixel centres)",
+          "steps.Profile-subtracted image": "/steps/Profile-subtracted image",
+          "steps.Ray-trace grids": "/steps/Ray-trace grids",
+          "steps.Regularization matrix (H)": "/steps/Regularization matrix (H)",
+          "steps.Regularized reconstruction": "/steps/Regularized reconstruction"
+        },
+        "provenance": {
+          "has_provenance": true,
+          "host": "euclid-ral-gpu-1",
+          "measured_at": "2026-10-27T10:55:42Z",
+          "qualified": false,
+          "unknowns": {}
+        },
+        "regime": "source_pixels_784",
+        "release_pin": "2026.10.25.1",
+        "resources": {
+          "cpus_per_eval": 8,
+          "cpus_per_eval_basis": "jax cpu: NPROC threads in XLA's CPU intra-op pool",
+          "devices_per_eval": 0,
+          "peak_rss_basis": "in_process_ru_maxrss",
+          "peak_rss_gb": 2.240307,
+          "peak_rss_note": "resource.getrusage(RUSAGE_SELF).ru_maxrss when the row was built: this process's peak resident set (children excluded), GB = 1e9 bytes",
+          "source": "row"
+        },
+        "run_id": "legacy/544829f50246728c8c44",
+        "setup": {
+          "backend": "jax",
+          "device": "cpu",
+          "operator": "sparse",
+          "precision": "fp64",
+          "threads": null,
+          "transformer": "na"
+        },
+        "setup_id": "jax_cpu_sparse_fp64",
+        "status": "current",
+        "superseded_by": null,
+        "unit": "s",
+        "validation": {
+          "reason": "Legacy evidence labelled by the phase-0 day-zero rule; not an accepted baseline.",
+          "status": "unreviewed"
+        },
+        "values": {
+          "blurred_image_jit.steady_per_call_s": 0.0009888722037430854,
+          "cholesky_curvature_reg_jit.steady_per_call_s": 0.00797109660343267,
+          "cholesky_solve_jit.steady_per_call_s": 0.008885348297189921,
+          "component_total": 1.3378271502209826,
+          "curvature_F_diag_jit.steady_per_call_s": 1.0315343405003659,
+          "curvature_F_func_func_jit.steady_per_call_s": 0.0023862922040279954,
+          "curvature_F_off_diag_jit.steady_per_call_s": 0.048228882701369005,
+          "curvature_matrix_sparse_jit.steady_per_call_s": 1.0705152384995018,
+          "data_vector_sparse_jit.steady_per_call_s": 0.0008708462002687157,
+          "interpolator_prefix": 0.038279418699676174,
+          "inversion_setup_sparse_jit.steady_per_call_s": 0.07405434579704888,
+          "lens_image_jit.steady_per_call_s": 2.3168703773990273e-05,
+          "log_det_curvature_reg_jit.steady_per_call_s": 0.006420302903279662,
+          "log_det_regularization_jit.steady_per_call_s": 0.0064245698973536495,
+          "log_evidence_sparse_jit.steady_per_call_s": 0.009853876201668754,
+          "mge_operated_basis_jit.steady_per_call_s": 0.02070091289933771,
+          "nnls_pdip_jit.steady_per_call_s": 0.17939670649939216,
+          "nnls_pdip_one_iteration_jit.steady_per_call_s": 0.020112488197628408,
+          "overlay_grid_jit.steady_per_call_s": 7.587600266560912e-05,
+          "profile_subtract_jit.steady_per_call_s": 4.091160371899605e-05,
+          "psf_weighted_data_jit.steady_per_call_s": 0.020187673304462805,
+          "ray_trace_jit.steady_per_call_s": 0.0012695507030002773,
+          "reconstruction_jit.steady_per_call_s": 0.17813937710016034,
+          "regularization_matrix_jit.steady_per_call_s": 0.040274505905108525,
+          "regularization_matrix_prefix": 0.040274505905108525,
+          "setup_prefix_6.steady_per_call_s": 0.038279418699676174,
+          "sparse_triplets_jit.steady_per_call_s": 0.0011324167950078844,
+          "steps.Blurred image (PSF convolution)": 0.0009888722037430854,
+          "steps.Curvature matrix (F, w-tilde)": 1.0705152384995018,
+          "steps.Data vector (D, w-tilde)": 0.0008708462002687157,
+          "steps.Inversion setup (sparse, steps 4-8 combined)": 0.07405434579704888,
+          "steps.Lens light images (pre-PSF)": 2.3168703773990273e-05,
+          "steps.Mapped recon + log evidence (sparse)": 0.009853876201668754,
+          "steps.Overlay grid (source pixel centres)": 7.587600266560912e-05,
+          "steps.Profile-subtracted image": 4.091160371899605e-05,
+          "steps.Ray-trace grids": 0.0012695507030002773,
+          "steps.Regularization matrix (H)": 0.0019950872054323512,
+          "steps.Regularized reconstruction": 0.17813937710016034
+        }
+      },
+      {
+        "class": "secondary",
+        "day_zero": null,
+        "decision_id": null,
+        "evidence": {
+          "fragment": null,
           "path": "results/imaging/delaunay/jwst/jax_cpu_sparse_fp64/hpc_a100/breakdown.json"
         },
         "figures": [
@@ -86065,6 +88246,168 @@
         },
         "values": {
           "operator_setup": 12.920728305994999
+        }
+      },
+      {
+        "class": "secondary",
+        "day_zero": null,
+        "decision_id": null,
+        "evidence": {
+          "fragment": null,
+          "path": "results/imaging/rectangular/hst/jax_gpu_sparse_fp64/hpc_a100/source_pixels_784/runtime.json"
+        },
+        "figures": [
+          {
+            "kind": "fit",
+            "path": "results/imaging/rectangular/hst/jax_gpu_sparse_fp64/hpc_a100/source_pixels_784/fit.png",
+            "sha256": "3185f83bdbc94790f6beaf99d38cffd67b4d4cd6a95ef92a3d2daa81e5aa4c10"
+          }
+        ],
+        "host_class": "hpc_a100",
+        "id": "lifecycle/b737f77c5c2c2a9c9231",
+        "identity": {
+          "backend": "gpu",
+          "device": "a100",
+          "hardware_details": {
+            "autotune_cache_entries_at_start": 0,
+            "backend": "gpu",
+            "cache_fresh": true,
+            "cpu_count": 124,
+            "device": "cuda:0",
+            "hostname": "euclid-ral-gpu-1",
+            "nvidia_smi": "NVIDIA A100 80GB PCIe, 3625 MiB, 81920 MiB",
+            "omp_num_threads": "1",
+            "xla_flags": "--xla_disable_hlo_passes=constant_folding --xla_gpu_autotune_level=0 --xla_gpu_enable_triton_gemm=false"
+          },
+          "library_version": "2026.10.25.1",
+          "precision": "float64",
+          "software": {
+            "PyAutoArray.library_revisions": "0f12fac7789c81d0fdaa324508ced5b4c434d42a",
+            "PyAutoArray.library_versions": "2026.8.17.1",
+            "PyAutoFit.library_revisions": "8cb533a605f556d85012d5eb7ed8d4f3c2a4dcf6",
+            "PyAutoFit.library_versions": "2026.8.17.1",
+            "PyAutoGalaxy.library_revisions": "7472211470b9d2b3a76bb12dcacbac51ab4de06f",
+            "PyAutoGalaxy.library_versions": "2026.8.17.1",
+            "PyAutoLens": "2026.10.25.1",
+            "PyAutoLens.library_revisions": "c6927eeb33724c2de2f2e2c773ba3ebe651943a8",
+            "PyAutoLens.library_versions": "2026.8.17.1",
+            "PyAutoNerves.library_revisions": "ec8b5c1e5f17ac03ac5246b5fbc322624a6cd3f6",
+            "PyAutoNerves.library_versions": "2026.8.17.1",
+            "autolens_profiling.library_revisions": "5bcbe790ce0dd7128ba6efc1f73f5f82c52dbb8e",
+            "jax.dependency_versions": "0.10.2",
+            "jaxlib.dependency_versions": "0.10.2",
+            "nufftax.dependency_versions": "0.6.1",
+            "numba.dependency_versions": "0.65.1",
+            "numpy.dependency_versions": "2.2.6",
+            "release_pin_basis": "library_revisions equal tag 2026.10.25.1's SHAs (catalogue/release_revisions.json); the source checkout stamped autolens_version 2026.8.17.1",
+            "scipy.dependency_versions": "1.17.1"
+          },
+          "unknowns": {}
+        },
+        "instrument": "hst",
+        "likelihood": {
+          "dataset_type": "imaging",
+          "variant": "rectangular"
+        },
+        "limitations": [
+          "provisional_secondary: true",
+          "size_variant: a declared size measured beside the standard 1225 source pixels (catalogue/size_variants.json, human 2026-10-26, autolens_profiling#468 (\"Profile 28² too\")): 784 source pixels, the rectangular mesh the SLaM inference runs use (mesh_shape 28x28 = 784; the standard-size production cell is otherwise unchanged: hst_rect_adapt 32x32 resized to 28x28 instead of 35x35), so the autolens_inference wall-time rows pair with a profiling runtime row of the same size (autolens_inference#47 size_match)"
+        ],
+        "location": "cell",
+        "measured_at": "2026-10-27T11:01:14Z",
+        "measurement": "runtime",
+        "method": {
+          "cache_state": null,
+          "id": "legacy/7ccaf802e198af9ef0dd",
+          "repetitions": null,
+          "statistic": "median",
+          "synchronization": null,
+          "unknowns": {
+            "cache_state": "Not recorded in this legacy evidence; no current default substituted.",
+            "repetitions": "Not recorded in this legacy evidence; no current default substituted.",
+            "synchronization": "Not recorded in this legacy evidence; no current default substituted.",
+            "warmup": "Not recorded in this legacy evidence; no current default substituted."
+          },
+          "warmup": null
+        },
+        "metric": "single_jit_median",
+        "model_variant": "default",
+        "pointers": {
+          "single_jit_block": "/full_pipeline_single_jit",
+          "single_jit_median": "/full_pipeline_single_jit_median",
+          "vmap.batch_time": "/vmap/batch_time",
+          "vmap.per_call": "/vmap/per_call"
+        },
+        "projected_node_throughput": {
+          "basis": "projected",
+          "cpus_per_eval": 8,
+          "devices_per_eval": 1,
+          "hosts": [
+            {
+              "bound_by": "gpus",
+              "calls_per_s": 136.8,
+              "host": "ral_gpu_node",
+              "host_class": "hpc_a100",
+              "limits": {
+                "cores": 15,
+                "gpus": 4,
+                "memory": 447
+              },
+              "workers": 4
+            }
+          ],
+          "not_modelled": "The sampler's batch ceiling: Nautilus evaluates at most n_batch points in parallel per batch, so a node cannot use more workers than n_batch. Shared memory bandwidth and caches between workers are also not modelled; the declared parallel efficiency stands in for them.",
+          "parallel_efficiency": {
+            "kind": "upper bound",
+            "source": "declared, unmeasured (phase 4 measures)",
+            "value": 1.0
+          },
+          "peak_rss_basis": "in_process_ru_maxrss",
+          "peak_rss_gb": 1.975796,
+          "per_call_s": 0.029244039837794843,
+          "per_call_source": "vmap.per_call",
+          "status": "projected"
+        },
+        "provenance": {
+          "has_provenance": true,
+          "host": "euclid-ral-gpu-1",
+          "measured_at": "2026-10-27T11:01:14Z",
+          "qualified": false,
+          "unknowns": {}
+        },
+        "regime": "source_pixels_784",
+        "release_pin": "2026.10.25.1",
+        "resources": {
+          "cpus_per_eval": 8,
+          "cpus_per_eval_basis": "jax gpu: one device; cpus_per_eval = NPROC host threads",
+          "devices_per_eval": 1,
+          "peak_rss_basis": "in_process_ru_maxrss",
+          "peak_rss_gb": 1.975796,
+          "peak_rss_note": "resource.getrusage(RUSAGE_SELF).ru_maxrss when the row was built: this process's peak resident set (children excluded), GB = 1e9 bytes",
+          "source": "row"
+        },
+        "run_id": "legacy/f7f2a2354ab458161fb0",
+        "setup": {
+          "backend": "jax",
+          "device": "gpu",
+          "operator": "sparse",
+          "precision": "fp64",
+          "threads": null,
+          "transformer": "na"
+        },
+        "setup_id": "jax_gpu_sparse_fp64",
+        "status": "current",
+        "superseded_by": null,
+        "unit": "s",
+        "validation": {
+          "reason": "Legacy evidence labelled by the phase-0 day-zero rule; not an accepted baseline.",
+          "status": "unreviewed"
+        },
+        "values": {
+          "single_jit_block": 0.0472078064980451,
+          "single_jit_median": 0.04709096849546768,
+          "vmap.batch_time": 0.4679046374047175,
+          "vmap.per_call": 0.029244039837794843
         }
       },
       {
@@ -98361,6 +100704,105 @@
         "decision_id": null,
         "evidence": {
           "fragment": null,
+          "path": "results/imaging/rectangular/hst/jax_gpu_sparse_fp64/hpc_a100/source_pixels_784/parity.json"
+        },
+        "figures": [],
+        "host_class": "hpc_a100",
+        "id": "lifecycle/d1a3e06d7571bd6b5eba",
+        "identity": {
+          "backend": null,
+          "device": "a100",
+          "hardware_details": {},
+          "library_version": "2026.10.25.1",
+          "precision": "float64",
+          "software": {
+            "PyAutoLens": "2026.10.25.1",
+            "release_pin_basis": "library_revisions equal tag 2026.10.25.1's SHAs (catalogue/release_revisions.json); the source checkout stamped autolens_version 2026.8.17.1"
+          },
+          "unknowns": {
+            "backend": "Not recorded in this legacy evidence; no current default substituted."
+          }
+        },
+        "instrument": "hst",
+        "likelihood": {
+          "dataset_type": "imaging",
+          "variant": "rectangular"
+        },
+        "limitations": [
+          "provisional_secondary: true",
+          "size_variant: a declared size measured beside the standard 1225 source pixels (catalogue/size_variants.json, human 2026-10-26, autolens_profiling#468 (\"Profile 28² too\")): 784 source pixels, the rectangular mesh the SLaM inference runs use (mesh_shape 28x28 = 784; the standard-size production cell is otherwise unchanged: hst_rect_adapt 32x32 resized to 28x28 instead of 35x35), so the autolens_inference wall-time rows pair with a profiling runtime row of the same size (autolens_inference#47 size_match)"
+        ],
+        "location": "cell",
+        "measured_at": "2026-10-27T11:01:15Z",
+        "measurement": "parity",
+        "method": {
+          "cache_state": null,
+          "id": "parity-witness",
+          "repetitions": null,
+          "statistic": null,
+          "synchronization": null,
+          "unknowns": {
+            "cache_state": "A parity witness compares one log-likelihood evaluation; not a timing.",
+            "repetitions": "A parity witness compares one log-likelihood evaluation; not a timing.",
+            "statistic": "A parity witness compares one log-likelihood evaluation; not a timing.",
+            "synchronization": "A parity witness compares one log-likelihood evaluation; not a timing.",
+            "warmup": "A parity witness compares one log-likelihood evaluation; not a timing."
+          },
+          "warmup": null
+        },
+        "metric": "abs_delta_log_likelihood",
+        "model_variant": "default",
+        "parity": {
+          "log_likelihood": 27202.802336020883,
+          "reference": {
+            "date": "2026-10-27",
+            "source": "eager NumPy dense-mapping al.AnalysisImaging(use_jax=False, no sparse operator) in the same process: hst, 784 source pixels, same dataset, model and instance"
+          },
+          "reference_log_likelihood": 27202.802336013636,
+          "status": "match"
+        },
+        "pointers": {
+          "tolerance": "/tolerance"
+        },
+        "provenance": {
+          "has_provenance": false,
+          "host": null,
+          "measured_at": "2026-10-27T11:01:15Z",
+          "qualified": false,
+          "unknowns": {
+            "host": "Not recorded in this legacy evidence; no current default substituted."
+          }
+        },
+        "regime": "source_pixels_784",
+        "release_pin": "2026.10.25.1",
+        "run_id": "parity/5d57ef01d49e51df4465",
+        "setup": {
+          "backend": "jax",
+          "device": "gpu",
+          "operator": "sparse",
+          "precision": "fp64",
+          "threads": null,
+          "transformer": "na"
+        },
+        "setup_id": "jax_gpu_sparse_fp64",
+        "status": "current",
+        "superseded_by": null,
+        "unit": "dimensionless",
+        "validation": {
+          "reason": "Parity witness status match (|delta log L| against tolerance, recorded by the producing run); not an accepted baseline.",
+          "status": "unreviewed"
+        },
+        "values": {
+          "abs_delta_log_likelihood": 7.246853783726692e-09,
+          "tolerance": 2.720280233601364
+        }
+      },
+      {
+        "class": "secondary",
+        "day_zero": null,
+        "decision_id": null,
+        "evidence": {
+          "fragment": null,
           "path": "results/imaging/delaunay/hst/jax_gpu_sparse_fp64/hpc_a100/history/2026.8.17.1_2026-09-10/runtime.json"
         },
         "figures": [],
@@ -100269,6 +102711,195 @@
         "decision_id": null,
         "evidence": {
           "fragment": null,
+          "path": "results/imaging/rectangular/hst/jax_gpu_dense_fp64/hpc_a100/source_pixels_784/breakdown.json"
+        },
+        "figures": [
+          {
+            "kind": "fit",
+            "path": "results/imaging/rectangular/hst/jax_gpu_dense_fp64/hpc_a100/source_pixels_784/fit.png",
+            "sha256": "3185f83bdbc94790f6beaf99d38cffd67b4d4cd6a95ef92a3d2daa81e5aa4c10"
+          }
+        ],
+        "host_class": "hpc_a100",
+        "id": "lifecycle/d4e93605707fea3e3e01",
+        "identity": {
+          "backend": "gpu",
+          "device": "a100",
+          "hardware_details": {
+            "autotune_cache_entries_at_start": 0,
+            "backend": "gpu",
+            "cache_fresh": true,
+            "cpu_count": 124,
+            "device": "cuda:0",
+            "hostname": "euclid-ral-gpu-1",
+            "nvidia_smi": "NVIDIA A100 80GB PCIe, 2587 MiB, 81920 MiB",
+            "omp_num_threads": "1",
+            "xla_flags": "--xla_disable_hlo_passes=constant_folding --xla_gpu_autotune_level=0 --xla_gpu_enable_triton_gemm=false"
+          },
+          "library_version": "2026.10.25.1",
+          "precision": "float64",
+          "software": {
+            "PyAutoArray.library_revisions": "0f12fac7789c81d0fdaa324508ced5b4c434d42a",
+            "PyAutoArray.library_versions": "2026.8.17.1",
+            "PyAutoFit.library_revisions": "8cb533a605f556d85012d5eb7ed8d4f3c2a4dcf6",
+            "PyAutoFit.library_versions": "2026.8.17.1",
+            "PyAutoGalaxy.library_revisions": "7472211470b9d2b3a76bb12dcacbac51ab4de06f",
+            "PyAutoGalaxy.library_versions": "2026.8.17.1",
+            "PyAutoLens": "2026.10.25.1",
+            "PyAutoLens.library_revisions": "c6927eeb33724c2de2f2e2c773ba3ebe651943a8",
+            "PyAutoLens.library_versions": "2026.8.17.1",
+            "PyAutoNerves.library_revisions": "ec8b5c1e5f17ac03ac5246b5fbc322624a6cd3f6",
+            "PyAutoNerves.library_versions": "2026.8.17.1",
+            "autolens_profiling.library_revisions": "5bcbe790ce0dd7128ba6efc1f73f5f82c52dbb8e",
+            "jax.dependency_versions": "0.10.2",
+            "jaxlib.dependency_versions": "0.10.2",
+            "nufftax.dependency_versions": "0.6.1",
+            "numba.dependency_versions": "0.65.1",
+            "numpy.dependency_versions": "2.2.6",
+            "release_pin_basis": "library_revisions equal tag 2026.10.25.1's SHAs (catalogue/release_revisions.json); the source checkout stamped autolens_version 2026.8.17.1",
+            "scipy.dependency_versions": "1.17.1"
+          },
+          "unknowns": {}
+        },
+        "instrument": "hst",
+        "likelihood": {
+          "dataset_type": "imaging",
+          "variant": "rectangular"
+        },
+        "limitations": [
+          "provisional_optimal: true",
+          "size_variant: a declared size measured beside the standard 1225 source pixels (catalogue/size_variants.json, human 2026-10-26, autolens_profiling#468 (\"Profile 28² too\")): 784 source pixels, the rectangular mesh the SLaM inference runs use (mesh_shape 28x28 = 784; the standard-size production cell is otherwise unchanged: hst_rect_adapt 32x32 resized to 28x28 instead of 35x35), so the autolens_inference wall-time rows pair with a profiling runtime row of the same size (autolens_inference#47 size_match)"
+        ],
+        "location": "cell",
+        "measured_at": "2026-10-27T10:58:31Z",
+        "measurement": "breakdown",
+        "method": {
+          "cache_state": null,
+          "id": "legacy/e7a018ac254a602f17bc",
+          "repetitions": null,
+          "statistic": null,
+          "synchronization": null,
+          "unknowns": {
+            "cache_state": "Not recorded in this legacy evidence; no current default substituted.",
+            "repetitions": "Not recorded in this legacy evidence; no current default substituted.",
+            "statistic": "Not recorded in this legacy evidence; no current default substituted.",
+            "synchronization": "Not recorded in this legacy evidence; no current default substituted.",
+            "warmup": "Not recorded in this legacy evidence; no current default substituted."
+          },
+          "warmup": null
+        },
+        "metric": "component_total",
+        "model_variant": "default",
+        "pointers": {
+          "blurred_image_jit.steady_per_call_s": "/jit_phases/blurred_image_jit/steady_per_call_s",
+          "cholesky_curvature_reg_jit.steady_per_call_s": "/jit_phases/cholesky_curvature_reg_jit/steady_per_call_s",
+          "cholesky_solve_jit.steady_per_call_s": "/jit_phases/cholesky_solve_jit/steady_per_call_s",
+          "component_total": "/total_step_by_step",
+          "curvature_matrix_jit.steady_per_call_s": "/jit_phases/curvature_matrix_jit/steady_per_call_s",
+          "data_vector_jit.steady_per_call_s": "/jit_phases/data_vector_jit/steady_per_call_s",
+          "interpolator_prefix": "/interpolator_prefix_s",
+          "inversion_setup_jit.steady_per_call_s": "/jit_phases/inversion_setup_jit/steady_per_call_s",
+          "lens_image_jit.steady_per_call_s": "/jit_phases/lens_image_jit/steady_per_call_s",
+          "log_det_curvature_reg_jit.steady_per_call_s": "/jit_phases/log_det_curvature_reg_jit/steady_per_call_s",
+          "log_det_regularization_jit.steady_per_call_s": "/jit_phases/log_det_regularization_jit/steady_per_call_s",
+          "log_evidence_jit.steady_per_call_s": "/jit_phases/log_evidence_jit/steady_per_call_s",
+          "nnls_pdip_jit.steady_per_call_s": "/jit_phases/nnls_pdip_jit/steady_per_call_s",
+          "nnls_pdip_one_iteration_jit.steady_per_call_s": "/jit_phases/nnls_pdip_one_iteration_jit/steady_per_call_s",
+          "overlay_grid_jit.steady_per_call_s": "/jit_phases/overlay_grid_jit/steady_per_call_s",
+          "profile_subtract_jit.steady_per_call_s": "/jit_phases/profile_subtract_jit/steady_per_call_s",
+          "ray_trace_jit.steady_per_call_s": "/jit_phases/ray_trace_jit/steady_per_call_s",
+          "reconstruction_jit.steady_per_call_s": "/jit_phases/reconstruction_jit/steady_per_call_s",
+          "regularization_matrix_jit.steady_per_call_s": "/jit_phases/regularization_matrix_jit/steady_per_call_s",
+          "regularization_matrix_prefix": "/regularization_matrix_prefix_s",
+          "setup_prefix_6.steady_per_call_s": "/jit_phases/setup_prefix_6/steady_per_call_s",
+          "steps.Blurred image (PSF convolution)": "/steps/Blurred image (PSF convolution)",
+          "steps.Curvature matrix (F)": "/steps/Curvature matrix (F)",
+          "steps.Data vector (D)": "/steps/Data vector (D)",
+          "steps.Inversion setup (steps 4-8 combined)": "/steps/Inversion setup (steps 4-8 combined)",
+          "steps.Lens light images (pre-PSF)": "/steps/Lens light images (pre-PSF)",
+          "steps.Mapped recon + log evidence": "/steps/Mapped recon + log evidence",
+          "steps.Overlay grid (source pixel centres)": "/steps/Overlay grid (source pixel centres)",
+          "steps.Profile-subtracted image": "/steps/Profile-subtracted image",
+          "steps.Ray-trace grids": "/steps/Ray-trace grids",
+          "steps.Regularization matrix (H)": "/steps/Regularization matrix (H)",
+          "steps.Regularized reconstruction": "/steps/Regularized reconstruction"
+        },
+        "provenance": {
+          "has_provenance": true,
+          "host": "euclid-ral-gpu-1",
+          "measured_at": "2026-10-27T10:58:31Z",
+          "qualified": false,
+          "unknowns": {}
+        },
+        "regime": "source_pixels_784",
+        "release_pin": "2026.10.25.1",
+        "resources": {
+          "cpus_per_eval": 8,
+          "cpus_per_eval_basis": "jax gpu: one device; cpus_per_eval = NPROC host threads",
+          "devices_per_eval": 1,
+          "peak_rss_basis": "in_process_ru_maxrss",
+          "peak_rss_gb": 2.171449,
+          "peak_rss_note": "resource.getrusage(RUSAGE_SELF).ru_maxrss when the row was built: this process's peak resident set (children excluded), GB = 1e9 bytes",
+          "source": "row"
+        },
+        "run_id": "legacy/064ace83961230685e71",
+        "setup": {
+          "backend": "jax",
+          "device": "gpu",
+          "operator": "dense",
+          "precision": "fp64",
+          "threads": null,
+          "transformer": "na"
+        },
+        "setup_id": "jax_gpu_dense_fp64",
+        "status": "current",
+        "superseded_by": null,
+        "unit": "s",
+        "validation": {
+          "reason": "Legacy evidence labelled by the phase-0 day-zero rule; not an accepted baseline.",
+          "status": "unreviewed"
+        },
+        "values": {
+          "blurred_image_jit.steady_per_call_s": 0.000830712600145489,
+          "cholesky_curvature_reg_jit.steady_per_call_s": 0.000716495094820857,
+          "cholesky_solve_jit.steady_per_call_s": 0.0009039628028403967,
+          "component_total": 0.032316489098593595,
+          "curvature_matrix_jit.steady_per_call_s": 0.0017632441013120115,
+          "data_vector_jit.steady_per_call_s": 0.0002838423999492079,
+          "interpolator_prefix": 0.001886081404518336,
+          "inversion_setup_jit.steady_per_call_s": 0.010215838602744044,
+          "lens_image_jit.steady_per_call_s": 0.0001446481968741864,
+          "log_det_curvature_reg_jit.steady_per_call_s": 0.0006699496996589005,
+          "log_det_regularization_jit.steady_per_call_s": 0.000672133598709479,
+          "log_evidence_jit.steady_per_call_s": 0.0012514183996245264,
+          "nnls_pdip_jit.steady_per_call_s": 0.01725371889770031,
+          "nnls_pdip_one_iteration_jit.steady_per_call_s": 0.0017994725960306824,
+          "overlay_grid_jit.steady_per_call_s": 0.00013054140144959093,
+          "profile_subtract_jit.steady_per_call_s": 0.00012721639941446484,
+          "ray_trace_jit.steady_per_call_s": 0.00016145789995789528,
+          "reconstruction_jit.steady_per_call_s": 0.017064596200361846,
+          "regularization_matrix_jit.steady_per_call_s": 0.0022290543012786655,
+          "regularization_matrix_prefix": 0.0022290543012786655,
+          "setup_prefix_6.steady_per_call_s": 0.001886081404518336,
+          "steps.Blurred image (PSF convolution)": 0.000830712600145489,
+          "steps.Curvature matrix (F)": 0.0017632441013120115,
+          "steps.Data vector (D)": 0.0002838423999492079,
+          "steps.Inversion setup (steps 4-8 combined)": 0.010215838602744044,
+          "steps.Lens light images (pre-PSF)": 0.0001446481968741864,
+          "steps.Mapped recon + log evidence": 0.0012514183996245264,
+          "steps.Overlay grid (source pixel centres)": 0.00013054140144959093,
+          "steps.Profile-subtracted image": 0.00012721639941446484,
+          "steps.Ray-trace grids": 0.00016145789995789528,
+          "steps.Regularization matrix (H)": 0.0003429728967603294,
+          "steps.Regularized reconstruction": 0.017064596200361846
+        }
+      },
+      {
+        "class": "secondary",
+        "day_zero": null,
+        "decision_id": null,
+        "evidence": {
+          "fragment": null,
           "path": "results/point_source_source/source_plane/simple/jax_gpu_na_fp64/hpc_a100/breakdown.json"
         },
         "figures": [],
@@ -100414,6 +103045,275 @@
           "steps.Precision tensor W_i (jacfwd Hessian -> A^-T Theta A^-1)": 6.12244984949939e-05,
           "steps.Ray trace: _beta_hat (deflections at observed positions)": 0.00018711249867919832,
           "value_and_grad_solved.steady_per_call_s": 0.0006408821840013843
+        }
+      },
+      {
+        "class": "secondary",
+        "day_zero": null,
+        "decision_id": null,
+        "evidence": {
+          "fragment": null,
+          "path": "results/imaging/rectangular/hst/jax_gpu_sparse_fp64/hpc_a100/source_pixels_784/breakdown.json"
+        },
+        "figures": [
+          {
+            "kind": "fit",
+            "path": "results/imaging/rectangular/hst/jax_gpu_sparse_fp64/hpc_a100/source_pixels_784/fit.png",
+            "sha256": "3185f83bdbc94790f6beaf99d38cffd67b4d4cd6a95ef92a3d2daa81e5aa4c10"
+          }
+        ],
+        "host_class": "hpc_a100",
+        "id": "lifecycle/d528879a68f0ed5b752e",
+        "identity": {
+          "backend": "gpu",
+          "device": "a100",
+          "hardware_details": {
+            "autotune_cache_entries_at_start": 0,
+            "backend": "gpu",
+            "cache_fresh": true,
+            "cpu_count": 124,
+            "device": "cuda:0",
+            "hostname": "euclid-ral-gpu-1",
+            "nvidia_smi": "NVIDIA A100 80GB PCIe, 1573 MiB, 81920 MiB",
+            "omp_num_threads": "1",
+            "xla_flags": "--xla_disable_hlo_passes=constant_folding --xla_gpu_autotune_level=0 --xla_gpu_enable_triton_gemm=false"
+          },
+          "library_version": "2026.10.25.1",
+          "precision": "float64",
+          "software": {
+            "PyAutoArray.library_revisions": "0f12fac7789c81d0fdaa324508ced5b4c434d42a",
+            "PyAutoArray.library_versions": "2026.8.17.1",
+            "PyAutoFit.library_revisions": "8cb533a605f556d85012d5eb7ed8d4f3c2a4dcf6",
+            "PyAutoFit.library_versions": "2026.8.17.1",
+            "PyAutoGalaxy.library_revisions": "7472211470b9d2b3a76bb12dcacbac51ab4de06f",
+            "PyAutoGalaxy.library_versions": "2026.8.17.1",
+            "PyAutoLens": "2026.10.25.1",
+            "PyAutoLens.library_revisions": "c6927eeb33724c2de2f2e2c773ba3ebe651943a8",
+            "PyAutoLens.library_versions": "2026.8.17.1",
+            "PyAutoNerves.library_revisions": "ec8b5c1e5f17ac03ac5246b5fbc322624a6cd3f6",
+            "PyAutoNerves.library_versions": "2026.8.17.1",
+            "autolens_profiling.library_revisions": "5bcbe790ce0dd7128ba6efc1f73f5f82c52dbb8e",
+            "jax.dependency_versions": "0.10.2",
+            "jaxlib.dependency_versions": "0.10.2",
+            "nufftax.dependency_versions": "0.6.1",
+            "numba.dependency_versions": "0.65.1",
+            "numpy.dependency_versions": "2.2.6",
+            "release_pin_basis": "library_revisions equal tag 2026.10.25.1's SHAs (catalogue/release_revisions.json); the source checkout stamped autolens_version 2026.8.17.1",
+            "scipy.dependency_versions": "1.17.1"
+          },
+          "unknowns": {}
+        },
+        "instrument": "hst",
+        "likelihood": {
+          "dataset_type": "imaging",
+          "variant": "rectangular"
+        },
+        "limitations": [
+          "provisional_secondary: true",
+          "size_variant: a declared size measured beside the standard 1225 source pixels (catalogue/size_variants.json, human 2026-10-26, autolens_profiling#468 (\"Profile 28² too\")): 784 source pixels, the rectangular mesh the SLaM inference runs use (mesh_shape 28x28 = 784; the standard-size production cell is otherwise unchanged: hst_rect_adapt 32x32 resized to 28x28 instead of 35x35), so the autolens_inference wall-time rows pair with a profiling runtime row of the same size (autolens_inference#47 size_match)"
+        ],
+        "location": "cell",
+        "measured_at": "2026-10-27T11:00:16Z",
+        "measurement": "compile",
+        "method": {
+          "cache_state": null,
+          "id": "legacy/e8692393883aaf44a046",
+          "repetitions": null,
+          "statistic": null,
+          "synchronization": null,
+          "unknowns": {
+            "cache_state": "Not recorded in this legacy evidence; no current default substituted.",
+            "repetitions": "Not recorded in this legacy evidence; no current default substituted.",
+            "statistic": "Not recorded in this legacy evidence; no current default substituted.",
+            "synchronization": "Not recorded in this legacy evidence; no current default substituted.",
+            "warmup": "Not recorded in this legacy evidence; no current default substituted."
+          },
+          "warmup": null
+        },
+        "metric": "blurred_image_jit.compile_s",
+        "model_variant": "default",
+        "pointers": {
+          "blurred_image_jit.compile_s": "/jit_phases/blurred_image_jit/compile_s",
+          "blurred_image_jit.first_call_s": "/jit_phases/blurred_image_jit/first_call_s",
+          "blurred_image_jit.lower_s": "/jit_phases/blurred_image_jit/lower_s",
+          "cholesky_curvature_reg_jit.compile_s": "/jit_phases/cholesky_curvature_reg_jit/compile_s",
+          "cholesky_curvature_reg_jit.first_call_s": "/jit_phases/cholesky_curvature_reg_jit/first_call_s",
+          "cholesky_curvature_reg_jit.lower_s": "/jit_phases/cholesky_curvature_reg_jit/lower_s",
+          "cholesky_solve_jit.compile_s": "/jit_phases/cholesky_solve_jit/compile_s",
+          "cholesky_solve_jit.first_call_s": "/jit_phases/cholesky_solve_jit/first_call_s",
+          "cholesky_solve_jit.lower_s": "/jit_phases/cholesky_solve_jit/lower_s",
+          "curvature_F_diag_jit.compile_s": "/jit_phases/curvature_F_diag_jit/compile_s",
+          "curvature_F_diag_jit.first_call_s": "/jit_phases/curvature_F_diag_jit/first_call_s",
+          "curvature_F_diag_jit.lower_s": "/jit_phases/curvature_F_diag_jit/lower_s",
+          "curvature_F_func_func_jit.compile_s": "/jit_phases/curvature_F_func_func_jit/compile_s",
+          "curvature_F_func_func_jit.first_call_s": "/jit_phases/curvature_F_func_func_jit/first_call_s",
+          "curvature_F_func_func_jit.lower_s": "/jit_phases/curvature_F_func_func_jit/lower_s",
+          "curvature_F_off_diag_jit.compile_s": "/jit_phases/curvature_F_off_diag_jit/compile_s",
+          "curvature_F_off_diag_jit.first_call_s": "/jit_phases/curvature_F_off_diag_jit/first_call_s",
+          "curvature_F_off_diag_jit.lower_s": "/jit_phases/curvature_F_off_diag_jit/lower_s",
+          "curvature_matrix_sparse_jit.compile_s": "/jit_phases/curvature_matrix_sparse_jit/compile_s",
+          "curvature_matrix_sparse_jit.first_call_s": "/jit_phases/curvature_matrix_sparse_jit/first_call_s",
+          "curvature_matrix_sparse_jit.lower_s": "/jit_phases/curvature_matrix_sparse_jit/lower_s",
+          "data_vector_sparse_jit.compile_s": "/jit_phases/data_vector_sparse_jit/compile_s",
+          "data_vector_sparse_jit.first_call_s": "/jit_phases/data_vector_sparse_jit/first_call_s",
+          "data_vector_sparse_jit.lower_s": "/jit_phases/data_vector_sparse_jit/lower_s",
+          "inversion_setup_sparse_jit.compile_s": "/jit_phases/inversion_setup_sparse_jit/compile_s",
+          "inversion_setup_sparse_jit.first_call_s": "/jit_phases/inversion_setup_sparse_jit/first_call_s",
+          "inversion_setup_sparse_jit.lower_s": "/jit_phases/inversion_setup_sparse_jit/lower_s",
+          "lens_image_jit.compile_s": "/jit_phases/lens_image_jit/compile_s",
+          "lens_image_jit.first_call_s": "/jit_phases/lens_image_jit/first_call_s",
+          "lens_image_jit.lower_s": "/jit_phases/lens_image_jit/lower_s",
+          "log_det_curvature_reg_jit.compile_s": "/jit_phases/log_det_curvature_reg_jit/compile_s",
+          "log_det_curvature_reg_jit.first_call_s": "/jit_phases/log_det_curvature_reg_jit/first_call_s",
+          "log_det_curvature_reg_jit.lower_s": "/jit_phases/log_det_curvature_reg_jit/lower_s",
+          "log_det_regularization_jit.compile_s": "/jit_phases/log_det_regularization_jit/compile_s",
+          "log_det_regularization_jit.first_call_s": "/jit_phases/log_det_regularization_jit/first_call_s",
+          "log_det_regularization_jit.lower_s": "/jit_phases/log_det_regularization_jit/lower_s",
+          "log_evidence_sparse_jit.compile_s": "/jit_phases/log_evidence_sparse_jit/compile_s",
+          "log_evidence_sparse_jit.first_call_s": "/jit_phases/log_evidence_sparse_jit/first_call_s",
+          "log_evidence_sparse_jit.lower_s": "/jit_phases/log_evidence_sparse_jit/lower_s",
+          "mge_operated_basis_jit.compile_s": "/jit_phases/mge_operated_basis_jit/compile_s",
+          "mge_operated_basis_jit.first_call_s": "/jit_phases/mge_operated_basis_jit/first_call_s",
+          "mge_operated_basis_jit.lower_s": "/jit_phases/mge_operated_basis_jit/lower_s",
+          "nnls_pdip_jit.compile_s": "/jit_phases/nnls_pdip_jit/compile_s",
+          "nnls_pdip_jit.first_call_s": "/jit_phases/nnls_pdip_jit/first_call_s",
+          "nnls_pdip_jit.lower_s": "/jit_phases/nnls_pdip_jit/lower_s",
+          "nnls_pdip_one_iteration_jit.compile_s": "/jit_phases/nnls_pdip_one_iteration_jit/compile_s",
+          "nnls_pdip_one_iteration_jit.first_call_s": "/jit_phases/nnls_pdip_one_iteration_jit/first_call_s",
+          "nnls_pdip_one_iteration_jit.lower_s": "/jit_phases/nnls_pdip_one_iteration_jit/lower_s",
+          "overlay_grid_jit.compile_s": "/jit_phases/overlay_grid_jit/compile_s",
+          "overlay_grid_jit.first_call_s": "/jit_phases/overlay_grid_jit/first_call_s",
+          "overlay_grid_jit.lower_s": "/jit_phases/overlay_grid_jit/lower_s",
+          "profile_subtract_jit.compile_s": "/jit_phases/profile_subtract_jit/compile_s",
+          "profile_subtract_jit.first_call_s": "/jit_phases/profile_subtract_jit/first_call_s",
+          "profile_subtract_jit.lower_s": "/jit_phases/profile_subtract_jit/lower_s",
+          "psf_weighted_data_jit.compile_s": "/jit_phases/psf_weighted_data_jit/compile_s",
+          "psf_weighted_data_jit.first_call_s": "/jit_phases/psf_weighted_data_jit/first_call_s",
+          "psf_weighted_data_jit.lower_s": "/jit_phases/psf_weighted_data_jit/lower_s",
+          "ray_trace_jit.compile_s": "/jit_phases/ray_trace_jit/compile_s",
+          "ray_trace_jit.first_call_s": "/jit_phases/ray_trace_jit/first_call_s",
+          "ray_trace_jit.lower_s": "/jit_phases/ray_trace_jit/lower_s",
+          "reconstruction_jit.compile_s": "/jit_phases/reconstruction_jit/compile_s",
+          "reconstruction_jit.first_call_s": "/jit_phases/reconstruction_jit/first_call_s",
+          "reconstruction_jit.lower_s": "/jit_phases/reconstruction_jit/lower_s",
+          "regularization_matrix_jit.compile_s": "/jit_phases/regularization_matrix_jit/compile_s",
+          "regularization_matrix_jit.first_call_s": "/jit_phases/regularization_matrix_jit/first_call_s",
+          "regularization_matrix_jit.lower_s": "/jit_phases/regularization_matrix_jit/lower_s",
+          "setup_prefix_6.compile_s": "/jit_phases/setup_prefix_6/compile_s",
+          "setup_prefix_6.first_call_s": "/jit_phases/setup_prefix_6/first_call_s",
+          "setup_prefix_6.lower_s": "/jit_phases/setup_prefix_6/lower_s",
+          "sparse_triplets_jit.compile_s": "/jit_phases/sparse_triplets_jit/compile_s",
+          "sparse_triplets_jit.first_call_s": "/jit_phases/sparse_triplets_jit/first_call_s",
+          "sparse_triplets_jit.lower_s": "/jit_phases/sparse_triplets_jit/lower_s"
+        },
+        "provenance": {
+          "has_provenance": true,
+          "host": "euclid-ral-gpu-1",
+          "measured_at": "2026-10-27T11:00:16Z",
+          "qualified": false,
+          "unknowns": {}
+        },
+        "regime": "source_pixels_784",
+        "release_pin": "2026.10.25.1",
+        "resources": {
+          "cpus_per_eval": 8,
+          "cpus_per_eval_basis": "jax gpu: one device; cpus_per_eval = NPROC host threads",
+          "devices_per_eval": 1,
+          "peak_rss_basis": "in_process_ru_maxrss",
+          "peak_rss_gb": 2.007314,
+          "peak_rss_note": "resource.getrusage(RUSAGE_SELF).ru_maxrss when the row was built: this process's peak resident set (children excluded), GB = 1e9 bytes",
+          "source": "row"
+        },
+        "run_id": "legacy/7f57e5de09795f4d32b8",
+        "setup": {
+          "backend": "jax",
+          "device": "gpu",
+          "operator": "sparse",
+          "precision": "fp64",
+          "threads": null,
+          "transformer": "na"
+        },
+        "setup_id": "jax_gpu_sparse_fp64",
+        "status": "superseded",
+        "superseded_by": "lifecycle/e70a68991059a3250dc9",
+        "unit": "s",
+        "validation": {
+          "reason": "Legacy evidence labelled by the phase-0 day-zero rule; not an accepted baseline.",
+          "status": "unreviewed"
+        },
+        "values": {
+          "blurred_image_jit.compile_s": 0.17161512997699901,
+          "blurred_image_jit.first_call_s": 0.007451035955455154,
+          "blurred_image_jit.lower_s": 0.059006675030104816,
+          "cholesky_curvature_reg_jit.compile_s": 0.08743097895057872,
+          "cholesky_curvature_reg_jit.first_call_s": 0.0013814630219712853,
+          "cholesky_curvature_reg_jit.lower_s": 0.010851834958884865,
+          "cholesky_solve_jit.compile_s": 0.0687349729705602,
+          "cholesky_solve_jit.first_call_s": 0.0014155019889585674,
+          "cholesky_solve_jit.lower_s": 0.011721774004399776,
+          "curvature_F_diag_jit.compile_s": 0.16364941000938416,
+          "curvature_F_diag_jit.first_call_s": 0.04755747696617618,
+          "curvature_F_diag_jit.lower_s": 0.03069344599498436,
+          "curvature_F_func_func_jit.compile_s": 0.04146234301151708,
+          "curvature_F_func_func_jit.first_call_s": 0.0010271770297549665,
+          "curvature_F_func_func_jit.lower_s": 0.006321671011392027,
+          "curvature_F_off_diag_jit.compile_s": 0.13084533798974007,
+          "curvature_F_off_diag_jit.first_call_s": 0.025192616041749716,
+          "curvature_F_off_diag_jit.lower_s": 0.017026236979290843,
+          "curvature_matrix_sparse_jit.compile_s": 0.45198546501342207,
+          "curvature_matrix_sparse_jit.first_call_s": 0.05835486302385107,
+          "curvature_matrix_sparse_jit.lower_s": 0.049600962025579065,
+          "data_vector_sparse_jit.compile_s": 0.07654709497001022,
+          "data_vector_sparse_jit.first_call_s": 0.0010434779687784612,
+          "data_vector_sparse_jit.lower_s": 0.010826266021467745,
+          "inversion_setup_sparse_jit.compile_s": 10.12420162797207,
+          "inversion_setup_sparse_jit.first_call_s": 0.3019454460009001,
+          "inversion_setup_sparse_jit.lower_s": 3.5559621960273944,
+          "lens_image_jit.compile_s": 0.03655168501427397,
+          "lens_image_jit.first_call_s": 0.0006439809803850949,
+          "lens_image_jit.lower_s": 0.06508963799569756,
+          "log_det_curvature_reg_jit.compile_s": 0.07378299097763374,
+          "log_det_curvature_reg_jit.first_call_s": 0.0013797629508189857,
+          "log_det_curvature_reg_jit.lower_s": 0.013385692029260099,
+          "log_det_regularization_jit.compile_s": 8.168979547917843e-06,
+          "log_det_regularization_jit.first_call_s": 0.0007423319621011615,
+          "log_det_regularization_jit.lower_s": 0.00025588704738765955,
+          "log_evidence_sparse_jit.compile_s": 0.26346902502700686,
+          "log_evidence_sparse_jit.first_call_s": 0.009006726962979883,
+          "log_evidence_sparse_jit.lower_s": 0.03146668802946806,
+          "mge_operated_basis_jit.compile_s": 8.38006941403728,
+          "mge_operated_basis_jit.first_call_s": 0.2319369079777971,
+          "mge_operated_basis_jit.lower_s": 2.3185169139760546,
+          "nnls_pdip_jit.compile_s": 0.29949005699018016,
+          "nnls_pdip_jit.first_call_s": 0.01885327498894185,
+          "nnls_pdip_jit.lower_s": 0.024504945031367242,
+          "nnls_pdip_one_iteration_jit.compile_s": 0.2964437740156427,
+          "nnls_pdip_one_iteration_jit.first_call_s": 0.0034863660112023354,
+          "nnls_pdip_one_iteration_jit.lower_s": 0.024319376971106976,
+          "overlay_grid_jit.compile_s": 0.11556837800890207,
+          "overlay_grid_jit.first_call_s": 0.0010690070339478552,
+          "overlay_grid_jit.lower_s": 0.015454158012289554,
+          "profile_subtract_jit.compile_s": 0.02481346996501088,
+          "profile_subtract_jit.first_call_s": 0.0006215129978954792,
+          "profile_subtract_jit.lower_s": 0.004441534983925521,
+          "psf_weighted_data_jit.compile_s": 0.12878280400764197,
+          "psf_weighted_data_jit.first_call_s": 0.0008738099713809788,
+          "psf_weighted_data_jit.lower_s": 0.01459638902451843,
+          "ray_trace_jit.compile_s": 0.3130691879778169,
+          "ray_trace_jit.first_call_s": 0.00144506199285388,
+          "ray_trace_jit.lower_s": 0.08922123699449003,
+          "reconstruction_jit.compile_s": 0.33679415099322796,
+          "reconstruction_jit.first_call_s": 0.01877853600308299,
+          "reconstruction_jit.lower_s": 0.03059925901470706,
+          "regularization_matrix_jit.compile_s": 2.631109427951742,
+          "regularization_matrix_jit.first_call_s": 0.01003284502075985,
+          "regularization_matrix_jit.lower_s": 0.26615680201211944,
+          "setup_prefix_6.compile_s": 2.3865177769912407,
+          "setup_prefix_6.first_call_s": 0.00882685900432989,
+          "setup_prefix_6.lower_s": 0.22631329798605293,
+          "sparse_triplets_jit.compile_s": 0.06444971601013094,
+          "sparse_triplets_jit.first_call_s": 0.0008329990087077022,
+          "sparse_triplets_jit.lower_s": 0.016113768971990794
         }
       },
       {
@@ -109346,6 +112246,137 @@
         },
         "values": {
           "host_peak_rss": 2614.62890625
+        }
+      },
+      {
+        "class": "secondary",
+        "day_zero": null,
+        "decision_id": null,
+        "evidence": {
+          "fragment": null,
+          "path": "results/imaging/rectangular/hst/jax_gpu_sparse_fp64/hpc_a100/source_pixels_784/runtime.json"
+        },
+        "figures": [
+          {
+            "kind": "fit",
+            "path": "results/imaging/rectangular/hst/jax_gpu_sparse_fp64/hpc_a100/source_pixels_784/fit.png",
+            "sha256": "3185f83bdbc94790f6beaf99d38cffd67b4d4cd6a95ef92a3d2daa81e5aa4c10"
+          }
+        ],
+        "host_class": "hpc_a100",
+        "id": "lifecycle/e70a68991059a3250dc9",
+        "identity": {
+          "backend": "gpu",
+          "device": "a100",
+          "hardware_details": {
+            "autotune_cache_entries_at_start": 0,
+            "backend": "gpu",
+            "cache_fresh": true,
+            "cpu_count": 124,
+            "device": "cuda:0",
+            "hostname": "euclid-ral-gpu-1",
+            "nvidia_smi": "NVIDIA A100 80GB PCIe, 3625 MiB, 81920 MiB",
+            "omp_num_threads": "1",
+            "xla_flags": "--xla_disable_hlo_passes=constant_folding --xla_gpu_autotune_level=0 --xla_gpu_enable_triton_gemm=false"
+          },
+          "library_version": "2026.10.25.1",
+          "precision": "float64",
+          "software": {
+            "PyAutoArray.library_revisions": "0f12fac7789c81d0fdaa324508ced5b4c434d42a",
+            "PyAutoArray.library_versions": "2026.8.17.1",
+            "PyAutoFit.library_revisions": "8cb533a605f556d85012d5eb7ed8d4f3c2a4dcf6",
+            "PyAutoFit.library_versions": "2026.8.17.1",
+            "PyAutoGalaxy.library_revisions": "7472211470b9d2b3a76bb12dcacbac51ab4de06f",
+            "PyAutoGalaxy.library_versions": "2026.8.17.1",
+            "PyAutoLens": "2026.10.25.1",
+            "PyAutoLens.library_revisions": "c6927eeb33724c2de2f2e2c773ba3ebe651943a8",
+            "PyAutoLens.library_versions": "2026.8.17.1",
+            "PyAutoNerves.library_revisions": "ec8b5c1e5f17ac03ac5246b5fbc322624a6cd3f6",
+            "PyAutoNerves.library_versions": "2026.8.17.1",
+            "autolens_profiling.library_revisions": "5bcbe790ce0dd7128ba6efc1f73f5f82c52dbb8e",
+            "jax.dependency_versions": "0.10.2",
+            "jaxlib.dependency_versions": "0.10.2",
+            "nufftax.dependency_versions": "0.6.1",
+            "numba.dependency_versions": "0.65.1",
+            "numpy.dependency_versions": "2.2.6",
+            "release_pin_basis": "library_revisions equal tag 2026.10.25.1's SHAs (catalogue/release_revisions.json); the source checkout stamped autolens_version 2026.8.17.1",
+            "scipy.dependency_versions": "1.17.1"
+          },
+          "unknowns": {}
+        },
+        "instrument": "hst",
+        "likelihood": {
+          "dataset_type": "imaging",
+          "variant": "rectangular"
+        },
+        "limitations": [
+          "provisional_secondary: true",
+          "size_variant: a declared size measured beside the standard 1225 source pixels (catalogue/size_variants.json, human 2026-10-26, autolens_profiling#468 (\"Profile 28² too\")): 784 source pixels, the rectangular mesh the SLaM inference runs use (mesh_shape 28x28 = 784; the standard-size production cell is otherwise unchanged: hst_rect_adapt 32x32 resized to 28x28 instead of 35x35), so the autolens_inference wall-time rows pair with a profiling runtime row of the same size (autolens_inference#47 size_match)"
+        ],
+        "location": "cell",
+        "measured_at": "2026-10-27T11:01:14Z",
+        "measurement": "compile",
+        "method": {
+          "cache_state": null,
+          "id": "legacy/457eb6b102dc37981ebb",
+          "repetitions": null,
+          "statistic": null,
+          "synchronization": null,
+          "unknowns": {
+            "cache_state": "Not recorded in this legacy evidence; no current default substituted.",
+            "repetitions": "Not recorded in this legacy evidence; no current default substituted.",
+            "statistic": "Not recorded in this legacy evidence; no current default substituted.",
+            "synchronization": "Not recorded in this legacy evidence; no current default substituted.",
+            "warmup": "Not recorded in this legacy evidence; no current default substituted."
+          },
+          "warmup": null
+        },
+        "metric": "full_pipeline.compile",
+        "model_variant": "default",
+        "pointers": {
+          "full_pipeline.compile": "/full_pipeline_compile_s",
+          "full_pipeline.first_call": "/full_pipeline_first_call_s",
+          "full_pipeline.lower": "/full_pipeline_lower_s"
+        },
+        "provenance": {
+          "has_provenance": true,
+          "host": "euclid-ral-gpu-1",
+          "measured_at": "2026-10-27T11:01:14Z",
+          "qualified": false,
+          "unknowns": {}
+        },
+        "regime": "source_pixels_784",
+        "release_pin": "2026.10.25.1",
+        "resources": {
+          "cpus_per_eval": 8,
+          "cpus_per_eval_basis": "jax gpu: one device; cpus_per_eval = NPROC host threads",
+          "devices_per_eval": 1,
+          "peak_rss_basis": "in_process_ru_maxrss",
+          "peak_rss_gb": 1.975796,
+          "peak_rss_note": "resource.getrusage(RUSAGE_SELF).ru_maxrss when the row was built: this process's peak resident set (children excluded), GB = 1e9 bytes",
+          "source": "row"
+        },
+        "run_id": "legacy/f7f2a2354ab458161fb0",
+        "setup": {
+          "backend": "jax",
+          "device": "gpu",
+          "operator": "sparse",
+          "precision": "fp64",
+          "threads": null,
+          "transformer": "na"
+        },
+        "setup_id": "jax_gpu_sparse_fp64",
+        "status": "current",
+        "superseded_by": null,
+        "unit": "s",
+        "validation": {
+          "reason": "Legacy evidence labelled by the phase-0 day-zero rule; not an accepted baseline.",
+          "status": "unreviewed"
+        },
+        "values": {
+          "full_pipeline.compile": 12.234666785981972,
+          "full_pipeline.first_call": 0.43250603799242526,
+          "full_pipeline.lower": 3.851014818006661
         }
       },
       {
