@@ -55,6 +55,10 @@ Keep `--xla_cpu_multi_thread_eigen=false`, the workaround the 2d driver already 
 executables). The human chose it as the one that keeps the fastest run times, and asked that the
 knowledge be kept in Pulse.
 
+One flag for every cell: the human also ruled (2026-10-29, "keep one option for every cell, as
+now") against a per-variant choice, such as the scheduler flag on the pixelized cells where it
+measured slightly faster. Every 2d JAX CPU leg, MGE and pixelized, compiles with the eigen flag.
+
 ## Implications
 
 - No code changes: the 2d driver
