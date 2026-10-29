@@ -3,8 +3,8 @@
   "repo": "autolens_profiling",
   "github": "PyAutoLabs/autolens_profiling",
   "summary_path": "dashboard/catalogue.json",
-  "commit": "c932b669606839a9ffa2ec1dc303142f2dc0beaf",
-  "fetched_at": "2026-10-29T14:56:44Z",
+  "commit": "741ca9a8b0fd108a0d1ce6c89c4cb1e67014df9c",
+  "fetched_at": "2026-10-29T14:57:41Z",
   "summary": {
     "archive_record_count": 99,
     "comparison_policy": {
@@ -1934,7 +1934,7 @@
         }
       ],
       "expected": {
-        "cells": 220
+        "cells": 226
       },
       "observed": {
         "current": 317,
@@ -2806,6 +2806,78 @@
         "likelihood": {
           "dataset_type": "cluster",
           "variant": "image_plane"
+        },
+        "measurement": "breakdown",
+        "model_variant": "default",
+        "setup_id": "jax_cpu_na_fp64"
+      },
+      {
+        "class": "optimal",
+        "host_class": "hpc_a100",
+        "instrument": "simple",
+        "likelihood": {
+          "dataset_type": "cluster",
+          "variant": "source_plane"
+        },
+        "measurement": "runtime",
+        "model_variant": "default",
+        "setup_id": "jax_cpu_na_fp64"
+      },
+      {
+        "class": "optimal",
+        "host_class": "hpc_a100",
+        "instrument": "simple",
+        "likelihood": {
+          "dataset_type": "cluster",
+          "variant": "source_plane"
+        },
+        "measurement": "breakdown",
+        "model_variant": "default",
+        "setup_id": "jax_cpu_na_fp64"
+      },
+      {
+        "class": "secondary",
+        "host_class": "hpc_a100",
+        "instrument": "simple",
+        "likelihood": {
+          "dataset_type": "cluster",
+          "variant": "source_plane"
+        },
+        "measurement": "runtime",
+        "model_variant": "default",
+        "setup_id": "jax_gpu_na_fp64"
+      },
+      {
+        "class": "secondary",
+        "host_class": "hpc_a100",
+        "instrument": "simple",
+        "likelihood": {
+          "dataset_type": "cluster",
+          "variant": "source_plane"
+        },
+        "measurement": "breakdown",
+        "model_variant": "default",
+        "setup_id": "jax_gpu_na_fp64"
+      },
+      {
+        "class": "optimal",
+        "host_class": "hpc_ral_cpu",
+        "instrument": "simple",
+        "likelihood": {
+          "dataset_type": "cluster",
+          "variant": "source_plane"
+        },
+        "measurement": "runtime",
+        "model_variant": "default",
+        "setup_id": "jax_cpu_na_fp64"
+      },
+      {
+        "class": "optimal",
+        "host_class": "hpc_ral_cpu",
+        "instrument": "simple",
+        "likelihood": {
+          "dataset_type": "cluster",
+          "variant": "source_plane"
         },
         "measurement": "breakdown",
         "model_variant": "default",
