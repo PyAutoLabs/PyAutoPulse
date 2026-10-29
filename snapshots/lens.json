@@ -3,8 +3,8 @@
   "repo": "autolens_profiling",
   "github": "PyAutoLabs/autolens_profiling",
   "summary_path": "dashboard/catalogue.json",
-  "commit": "a1a4ccf16fd6c30ce0a3d14e6ec0aec382d7099c",
-  "fetched_at": "2026-10-27T13:08:04Z",
+  "commit": "741ca9a8b0fd108a0d1ce6c89c4cb1e67014df9c",
+  "fetched_at": "2026-10-29T14:57:41Z",
   "summary": {
     "archive_record_count": 99,
     "comparison_policy": {
@@ -1934,7 +1934,7 @@
         }
       ],
       "expected": {
-        "cells": 246
+        "cells": 226
       },
       "observed": {
         "current": 317,
@@ -2812,6 +2812,78 @@
         "setup_id": "jax_cpu_na_fp64"
       },
       {
+        "class": "optimal",
+        "host_class": "hpc_a100",
+        "instrument": "simple",
+        "likelihood": {
+          "dataset_type": "cluster",
+          "variant": "source_plane"
+        },
+        "measurement": "runtime",
+        "model_variant": "default",
+        "setup_id": "jax_cpu_na_fp64"
+      },
+      {
+        "class": "optimal",
+        "host_class": "hpc_a100",
+        "instrument": "simple",
+        "likelihood": {
+          "dataset_type": "cluster",
+          "variant": "source_plane"
+        },
+        "measurement": "breakdown",
+        "model_variant": "default",
+        "setup_id": "jax_cpu_na_fp64"
+      },
+      {
+        "class": "secondary",
+        "host_class": "hpc_a100",
+        "instrument": "simple",
+        "likelihood": {
+          "dataset_type": "cluster",
+          "variant": "source_plane"
+        },
+        "measurement": "runtime",
+        "model_variant": "default",
+        "setup_id": "jax_gpu_na_fp64"
+      },
+      {
+        "class": "secondary",
+        "host_class": "hpc_a100",
+        "instrument": "simple",
+        "likelihood": {
+          "dataset_type": "cluster",
+          "variant": "source_plane"
+        },
+        "measurement": "breakdown",
+        "model_variant": "default",
+        "setup_id": "jax_gpu_na_fp64"
+      },
+      {
+        "class": "optimal",
+        "host_class": "hpc_ral_cpu",
+        "instrument": "simple",
+        "likelihood": {
+          "dataset_type": "cluster",
+          "variant": "source_plane"
+        },
+        "measurement": "runtime",
+        "model_variant": "default",
+        "setup_id": "jax_cpu_na_fp64"
+      },
+      {
+        "class": "optimal",
+        "host_class": "hpc_ral_cpu",
+        "instrument": "simple",
+        "likelihood": {
+          "dataset_type": "cluster",
+          "variant": "source_plane"
+        },
+        "measurement": "breakdown",
+        "model_variant": "default",
+        "setup_id": "jax_cpu_na_fp64"
+      },
+      {
         "class": "secondary",
         "host_class": "hpc_a100",
         "instrument": "alma",
@@ -4444,30 +4516,6 @@
         "setup_id": "numba_cpu_sparse_fp64"
       },
       {
-        "class": "secondary",
-        "host_class": "hpc_a100",
-        "instrument": "alma",
-        "likelihood": {
-          "dataset_type": "interferometer",
-          "variant": "delaunay"
-        },
-        "measurement": "runtime",
-        "model_variant": "default",
-        "setup_id": "jax_gpu_dense_fp64_nufft"
-      },
-      {
-        "class": "secondary",
-        "host_class": "hpc_a100",
-        "instrument": "alma",
-        "likelihood": {
-          "dataset_type": "interferometer",
-          "variant": "delaunay"
-        },
-        "measurement": "breakdown",
-        "model_variant": "default",
-        "setup_id": "jax_gpu_dense_fp64_nufft"
-      },
-      {
         "class": "optimal",
         "host_class": "hpc_a100",
         "instrument": "alma",
@@ -4490,30 +4538,6 @@
         "measurement": "breakdown",
         "model_variant": "default",
         "setup_id": "jax_gpu_sparse_fp64_wtilde"
-      },
-      {
-        "class": "secondary",
-        "host_class": "hpc_ral_cpu",
-        "instrument": "alma",
-        "likelihood": {
-          "dataset_type": "interferometer",
-          "variant": "delaunay"
-        },
-        "measurement": "runtime",
-        "model_variant": "default",
-        "setup_id": "jax_cpu_dense_fp64_nufft"
-      },
-      {
-        "class": "secondary",
-        "host_class": "hpc_ral_cpu",
-        "instrument": "alma",
-        "likelihood": {
-          "dataset_type": "interferometer",
-          "variant": "delaunay"
-        },
-        "measurement": "breakdown",
-        "model_variant": "default",
-        "setup_id": "jax_cpu_dense_fp64_nufft"
       },
       {
         "class": "secondary",
@@ -4564,30 +4588,6 @@
         "setup_id": "numba_cpu_sparse_fp64_wtilde"
       },
       {
-        "class": "secondary",
-        "host_class": "hpc_a100",
-        "instrument": "alma_high",
-        "likelihood": {
-          "dataset_type": "interferometer",
-          "variant": "delaunay"
-        },
-        "measurement": "runtime",
-        "model_variant": "default",
-        "setup_id": "jax_gpu_dense_fp64_nufft"
-      },
-      {
-        "class": "secondary",
-        "host_class": "hpc_a100",
-        "instrument": "alma_high",
-        "likelihood": {
-          "dataset_type": "interferometer",
-          "variant": "delaunay"
-        },
-        "measurement": "breakdown",
-        "model_variant": "default",
-        "setup_id": "jax_gpu_dense_fp64_nufft"
-      },
-      {
         "class": "optimal",
         "host_class": "hpc_a100",
         "instrument": "alma_high",
@@ -4610,30 +4610,6 @@
         "measurement": "breakdown",
         "model_variant": "default",
         "setup_id": "jax_gpu_sparse_fp64_wtilde"
-      },
-      {
-        "class": "secondary",
-        "host_class": "hpc_ral_cpu",
-        "instrument": "alma_high",
-        "likelihood": {
-          "dataset_type": "interferometer",
-          "variant": "delaunay"
-        },
-        "measurement": "runtime",
-        "model_variant": "default",
-        "setup_id": "jax_cpu_dense_fp64_nufft"
-      },
-      {
-        "class": "secondary",
-        "host_class": "hpc_ral_cpu",
-        "instrument": "alma_high",
-        "likelihood": {
-          "dataset_type": "interferometer",
-          "variant": "delaunay"
-        },
-        "measurement": "breakdown",
-        "model_variant": "default",
-        "setup_id": "jax_cpu_dense_fp64_nufft"
       },
       {
         "class": "secondary",
@@ -4684,30 +4660,6 @@
         "setup_id": "numba_cpu_sparse_fp64_wtilde"
       },
       {
-        "class": "secondary",
-        "host_class": "hpc_a100",
-        "instrument": "jvla",
-        "likelihood": {
-          "dataset_type": "interferometer",
-          "variant": "delaunay"
-        },
-        "measurement": "runtime",
-        "model_variant": "default",
-        "setup_id": "jax_gpu_dense_fp64_nufft"
-      },
-      {
-        "class": "secondary",
-        "host_class": "hpc_a100",
-        "instrument": "jvla",
-        "likelihood": {
-          "dataset_type": "interferometer",
-          "variant": "delaunay"
-        },
-        "measurement": "breakdown",
-        "model_variant": "default",
-        "setup_id": "jax_gpu_dense_fp64_nufft"
-      },
-      {
         "class": "optimal",
         "host_class": "hpc_a100",
         "instrument": "jvla",
@@ -4730,30 +4682,6 @@
         "measurement": "breakdown",
         "model_variant": "default",
         "setup_id": "jax_gpu_sparse_fp64_wtilde"
-      },
-      {
-        "class": "secondary",
-        "host_class": "hpc_ral_cpu",
-        "instrument": "jvla",
-        "likelihood": {
-          "dataset_type": "interferometer",
-          "variant": "delaunay"
-        },
-        "measurement": "runtime",
-        "model_variant": "default",
-        "setup_id": "jax_cpu_dense_fp64_nufft"
-      },
-      {
-        "class": "secondary",
-        "host_class": "hpc_ral_cpu",
-        "instrument": "jvla",
-        "likelihood": {
-          "dataset_type": "interferometer",
-          "variant": "delaunay"
-        },
-        "measurement": "breakdown",
-        "model_variant": "default",
-        "setup_id": "jax_cpu_dense_fp64_nufft"
       },
       {
         "class": "secondary",
@@ -4972,30 +4900,6 @@
         "setup_id": "jax_cpu_dense_fp64_nufft"
       },
       {
-        "class": "secondary",
-        "host_class": "hpc_a100",
-        "instrument": "alma",
-        "likelihood": {
-          "dataset_type": "interferometer",
-          "variant": "rectangular"
-        },
-        "measurement": "runtime",
-        "model_variant": "default",
-        "setup_id": "jax_gpu_dense_fp64_nufft"
-      },
-      {
-        "class": "secondary",
-        "host_class": "hpc_a100",
-        "instrument": "alma",
-        "likelihood": {
-          "dataset_type": "interferometer",
-          "variant": "rectangular"
-        },
-        "measurement": "breakdown",
-        "model_variant": "default",
-        "setup_id": "jax_gpu_dense_fp64_nufft"
-      },
-      {
         "class": "optimal",
         "host_class": "hpc_a100",
         "instrument": "alma",
@@ -5018,30 +4922,6 @@
         "measurement": "breakdown",
         "model_variant": "default",
         "setup_id": "jax_gpu_sparse_fp64_wtilde"
-      },
-      {
-        "class": "secondary",
-        "host_class": "hpc_ral_cpu",
-        "instrument": "alma",
-        "likelihood": {
-          "dataset_type": "interferometer",
-          "variant": "rectangular"
-        },
-        "measurement": "runtime",
-        "model_variant": "default",
-        "setup_id": "jax_cpu_dense_fp64_nufft"
-      },
-      {
-        "class": "secondary",
-        "host_class": "hpc_ral_cpu",
-        "instrument": "alma",
-        "likelihood": {
-          "dataset_type": "interferometer",
-          "variant": "rectangular"
-        },
-        "measurement": "breakdown",
-        "model_variant": "default",
-        "setup_id": "jax_cpu_dense_fp64_nufft"
       },
       {
         "class": "secondary",
@@ -5092,30 +4972,6 @@
         "setup_id": "numba_cpu_sparse_fp64_wtilde"
       },
       {
-        "class": "secondary",
-        "host_class": "hpc_a100",
-        "instrument": "alma_high",
-        "likelihood": {
-          "dataset_type": "interferometer",
-          "variant": "rectangular"
-        },
-        "measurement": "runtime",
-        "model_variant": "default",
-        "setup_id": "jax_gpu_dense_fp64_nufft"
-      },
-      {
-        "class": "secondary",
-        "host_class": "hpc_a100",
-        "instrument": "alma_high",
-        "likelihood": {
-          "dataset_type": "interferometer",
-          "variant": "rectangular"
-        },
-        "measurement": "breakdown",
-        "model_variant": "default",
-        "setup_id": "jax_gpu_dense_fp64_nufft"
-      },
-      {
         "class": "optimal",
         "host_class": "hpc_a100",
         "instrument": "alma_high",
@@ -5138,30 +4994,6 @@
         "measurement": "breakdown",
         "model_variant": "default",
         "setup_id": "jax_gpu_sparse_fp64_wtilde"
-      },
-      {
-        "class": "secondary",
-        "host_class": "hpc_ral_cpu",
-        "instrument": "alma_high",
-        "likelihood": {
-          "dataset_type": "interferometer",
-          "variant": "rectangular"
-        },
-        "measurement": "runtime",
-        "model_variant": "default",
-        "setup_id": "jax_cpu_dense_fp64_nufft"
-      },
-      {
-        "class": "secondary",
-        "host_class": "hpc_ral_cpu",
-        "instrument": "alma_high",
-        "likelihood": {
-          "dataset_type": "interferometer",
-          "variant": "rectangular"
-        },
-        "measurement": "breakdown",
-        "model_variant": "default",
-        "setup_id": "jax_cpu_dense_fp64_nufft"
       },
       {
         "class": "secondary",
@@ -5212,30 +5044,6 @@
         "setup_id": "numba_cpu_sparse_fp64_wtilde"
       },
       {
-        "class": "secondary",
-        "host_class": "hpc_a100",
-        "instrument": "jvla",
-        "likelihood": {
-          "dataset_type": "interferometer",
-          "variant": "rectangular"
-        },
-        "measurement": "runtime",
-        "model_variant": "default",
-        "setup_id": "jax_gpu_dense_fp64_nufft"
-      },
-      {
-        "class": "secondary",
-        "host_class": "hpc_a100",
-        "instrument": "jvla",
-        "likelihood": {
-          "dataset_type": "interferometer",
-          "variant": "rectangular"
-        },
-        "measurement": "breakdown",
-        "model_variant": "default",
-        "setup_id": "jax_gpu_dense_fp64_nufft"
-      },
-      {
         "class": "optimal",
         "host_class": "hpc_a100",
         "instrument": "jvla",
@@ -5258,30 +5066,6 @@
         "measurement": "breakdown",
         "model_variant": "default",
         "setup_id": "jax_gpu_sparse_fp64_wtilde"
-      },
-      {
-        "class": "secondary",
-        "host_class": "hpc_ral_cpu",
-        "instrument": "jvla",
-        "likelihood": {
-          "dataset_type": "interferometer",
-          "variant": "rectangular"
-        },
-        "measurement": "runtime",
-        "model_variant": "default",
-        "setup_id": "jax_cpu_dense_fp64_nufft"
-      },
-      {
-        "class": "secondary",
-        "host_class": "hpc_ral_cpu",
-        "instrument": "jvla",
-        "likelihood": {
-          "dataset_type": "interferometer",
-          "variant": "rectangular"
-        },
-        "measurement": "breakdown",
-        "model_variant": "default",
-        "setup_id": "jax_cpu_dense_fp64_nufft"
       },
       {
         "class": "secondary",
@@ -5690,30 +5474,6 @@
         "measurement": "breakdown",
         "model_variant": "default",
         "setup_id": "jax_cpu_na_fp64"
-      },
-      {
-        "class": "secondary",
-        "host_class": "hpc_ral_cpu",
-        "instrument": "simple",
-        "likelihood": {
-          "dataset_type": "point_source_source",
-          "variant": "source_plane"
-        },
-        "measurement": "runtime",
-        "model_variant": "default",
-        "setup_id": "jax_gpu_na_fp64"
-      },
-      {
-        "class": "secondary",
-        "host_class": "hpc_ral_cpu",
-        "instrument": "simple",
-        "likelihood": {
-          "dataset_type": "point_source_source",
-          "variant": "source_plane"
-        },
-        "measurement": "breakdown",
-        "model_variant": "default",
-        "setup_id": "jax_gpu_na_fp64"
       }
     ],
     "producer_revision": "5bcbe790ce0dd7128ba6efc1f73f5f82c52dbb8e",
