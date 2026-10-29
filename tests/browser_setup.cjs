@@ -679,9 +679,12 @@ const { execFileSync } = require("node:child_process");
         "1 optimal cell not measured",
       ),
     );
-    const knowledge = life.locator('[data-id="knowledge-link"] a');
-    assert(await knowledge.isVisible());
-    assert.equal(await knowledge.getAttribute("target"), "_blank");
+    const knowledge = life.locator('[data-id="knowledge-links"] [data-id="knowledge-link"] a');
+    assert((await knowledge.count()) >= 1);
+    for (const link of await knowledge.all()) {
+      assert(await link.isVisible());
+      assert.equal(await link.getAttribute("target"), "_blank");
+    }
     // Bold 5-DP runtime; headers on one line (no "Likeliho- od").
     const runtime = row("imaging-delaunay-hst-ral-runtime").locator("td.num b").first();
     assert.equal(await runtime.textContent(), "0.21000");

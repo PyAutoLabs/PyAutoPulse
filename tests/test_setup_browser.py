@@ -237,21 +237,41 @@ def test_v3_markdown_shows_the_runtime_table():
     assert "imaging-delaunay-hst-a100-runtime-old" not in lines
 
 
-def test_v3_links_the_knowledge_page_under_extra_information():
+def test_v3_links_every_knowledge_page_under_extra_information():
     from pulse import ORGAN_ROOT
 
-    assert setup_browser.KNOWLEDGE_URL.endswith(
-        "/blob/main/knowledge/cpu_parallel_vs_gpu_batched.md"
-    )
-    page_path = ORGAN_ROOT / "knowledge/cpu_parallel_vs_gpu_batched.md"
-    assert page_path.read_text().startswith(f"# {setup_browser.KNOWLEDGE_TITLE}\n")
+    files = sorted((ORGAN_ROOT / "knowledge").glob("*.md"))
+    pages = setup_browser.knowledge_pages()
+    assert [url.rsplit("/", 1)[1] for _, url in pages] == [f.name for f in files]
+    assert "cpu_parallel_vs_gpu_batched.md" in [f.name for f in files]
+    for (title, url), path in zip(pages, files, strict=True):
+        assert url == f"https://github.com/PyAutoLabs/PyAutoPulse/blob/main/knowledge/{path.name}"
+        assert path.read_text().startswith(f"# {title}\n")
     page = setup_browser.render(lifecycle_capture())
-    assert page.index("Extra Information") < page.index('data-id="knowledge-link"')
-    link = re.search(r'data-id="knowledge-link">(.*?)</p>', page, re.S)[1]
-    assert f'href="{setup_browser.KNOWLEDGE_URL}"' in link and 'target="_blank"' in link
-    assert f">{setup_browser.KNOWLEDGE_TITLE}</a>" in link
+    assert page.index("Extra Information") < page.index('data-id="knowledge-links"')
+    links = re.findall(r'data-id="knowledge-link">(.*?)</p>', page, re.S)
+    assert len(links) == len(pages)
+    for (title, url), link in zip(pages, links, strict=True):
+        assert f'href="{url}"' in link and 'target="_blank"' in link
+        assert f">{title}</a>" in link
     markdown = "\n".join(setup_browser.markdown(lifecycle_capture()))
-    assert f"[{setup_browser.KNOWLEDGE_TITLE}]({setup_browser.KNOWLEDGE_URL})" in markdown
+    assert markdown.index("#### Extra Information") < markdown.index(f"- [{pages[0][0]}]")
+    for title, url in pages:
+        assert f"- [{title}]({url})" in markdown
+
+
+def test_knowledge_pages_reads_titles_and_orders_by_file_name(tmp_path):
+    (tmp_path / "knowledge").mkdir()
+    (tmp_path / "knowledge/b_page.md").write_text("Intro\n# Second page\n\n## Sub\n")
+    (tmp_path / "knowledge/a_page.md").write_text("# First page\n")
+    (tmp_path / "knowledge/c_page.md").write_text("no heading\n")
+    (tmp_path / "knowledge/notes.txt").write_text("# ignored\n")
+    base = "https://github.com/PyAutoLabs/PyAutoPulse/blob/main/knowledge/"
+    assert setup_browser.knowledge_pages(tmp_path) == [
+        ("First page", base + "a_page.md"),
+        ("Second page", base + "b_page.md"),
+        ("c_page", base + "c_page.md"),
+    ]
 
 
 # ------------------------------------------- v3: per-row detail pages ---

@@ -59,11 +59,32 @@ FILTERS = (
 )
 PRECISIONS = ("fp64", "fp32", "fp16", "bf16", "mixed")
 PNT = "projected_node_throughput"
-KNOWLEDGE_URL = (
-    "https://github.com/PyAutoLabs/PyAutoPulse/blob/main/knowledge/cpu_parallel_vs_gpu_batched.md"
-)
-KNOWLEDGE_TITLE = "Comparing CPU-parallel and GPU-batched setups"
+KNOWLEDGE_BASE_URL = "https://github.com/PyAutoLabs/PyAutoPulse/blob/main/knowledge/"
 DP = 5  # display rounding of every per-call time (presentation only)
+
+
+def knowledge_pages(root: Path = ORGAN_ROOT) -> list[tuple[str, str]]:
+    """``(title, url)`` for every ``knowledge/*.md`` page, ordered by file name.
+
+    The title is the page's first ``# `` heading (the file stem if it has none).
+    """
+    pages = []
+    for path in sorted((Path(root) / "knowledge").glob("*.md")):
+        title = next(
+            (ln[2:].strip() for ln in path.read_text().splitlines() if ln.startswith("# ")),
+            path.stem,
+        )
+        pages.append((title, KNOWLEDGE_BASE_URL + path.name))
+    return pages
+
+
+def _knowledge_html() -> str:
+    links = "".join(
+        f'<p data-id="knowledge-link"><a href="{html.escape(url)}" target="_blank" '
+        f'rel="noopener" title="Opens in a new tab">{html.escape(title)}</a></p>'
+        for title, url in knowledge_pages()
+    )
+    return f'<div data-id="knowledge-links">{links}</div>'
 
 
 def lifecycle(doc) -> bool:
@@ -451,9 +472,8 @@ def _render_lifecycle(snapshot):
         "No record matches this selection.</p>"
         + coverage
         + '<h4 class="extra-info">Extra Information</h4>'
-        f'<p data-id="knowledge-link"><a href="{KNOWLEDGE_URL}" target="_blank" rel="noopener" '
-        f'title="Opens in a new tab">{KNOWLEDGE_TITLE}</a></p>'
-        "</section>"
+        + _knowledge_html()
+        + "</section>"
     )
 
 
@@ -935,7 +955,8 @@ def _markdown_lifecycle(snapshot):
     missing = not_measured(doc)
     lines += ["", f"Coverage: {len(missing)} optimal cell(s) not measured.", ""]
     lines += [f"- {esc(_cell_label(c))}" for c in missing]
-    lines += ["", "#### Extra Information", "", f"[{KNOWLEDGE_TITLE}]({KNOWLEDGE_URL})"]
+    lines += ["", "#### Extra Information", ""]
+    lines += [f"- [{title}]({url})" for title, url in knowledge_pages()]
     lines += ["", "</details>", ""]
     return lines
 

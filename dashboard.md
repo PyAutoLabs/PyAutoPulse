@@ -360,7 +360,8 @@ Coverage: 45 optimal cell(s) not measured.
 
 #### Extra Information
 
-[Comparing CPU-parallel and GPU-batched setups](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/knowledge/cpu_parallel_vs_gpu_batched.md)
+- [Comparing CPU-parallel and GPU-batched setups](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/knowledge/cpu_parallel_vs_gpu_batched.md)
+- [XLA:CPU deadlock on repeated calls (jaxlib 0.11.2)](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/knowledge/xla_cpu_deadlock_jaxlib_0_11_2.md)
 
 </details>
 
