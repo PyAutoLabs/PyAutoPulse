@@ -561,9 +561,10 @@ Project `autolens_inference`, scope `None`, read from [PyAutoLabs/autolens_infer
 </details>
 
 
-<!-- decision-history:4d88bb773a36f774562f9e06d52a024b839cc44d2aa91282311891f6064c43c3 -->
+<!-- decision-history:ad27a8de3dc279fc950485bff4ddf33985732256d23062b150ac9ca97304de61 -->
 ## Decision History
 
+- <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/xla-cpu-deadlock-eigen-workaround.md">Keep --xla_cpu_multi_thread_eigen=false for the 2d JAX CPU legs (jaxlib 0.11.2 deadlock)</a>
 - <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/cluster-pointsolver-starting-grid.md">Keep the 1.0″ PointSolver starting grid for cluster fits, with a validation check</a>
 - <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/direct-conv-symmetric-gate.md">Gate the symmetric direct_conv kernel at work fraction 0.7, with ymin column ordering</a>
 - <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/interferometer-route-gate-cost-model.md">Route interferometer curvature by a calibrated two-constant cost model</a>
