@@ -3,8 +3,8 @@
   "repo": "autolens_profiling",
   "github": "PyAutoLabs/autolens_profiling",
   "summary_path": "dashboard/catalogue.json",
-  "commit": "5e30a5370d72886924c8a8a79beccbfa82b01a1f",
-  "fetched_at": "2026-10-29T14:48:23Z",
+  "commit": "c932b669606839a9ffa2ec1dc303142f2dc0beaf",
+  "fetched_at": "2026-10-29T14:56:44Z",
   "summary": {
     "archive_record_count": 99,
     "comparison_policy": {
@@ -1934,7 +1934,7 @@
         }
       ],
       "expected": {
-        "cells": 222
+        "cells": 220
       },
       "observed": {
         "current": 317,
@@ -5402,30 +5402,6 @@
         "measurement": "breakdown",
         "model_variant": "default",
         "setup_id": "jax_cpu_na_fp64"
-      },
-      {
-        "class": "secondary",
-        "host_class": "hpc_ral_cpu",
-        "instrument": "simple",
-        "likelihood": {
-          "dataset_type": "point_source_source",
-          "variant": "source_plane"
-        },
-        "measurement": "runtime",
-        "model_variant": "default",
-        "setup_id": "jax_gpu_na_fp64"
-      },
-      {
-        "class": "secondary",
-        "host_class": "hpc_ral_cpu",
-        "instrument": "simple",
-        "likelihood": {
-          "dataset_type": "point_source_source",
-          "variant": "source_plane"
-        },
-        "measurement": "breakdown",
-        "model_variant": "default",
-        "setup_id": "jax_gpu_na_fp64"
       }
     ],
     "producer_revision": "5bcbe790ce0dd7128ba6efc1f73f5f82c52dbb8e",
