@@ -3,8 +3,8 @@
   "repo": "autolens_profiling",
   "github": "PyAutoLabs/autolens_profiling",
   "summary_path": "dashboard/catalogue.json",
-  "commit": "741ca9a8b0fd108a0d1ce6c89c4cb1e67014df9c",
-  "fetched_at": "2026-10-29T14:57:41Z",
+  "commit": "d04816958266230a05606a30d3b1119bf5eab1ff",
+  "fetched_at": "2026-10-29T16:24:30Z",
   "summary": {
     "archive_record_count": 99,
     "comparison_policy": {
@@ -1934,7 +1934,7 @@
         }
       ],
       "expected": {
-        "cells": 226
+        "cells": 274
       },
       "observed": {
         "current": 317,
@@ -3246,6 +3246,294 @@
       {
         "class": "secondary",
         "host_class": "hpc_a100",
+        "instrument": "euclid",
+        "likelihood": {
+          "dataset_type": "group",
+          "variant": "delaunay"
+        },
+        "measurement": "runtime",
+        "model_variant": "default",
+        "setup_id": "jax_cpu_sparse_fp64"
+      },
+      {
+        "class": "secondary",
+        "host_class": "hpc_a100",
+        "instrument": "euclid",
+        "likelihood": {
+          "dataset_type": "group",
+          "variant": "delaunay"
+        },
+        "measurement": "breakdown",
+        "model_variant": "default",
+        "setup_id": "jax_cpu_sparse_fp64"
+      },
+      {
+        "class": "optimal",
+        "host_class": "hpc_a100",
+        "instrument": "euclid",
+        "likelihood": {
+          "dataset_type": "group",
+          "variant": "delaunay"
+        },
+        "measurement": "runtime",
+        "model_variant": "default",
+        "setup_id": "jax_gpu_dense_fp64"
+      },
+      {
+        "class": "optimal",
+        "host_class": "hpc_a100",
+        "instrument": "euclid",
+        "likelihood": {
+          "dataset_type": "group",
+          "variant": "delaunay"
+        },
+        "measurement": "breakdown",
+        "model_variant": "default",
+        "setup_id": "jax_gpu_dense_fp64"
+      },
+      {
+        "class": "secondary",
+        "host_class": "hpc_a100",
+        "instrument": "euclid",
+        "likelihood": {
+          "dataset_type": "group",
+          "variant": "delaunay"
+        },
+        "measurement": "runtime",
+        "model_variant": "default",
+        "setup_id": "jax_gpu_sparse_fp64"
+      },
+      {
+        "class": "secondary",
+        "host_class": "hpc_a100",
+        "instrument": "euclid",
+        "likelihood": {
+          "dataset_type": "group",
+          "variant": "delaunay"
+        },
+        "measurement": "breakdown",
+        "model_variant": "default",
+        "setup_id": "jax_gpu_sparse_fp64"
+      },
+      {
+        "class": "secondary",
+        "host_class": "hpc_ral_cpu",
+        "instrument": "euclid",
+        "likelihood": {
+          "dataset_type": "group",
+          "variant": "delaunay"
+        },
+        "measurement": "runtime",
+        "model_variant": "default",
+        "setup_id": "jax_cpu_sparse_fp64"
+      },
+      {
+        "class": "secondary",
+        "host_class": "hpc_ral_cpu",
+        "instrument": "euclid",
+        "likelihood": {
+          "dataset_type": "group",
+          "variant": "delaunay"
+        },
+        "measurement": "breakdown",
+        "model_variant": "default",
+        "setup_id": "jax_cpu_sparse_fp64"
+      },
+      {
+        "class": "optimal",
+        "host_class": "hpc_ral_cpu",
+        "instrument": "euclid",
+        "likelihood": {
+          "dataset_type": "group",
+          "variant": "delaunay"
+        },
+        "measurement": "runtime",
+        "model_variant": "default",
+        "setup_id": "numba_cpu_sparse_fp64"
+      },
+      {
+        "class": "optimal",
+        "host_class": "hpc_ral_cpu",
+        "instrument": "euclid",
+        "likelihood": {
+          "dataset_type": "group",
+          "variant": "delaunay"
+        },
+        "measurement": "breakdown",
+        "model_variant": "default",
+        "setup_id": "numba_cpu_sparse_fp64"
+      },
+      {
+        "class": "optimal",
+        "host_class": "hpc_a100",
+        "instrument": "euclid",
+        "likelihood": {
+          "dataset_type": "group",
+          "variant": "mge"
+        },
+        "measurement": "runtime",
+        "model_variant": "default",
+        "setup_id": "jax_gpu_dense_fp64"
+      },
+      {
+        "class": "optimal",
+        "host_class": "hpc_a100",
+        "instrument": "euclid",
+        "likelihood": {
+          "dataset_type": "group",
+          "variant": "mge"
+        },
+        "measurement": "breakdown",
+        "model_variant": "default",
+        "setup_id": "jax_gpu_dense_fp64"
+      },
+      {
+        "class": "optimal",
+        "host_class": "hpc_ral_cpu",
+        "instrument": "euclid",
+        "likelihood": {
+          "dataset_type": "group",
+          "variant": "mge"
+        },
+        "measurement": "runtime",
+        "model_variant": "default",
+        "setup_id": "jax_cpu_dense_fp64"
+      },
+      {
+        "class": "optimal",
+        "host_class": "hpc_ral_cpu",
+        "instrument": "euclid",
+        "likelihood": {
+          "dataset_type": "group",
+          "variant": "mge"
+        },
+        "measurement": "breakdown",
+        "model_variant": "default",
+        "setup_id": "jax_cpu_dense_fp64"
+      },
+      {
+        "class": "secondary",
+        "host_class": "hpc_a100",
+        "instrument": "euclid",
+        "likelihood": {
+          "dataset_type": "group",
+          "variant": "rectangular"
+        },
+        "measurement": "runtime",
+        "model_variant": "default",
+        "setup_id": "jax_cpu_sparse_fp64"
+      },
+      {
+        "class": "secondary",
+        "host_class": "hpc_a100",
+        "instrument": "euclid",
+        "likelihood": {
+          "dataset_type": "group",
+          "variant": "rectangular"
+        },
+        "measurement": "breakdown",
+        "model_variant": "default",
+        "setup_id": "jax_cpu_sparse_fp64"
+      },
+      {
+        "class": "optimal",
+        "host_class": "hpc_a100",
+        "instrument": "euclid",
+        "likelihood": {
+          "dataset_type": "group",
+          "variant": "rectangular"
+        },
+        "measurement": "runtime",
+        "model_variant": "default",
+        "setup_id": "jax_gpu_dense_fp64"
+      },
+      {
+        "class": "optimal",
+        "host_class": "hpc_a100",
+        "instrument": "euclid",
+        "likelihood": {
+          "dataset_type": "group",
+          "variant": "rectangular"
+        },
+        "measurement": "breakdown",
+        "model_variant": "default",
+        "setup_id": "jax_gpu_dense_fp64"
+      },
+      {
+        "class": "secondary",
+        "host_class": "hpc_a100",
+        "instrument": "euclid",
+        "likelihood": {
+          "dataset_type": "group",
+          "variant": "rectangular"
+        },
+        "measurement": "runtime",
+        "model_variant": "default",
+        "setup_id": "jax_gpu_sparse_fp64"
+      },
+      {
+        "class": "secondary",
+        "host_class": "hpc_a100",
+        "instrument": "euclid",
+        "likelihood": {
+          "dataset_type": "group",
+          "variant": "rectangular"
+        },
+        "measurement": "breakdown",
+        "model_variant": "default",
+        "setup_id": "jax_gpu_sparse_fp64"
+      },
+      {
+        "class": "secondary",
+        "host_class": "hpc_ral_cpu",
+        "instrument": "euclid",
+        "likelihood": {
+          "dataset_type": "group",
+          "variant": "rectangular"
+        },
+        "measurement": "runtime",
+        "model_variant": "default",
+        "setup_id": "jax_cpu_sparse_fp64"
+      },
+      {
+        "class": "secondary",
+        "host_class": "hpc_ral_cpu",
+        "instrument": "euclid",
+        "likelihood": {
+          "dataset_type": "group",
+          "variant": "rectangular"
+        },
+        "measurement": "breakdown",
+        "model_variant": "default",
+        "setup_id": "jax_cpu_sparse_fp64"
+      },
+      {
+        "class": "optimal",
+        "host_class": "hpc_ral_cpu",
+        "instrument": "euclid",
+        "likelihood": {
+          "dataset_type": "group",
+          "variant": "rectangular"
+        },
+        "measurement": "runtime",
+        "model_variant": "default",
+        "setup_id": "numba_cpu_sparse_fp64"
+      },
+      {
+        "class": "optimal",
+        "host_class": "hpc_ral_cpu",
+        "instrument": "euclid",
+        "likelihood": {
+          "dataset_type": "group",
+          "variant": "rectangular"
+        },
+        "measurement": "breakdown",
+        "model_variant": "default",
+        "setup_id": "numba_cpu_sparse_fp64"
+      },
+      {
+        "class": "secondary",
+        "host_class": "hpc_a100",
         "instrument": "ao",
         "likelihood": {
           "dataset_type": "imaging",
@@ -5350,6 +5638,294 @@
         "likelihood": {
           "dataset_type": "multi_dataset",
           "variant": "delaunay"
+        },
+        "measurement": "breakdown",
+        "model_variant": "default",
+        "setup_id": "numba_cpu_sparse_fp64"
+      },
+      {
+        "class": "secondary",
+        "host_class": "hpc_a100",
+        "instrument": "hst",
+        "likelihood": {
+          "dataset_type": "multi_galaxy",
+          "variant": "delaunay"
+        },
+        "measurement": "runtime",
+        "model_variant": "default",
+        "setup_id": "jax_cpu_sparse_fp64"
+      },
+      {
+        "class": "secondary",
+        "host_class": "hpc_a100",
+        "instrument": "hst",
+        "likelihood": {
+          "dataset_type": "multi_galaxy",
+          "variant": "delaunay"
+        },
+        "measurement": "breakdown",
+        "model_variant": "default",
+        "setup_id": "jax_cpu_sparse_fp64"
+      },
+      {
+        "class": "optimal",
+        "host_class": "hpc_a100",
+        "instrument": "hst",
+        "likelihood": {
+          "dataset_type": "multi_galaxy",
+          "variant": "delaunay"
+        },
+        "measurement": "runtime",
+        "model_variant": "default",
+        "setup_id": "jax_gpu_dense_fp64"
+      },
+      {
+        "class": "optimal",
+        "host_class": "hpc_a100",
+        "instrument": "hst",
+        "likelihood": {
+          "dataset_type": "multi_galaxy",
+          "variant": "delaunay"
+        },
+        "measurement": "breakdown",
+        "model_variant": "default",
+        "setup_id": "jax_gpu_dense_fp64"
+      },
+      {
+        "class": "secondary",
+        "host_class": "hpc_a100",
+        "instrument": "hst",
+        "likelihood": {
+          "dataset_type": "multi_galaxy",
+          "variant": "delaunay"
+        },
+        "measurement": "runtime",
+        "model_variant": "default",
+        "setup_id": "jax_gpu_sparse_fp64"
+      },
+      {
+        "class": "secondary",
+        "host_class": "hpc_a100",
+        "instrument": "hst",
+        "likelihood": {
+          "dataset_type": "multi_galaxy",
+          "variant": "delaunay"
+        },
+        "measurement": "breakdown",
+        "model_variant": "default",
+        "setup_id": "jax_gpu_sparse_fp64"
+      },
+      {
+        "class": "secondary",
+        "host_class": "hpc_ral_cpu",
+        "instrument": "hst",
+        "likelihood": {
+          "dataset_type": "multi_galaxy",
+          "variant": "delaunay"
+        },
+        "measurement": "runtime",
+        "model_variant": "default",
+        "setup_id": "jax_cpu_sparse_fp64"
+      },
+      {
+        "class": "secondary",
+        "host_class": "hpc_ral_cpu",
+        "instrument": "hst",
+        "likelihood": {
+          "dataset_type": "multi_galaxy",
+          "variant": "delaunay"
+        },
+        "measurement": "breakdown",
+        "model_variant": "default",
+        "setup_id": "jax_cpu_sparse_fp64"
+      },
+      {
+        "class": "optimal",
+        "host_class": "hpc_ral_cpu",
+        "instrument": "hst",
+        "likelihood": {
+          "dataset_type": "multi_galaxy",
+          "variant": "delaunay"
+        },
+        "measurement": "runtime",
+        "model_variant": "default",
+        "setup_id": "numba_cpu_sparse_fp64"
+      },
+      {
+        "class": "optimal",
+        "host_class": "hpc_ral_cpu",
+        "instrument": "hst",
+        "likelihood": {
+          "dataset_type": "multi_galaxy",
+          "variant": "delaunay"
+        },
+        "measurement": "breakdown",
+        "model_variant": "default",
+        "setup_id": "numba_cpu_sparse_fp64"
+      },
+      {
+        "class": "optimal",
+        "host_class": "hpc_a100",
+        "instrument": "hst",
+        "likelihood": {
+          "dataset_type": "multi_galaxy",
+          "variant": "mge"
+        },
+        "measurement": "runtime",
+        "model_variant": "default",
+        "setup_id": "jax_gpu_dense_fp64"
+      },
+      {
+        "class": "optimal",
+        "host_class": "hpc_a100",
+        "instrument": "hst",
+        "likelihood": {
+          "dataset_type": "multi_galaxy",
+          "variant": "mge"
+        },
+        "measurement": "breakdown",
+        "model_variant": "default",
+        "setup_id": "jax_gpu_dense_fp64"
+      },
+      {
+        "class": "optimal",
+        "host_class": "hpc_ral_cpu",
+        "instrument": "hst",
+        "likelihood": {
+          "dataset_type": "multi_galaxy",
+          "variant": "mge"
+        },
+        "measurement": "runtime",
+        "model_variant": "default",
+        "setup_id": "jax_cpu_dense_fp64"
+      },
+      {
+        "class": "optimal",
+        "host_class": "hpc_ral_cpu",
+        "instrument": "hst",
+        "likelihood": {
+          "dataset_type": "multi_galaxy",
+          "variant": "mge"
+        },
+        "measurement": "breakdown",
+        "model_variant": "default",
+        "setup_id": "jax_cpu_dense_fp64"
+      },
+      {
+        "class": "secondary",
+        "host_class": "hpc_a100",
+        "instrument": "hst",
+        "likelihood": {
+          "dataset_type": "multi_galaxy",
+          "variant": "rectangular"
+        },
+        "measurement": "runtime",
+        "model_variant": "default",
+        "setup_id": "jax_cpu_sparse_fp64"
+      },
+      {
+        "class": "secondary",
+        "host_class": "hpc_a100",
+        "instrument": "hst",
+        "likelihood": {
+          "dataset_type": "multi_galaxy",
+          "variant": "rectangular"
+        },
+        "measurement": "breakdown",
+        "model_variant": "default",
+        "setup_id": "jax_cpu_sparse_fp64"
+      },
+      {
+        "class": "optimal",
+        "host_class": "hpc_a100",
+        "instrument": "hst",
+        "likelihood": {
+          "dataset_type": "multi_galaxy",
+          "variant": "rectangular"
+        },
+        "measurement": "runtime",
+        "model_variant": "default",
+        "setup_id": "jax_gpu_dense_fp64"
+      },
+      {
+        "class": "optimal",
+        "host_class": "hpc_a100",
+        "instrument": "hst",
+        "likelihood": {
+          "dataset_type": "multi_galaxy",
+          "variant": "rectangular"
+        },
+        "measurement": "breakdown",
+        "model_variant": "default",
+        "setup_id": "jax_gpu_dense_fp64"
+      },
+      {
+        "class": "secondary",
+        "host_class": "hpc_a100",
+        "instrument": "hst",
+        "likelihood": {
+          "dataset_type": "multi_galaxy",
+          "variant": "rectangular"
+        },
+        "measurement": "runtime",
+        "model_variant": "default",
+        "setup_id": "jax_gpu_sparse_fp64"
+      },
+      {
+        "class": "secondary",
+        "host_class": "hpc_a100",
+        "instrument": "hst",
+        "likelihood": {
+          "dataset_type": "multi_galaxy",
+          "variant": "rectangular"
+        },
+        "measurement": "breakdown",
+        "model_variant": "default",
+        "setup_id": "jax_gpu_sparse_fp64"
+      },
+      {
+        "class": "secondary",
+        "host_class": "hpc_ral_cpu",
+        "instrument": "hst",
+        "likelihood": {
+          "dataset_type": "multi_galaxy",
+          "variant": "rectangular"
+        },
+        "measurement": "runtime",
+        "model_variant": "default",
+        "setup_id": "jax_cpu_sparse_fp64"
+      },
+      {
+        "class": "secondary",
+        "host_class": "hpc_ral_cpu",
+        "instrument": "hst",
+        "likelihood": {
+          "dataset_type": "multi_galaxy",
+          "variant": "rectangular"
+        },
+        "measurement": "breakdown",
+        "model_variant": "default",
+        "setup_id": "jax_cpu_sparse_fp64"
+      },
+      {
+        "class": "optimal",
+        "host_class": "hpc_ral_cpu",
+        "instrument": "hst",
+        "likelihood": {
+          "dataset_type": "multi_galaxy",
+          "variant": "rectangular"
+        },
+        "measurement": "runtime",
+        "model_variant": "default",
+        "setup_id": "numba_cpu_sparse_fp64"
+      },
+      {
+        "class": "optimal",
+        "host_class": "hpc_ral_cpu",
+        "instrument": "hst",
+        "likelihood": {
+          "dataset_type": "multi_galaxy",
+          "variant": "rectangular"
         },
         "measurement": "breakdown",
         "model_variant": "default",
