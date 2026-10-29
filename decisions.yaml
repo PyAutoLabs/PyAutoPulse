@@ -20,3 +20,7 @@ decisions:
   title: Keep the 1.0″ PointSolver starting grid for cluster fits, with a validation check
   date: '2026-10-23'
   url: https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/cluster-pointsolver-starting-grid.md
+- id: xla-cpu-deadlock-eigen-workaround
+  title: Keep --xla_cpu_multi_thread_eigen=false for the 2d JAX CPU legs (jaxlib 0.11.2 deadlock)
+  date: '2026-10-29'
+  url: https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/xla-cpu-deadlock-eigen-workaround.md

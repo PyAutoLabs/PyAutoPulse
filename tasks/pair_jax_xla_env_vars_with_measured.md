@@ -31,6 +31,17 @@ GitHub sources and limits. Current RAL queue was empty; the transfer preview tim
 out, so historical jobs and unpulled results remain unverified. Review time does
 not refresh measurements or authorize compute. Historical task text is retained.
 
+
+## Note — 2026-10-29
+
+- Related finding, not a step of this task: likelihood-lifecycle 2d hit a jaxlib 0.11.2 XLA:CPU
+  deadlock on repeated calls, avoided by either `--xla_cpu_multi_thread_eigen=false` or
+  `--xla_cpu_enable_concurrency_optimized_scheduler=false`, with per-call costs for both.
+  Knowledge: [xla_cpu_deadlock_jaxlib_0_11_2](../knowledge/xla_cpu_deadlock_jaxlib_0_11_2.md).
+  The human kept the eigen flag for the 2d JAX CPU legs on 2026-10-29
+  ([decision record](../decisions/xla-cpu-deadlock-eigen-workaround.md)); that sets no library
+  default, so this task's question is unchanged.
+
 ---
 
 # Pair JAX/XLA env vars with measured compile and run times, per backend
