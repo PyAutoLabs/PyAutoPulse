@@ -3,8 +3,8 @@
   "repo": "autolens_profiling",
   "github": "PyAutoLabs/autolens_profiling",
   "summary_path": "dashboard/catalogue.json",
-  "commit": "864202d7e502be3ff0b97176ed87442456560d6f",
-  "fetched_at": "2026-10-29T16:43:25Z",
+  "commit": "a36f4818e614bd1f6c888071d933ad8ec446f7d9",
+  "fetched_at": "2026-10-29T17:02:39Z",
   "summary": {
     "archive_record_count": 99,
     "comparison_policy": {
@@ -1934,7 +1934,7 @@
         }
       ],
       "expected": {
-        "cells": 280
+        "cells": 272
       },
       "observed": {
         "current": 317,
@@ -2884,30 +2884,6 @@
         "setup_id": "jax_cpu_na_fp64"
       },
       {
-        "class": "secondary",
-        "host_class": "hpc_a100",
-        "instrument": "alma",
-        "likelihood": {
-          "dataset_type": "datacube",
-          "variant": "delaunay"
-        },
-        "measurement": "runtime",
-        "model_variant": "default",
-        "setup_id": "jax_gpu_dense_fp64_nufft"
-      },
-      {
-        "class": "secondary",
-        "host_class": "hpc_a100",
-        "instrument": "alma",
-        "likelihood": {
-          "dataset_type": "datacube",
-          "variant": "delaunay"
-        },
-        "measurement": "breakdown",
-        "model_variant": "default",
-        "setup_id": "jax_gpu_dense_fp64_nufft"
-      },
-      {
         "class": "optimal",
         "host_class": "hpc_a100",
         "instrument": "alma",
@@ -2930,30 +2906,6 @@
         "measurement": "breakdown",
         "model_variant": "default",
         "setup_id": "jax_gpu_sparse_fp64_wtilde"
-      },
-      {
-        "class": "secondary",
-        "host_class": "hpc_ral_cpu",
-        "instrument": "alma",
-        "likelihood": {
-          "dataset_type": "datacube",
-          "variant": "delaunay"
-        },
-        "measurement": "runtime",
-        "model_variant": "default",
-        "setup_id": "jax_cpu_dense_fp64_nufft"
-      },
-      {
-        "class": "secondary",
-        "host_class": "hpc_ral_cpu",
-        "instrument": "alma",
-        "likelihood": {
-          "dataset_type": "datacube",
-          "variant": "delaunay"
-        },
-        "measurement": "breakdown",
-        "model_variant": "default",
-        "setup_id": "jax_cpu_dense_fp64_nufft"
       },
       {
         "class": "secondary",
@@ -3004,30 +2956,6 @@
         "setup_id": "numba_cpu_sparse_fp64_wtilde"
       },
       {
-        "class": "secondary",
-        "host_class": "hpc_a100",
-        "instrument": "alma_high",
-        "likelihood": {
-          "dataset_type": "datacube",
-          "variant": "delaunay"
-        },
-        "measurement": "runtime",
-        "model_variant": "default",
-        "setup_id": "jax_gpu_dense_fp64_nufft"
-      },
-      {
-        "class": "secondary",
-        "host_class": "hpc_a100",
-        "instrument": "alma_high",
-        "likelihood": {
-          "dataset_type": "datacube",
-          "variant": "delaunay"
-        },
-        "measurement": "breakdown",
-        "model_variant": "default",
-        "setup_id": "jax_gpu_dense_fp64_nufft"
-      },
-      {
         "class": "optimal",
         "host_class": "hpc_a100",
         "instrument": "alma_high",
@@ -3050,30 +2978,6 @@
         "measurement": "breakdown",
         "model_variant": "default",
         "setup_id": "jax_gpu_sparse_fp64_wtilde"
-      },
-      {
-        "class": "secondary",
-        "host_class": "hpc_ral_cpu",
-        "instrument": "alma_high",
-        "likelihood": {
-          "dataset_type": "datacube",
-          "variant": "delaunay"
-        },
-        "measurement": "runtime",
-        "model_variant": "default",
-        "setup_id": "jax_cpu_dense_fp64_nufft"
-      },
-      {
-        "class": "secondary",
-        "host_class": "hpc_ral_cpu",
-        "instrument": "alma_high",
-        "likelihood": {
-          "dataset_type": "datacube",
-          "variant": "delaunay"
-        },
-        "measurement": "breakdown",
-        "model_variant": "default",
-        "setup_id": "jax_cpu_dense_fp64_nufft"
       },
       {
         "class": "secondary",
