@@ -156,8 +156,10 @@ campaigns:
     every parity witness match, jax 0.11.2 with the eigen flag on every CPU leg). Walls commit
     autolens_profiling#487 sets batch 1 at 0:30-1:30 (human /prm pending). 2g rows (the campaign''s rows
     under D9) in autolens_profiling#488, stacked on #487. Human ruling 2026-10-30: loaded RAL nodes accepted
-    (batch-0 RAL rows had loadavg 95-109); batch 1 runs on shared ral nodes with no quiet gate. Open: 2d
-    driver puts the eigen flag on GPU legs too; batch 1 of 2d/2e/2f needs the human''s go after #487 merges.'
+    (batch-0 RAL rows had loadavg 95-109); batch 1 runs on shared ral nodes with no quiet gate. 2d driver
+    fixed to keep the eigen flag off GPU legs (#487, 830314e9). Batch 1 submitted 2026-10-30 (human go) from
+    autolens_profiling_p2dg at 830314e9 (#487 head, unmerged): RAL 413445-413452 (ral arrays), A100
+    413453-413459 (one job each). Next: verify batch 1, then PR B for 2d/2e/2f.'
   evidence: https://github.com/PyAutoLabs/autolens_profiling/pull/487
 tasks:
 - id: setup_baseline_campaign
