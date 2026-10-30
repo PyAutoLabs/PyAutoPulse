@@ -3,8 +3,8 @@
   "repo": "autolens_profiling",
   "github": "PyAutoLabs/autolens_profiling",
   "summary_path": "dashboard/catalogue.json",
-  "commit": "ad103340618b24ff2e56f8c8d912a16762396490",
-  "fetched_at": "2026-10-30T10:32:46Z",
+  "commit": "883d7f6063a3a0a0323051d76bbc51e9c2a66e6e",
+  "fetched_at": "2026-10-30T10:53:14Z",
   "summary": {
     "archive_record_count": 99,
     "comparison_policy": {
@@ -1861,9 +1861,9 @@
         "cells": 272
       },
       "observed": {
-        "current": 414,
-        "records": 909,
-        "superseded": 495
+        "current": 426,
+        "records": 924,
+        "superseded": 498
       }
     },
     "evidence_updated_at": null,
@@ -3215,6 +3215,48 @@
         "path": "results/point_source_source/source_plane/simple/jax_gpu_na_fp64/hpc_a100/parity.json",
         "record_id": "lifecycle/403a31905c1445a750ba",
         "setup_id": "jax_gpu_na_fp64",
+        "status": "match"
+      },
+      {
+        "host_class": "hpc_a100",
+        "instrument": "simple",
+        "likelihood": {
+          "dataset_type": "weak",
+          "variant": "isothermal"
+        },
+        "location": "cell",
+        "model_variant": "default",
+        "path": "results/weak/isothermal/simple/jax_cpu_dense_fp64/hpc_a100/parity.json",
+        "record_id": "lifecycle/a982d26a01c73cc70d8e",
+        "setup_id": "jax_cpu_dense_fp64",
+        "status": "match"
+      },
+      {
+        "host_class": "hpc_ral_cpu",
+        "instrument": "simple",
+        "likelihood": {
+          "dataset_type": "weak",
+          "variant": "isothermal"
+        },
+        "location": "cell",
+        "model_variant": "default",
+        "path": "results/weak/isothermal/simple/jax_cpu_dense_fp64/hpc_ral_cpu/parity.json",
+        "record_id": "lifecycle/7f6973aafe0b068ba1ab",
+        "setup_id": "jax_cpu_dense_fp64",
+        "status": "match"
+      },
+      {
+        "host_class": "hpc_a100",
+        "instrument": "simple",
+        "likelihood": {
+          "dataset_type": "weak",
+          "variant": "isothermal"
+        },
+        "location": "cell",
+        "model_variant": "default",
+        "path": "results/weak/isothermal/simple/jax_gpu_dense_fp64/hpc_a100/parity.json",
+        "record_id": "lifecycle/bfd2db209cd80e6a6354",
+        "setup_id": "jax_gpu_dense_fp64",
         "status": "match"
       }
     ],
@@ -8474,6 +8516,170 @@
           "single_jit_median": 0.09062732051825151,
           "vmap.batch_time": 0.3374208598979749,
           "vmap.per_call": 0.11247361996599163
+        }
+      },
+      {
+        "class": "secondary",
+        "day_zero": null,
+        "decision_id": null,
+        "evidence": {
+          "fragment": null,
+          "path": "results/weak/isothermal/simple/jax_cpu_dense_fp64/hpc_ral_cpu/runtime.json"
+        },
+        "figures": [
+          {
+            "kind": "fit",
+            "path": "results/weak/isothermal/simple/jax_cpu_dense_fp64/hpc_ral_cpu/fit.png",
+            "sha256": "e5d18188d555d3e0e07167bbbedf2a8f42fe878b750b51a305ede838f5c15b3d"
+          }
+        ],
+        "host_class": "hpc_ral_cpu",
+        "id": "lifecycle/03601d3a29aca4f5c389",
+        "identity": {
+          "backend": "cpu",
+          "device": "cpu",
+          "hardware_details": {
+            "autotune_cache_entries_at_start": 0,
+            "backend": "cpu",
+            "cache_fresh": true,
+            "cpu_count": 236,
+            "device": "cpu:0",
+            "hostname": "euclid-ral-compute-10-2",
+            "omp_num_threads": "1",
+            "xla_flags": "--xla_disable_hlo_passes=constant_folding --xla_cpu_multi_thread_eigen=false --xla_gpu_autotune_level=0 --xla_gpu_enable_triton_gemm=false"
+          },
+          "library_version": "2026.10.25.1",
+          "precision": "float64",
+          "software": {
+            "PyAutoArray.library_revisions": "0f12fac7789c81d0fdaa324508ced5b4c434d42a",
+            "PyAutoArray.library_versions": "2026.8.17.1",
+            "PyAutoFit.library_revisions": "8cb533a605f556d85012d5eb7ed8d4f3c2a4dcf6",
+            "PyAutoFit.library_versions": "2026.8.17.1",
+            "PyAutoGalaxy.library_revisions": "7472211470b9d2b3a76bb12dcacbac51ab4de06f",
+            "PyAutoGalaxy.library_versions": "2026.8.17.1",
+            "PyAutoLens": "2026.10.25.1",
+            "PyAutoLens.library_revisions": "c6927eeb33724c2de2f2e2c773ba3ebe651943a8",
+            "PyAutoLens.library_versions": "2026.8.17.1",
+            "PyAutoNerves.library_revisions": "ec8b5c1e5f17ac03ac5246b5fbc322624a6cd3f6",
+            "PyAutoNerves.library_versions": "2026.8.17.1",
+            "autolens_profiling.library_revisions": "ad103340618b24ff2e56f8c8d912a16762396490",
+            "finufft.dependency_versions": "2.5.1",
+            "jax.dependency_versions": "0.11.2",
+            "jaxlib.dependency_versions": "0.11.2",
+            "nufftax.dependency_versions": "0.6.1",
+            "numba.dependency_versions": "0.65.1",
+            "numpy.dependency_versions": "2.2.6",
+            "release_pin_basis": "library_revisions equal tag 2026.10.25.1's SHAs (catalogue/release_revisions.json); the source checkout stamped autolens_version 2026.8.17.1",
+            "scipy.dependency_versions": "1.17.1"
+          },
+          "unknowns": {}
+        },
+        "instrument": "simple",
+        "likelihood": {
+          "dataset_type": "weak",
+          "variant": "isothermal"
+        },
+        "limitations": [
+          "provisional_optimal: true"
+        ],
+        "location": "cell",
+        "measured_at": "2026-10-29T20:28:13Z",
+        "measurement": "runtime",
+        "method": {
+          "cache_state": null,
+          "id": "legacy/7ccaf802e198af9ef0dd",
+          "repetitions": null,
+          "statistic": "median",
+          "synchronization": null,
+          "unknowns": {
+            "cache_state": "Not recorded in this legacy evidence; no current default substituted.",
+            "repetitions": "Not recorded in this legacy evidence; no current default substituted.",
+            "synchronization": "Not recorded in this legacy evidence; no current default substituted.",
+            "warmup": "Not recorded in this legacy evidence; no current default substituted."
+          },
+          "warmup": null
+        },
+        "metric": "single_jit_median",
+        "model_variant": "default",
+        "pointers": {
+          "full_pipeline.steady_per_call_s": "/jit_phases/full_pipeline/steady_per_call_s",
+          "full_pipeline_vmap32.steady_per_call_s": "/jit_phases/full_pipeline_vmap32/steady_per_call_s",
+          "single_jit_block": "/full_pipeline_single_jit",
+          "single_jit_median": "/full_pipeline_single_jit_median",
+          "vmap.batch_time": "/vmap/batch_time",
+          "vmap.per_call": "/vmap/per_call"
+        },
+        "projected_node_throughput": {
+          "basis": "projected",
+          "cpus_per_eval": 8,
+          "devices_per_eval": 0,
+          "hosts": [
+            {
+              "bound_by": "cores",
+              "calls_per_s": 717700.0,
+              "host": "ral_cpu_node",
+              "host_class": "hpc_ral_cpu",
+              "limits": {
+                "cores": 29,
+                "memory": 1744
+              },
+              "workers": 29
+            }
+          ],
+          "not_modelled": "The sampler's batch ceiling: Nautilus evaluates at most n_batch points in parallel per batch, so a node cannot use more workers than n_batch. Shared memory bandwidth and caches between workers are also not modelled; the declared parallel efficiency stands in for them.",
+          "parallel_efficiency": {
+            "kind": "upper bound",
+            "source": "declared, unmeasured (phase 4 measures)",
+            "value": 1.0
+          },
+          "peak_rss_basis": "in_process_ru_maxrss",
+          "peak_rss_gb": 0.527794,
+          "per_call_s": 4.040694984723814e-05,
+          "per_call_source": "vmap.per_call",
+          "status": "projected"
+        },
+        "provenance": {
+          "has_provenance": true,
+          "host": "euclid-ral-compute-10-2",
+          "measured_at": "2026-10-29T20:28:13Z",
+          "qualified": false,
+          "unknowns": {}
+        },
+        "regime": "standard",
+        "release_pin": "2026.10.25.1",
+        "resources": {
+          "cpus_per_eval": 8,
+          "cpus_per_eval_basis": "jax cpu: NPROC threads in XLA's CPU intra-op pool",
+          "devices_per_eval": 0,
+          "peak_rss_basis": "in_process_ru_maxrss",
+          "peak_rss_gb": 0.527794,
+          "peak_rss_note": "resource.getrusage(RUSAGE_SELF).ru_maxrss when the row was built: this process's peak resident set (children excluded), GB = 1e9 bytes",
+          "source": "row"
+        },
+        "run_id": "legacy/777d7c6e2dc16ea45a31",
+        "setup": {
+          "backend": "jax",
+          "device": "cpu",
+          "operator": "dense",
+          "precision": "fp64",
+          "threads": null,
+          "transformer": "na"
+        },
+        "setup_id": "jax_cpu_dense_fp64",
+        "status": "current",
+        "superseded_by": null,
+        "unit": "s",
+        "validation": {
+          "reason": "Legacy evidence labelled by the phase-0 day-zero rule; not an accepted baseline.",
+          "status": "unreviewed"
+        },
+        "values": {
+          "full_pipeline.steady_per_call_s": 0.00019177019130438565,
+          "full_pipeline_vmap32.steady_per_call_s": 4.040694984723814e-05,
+          "single_jit_block": 0.00019177019130438565,
+          "single_jit_median": 0.00018882896983996034,
+          "vmap.batch_time": 0.0012930223951116205,
+          "vmap.per_call": 4.040694984723814e-05
         }
       },
       {
@@ -14942,6 +15148,153 @@
         "decision_id": null,
         "evidence": {
           "fragment": null,
+          "path": "results/weak/isothermal/simple/jax_gpu_dense_fp64/hpc_a100/breakdown.json"
+        },
+        "figures": [
+          {
+            "kind": "fit",
+            "path": "results/weak/isothermal/simple/jax_gpu_dense_fp64/hpc_a100/fit.png",
+            "sha256": "e5d18188d555d3e0e07167bbbedf2a8f42fe878b750b51a305ede838f5c15b3d"
+          }
+        ],
+        "host_class": "hpc_a100",
+        "id": "lifecycle/100b5c696c14882424d0",
+        "identity": {
+          "backend": "gpu",
+          "device": "a100",
+          "hardware_details": {
+            "autotune_cache_entries_at_start": 0,
+            "backend": "gpu",
+            "cache_fresh": true,
+            "cpu_count": 124,
+            "device": "cuda:0",
+            "hostname": "euclid-ral-gpu-2",
+            "nvidia_smi": "NVIDIA A100 80GB PCIe, 441 MiB, 81920 MiB",
+            "omp_num_threads": "1",
+            "xla_flags": "--xla_disable_hlo_passes=constant_folding --xla_gpu_autotune_level=0 --xla_gpu_enable_triton_gemm=false"
+          },
+          "library_version": "2026.10.25.1",
+          "precision": "float64",
+          "software": {
+            "PyAutoArray.library_revisions": "0f12fac7789c81d0fdaa324508ced5b4c434d42a",
+            "PyAutoArray.library_versions": "2026.8.17.1",
+            "PyAutoFit.library_revisions": "8cb533a605f556d85012d5eb7ed8d4f3c2a4dcf6",
+            "PyAutoFit.library_versions": "2026.8.17.1",
+            "PyAutoGalaxy.library_revisions": "7472211470b9d2b3a76bb12dcacbac51ab4de06f",
+            "PyAutoGalaxy.library_versions": "2026.8.17.1",
+            "PyAutoLens": "2026.10.25.1",
+            "PyAutoLens.library_revisions": "c6927eeb33724c2de2f2e2c773ba3ebe651943a8",
+            "PyAutoLens.library_versions": "2026.8.17.1",
+            "PyAutoNerves.library_revisions": "ec8b5c1e5f17ac03ac5246b5fbc322624a6cd3f6",
+            "PyAutoNerves.library_versions": "2026.8.17.1",
+            "autolens_profiling.library_revisions": "ad103340618b24ff2e56f8c8d912a16762396490",
+            "finufft.dependency_versions": "2.5.1",
+            "jax.dependency_versions": "0.11.2",
+            "jaxlib.dependency_versions": "0.11.2",
+            "nufftax.dependency_versions": "0.6.1",
+            "numba.dependency_versions": "0.65.1",
+            "numpy.dependency_versions": "2.2.6",
+            "release_pin_basis": "library_revisions equal tag 2026.10.25.1's SHAs (catalogue/release_revisions.json); the source checkout stamped autolens_version 2026.8.17.1",
+            "scipy.dependency_versions": "1.17.1"
+          },
+          "unknowns": {}
+        },
+        "instrument": "simple",
+        "likelihood": {
+          "dataset_type": "weak",
+          "variant": "isothermal"
+        },
+        "limitations": [
+          "provisional_secondary: true"
+        ],
+        "location": "cell",
+        "measured_at": "2026-10-29T20:28:37Z",
+        "measurement": "breakdown",
+        "method": {
+          "cache_state": null,
+          "id": "legacy/e7a018ac254a602f17bc",
+          "repetitions": null,
+          "statistic": null,
+          "synchronization": null,
+          "unknowns": {
+            "cache_state": "Not recorded in this legacy evidence; no current default substituted.",
+            "repetitions": "Not recorded in this legacy evidence; no current default substituted.",
+            "statistic": "Not recorded in this legacy evidence; no current default substituted.",
+            "synchronization": "Not recorded in this legacy evidence; no current default substituted.",
+            "warmup": "Not recorded in this legacy evidence; no current default substituted."
+          },
+          "warmup": null
+        },
+        "metric": "component_total",
+        "model_variant": "default",
+        "pointers": {
+          "component_total": "/total_step_by_step",
+          "deflections_yx.steady_per_call_s": "/jit_phases/deflections_yx/steady_per_call_s",
+          "full_pipeline.median_s": "/full_pipeline/median_s",
+          "full_pipeline.per_call_s": "/full_pipeline/per_call_s",
+          "full_pipeline.steady_per_call_s": "/jit_phases/full_pipeline/steady_per_call_s",
+          "likelihood_from_shear.steady_per_call_s": "/jit_phases/likelihood_from_shear/steady_per_call_s",
+          "model_shear.steady_per_call_s": "/jit_phases/model_shear/steady_per_call_s",
+          "steps.likelihood_from_shear": "/steps/likelihood_from_shear",
+          "steps.model_shear": "/steps/model_shear",
+          "steps_median.likelihood_from_shear": "/steps_median/likelihood_from_shear",
+          "steps_median.model_shear": "/steps_median/model_shear"
+        },
+        "provenance": {
+          "has_provenance": true,
+          "host": "euclid-ral-gpu-2",
+          "measured_at": "2026-10-29T20:28:37Z",
+          "qualified": false,
+          "unknowns": {}
+        },
+        "regime": "standard",
+        "release_pin": "2026.10.25.1",
+        "resources": {
+          "cpus_per_eval": 8,
+          "cpus_per_eval_basis": "jax gpu: one device; cpus_per_eval = NPROC host threads",
+          "devices_per_eval": 1,
+          "peak_rss_basis": "in_process_ru_maxrss",
+          "peak_rss_gb": 0.647119,
+          "peak_rss_note": "resource.getrusage(RUSAGE_SELF).ru_maxrss when the row was built: this process's peak resident set (children excluded), GB = 1e9 bytes",
+          "source": "row"
+        },
+        "run_id": "legacy/af7f1c93705945ebe8de",
+        "setup": {
+          "backend": "jax",
+          "device": "gpu",
+          "operator": "dense",
+          "precision": "fp64",
+          "threads": null,
+          "transformer": "na"
+        },
+        "setup_id": "jax_gpu_dense_fp64",
+        "status": "current",
+        "superseded_by": null,
+        "unit": "s",
+        "validation": {
+          "reason": "Legacy evidence labelled by the phase-0 day-zero rule; not an accepted baseline.",
+          "status": "unreviewed"
+        },
+        "values": {
+          "component_total": 0.0003794224467128515,
+          "deflections_yx.steady_per_call_s": 0.00023324020439758898,
+          "full_pipeline.median_s": 0.00019182352116331458,
+          "full_pipeline.per_call_s": 0.0002573628909885883,
+          "full_pipeline.steady_per_call_s": 0.0002573628909885883,
+          "likelihood_from_shear.steady_per_call_s": 0.0001384817995131016,
+          "model_shear.steady_per_call_s": 0.0002862556953914464,
+          "steps.likelihood_from_shear": 0.0001384817995131016,
+          "steps.model_shear": 0.0002862556953914464,
+          "steps_median.likelihood_from_shear": 0.00013791449600830674,
+          "steps_median.model_shear": 0.00024150795070454478
+        }
+      },
+      {
+        "class": "secondary",
+        "day_zero": null,
+        "decision_id": null,
+        "evidence": {
+          "fragment": null,
           "path": "results/imaging/delaunay/euclid/jax_gpu_dense_fp64/hpc_a100/runtime.json"
         },
         "figures": [
@@ -15067,6 +15420,154 @@
           "full_pipeline.compile": 8.88108591499622,
           "full_pipeline.first_call": 0.33684570400509983,
           "full_pipeline.lower": 3.5565621400019154
+        }
+      },
+      {
+        "class": "secondary",
+        "day_zero": null,
+        "decision_id": null,
+        "evidence": {
+          "fragment": null,
+          "path": "results/weak/isothermal/simple/jax_cpu_dense_fp64/hpc_a100/breakdown.json"
+        },
+        "figures": [
+          {
+            "kind": "fit",
+            "path": "results/weak/isothermal/simple/jax_cpu_dense_fp64/hpc_a100/fit.png",
+            "sha256": "e5d18188d555d3e0e07167bbbedf2a8f42fe878b750b51a305ede838f5c15b3d"
+          }
+        ],
+        "host_class": "hpc_a100",
+        "id": "lifecycle/10dbf79b03918a14fc05",
+        "identity": {
+          "backend": "cpu",
+          "device": "a100",
+          "hardware_details": {
+            "autotune_cache_entries_at_start": 0,
+            "backend": "cpu",
+            "cache_fresh": true,
+            "cpu_count": 124,
+            "device": "cpu:0",
+            "hostname": "euclid-ral-gpu-2",
+            "omp_num_threads": "1",
+            "xla_flags": "--xla_disable_hlo_passes=constant_folding --xla_cpu_multi_thread_eigen=false --xla_gpu_autotune_level=0 --xla_gpu_enable_triton_gemm=false"
+          },
+          "library_version": "2026.10.25.1",
+          "precision": "float64",
+          "software": {
+            "PyAutoArray.library_revisions": "0f12fac7789c81d0fdaa324508ced5b4c434d42a",
+            "PyAutoArray.library_versions": "2026.8.17.1",
+            "PyAutoFit.library_revisions": "8cb533a605f556d85012d5eb7ed8d4f3c2a4dcf6",
+            "PyAutoFit.library_versions": "2026.8.17.1",
+            "PyAutoGalaxy.library_revisions": "7472211470b9d2b3a76bb12dcacbac51ab4de06f",
+            "PyAutoGalaxy.library_versions": "2026.8.17.1",
+            "PyAutoLens": "2026.10.25.1",
+            "PyAutoLens.library_revisions": "c6927eeb33724c2de2f2e2c773ba3ebe651943a8",
+            "PyAutoLens.library_versions": "2026.8.17.1",
+            "PyAutoNerves.library_revisions": "ec8b5c1e5f17ac03ac5246b5fbc322624a6cd3f6",
+            "PyAutoNerves.library_versions": "2026.8.17.1",
+            "autolens_profiling.library_revisions": "ad103340618b24ff2e56f8c8d912a16762396490",
+            "finufft.dependency_versions": "2.5.1",
+            "jax.dependency_versions": "0.11.2",
+            "jaxlib.dependency_versions": "0.11.2",
+            "nufftax.dependency_versions": "0.6.1",
+            "numba.dependency_versions": "0.65.1",
+            "numpy.dependency_versions": "2.2.6",
+            "release_pin_basis": "library_revisions equal tag 2026.10.25.1's SHAs (catalogue/release_revisions.json); the source checkout stamped autolens_version 2026.8.17.1",
+            "scipy.dependency_versions": "1.17.1"
+          },
+          "unknowns": {}
+        },
+        "instrument": "simple",
+        "likelihood": {
+          "dataset_type": "weak",
+          "variant": "isothermal"
+        },
+        "limitations": [
+          "provisional_optimal: true"
+        ],
+        "location": "cell",
+        "measured_at": "2026-10-29T20:28:23Z",
+        "measurement": "compile",
+        "method": {
+          "cache_state": null,
+          "id": "legacy/831d743e09e5e510dd67",
+          "repetitions": null,
+          "statistic": null,
+          "synchronization": null,
+          "unknowns": {
+            "cache_state": "Not recorded in this legacy evidence; no current default substituted.",
+            "repetitions": "Not recorded in this legacy evidence; no current default substituted.",
+            "statistic": "Not recorded in this legacy evidence; no current default substituted.",
+            "synchronization": "Not recorded in this legacy evidence; no current default substituted.",
+            "warmup": "Not recorded in this legacy evidence; no current default substituted."
+          },
+          "warmup": null
+        },
+        "metric": "deflections_yx.compile_s",
+        "model_variant": "default",
+        "pointers": {
+          "deflections_yx.compile_s": "/jit_phases/deflections_yx/compile_s",
+          "deflections_yx.first_call_s": "/jit_phases/deflections_yx/first_call_s",
+          "deflections_yx.lower_s": "/jit_phases/deflections_yx/lower_s",
+          "full_pipeline.compile_s": "/jit_phases/full_pipeline/compile_s",
+          "full_pipeline.first_call_s": "/jit_phases/full_pipeline/first_call_s",
+          "full_pipeline.lower_s": "/jit_phases/full_pipeline/lower_s",
+          "likelihood_from_shear.compile_s": "/jit_phases/likelihood_from_shear/compile_s",
+          "likelihood_from_shear.first_call_s": "/jit_phases/likelihood_from_shear/first_call_s",
+          "likelihood_from_shear.lower_s": "/jit_phases/likelihood_from_shear/lower_s",
+          "model_shear.compile_s": "/jit_phases/model_shear/compile_s",
+          "model_shear.first_call_s": "/jit_phases/model_shear/first_call_s",
+          "model_shear.lower_s": "/jit_phases/model_shear/lower_s"
+        },
+        "provenance": {
+          "has_provenance": true,
+          "host": "euclid-ral-gpu-2",
+          "measured_at": "2026-10-29T20:28:23Z",
+          "qualified": false,
+          "unknowns": {}
+        },
+        "regime": "standard",
+        "release_pin": "2026.10.25.1",
+        "resources": {
+          "cpus_per_eval": 8,
+          "cpus_per_eval_basis": "jax cpu: NPROC threads in XLA's CPU intra-op pool",
+          "devices_per_eval": 0,
+          "peak_rss_basis": "in_process_ru_maxrss",
+          "peak_rss_gb": 0.521028,
+          "peak_rss_note": "resource.getrusage(RUSAGE_SELF).ru_maxrss when the row was built: this process's peak resident set (children excluded), GB = 1e9 bytes",
+          "source": "row"
+        },
+        "run_id": "legacy/2628141b523f574fd305",
+        "setup": {
+          "backend": "jax",
+          "device": "cpu",
+          "operator": "dense",
+          "precision": "fp64",
+          "threads": null,
+          "transformer": "na"
+        },
+        "setup_id": "jax_cpu_dense_fp64",
+        "status": "superseded",
+        "superseded_by": "lifecycle/97094b4dbf75967b0eaa",
+        "unit": "s",
+        "validation": {
+          "reason": "Legacy evidence labelled by the phase-0 day-zero rule; not an accepted baseline.",
+          "status": "unreviewed"
+        },
+        "values": {
+          "deflections_yx.compile_s": 0.16744647594168782,
+          "deflections_yx.first_call_s": 0.0011852099560201168,
+          "deflections_yx.lower_s": 0.14292490994557738,
+          "full_pipeline.compile_s": 0.26404823607299477,
+          "full_pipeline.first_call_s": 0.0040597079787403345,
+          "full_pipeline.lower_s": 0.41747909295372665,
+          "likelihood_from_shear.compile_s": 0.04631105100270361,
+          "likelihood_from_shear.first_call_s": 0.0003660869551822543,
+          "likelihood_from_shear.lower_s": 0.003235075040720403,
+          "model_shear.compile_s": 0.24602953996509314,
+          "model_shear.first_call_s": 0.0012795700458809733,
+          "model_shear.lower_s": 0.19730266800615937
         }
       },
       {
@@ -28931,6 +29432,152 @@
         "decision_id": null,
         "evidence": {
           "fragment": null,
+          "path": "results/weak/isothermal/simple/jax_cpu_dense_fp64/hpc_a100/breakdown.json"
+        },
+        "figures": [
+          {
+            "kind": "fit",
+            "path": "results/weak/isothermal/simple/jax_cpu_dense_fp64/hpc_a100/fit.png",
+            "sha256": "e5d18188d555d3e0e07167bbbedf2a8f42fe878b750b51a305ede838f5c15b3d"
+          }
+        ],
+        "host_class": "hpc_a100",
+        "id": "lifecycle/2b25af7d78aec8e7f41a",
+        "identity": {
+          "backend": "cpu",
+          "device": "a100",
+          "hardware_details": {
+            "autotune_cache_entries_at_start": 0,
+            "backend": "cpu",
+            "cache_fresh": true,
+            "cpu_count": 124,
+            "device": "cpu:0",
+            "hostname": "euclid-ral-gpu-2",
+            "omp_num_threads": "1",
+            "xla_flags": "--xla_disable_hlo_passes=constant_folding --xla_cpu_multi_thread_eigen=false --xla_gpu_autotune_level=0 --xla_gpu_enable_triton_gemm=false"
+          },
+          "library_version": "2026.10.25.1",
+          "precision": "float64",
+          "software": {
+            "PyAutoArray.library_revisions": "0f12fac7789c81d0fdaa324508ced5b4c434d42a",
+            "PyAutoArray.library_versions": "2026.8.17.1",
+            "PyAutoFit.library_revisions": "8cb533a605f556d85012d5eb7ed8d4f3c2a4dcf6",
+            "PyAutoFit.library_versions": "2026.8.17.1",
+            "PyAutoGalaxy.library_revisions": "7472211470b9d2b3a76bb12dcacbac51ab4de06f",
+            "PyAutoGalaxy.library_versions": "2026.8.17.1",
+            "PyAutoLens": "2026.10.25.1",
+            "PyAutoLens.library_revisions": "c6927eeb33724c2de2f2e2c773ba3ebe651943a8",
+            "PyAutoLens.library_versions": "2026.8.17.1",
+            "PyAutoNerves.library_revisions": "ec8b5c1e5f17ac03ac5246b5fbc322624a6cd3f6",
+            "PyAutoNerves.library_versions": "2026.8.17.1",
+            "autolens_profiling.library_revisions": "ad103340618b24ff2e56f8c8d912a16762396490",
+            "finufft.dependency_versions": "2.5.1",
+            "jax.dependency_versions": "0.11.2",
+            "jaxlib.dependency_versions": "0.11.2",
+            "nufftax.dependency_versions": "0.6.1",
+            "numba.dependency_versions": "0.65.1",
+            "numpy.dependency_versions": "2.2.6",
+            "release_pin_basis": "library_revisions equal tag 2026.10.25.1's SHAs (catalogue/release_revisions.json); the source checkout stamped autolens_version 2026.8.17.1",
+            "scipy.dependency_versions": "1.17.1"
+          },
+          "unknowns": {}
+        },
+        "instrument": "simple",
+        "likelihood": {
+          "dataset_type": "weak",
+          "variant": "isothermal"
+        },
+        "limitations": [
+          "provisional_optimal: true"
+        ],
+        "location": "cell",
+        "measured_at": "2026-10-29T20:28:23Z",
+        "measurement": "breakdown",
+        "method": {
+          "cache_state": null,
+          "id": "legacy/e7a018ac254a602f17bc",
+          "repetitions": null,
+          "statistic": null,
+          "synchronization": null,
+          "unknowns": {
+            "cache_state": "Not recorded in this legacy evidence; no current default substituted.",
+            "repetitions": "Not recorded in this legacy evidence; no current default substituted.",
+            "statistic": "Not recorded in this legacy evidence; no current default substituted.",
+            "synchronization": "Not recorded in this legacy evidence; no current default substituted.",
+            "warmup": "Not recorded in this legacy evidence; no current default substituted."
+          },
+          "warmup": null
+        },
+        "metric": "component_total",
+        "model_variant": "default",
+        "pointers": {
+          "component_total": "/total_step_by_step",
+          "deflections_yx.steady_per_call_s": "/jit_phases/deflections_yx/steady_per_call_s",
+          "full_pipeline.median_s": "/full_pipeline/median_s",
+          "full_pipeline.per_call_s": "/full_pipeline/per_call_s",
+          "full_pipeline.steady_per_call_s": "/jit_phases/full_pipeline/steady_per_call_s",
+          "likelihood_from_shear.steady_per_call_s": "/jit_phases/likelihood_from_shear/steady_per_call_s",
+          "model_shear.steady_per_call_s": "/jit_phases/model_shear/steady_per_call_s",
+          "steps.likelihood_from_shear": "/steps/likelihood_from_shear",
+          "steps.model_shear": "/steps/model_shear",
+          "steps_median.likelihood_from_shear": "/steps_median/likelihood_from_shear",
+          "steps_median.model_shear": "/steps_median/model_shear"
+        },
+        "provenance": {
+          "has_provenance": true,
+          "host": "euclid-ral-gpu-2",
+          "measured_at": "2026-10-29T20:28:23Z",
+          "qualified": false,
+          "unknowns": {}
+        },
+        "regime": "standard",
+        "release_pin": "2026.10.25.1",
+        "resources": {
+          "cpus_per_eval": 8,
+          "cpus_per_eval_basis": "jax cpu: NPROC threads in XLA's CPU intra-op pool",
+          "devices_per_eval": 0,
+          "peak_rss_basis": "in_process_ru_maxrss",
+          "peak_rss_gb": 0.521028,
+          "peak_rss_note": "resource.getrusage(RUSAGE_SELF).ru_maxrss when the row was built: this process's peak resident set (children excluded), GB = 1e9 bytes",
+          "source": "row"
+        },
+        "run_id": "legacy/2628141b523f574fd305",
+        "setup": {
+          "backend": "jax",
+          "device": "cpu",
+          "operator": "dense",
+          "precision": "fp64",
+          "threads": null,
+          "transformer": "na"
+        },
+        "setup_id": "jax_cpu_dense_fp64",
+        "status": "current",
+        "superseded_by": null,
+        "unit": "s",
+        "validation": {
+          "reason": "Legacy evidence labelled by the phase-0 day-zero rule; not an accepted baseline.",
+          "status": "unreviewed"
+        },
+        "values": {
+          "component_total": 0.00032871298026293516,
+          "deflections_yx.steady_per_call_s": 0.0003186684916727245,
+          "full_pipeline.median_s": 0.0003250925219617784,
+          "full_pipeline.per_call_s": 0.0003500143066048622,
+          "full_pipeline.steady_per_call_s": 0.0003500143066048622,
+          "likelihood_from_shear.steady_per_call_s": 3.215769538655877e-05,
+          "model_shear.steady_per_call_s": 0.0003425711998715997,
+          "steps.likelihood_from_shear": 3.215769538655877e-05,
+          "steps.model_shear": 0.0003425711998715997,
+          "steps_median.likelihood_from_shear": 1.6300007700920105e-05,
+          "steps_median.model_shear": 0.00031241297256201506
+        }
+      },
+      {
+        "class": "secondary",
+        "day_zero": null,
+        "decision_id": null,
+        "evidence": {
+          "fragment": null,
           "path": "results/imaging/delaunay_nn/hst/jax_gpu_dense_fp64/hpc_a100/experiments/matrix_free/breakdown.json"
         },
         "figures": [],
@@ -36832,6 +37479,144 @@
         },
         "values": {
           "host_peak_rss": 9044.75
+        }
+      },
+      {
+        "class": "secondary",
+        "day_zero": null,
+        "decision_id": null,
+        "evidence": {
+          "fragment": null,
+          "path": "results/weak/isothermal/simple/jax_cpu_dense_fp64/hpc_ral_cpu/runtime.json"
+        },
+        "figures": [
+          {
+            "kind": "fit",
+            "path": "results/weak/isothermal/simple/jax_cpu_dense_fp64/hpc_ral_cpu/fit.png",
+            "sha256": "e5d18188d555d3e0e07167bbbedf2a8f42fe878b750b51a305ede838f5c15b3d"
+          }
+        ],
+        "host_class": "hpc_ral_cpu",
+        "id": "lifecycle/37fcbd80b848cfb12204",
+        "identity": {
+          "backend": "cpu",
+          "device": "cpu",
+          "hardware_details": {
+            "autotune_cache_entries_at_start": 0,
+            "backend": "cpu",
+            "cache_fresh": true,
+            "cpu_count": 236,
+            "device": "cpu:0",
+            "hostname": "euclid-ral-compute-10-2",
+            "omp_num_threads": "1",
+            "xla_flags": "--xla_disable_hlo_passes=constant_folding --xla_cpu_multi_thread_eigen=false --xla_gpu_autotune_level=0 --xla_gpu_enable_triton_gemm=false"
+          },
+          "library_version": "2026.10.25.1",
+          "precision": "float64",
+          "software": {
+            "PyAutoArray.library_revisions": "0f12fac7789c81d0fdaa324508ced5b4c434d42a",
+            "PyAutoArray.library_versions": "2026.8.17.1",
+            "PyAutoFit.library_revisions": "8cb533a605f556d85012d5eb7ed8d4f3c2a4dcf6",
+            "PyAutoFit.library_versions": "2026.8.17.1",
+            "PyAutoGalaxy.library_revisions": "7472211470b9d2b3a76bb12dcacbac51ab4de06f",
+            "PyAutoGalaxy.library_versions": "2026.8.17.1",
+            "PyAutoLens": "2026.10.25.1",
+            "PyAutoLens.library_revisions": "c6927eeb33724c2de2f2e2c773ba3ebe651943a8",
+            "PyAutoLens.library_versions": "2026.8.17.1",
+            "PyAutoNerves.library_revisions": "ec8b5c1e5f17ac03ac5246b5fbc322624a6cd3f6",
+            "PyAutoNerves.library_versions": "2026.8.17.1",
+            "autolens_profiling.library_revisions": "ad103340618b24ff2e56f8c8d912a16762396490",
+            "finufft.dependency_versions": "2.5.1",
+            "jax.dependency_versions": "0.11.2",
+            "jaxlib.dependency_versions": "0.11.2",
+            "nufftax.dependency_versions": "0.6.1",
+            "numba.dependency_versions": "0.65.1",
+            "numpy.dependency_versions": "2.2.6",
+            "release_pin_basis": "library_revisions equal tag 2026.10.25.1's SHAs (catalogue/release_revisions.json); the source checkout stamped autolens_version 2026.8.17.1",
+            "scipy.dependency_versions": "1.17.1"
+          },
+          "unknowns": {}
+        },
+        "instrument": "simple",
+        "likelihood": {
+          "dataset_type": "weak",
+          "variant": "isothermal"
+        },
+        "limitations": [
+          "provisional_optimal: true"
+        ],
+        "location": "cell",
+        "measured_at": "2026-10-29T20:28:13Z",
+        "measurement": "compile",
+        "method": {
+          "cache_state": null,
+          "id": "legacy/457eb6b102dc37981ebb",
+          "repetitions": null,
+          "statistic": null,
+          "synchronization": null,
+          "unknowns": {
+            "cache_state": "Not recorded in this legacy evidence; no current default substituted.",
+            "repetitions": "Not recorded in this legacy evidence; no current default substituted.",
+            "statistic": "Not recorded in this legacy evidence; no current default substituted.",
+            "synchronization": "Not recorded in this legacy evidence; no current default substituted.",
+            "warmup": "Not recorded in this legacy evidence; no current default substituted."
+          },
+          "warmup": null
+        },
+        "metric": "full_pipeline.compile",
+        "model_variant": "default",
+        "pointers": {
+          "full_pipeline.compile": "/full_pipeline_compile_s",
+          "full_pipeline.compile_s": "/jit_phases/full_pipeline/compile_s",
+          "full_pipeline.first_call": "/full_pipeline_first_call_s",
+          "full_pipeline.first_call_s": "/jit_phases/full_pipeline/first_call_s",
+          "full_pipeline.lower": "/full_pipeline_lower_s",
+          "full_pipeline.lower_s": "/jit_phases/full_pipeline/lower_s",
+          "full_pipeline_vmap32.first_call_s": "/jit_phases/full_pipeline_vmap32/first_call_s"
+        },
+        "provenance": {
+          "has_provenance": true,
+          "host": "euclid-ral-compute-10-2",
+          "measured_at": "2026-10-29T20:28:13Z",
+          "qualified": false,
+          "unknowns": {}
+        },
+        "regime": "standard",
+        "release_pin": "2026.10.25.1",
+        "resources": {
+          "cpus_per_eval": 8,
+          "cpus_per_eval_basis": "jax cpu: NPROC threads in XLA's CPU intra-op pool",
+          "devices_per_eval": 0,
+          "peak_rss_basis": "in_process_ru_maxrss",
+          "peak_rss_gb": 0.527794,
+          "peak_rss_note": "resource.getrusage(RUSAGE_SELF).ru_maxrss when the row was built: this process's peak resident set (children excluded), GB = 1e9 bytes",
+          "source": "row"
+        },
+        "run_id": "legacy/777d7c6e2dc16ea45a31",
+        "setup": {
+          "backend": "jax",
+          "device": "cpu",
+          "operator": "dense",
+          "precision": "fp64",
+          "threads": null,
+          "transformer": "na"
+        },
+        "setup_id": "jax_cpu_dense_fp64",
+        "status": "current",
+        "superseded_by": null,
+        "unit": "s",
+        "validation": {
+          "reason": "Legacy evidence labelled by the phase-0 day-zero rule; not an accepted baseline.",
+          "status": "unreviewed"
+        },
+        "values": {
+          "full_pipeline.compile": 0.22244742000475526,
+          "full_pipeline.compile_s": 0.22244742000475526,
+          "full_pipeline.first_call": 0.004233506042510271,
+          "full_pipeline.first_call_s": 0.004233506042510271,
+          "full_pipeline.lower": 0.33864894695580006,
+          "full_pipeline.lower_s": 0.33864894695580006,
+          "full_pipeline_vmap32.first_call_s": 0.5731376439798623
         }
       },
       {
@@ -76982,6 +77767,105 @@
         "decision_id": null,
         "evidence": {
           "fragment": null,
+          "path": "results/weak/isothermal/simple/jax_cpu_dense_fp64/hpc_ral_cpu/parity.json"
+        },
+        "figures": [],
+        "host_class": "hpc_ral_cpu",
+        "id": "lifecycle/7f6973aafe0b068ba1ab",
+        "identity": {
+          "backend": null,
+          "device": null,
+          "hardware_details": {},
+          "library_version": "2026.10.25.1",
+          "precision": "float64",
+          "software": {
+            "PyAutoLens": "2026.10.25.1",
+            "release_pin_basis": "library_revisions equal tag 2026.10.25.1's SHAs (catalogue/release_revisions.json); the source checkout stamped autolens_version 2026.8.17.1"
+          },
+          "unknowns": {
+            "backend": "Not recorded in this legacy evidence; no current default substituted.",
+            "device": "Not recorded in this legacy evidence; no current default substituted."
+          }
+        },
+        "instrument": "simple",
+        "likelihood": {
+          "dataset_type": "weak",
+          "variant": "isothermal"
+        },
+        "limitations": [
+          "provisional_optimal: true"
+        ],
+        "location": "cell",
+        "measured_at": "2026-10-29T20:28:13Z",
+        "measurement": "parity",
+        "method": {
+          "cache_state": null,
+          "id": "parity-witness",
+          "repetitions": null,
+          "statistic": null,
+          "synchronization": null,
+          "unknowns": {
+            "cache_state": "A parity witness compares one log-likelihood evaluation; not a timing.",
+            "repetitions": "A parity witness compares one log-likelihood evaluation; not a timing.",
+            "statistic": "A parity witness compares one log-likelihood evaluation; not a timing.",
+            "synchronization": "A parity witness compares one log-likelihood evaluation; not a timing.",
+            "warmup": "A parity witness compares one log-likelihood evaluation; not a timing."
+          },
+          "warmup": null
+        },
+        "metric": "abs_delta_log_likelihood",
+        "model_variant": "default",
+        "parity": {
+          "log_likelihood": -84.87191962324596,
+          "reference": {
+            "date": "2026-10-29",
+            "source": "eager NumPy AnalysisWeak(use_jax=False).fit_from(instance).log_likelihood in the same process (adaptive Richardson finite-difference Hessian): simple, 1500 galaxies, same dataset, model and instance"
+          },
+          "reference_log_likelihood": -84.8719196231034,
+          "status": "match"
+        },
+        "pointers": {
+          "tolerance": "/tolerance"
+        },
+        "provenance": {
+          "has_provenance": false,
+          "host": null,
+          "measured_at": "2026-10-29T20:28:13Z",
+          "qualified": false,
+          "unknowns": {
+            "host": "Not recorded in this legacy evidence; no current default substituted."
+          }
+        },
+        "regime": "standard",
+        "release_pin": "2026.10.25.1",
+        "run_id": "parity/7a710f03ec6da10a267e",
+        "setup": {
+          "backend": "jax",
+          "device": "cpu",
+          "operator": "dense",
+          "precision": "fp64",
+          "threads": null,
+          "transformer": "na"
+        },
+        "setup_id": "jax_cpu_dense_fp64",
+        "status": "current",
+        "superseded_by": null,
+        "unit": "dimensionless",
+        "validation": {
+          "reason": "Parity witness status match (|delta log L| against tolerance, recorded by the producing run); not an accepted baseline.",
+          "status": "unreviewed"
+        },
+        "values": {
+          "abs_delta_log_likelihood": 1.425632945029065e-10,
+          "tolerance": 0.00848719196231034
+        }
+      },
+      {
+        "class": "secondary",
+        "day_zero": null,
+        "decision_id": null,
+        "evidence": {
+          "fragment": null,
           "path": "results/interferometer/delaunay/alma_high/numba_cpu_sparse_fp64_wtilde/hpc_ral_cpu/breakdown.json"
         },
         "figures": [
@@ -90366,6 +91250,144 @@
         "decision_id": null,
         "evidence": {
           "fragment": null,
+          "path": "results/weak/isothermal/simple/jax_cpu_dense_fp64/hpc_a100/runtime.json"
+        },
+        "figures": [
+          {
+            "kind": "fit",
+            "path": "results/weak/isothermal/simple/jax_cpu_dense_fp64/hpc_a100/fit.png",
+            "sha256": "e5d18188d555d3e0e07167bbbedf2a8f42fe878b750b51a305ede838f5c15b3d"
+          }
+        ],
+        "host_class": "hpc_a100",
+        "id": "lifecycle/97094b4dbf75967b0eaa",
+        "identity": {
+          "backend": "cpu",
+          "device": "a100",
+          "hardware_details": {
+            "autotune_cache_entries_at_start": 0,
+            "backend": "cpu",
+            "cache_fresh": true,
+            "cpu_count": 124,
+            "device": "cpu:0",
+            "hostname": "euclid-ral-gpu-2",
+            "omp_num_threads": "1",
+            "xla_flags": "--xla_disable_hlo_passes=constant_folding --xla_cpu_multi_thread_eigen=false --xla_gpu_autotune_level=0 --xla_gpu_enable_triton_gemm=false"
+          },
+          "library_version": "2026.10.25.1",
+          "precision": "float64",
+          "software": {
+            "PyAutoArray.library_revisions": "0f12fac7789c81d0fdaa324508ced5b4c434d42a",
+            "PyAutoArray.library_versions": "2026.8.17.1",
+            "PyAutoFit.library_revisions": "8cb533a605f556d85012d5eb7ed8d4f3c2a4dcf6",
+            "PyAutoFit.library_versions": "2026.8.17.1",
+            "PyAutoGalaxy.library_revisions": "7472211470b9d2b3a76bb12dcacbac51ab4de06f",
+            "PyAutoGalaxy.library_versions": "2026.8.17.1",
+            "PyAutoLens": "2026.10.25.1",
+            "PyAutoLens.library_revisions": "c6927eeb33724c2de2f2e2c773ba3ebe651943a8",
+            "PyAutoLens.library_versions": "2026.8.17.1",
+            "PyAutoNerves.library_revisions": "ec8b5c1e5f17ac03ac5246b5fbc322624a6cd3f6",
+            "PyAutoNerves.library_versions": "2026.8.17.1",
+            "autolens_profiling.library_revisions": "ad103340618b24ff2e56f8c8d912a16762396490",
+            "finufft.dependency_versions": "2.5.1",
+            "jax.dependency_versions": "0.11.2",
+            "jaxlib.dependency_versions": "0.11.2",
+            "nufftax.dependency_versions": "0.6.1",
+            "numba.dependency_versions": "0.65.1",
+            "numpy.dependency_versions": "2.2.6",
+            "release_pin_basis": "library_revisions equal tag 2026.10.25.1's SHAs (catalogue/release_revisions.json); the source checkout stamped autolens_version 2026.8.17.1",
+            "scipy.dependency_versions": "1.17.1"
+          },
+          "unknowns": {}
+        },
+        "instrument": "simple",
+        "likelihood": {
+          "dataset_type": "weak",
+          "variant": "isothermal"
+        },
+        "limitations": [
+          "provisional_optimal: true"
+        ],
+        "location": "cell",
+        "measured_at": "2026-10-29T20:28:16Z",
+        "measurement": "compile",
+        "method": {
+          "cache_state": null,
+          "id": "legacy/457eb6b102dc37981ebb",
+          "repetitions": null,
+          "statistic": null,
+          "synchronization": null,
+          "unknowns": {
+            "cache_state": "Not recorded in this legacy evidence; no current default substituted.",
+            "repetitions": "Not recorded in this legacy evidence; no current default substituted.",
+            "statistic": "Not recorded in this legacy evidence; no current default substituted.",
+            "synchronization": "Not recorded in this legacy evidence; no current default substituted.",
+            "warmup": "Not recorded in this legacy evidence; no current default substituted."
+          },
+          "warmup": null
+        },
+        "metric": "full_pipeline.compile",
+        "model_variant": "default",
+        "pointers": {
+          "full_pipeline.compile": "/full_pipeline_compile_s",
+          "full_pipeline.compile_s": "/jit_phases/full_pipeline/compile_s",
+          "full_pipeline.first_call": "/full_pipeline_first_call_s",
+          "full_pipeline.first_call_s": "/jit_phases/full_pipeline/first_call_s",
+          "full_pipeline.lower": "/full_pipeline_lower_s",
+          "full_pipeline.lower_s": "/jit_phases/full_pipeline/lower_s",
+          "full_pipeline_vmap32.first_call_s": "/jit_phases/full_pipeline_vmap32/first_call_s"
+        },
+        "provenance": {
+          "has_provenance": true,
+          "host": "euclid-ral-gpu-2",
+          "measured_at": "2026-10-29T20:28:16Z",
+          "qualified": false,
+          "unknowns": {}
+        },
+        "regime": "standard",
+        "release_pin": "2026.10.25.1",
+        "resources": {
+          "cpus_per_eval": 8,
+          "cpus_per_eval_basis": "jax cpu: NPROC threads in XLA's CPU intra-op pool",
+          "devices_per_eval": 0,
+          "peak_rss_basis": "in_process_ru_maxrss",
+          "peak_rss_gb": 0.536113,
+          "peak_rss_note": "resource.getrusage(RUSAGE_SELF).ru_maxrss when the row was built: this process's peak resident set (children excluded), GB = 1e9 bytes",
+          "source": "row"
+        },
+        "run_id": "legacy/77785ca2807efaeb33ee",
+        "setup": {
+          "backend": "jax",
+          "device": "cpu",
+          "operator": "dense",
+          "precision": "fp64",
+          "threads": null,
+          "transformer": "na"
+        },
+        "setup_id": "jax_cpu_dense_fp64",
+        "status": "current",
+        "superseded_by": null,
+        "unit": "s",
+        "validation": {
+          "reason": "Legacy evidence labelled by the phase-0 day-zero rule; not an accepted baseline.",
+          "status": "unreviewed"
+        },
+        "values": {
+          "full_pipeline.compile": 0.26920397602953017,
+          "full_pipeline.compile_s": 0.26920397602953017,
+          "full_pipeline.first_call": 0.003367421915754676,
+          "full_pipeline.first_call_s": 0.003367421915754676,
+          "full_pipeline.lower": 0.4190014109481126,
+          "full_pipeline.lower_s": 0.4190014109481126,
+          "full_pipeline_vmap32.first_call_s": 0.6687923799036071
+        }
+      },
+      {
+        "class": "secondary",
+        "day_zero": null,
+        "decision_id": null,
+        "evidence": {
+          "fragment": null,
           "path": "results/imaging/rectangular/ao/jax_gpu_sparse_fp64/hpc_a100/breakdown.json"
         },
         "figures": [
@@ -101266,6 +102288,104 @@
         "decision_id": null,
         "evidence": {
           "fragment": null,
+          "path": "results/weak/isothermal/simple/jax_cpu_dense_fp64/hpc_a100/parity.json"
+        },
+        "figures": [],
+        "host_class": "hpc_a100",
+        "id": "lifecycle/a982d26a01c73cc70d8e",
+        "identity": {
+          "backend": null,
+          "device": "a100",
+          "hardware_details": {},
+          "library_version": "2026.10.25.1",
+          "precision": "float64",
+          "software": {
+            "PyAutoLens": "2026.10.25.1",
+            "release_pin_basis": "library_revisions equal tag 2026.10.25.1's SHAs (catalogue/release_revisions.json); the source checkout stamped autolens_version 2026.8.17.1"
+          },
+          "unknowns": {
+            "backend": "Not recorded in this legacy evidence; no current default substituted."
+          }
+        },
+        "instrument": "simple",
+        "likelihood": {
+          "dataset_type": "weak",
+          "variant": "isothermal"
+        },
+        "limitations": [
+          "provisional_optimal: true"
+        ],
+        "location": "cell",
+        "measured_at": "2026-10-29T20:28:23Z",
+        "measurement": "parity",
+        "method": {
+          "cache_state": null,
+          "id": "parity-witness",
+          "repetitions": null,
+          "statistic": null,
+          "synchronization": null,
+          "unknowns": {
+            "cache_state": "A parity witness compares one log-likelihood evaluation; not a timing.",
+            "repetitions": "A parity witness compares one log-likelihood evaluation; not a timing.",
+            "statistic": "A parity witness compares one log-likelihood evaluation; not a timing.",
+            "synchronization": "A parity witness compares one log-likelihood evaluation; not a timing.",
+            "warmup": "A parity witness compares one log-likelihood evaluation; not a timing."
+          },
+          "warmup": null
+        },
+        "metric": "abs_delta_log_likelihood",
+        "model_variant": "default",
+        "parity": {
+          "log_likelihood": -84.87191962324596,
+          "reference": {
+            "date": "2026-10-29",
+            "source": "eager NumPy AnalysisWeak(use_jax=False).fit_from(instance).log_likelihood in the same process (adaptive Richardson finite-difference Hessian): simple, 1500 galaxies, same dataset, model and instance"
+          },
+          "reference_log_likelihood": -84.8719196230395,
+          "status": "match"
+        },
+        "pointers": {
+          "tolerance": "/tolerance"
+        },
+        "provenance": {
+          "has_provenance": false,
+          "host": null,
+          "measured_at": "2026-10-29T20:28:23Z",
+          "qualified": false,
+          "unknowns": {
+            "host": "Not recorded in this legacy evidence; no current default substituted."
+          }
+        },
+        "regime": "standard",
+        "release_pin": "2026.10.25.1",
+        "run_id": "parity/f526045afc94c85f8421",
+        "setup": {
+          "backend": "jax",
+          "device": "cpu",
+          "operator": "dense",
+          "precision": "fp64",
+          "threads": null,
+          "transformer": "na"
+        },
+        "setup_id": "jax_cpu_dense_fp64",
+        "status": "current",
+        "superseded_by": null,
+        "unit": "dimensionless",
+        "validation": {
+          "reason": "Parity witness status match (|delta log L| against tolerance, recorded by the producing run); not an accepted baseline.",
+          "status": "unreviewed"
+        },
+        "values": {
+          "abs_delta_log_likelihood": 2.064552973024547e-10,
+          "tolerance": 0.00848719196230395
+        }
+      },
+      {
+        "class": "secondary",
+        "day_zero": null,
+        "decision_id": null,
+        "evidence": {
+          "fragment": null,
           "path": "results/imaging/rectangular/hst/jax_cpu_sparse_fp64/hpc_a100/breakdown.json"
         },
         "figures": [
@@ -107167,6 +108287,154 @@
         "decision_id": null,
         "evidence": {
           "fragment": null,
+          "path": "results/weak/isothermal/simple/jax_cpu_dense_fp64/hpc_ral_cpu/breakdown.json"
+        },
+        "figures": [
+          {
+            "kind": "fit",
+            "path": "results/weak/isothermal/simple/jax_cpu_dense_fp64/hpc_ral_cpu/fit.png",
+            "sha256": "e5d18188d555d3e0e07167bbbedf2a8f42fe878b750b51a305ede838f5c15b3d"
+          }
+        ],
+        "host_class": "hpc_ral_cpu",
+        "id": "lifecycle/b0e0e0354fc74d95c6b6",
+        "identity": {
+          "backend": "cpu",
+          "device": "cpu",
+          "hardware_details": {
+            "autotune_cache_entries_at_start": 0,
+            "backend": "cpu",
+            "cache_fresh": true,
+            "cpu_count": 236,
+            "device": "cpu:0",
+            "hostname": "euclid-ral-compute-10-2",
+            "omp_num_threads": "1",
+            "xla_flags": "--xla_disable_hlo_passes=constant_folding --xla_cpu_multi_thread_eigen=false --xla_gpu_autotune_level=0 --xla_gpu_enable_triton_gemm=false"
+          },
+          "library_version": "2026.10.25.1",
+          "precision": "float64",
+          "software": {
+            "PyAutoArray.library_revisions": "0f12fac7789c81d0fdaa324508ced5b4c434d42a",
+            "PyAutoArray.library_versions": "2026.8.17.1",
+            "PyAutoFit.library_revisions": "8cb533a605f556d85012d5eb7ed8d4f3c2a4dcf6",
+            "PyAutoFit.library_versions": "2026.8.17.1",
+            "PyAutoGalaxy.library_revisions": "7472211470b9d2b3a76bb12dcacbac51ab4de06f",
+            "PyAutoGalaxy.library_versions": "2026.8.17.1",
+            "PyAutoLens": "2026.10.25.1",
+            "PyAutoLens.library_revisions": "c6927eeb33724c2de2f2e2c773ba3ebe651943a8",
+            "PyAutoLens.library_versions": "2026.8.17.1",
+            "PyAutoNerves.library_revisions": "ec8b5c1e5f17ac03ac5246b5fbc322624a6cd3f6",
+            "PyAutoNerves.library_versions": "2026.8.17.1",
+            "autolens_profiling.library_revisions": "ad103340618b24ff2e56f8c8d912a16762396490",
+            "finufft.dependency_versions": "2.5.1",
+            "jax.dependency_versions": "0.11.2",
+            "jaxlib.dependency_versions": "0.11.2",
+            "nufftax.dependency_versions": "0.6.1",
+            "numba.dependency_versions": "0.65.1",
+            "numpy.dependency_versions": "2.2.6",
+            "release_pin_basis": "library_revisions equal tag 2026.10.25.1's SHAs (catalogue/release_revisions.json); the source checkout stamped autolens_version 2026.8.17.1",
+            "scipy.dependency_versions": "1.17.1"
+          },
+          "unknowns": {}
+        },
+        "instrument": "simple",
+        "likelihood": {
+          "dataset_type": "weak",
+          "variant": "isothermal"
+        },
+        "limitations": [
+          "provisional_optimal: true"
+        ],
+        "location": "cell",
+        "measured_at": "2026-10-29T20:28:12Z",
+        "measurement": "compile",
+        "method": {
+          "cache_state": null,
+          "id": "legacy/831d743e09e5e510dd67",
+          "repetitions": null,
+          "statistic": null,
+          "synchronization": null,
+          "unknowns": {
+            "cache_state": "Not recorded in this legacy evidence; no current default substituted.",
+            "repetitions": "Not recorded in this legacy evidence; no current default substituted.",
+            "statistic": "Not recorded in this legacy evidence; no current default substituted.",
+            "synchronization": "Not recorded in this legacy evidence; no current default substituted.",
+            "warmup": "Not recorded in this legacy evidence; no current default substituted."
+          },
+          "warmup": null
+        },
+        "metric": "deflections_yx.compile_s",
+        "model_variant": "default",
+        "pointers": {
+          "deflections_yx.compile_s": "/jit_phases/deflections_yx/compile_s",
+          "deflections_yx.first_call_s": "/jit_phases/deflections_yx/first_call_s",
+          "deflections_yx.lower_s": "/jit_phases/deflections_yx/lower_s",
+          "full_pipeline.compile_s": "/jit_phases/full_pipeline/compile_s",
+          "full_pipeline.first_call_s": "/jit_phases/full_pipeline/first_call_s",
+          "full_pipeline.lower_s": "/jit_phases/full_pipeline/lower_s",
+          "likelihood_from_shear.compile_s": "/jit_phases/likelihood_from_shear/compile_s",
+          "likelihood_from_shear.first_call_s": "/jit_phases/likelihood_from_shear/first_call_s",
+          "likelihood_from_shear.lower_s": "/jit_phases/likelihood_from_shear/lower_s",
+          "model_shear.compile_s": "/jit_phases/model_shear/compile_s",
+          "model_shear.first_call_s": "/jit_phases/model_shear/first_call_s",
+          "model_shear.lower_s": "/jit_phases/model_shear/lower_s"
+        },
+        "provenance": {
+          "has_provenance": true,
+          "host": "euclid-ral-compute-10-2",
+          "measured_at": "2026-10-29T20:28:12Z",
+          "qualified": false,
+          "unknowns": {}
+        },
+        "regime": "standard",
+        "release_pin": "2026.10.25.1",
+        "resources": {
+          "cpus_per_eval": 8,
+          "cpus_per_eval_basis": "jax cpu: NPROC threads in XLA's CPU intra-op pool",
+          "devices_per_eval": 0,
+          "peak_rss_basis": "in_process_ru_maxrss",
+          "peak_rss_gb": 0.506941,
+          "peak_rss_note": "resource.getrusage(RUSAGE_SELF).ru_maxrss when the row was built: this process's peak resident set (children excluded), GB = 1e9 bytes",
+          "source": "row"
+        },
+        "run_id": "legacy/fc2fa934d6d492b5dd7e",
+        "setup": {
+          "backend": "jax",
+          "device": "cpu",
+          "operator": "dense",
+          "precision": "fp64",
+          "threads": null,
+          "transformer": "na"
+        },
+        "setup_id": "jax_cpu_dense_fp64",
+        "status": "superseded",
+        "superseded_by": "lifecycle/37fcbd80b848cfb12204",
+        "unit": "s",
+        "validation": {
+          "reason": "Legacy evidence labelled by the phase-0 day-zero rule; not an accepted baseline.",
+          "status": "unreviewed"
+        },
+        "values": {
+          "deflections_yx.compile_s": 0.1532508300151676,
+          "deflections_yx.first_call_s": 0.0010736980475485325,
+          "deflections_yx.lower_s": 0.12365478498395532,
+          "full_pipeline.compile_s": 0.21501528203953058,
+          "full_pipeline.first_call_s": 0.0040423719910904765,
+          "full_pipeline.lower_s": 0.341076965094544,
+          "likelihood_from_shear.compile_s": 0.03743970999494195,
+          "likelihood_from_shear.first_call_s": 0.00030169892124831676,
+          "likelihood_from_shear.lower_s": 0.00295600900426507,
+          "model_shear.compile_s": 0.20930187602061778,
+          "model_shear.first_call_s": 0.001081723952665925,
+          "model_shear.lower_s": 0.160652776947245
+        }
+      },
+      {
+        "class": "secondary",
+        "day_zero": null,
+        "decision_id": null,
+        "evidence": {
+          "fragment": null,
           "path": "results/imaging/delaunay/hst/jax_gpu_sparse_fp64/hpc_a100/history/2026.8.17.1_2026-09-10/breakdown.json"
         },
         "figures": [],
@@ -108946,6 +110214,145 @@
           "s3_nnls_pdip_one_iteration_jit.first_call_s": 0.010860134847462177,
           "s3_nnls_pdip_one_iteration_jit.lower_s": 0.02309695305302739,
           "s3_nnls_pdip_vmap16.first_call_s": 2.2681490550749004
+        }
+      },
+      {
+        "class": "secondary",
+        "day_zero": null,
+        "decision_id": null,
+        "evidence": {
+          "fragment": null,
+          "path": "results/weak/isothermal/simple/jax_gpu_dense_fp64/hpc_a100/runtime.json"
+        },
+        "figures": [
+          {
+            "kind": "fit",
+            "path": "results/weak/isothermal/simple/jax_gpu_dense_fp64/hpc_a100/fit.png",
+            "sha256": "e5d18188d555d3e0e07167bbbedf2a8f42fe878b750b51a305ede838f5c15b3d"
+          }
+        ],
+        "host_class": "hpc_a100",
+        "id": "lifecycle/b56a7e7f544b23f03a71",
+        "identity": {
+          "backend": "gpu",
+          "device": "a100",
+          "hardware_details": {
+            "autotune_cache_entries_at_start": 0,
+            "backend": "gpu",
+            "cache_fresh": true,
+            "cpu_count": 124,
+            "device": "cuda:0",
+            "hostname": "euclid-ral-gpu-2",
+            "nvidia_smi": "NVIDIA A100 80GB PCIe, 445 MiB, 81920 MiB",
+            "omp_num_threads": "1",
+            "xla_flags": "--xla_disable_hlo_passes=constant_folding --xla_gpu_autotune_level=0 --xla_gpu_enable_triton_gemm=false"
+          },
+          "library_version": "2026.10.25.1",
+          "precision": "float64",
+          "software": {
+            "PyAutoArray.library_revisions": "0f12fac7789c81d0fdaa324508ced5b4c434d42a",
+            "PyAutoArray.library_versions": "2026.8.17.1",
+            "PyAutoFit.library_revisions": "8cb533a605f556d85012d5eb7ed8d4f3c2a4dcf6",
+            "PyAutoFit.library_versions": "2026.8.17.1",
+            "PyAutoGalaxy.library_revisions": "7472211470b9d2b3a76bb12dcacbac51ab4de06f",
+            "PyAutoGalaxy.library_versions": "2026.8.17.1",
+            "PyAutoLens": "2026.10.25.1",
+            "PyAutoLens.library_revisions": "c6927eeb33724c2de2f2e2c773ba3ebe651943a8",
+            "PyAutoLens.library_versions": "2026.8.17.1",
+            "PyAutoNerves.library_revisions": "ec8b5c1e5f17ac03ac5246b5fbc322624a6cd3f6",
+            "PyAutoNerves.library_versions": "2026.8.17.1",
+            "autolens_profiling.library_revisions": "ad103340618b24ff2e56f8c8d912a16762396490",
+            "finufft.dependency_versions": "2.5.1",
+            "jax.dependency_versions": "0.11.2",
+            "jaxlib.dependency_versions": "0.11.2",
+            "nufftax.dependency_versions": "0.6.1",
+            "numba.dependency_versions": "0.65.1",
+            "numpy.dependency_versions": "2.2.6",
+            "release_pin_basis": "library_revisions equal tag 2026.10.25.1's SHAs (catalogue/release_revisions.json); the source checkout stamped autolens_version 2026.8.17.1",
+            "scipy.dependency_versions": "1.17.1"
+          },
+          "unknowns": {}
+        },
+        "instrument": "simple",
+        "likelihood": {
+          "dataset_type": "weak",
+          "variant": "isothermal"
+        },
+        "limitations": [
+          "provisional_secondary: true"
+        ],
+        "location": "cell",
+        "measured_at": "2026-10-29T20:28:31Z",
+        "measurement": "compile",
+        "method": {
+          "cache_state": null,
+          "id": "legacy/457eb6b102dc37981ebb",
+          "repetitions": null,
+          "statistic": null,
+          "synchronization": null,
+          "unknowns": {
+            "cache_state": "Not recorded in this legacy evidence; no current default substituted.",
+            "repetitions": "Not recorded in this legacy evidence; no current default substituted.",
+            "statistic": "Not recorded in this legacy evidence; no current default substituted.",
+            "synchronization": "Not recorded in this legacy evidence; no current default substituted.",
+            "warmup": "Not recorded in this legacy evidence; no current default substituted."
+          },
+          "warmup": null
+        },
+        "metric": "full_pipeline.compile",
+        "model_variant": "default",
+        "pointers": {
+          "full_pipeline.compile": "/full_pipeline_compile_s",
+          "full_pipeline.compile_s": "/jit_phases/full_pipeline/compile_s",
+          "full_pipeline.first_call": "/full_pipeline_first_call_s",
+          "full_pipeline.first_call_s": "/jit_phases/full_pipeline/first_call_s",
+          "full_pipeline.lower": "/full_pipeline_lower_s",
+          "full_pipeline.lower_s": "/jit_phases/full_pipeline/lower_s",
+          "full_pipeline_vmap32.first_call_s": "/jit_phases/full_pipeline_vmap32/first_call_s"
+        },
+        "provenance": {
+          "has_provenance": true,
+          "host": "euclid-ral-gpu-2",
+          "measured_at": "2026-10-29T20:28:31Z",
+          "qualified": false,
+          "unknowns": {}
+        },
+        "regime": "standard",
+        "release_pin": "2026.10.25.1",
+        "resources": {
+          "cpus_per_eval": 8,
+          "cpus_per_eval_basis": "jax gpu: one device; cpus_per_eval = NPROC host threads",
+          "devices_per_eval": 1,
+          "peak_rss_basis": "in_process_ru_maxrss",
+          "peak_rss_gb": 0.645538,
+          "peak_rss_note": "resource.getrusage(RUSAGE_SELF).ru_maxrss when the row was built: this process's peak resident set (children excluded), GB = 1e9 bytes",
+          "source": "row"
+        },
+        "run_id": "legacy/bf679ff4692d80eaaa00",
+        "setup": {
+          "backend": "jax",
+          "device": "gpu",
+          "operator": "dense",
+          "precision": "fp64",
+          "threads": null,
+          "transformer": "na"
+        },
+        "setup_id": "jax_gpu_dense_fp64",
+        "status": "current",
+        "superseded_by": null,
+        "unit": "s",
+        "validation": {
+          "reason": "Legacy evidence labelled by the phase-0 day-zero rule; not an accepted baseline.",
+          "status": "unreviewed"
+        },
+        "values": {
+          "full_pipeline.compile": 0.6243358450010419,
+          "full_pipeline.compile_s": 0.6243358450010419,
+          "full_pipeline.first_call": 0.005280967918224633,
+          "full_pipeline.first_call_s": 0.005280967918224633,
+          "full_pipeline.lower": 0.415152462082915,
+          "full_pipeline.lower_s": 0.415152462082915,
+          "full_pipeline_vmap32.first_call_s": 0.8422252690652385
         }
       },
       {
@@ -116290,6 +117697,104 @@
           "steps.Regularized reconstruction": 1.552140578487888,
           "steps_vmap_per_call.Inversion setup (sparse, steps 5-8 combined)": 0.04298221661883872,
           "steps_vmap_per_call.Regularization matrix (H)": 0.02264321861439384
+        }
+      },
+      {
+        "class": "secondary",
+        "day_zero": null,
+        "decision_id": null,
+        "evidence": {
+          "fragment": null,
+          "path": "results/weak/isothermal/simple/jax_gpu_dense_fp64/hpc_a100/parity.json"
+        },
+        "figures": [],
+        "host_class": "hpc_a100",
+        "id": "lifecycle/bfd2db209cd80e6a6354",
+        "identity": {
+          "backend": null,
+          "device": "a100",
+          "hardware_details": {},
+          "library_version": "2026.10.25.1",
+          "precision": "float64",
+          "software": {
+            "PyAutoLens": "2026.10.25.1",
+            "release_pin_basis": "library_revisions equal tag 2026.10.25.1's SHAs (catalogue/release_revisions.json); the source checkout stamped autolens_version 2026.8.17.1"
+          },
+          "unknowns": {
+            "backend": "Not recorded in this legacy evidence; no current default substituted."
+          }
+        },
+        "instrument": "simple",
+        "likelihood": {
+          "dataset_type": "weak",
+          "variant": "isothermal"
+        },
+        "limitations": [
+          "provisional_secondary: true"
+        ],
+        "location": "cell",
+        "measured_at": "2026-10-29T20:28:37Z",
+        "measurement": "parity",
+        "method": {
+          "cache_state": null,
+          "id": "parity-witness",
+          "repetitions": null,
+          "statistic": null,
+          "synchronization": null,
+          "unknowns": {
+            "cache_state": "A parity witness compares one log-likelihood evaluation; not a timing.",
+            "repetitions": "A parity witness compares one log-likelihood evaluation; not a timing.",
+            "statistic": "A parity witness compares one log-likelihood evaluation; not a timing.",
+            "synchronization": "A parity witness compares one log-likelihood evaluation; not a timing.",
+            "warmup": "A parity witness compares one log-likelihood evaluation; not a timing."
+          },
+          "warmup": null
+        },
+        "metric": "abs_delta_log_likelihood",
+        "model_variant": "default",
+        "parity": {
+          "log_likelihood": -84.87191962324573,
+          "reference": {
+            "date": "2026-10-29",
+            "source": "eager NumPy AnalysisWeak(use_jax=False).fit_from(instance).log_likelihood in the same process (adaptive Richardson finite-difference Hessian): simple, 1500 galaxies, same dataset, model and instance"
+          },
+          "reference_log_likelihood": -84.8719196230395,
+          "status": "match"
+        },
+        "pointers": {
+          "tolerance": "/tolerance"
+        },
+        "provenance": {
+          "has_provenance": false,
+          "host": null,
+          "measured_at": "2026-10-29T20:28:37Z",
+          "qualified": false,
+          "unknowns": {
+            "host": "Not recorded in this legacy evidence; no current default substituted."
+          }
+        },
+        "regime": "standard",
+        "release_pin": "2026.10.25.1",
+        "run_id": "parity/226a75ba1d7674030a9d",
+        "setup": {
+          "backend": "jax",
+          "device": "gpu",
+          "operator": "dense",
+          "precision": "fp64",
+          "threads": null,
+          "transformer": "na"
+        },
+        "setup_id": "jax_gpu_dense_fp64",
+        "status": "current",
+        "superseded_by": null,
+        "unit": "dimensionless",
+        "validation": {
+          "reason": "Parity witness status match (|delta log L| against tolerance, recorded by the producing run); not an accepted baseline.",
+          "status": "unreviewed"
+        },
+        "values": {
+          "abs_delta_log_likelihood": 2.0622792362701148e-10,
+          "tolerance": 0.00848719196230395
         }
       },
       {
@@ -124439,6 +125944,152 @@
           "full_pipeline.first_call_s": 0.8195691080181859,
           "full_pipeline.lower_s": 0.6413154519977979,
           "full_pipeline_vmap3.first_call_s": 5.191626091022044
+        }
+      },
+      {
+        "class": "secondary",
+        "day_zero": null,
+        "decision_id": null,
+        "evidence": {
+          "fragment": null,
+          "path": "results/weak/isothermal/simple/jax_cpu_dense_fp64/hpc_ral_cpu/breakdown.json"
+        },
+        "figures": [
+          {
+            "kind": "fit",
+            "path": "results/weak/isothermal/simple/jax_cpu_dense_fp64/hpc_ral_cpu/fit.png",
+            "sha256": "e5d18188d555d3e0e07167bbbedf2a8f42fe878b750b51a305ede838f5c15b3d"
+          }
+        ],
+        "host_class": "hpc_ral_cpu",
+        "id": "lifecycle/ccc05cd9821e10db87dd",
+        "identity": {
+          "backend": "cpu",
+          "device": "cpu",
+          "hardware_details": {
+            "autotune_cache_entries_at_start": 0,
+            "backend": "cpu",
+            "cache_fresh": true,
+            "cpu_count": 236,
+            "device": "cpu:0",
+            "hostname": "euclid-ral-compute-10-2",
+            "omp_num_threads": "1",
+            "xla_flags": "--xla_disable_hlo_passes=constant_folding --xla_cpu_multi_thread_eigen=false --xla_gpu_autotune_level=0 --xla_gpu_enable_triton_gemm=false"
+          },
+          "library_version": "2026.10.25.1",
+          "precision": "float64",
+          "software": {
+            "PyAutoArray.library_revisions": "0f12fac7789c81d0fdaa324508ced5b4c434d42a",
+            "PyAutoArray.library_versions": "2026.8.17.1",
+            "PyAutoFit.library_revisions": "8cb533a605f556d85012d5eb7ed8d4f3c2a4dcf6",
+            "PyAutoFit.library_versions": "2026.8.17.1",
+            "PyAutoGalaxy.library_revisions": "7472211470b9d2b3a76bb12dcacbac51ab4de06f",
+            "PyAutoGalaxy.library_versions": "2026.8.17.1",
+            "PyAutoLens": "2026.10.25.1",
+            "PyAutoLens.library_revisions": "c6927eeb33724c2de2f2e2c773ba3ebe651943a8",
+            "PyAutoLens.library_versions": "2026.8.17.1",
+            "PyAutoNerves.library_revisions": "ec8b5c1e5f17ac03ac5246b5fbc322624a6cd3f6",
+            "PyAutoNerves.library_versions": "2026.8.17.1",
+            "autolens_profiling.library_revisions": "ad103340618b24ff2e56f8c8d912a16762396490",
+            "finufft.dependency_versions": "2.5.1",
+            "jax.dependency_versions": "0.11.2",
+            "jaxlib.dependency_versions": "0.11.2",
+            "nufftax.dependency_versions": "0.6.1",
+            "numba.dependency_versions": "0.65.1",
+            "numpy.dependency_versions": "2.2.6",
+            "release_pin_basis": "library_revisions equal tag 2026.10.25.1's SHAs (catalogue/release_revisions.json); the source checkout stamped autolens_version 2026.8.17.1",
+            "scipy.dependency_versions": "1.17.1"
+          },
+          "unknowns": {}
+        },
+        "instrument": "simple",
+        "likelihood": {
+          "dataset_type": "weak",
+          "variant": "isothermal"
+        },
+        "limitations": [
+          "provisional_optimal: true"
+        ],
+        "location": "cell",
+        "measured_at": "2026-10-29T20:28:12Z",
+        "measurement": "breakdown",
+        "method": {
+          "cache_state": null,
+          "id": "legacy/e7a018ac254a602f17bc",
+          "repetitions": null,
+          "statistic": null,
+          "synchronization": null,
+          "unknowns": {
+            "cache_state": "Not recorded in this legacy evidence; no current default substituted.",
+            "repetitions": "Not recorded in this legacy evidence; no current default substituted.",
+            "statistic": "Not recorded in this legacy evidence; no current default substituted.",
+            "synchronization": "Not recorded in this legacy evidence; no current default substituted.",
+            "warmup": "Not recorded in this legacy evidence; no current default substituted."
+          },
+          "warmup": null
+        },
+        "metric": "component_total",
+        "model_variant": "default",
+        "pointers": {
+          "component_total": "/total_step_by_step",
+          "deflections_yx.steady_per_call_s": "/jit_phases/deflections_yx/steady_per_call_s",
+          "full_pipeline.median_s": "/full_pipeline/median_s",
+          "full_pipeline.per_call_s": "/full_pipeline/per_call_s",
+          "full_pipeline.steady_per_call_s": "/jit_phases/full_pipeline/steady_per_call_s",
+          "likelihood_from_shear.steady_per_call_s": "/jit_phases/likelihood_from_shear/steady_per_call_s",
+          "model_shear.steady_per_call_s": "/jit_phases/model_shear/steady_per_call_s",
+          "steps.likelihood_from_shear": "/steps/likelihood_from_shear",
+          "steps.model_shear": "/steps/model_shear",
+          "steps_median.likelihood_from_shear": "/steps_median/likelihood_from_shear",
+          "steps_median.model_shear": "/steps_median/model_shear"
+        },
+        "provenance": {
+          "has_provenance": true,
+          "host": "euclid-ral-compute-10-2",
+          "measured_at": "2026-10-29T20:28:12Z",
+          "qualified": false,
+          "unknowns": {}
+        },
+        "regime": "standard",
+        "release_pin": "2026.10.25.1",
+        "resources": {
+          "cpus_per_eval": 8,
+          "cpus_per_eval_basis": "jax cpu: NPROC threads in XLA's CPU intra-op pool",
+          "devices_per_eval": 0,
+          "peak_rss_basis": "in_process_ru_maxrss",
+          "peak_rss_gb": 0.506941,
+          "peak_rss_note": "resource.getrusage(RUSAGE_SELF).ru_maxrss when the row was built: this process's peak resident set (children excluded), GB = 1e9 bytes",
+          "source": "row"
+        },
+        "run_id": "legacy/fc2fa934d6d492b5dd7e",
+        "setup": {
+          "backend": "jax",
+          "device": "cpu",
+          "operator": "dense",
+          "precision": "fp64",
+          "threads": null,
+          "transformer": "na"
+        },
+        "setup_id": "jax_cpu_dense_fp64",
+        "status": "current",
+        "superseded_by": null,
+        "unit": "s",
+        "validation": {
+          "reason": "Legacy evidence labelled by the phase-0 day-zero rule; not an accepted baseline.",
+          "status": "unreviewed"
+        },
+        "values": {
+          "component_total": 0.00020452990429475904,
+          "deflections_yx.steady_per_call_s": 0.00020065010758116842,
+          "full_pipeline.median_s": 0.0001862394856289029,
+          "full_pipeline.per_call_s": 0.00021390030160546304,
+          "full_pipeline.steady_per_call_s": 0.00021390030160546304,
+          "likelihood_from_shear.steady_per_call_s": 2.090909983962774e-05,
+          "model_shear.steady_per_call_s": 0.00020365650998428465,
+          "steps.likelihood_from_shear": 2.090909983962774e-05,
+          "steps.model_shear": 0.00020365650998428465,
+          "steps_median.likelihood_from_shear": 2.5159446522593498e-05,
+          "steps_median.model_shear": 0.00017937045777216554
         }
       },
       {
@@ -146501,6 +148152,155 @@
         "decision_id": null,
         "evidence": {
           "fragment": null,
+          "path": "results/weak/isothermal/simple/jax_gpu_dense_fp64/hpc_a100/breakdown.json"
+        },
+        "figures": [
+          {
+            "kind": "fit",
+            "path": "results/weak/isothermal/simple/jax_gpu_dense_fp64/hpc_a100/fit.png",
+            "sha256": "e5d18188d555d3e0e07167bbbedf2a8f42fe878b750b51a305ede838f5c15b3d"
+          }
+        ],
+        "host_class": "hpc_a100",
+        "id": "lifecycle/efbe7cbd58dbe8c95b01",
+        "identity": {
+          "backend": "gpu",
+          "device": "a100",
+          "hardware_details": {
+            "autotune_cache_entries_at_start": 0,
+            "backend": "gpu",
+            "cache_fresh": true,
+            "cpu_count": 124,
+            "device": "cuda:0",
+            "hostname": "euclid-ral-gpu-2",
+            "nvidia_smi": "NVIDIA A100 80GB PCIe, 441 MiB, 81920 MiB",
+            "omp_num_threads": "1",
+            "xla_flags": "--xla_disable_hlo_passes=constant_folding --xla_gpu_autotune_level=0 --xla_gpu_enable_triton_gemm=false"
+          },
+          "library_version": "2026.10.25.1",
+          "precision": "float64",
+          "software": {
+            "PyAutoArray.library_revisions": "0f12fac7789c81d0fdaa324508ced5b4c434d42a",
+            "PyAutoArray.library_versions": "2026.8.17.1",
+            "PyAutoFit.library_revisions": "8cb533a605f556d85012d5eb7ed8d4f3c2a4dcf6",
+            "PyAutoFit.library_versions": "2026.8.17.1",
+            "PyAutoGalaxy.library_revisions": "7472211470b9d2b3a76bb12dcacbac51ab4de06f",
+            "PyAutoGalaxy.library_versions": "2026.8.17.1",
+            "PyAutoLens": "2026.10.25.1",
+            "PyAutoLens.library_revisions": "c6927eeb33724c2de2f2e2c773ba3ebe651943a8",
+            "PyAutoLens.library_versions": "2026.8.17.1",
+            "PyAutoNerves.library_revisions": "ec8b5c1e5f17ac03ac5246b5fbc322624a6cd3f6",
+            "PyAutoNerves.library_versions": "2026.8.17.1",
+            "autolens_profiling.library_revisions": "ad103340618b24ff2e56f8c8d912a16762396490",
+            "finufft.dependency_versions": "2.5.1",
+            "jax.dependency_versions": "0.11.2",
+            "jaxlib.dependency_versions": "0.11.2",
+            "nufftax.dependency_versions": "0.6.1",
+            "numba.dependency_versions": "0.65.1",
+            "numpy.dependency_versions": "2.2.6",
+            "release_pin_basis": "library_revisions equal tag 2026.10.25.1's SHAs (catalogue/release_revisions.json); the source checkout stamped autolens_version 2026.8.17.1",
+            "scipy.dependency_versions": "1.17.1"
+          },
+          "unknowns": {}
+        },
+        "instrument": "simple",
+        "likelihood": {
+          "dataset_type": "weak",
+          "variant": "isothermal"
+        },
+        "limitations": [
+          "provisional_secondary: true"
+        ],
+        "location": "cell",
+        "measured_at": "2026-10-29T20:28:37Z",
+        "measurement": "compile",
+        "method": {
+          "cache_state": null,
+          "id": "legacy/831d743e09e5e510dd67",
+          "repetitions": null,
+          "statistic": null,
+          "synchronization": null,
+          "unknowns": {
+            "cache_state": "Not recorded in this legacy evidence; no current default substituted.",
+            "repetitions": "Not recorded in this legacy evidence; no current default substituted.",
+            "statistic": "Not recorded in this legacy evidence; no current default substituted.",
+            "synchronization": "Not recorded in this legacy evidence; no current default substituted.",
+            "warmup": "Not recorded in this legacy evidence; no current default substituted."
+          },
+          "warmup": null
+        },
+        "metric": "deflections_yx.compile_s",
+        "model_variant": "default",
+        "pointers": {
+          "deflections_yx.compile_s": "/jit_phases/deflections_yx/compile_s",
+          "deflections_yx.first_call_s": "/jit_phases/deflections_yx/first_call_s",
+          "deflections_yx.lower_s": "/jit_phases/deflections_yx/lower_s",
+          "full_pipeline.compile_s": "/jit_phases/full_pipeline/compile_s",
+          "full_pipeline.first_call_s": "/jit_phases/full_pipeline/first_call_s",
+          "full_pipeline.lower_s": "/jit_phases/full_pipeline/lower_s",
+          "likelihood_from_shear.compile_s": "/jit_phases/likelihood_from_shear/compile_s",
+          "likelihood_from_shear.first_call_s": "/jit_phases/likelihood_from_shear/first_call_s",
+          "likelihood_from_shear.lower_s": "/jit_phases/likelihood_from_shear/lower_s",
+          "model_shear.compile_s": "/jit_phases/model_shear/compile_s",
+          "model_shear.first_call_s": "/jit_phases/model_shear/first_call_s",
+          "model_shear.lower_s": "/jit_phases/model_shear/lower_s"
+        },
+        "provenance": {
+          "has_provenance": true,
+          "host": "euclid-ral-gpu-2",
+          "measured_at": "2026-10-29T20:28:37Z",
+          "qualified": false,
+          "unknowns": {}
+        },
+        "regime": "standard",
+        "release_pin": "2026.10.25.1",
+        "resources": {
+          "cpus_per_eval": 8,
+          "cpus_per_eval_basis": "jax gpu: one device; cpus_per_eval = NPROC host threads",
+          "devices_per_eval": 1,
+          "peak_rss_basis": "in_process_ru_maxrss",
+          "peak_rss_gb": 0.647119,
+          "peak_rss_note": "resource.getrusage(RUSAGE_SELF).ru_maxrss when the row was built: this process's peak resident set (children excluded), GB = 1e9 bytes",
+          "source": "row"
+        },
+        "run_id": "legacy/af7f1c93705945ebe8de",
+        "setup": {
+          "backend": "jax",
+          "device": "gpu",
+          "operator": "dense",
+          "precision": "fp64",
+          "threads": null,
+          "transformer": "na"
+        },
+        "setup_id": "jax_gpu_dense_fp64",
+        "status": "superseded",
+        "superseded_by": "lifecycle/b56a7e7f544b23f03a71",
+        "unit": "s",
+        "validation": {
+          "reason": "Legacy evidence labelled by the phase-0 day-zero rule; not an accepted baseline.",
+          "status": "unreviewed"
+        },
+        "values": {
+          "deflections_yx.compile_s": 0.31224675092380494,
+          "deflections_yx.first_call_s": 0.0014633089303970337,
+          "deflections_yx.lower_s": 0.1436757449992001,
+          "full_pipeline.compile_s": 0.48485154600348324,
+          "full_pipeline.first_call_s": 0.005340307950973511,
+          "full_pipeline.lower_s": 0.40543468995019794,
+          "likelihood_from_shear.compile_s": 0.07130809302907437,
+          "likelihood_from_shear.first_call_s": 0.0008121230639517307,
+          "likelihood_from_shear.lower_s": 0.003926759003661573,
+          "model_shear.compile_s": 0.4718311410397291,
+          "model_shear.first_call_s": 0.001623267075046897,
+          "model_shear.lower_s": 0.19651830394286662
+        }
+      },
+      {
+        "class": "secondary",
+        "day_zero": null,
+        "decision_id": null,
+        "evidence": {
+          "fragment": null,
           "path": "results/interferometer/rectangular/sma/numba_cpu_sparse_fp64_wtilde/hpc_ral_cpu/scans/r2.0/breakdown.json"
         },
         "figures": [],
@@ -148310,6 +150110,170 @@
           "steps.Reconstruction (pdip)": 0.021867555199423804,
           "steps.Regularization matrix H": 0.00013730039354413752,
           "steps.Sparse triplets (extent grid)": 0.0001371523947454989
+        }
+      },
+      {
+        "class": "secondary",
+        "day_zero": null,
+        "decision_id": null,
+        "evidence": {
+          "fragment": null,
+          "path": "results/weak/isothermal/simple/jax_cpu_dense_fp64/hpc_a100/runtime.json"
+        },
+        "figures": [
+          {
+            "kind": "fit",
+            "path": "results/weak/isothermal/simple/jax_cpu_dense_fp64/hpc_a100/fit.png",
+            "sha256": "e5d18188d555d3e0e07167bbbedf2a8f42fe878b750b51a305ede838f5c15b3d"
+          }
+        ],
+        "host_class": "hpc_a100",
+        "id": "lifecycle/f449b3fe848876acf418",
+        "identity": {
+          "backend": "cpu",
+          "device": "a100",
+          "hardware_details": {
+            "autotune_cache_entries_at_start": 0,
+            "backend": "cpu",
+            "cache_fresh": true,
+            "cpu_count": 124,
+            "device": "cpu:0",
+            "hostname": "euclid-ral-gpu-2",
+            "omp_num_threads": "1",
+            "xla_flags": "--xla_disable_hlo_passes=constant_folding --xla_cpu_multi_thread_eigen=false --xla_gpu_autotune_level=0 --xla_gpu_enable_triton_gemm=false"
+          },
+          "library_version": "2026.10.25.1",
+          "precision": "float64",
+          "software": {
+            "PyAutoArray.library_revisions": "0f12fac7789c81d0fdaa324508ced5b4c434d42a",
+            "PyAutoArray.library_versions": "2026.8.17.1",
+            "PyAutoFit.library_revisions": "8cb533a605f556d85012d5eb7ed8d4f3c2a4dcf6",
+            "PyAutoFit.library_versions": "2026.8.17.1",
+            "PyAutoGalaxy.library_revisions": "7472211470b9d2b3a76bb12dcacbac51ab4de06f",
+            "PyAutoGalaxy.library_versions": "2026.8.17.1",
+            "PyAutoLens": "2026.10.25.1",
+            "PyAutoLens.library_revisions": "c6927eeb33724c2de2f2e2c773ba3ebe651943a8",
+            "PyAutoLens.library_versions": "2026.8.17.1",
+            "PyAutoNerves.library_revisions": "ec8b5c1e5f17ac03ac5246b5fbc322624a6cd3f6",
+            "PyAutoNerves.library_versions": "2026.8.17.1",
+            "autolens_profiling.library_revisions": "ad103340618b24ff2e56f8c8d912a16762396490",
+            "finufft.dependency_versions": "2.5.1",
+            "jax.dependency_versions": "0.11.2",
+            "jaxlib.dependency_versions": "0.11.2",
+            "nufftax.dependency_versions": "0.6.1",
+            "numba.dependency_versions": "0.65.1",
+            "numpy.dependency_versions": "2.2.6",
+            "release_pin_basis": "library_revisions equal tag 2026.10.25.1's SHAs (catalogue/release_revisions.json); the source checkout stamped autolens_version 2026.8.17.1",
+            "scipy.dependency_versions": "1.17.1"
+          },
+          "unknowns": {}
+        },
+        "instrument": "simple",
+        "likelihood": {
+          "dataset_type": "weak",
+          "variant": "isothermal"
+        },
+        "limitations": [
+          "provisional_optimal: true"
+        ],
+        "location": "cell",
+        "measured_at": "2026-10-29T20:28:16Z",
+        "measurement": "runtime",
+        "method": {
+          "cache_state": null,
+          "id": "legacy/7ccaf802e198af9ef0dd",
+          "repetitions": null,
+          "statistic": "median",
+          "synchronization": null,
+          "unknowns": {
+            "cache_state": "Not recorded in this legacy evidence; no current default substituted.",
+            "repetitions": "Not recorded in this legacy evidence; no current default substituted.",
+            "synchronization": "Not recorded in this legacy evidence; no current default substituted.",
+            "warmup": "Not recorded in this legacy evidence; no current default substituted."
+          },
+          "warmup": null
+        },
+        "metric": "single_jit_median",
+        "model_variant": "default",
+        "pointers": {
+          "full_pipeline.steady_per_call_s": "/jit_phases/full_pipeline/steady_per_call_s",
+          "full_pipeline_vmap32.steady_per_call_s": "/jit_phases/full_pipeline_vmap32/steady_per_call_s",
+          "single_jit_block": "/full_pipeline_single_jit",
+          "single_jit_median": "/full_pipeline_single_jit_median",
+          "vmap.batch_time": "/vmap/batch_time",
+          "vmap.per_call": "/vmap/per_call"
+        },
+        "projected_node_throughput": {
+          "basis": "projected",
+          "cpus_per_eval": 8,
+          "devices_per_eval": 0,
+          "hosts": [
+            {
+              "bound_by": "cores",
+              "calls_per_s": 264900.0,
+              "host": "ral_gpu_node",
+              "host_class": "hpc_a100",
+              "limits": {
+                "cores": 15,
+                "memory": 1650
+              },
+              "workers": 15
+            }
+          ],
+          "not_modelled": "The sampler's batch ceiling: Nautilus evaluates at most n_batch points in parallel per batch, so a node cannot use more workers than n_batch. Shared memory bandwidth and caches between workers are also not modelled; the declared parallel efficiency stands in for them.",
+          "parallel_efficiency": {
+            "kind": "upper bound",
+            "source": "declared, unmeasured (phase 4 measures)",
+            "value": 1.0
+          },
+          "peak_rss_basis": "in_process_ru_maxrss",
+          "peak_rss_gb": 0.536113,
+          "per_call_s": 5.6621734256623316e-05,
+          "per_call_source": "vmap.per_call",
+          "status": "projected"
+        },
+        "provenance": {
+          "has_provenance": true,
+          "host": "euclid-ral-gpu-2",
+          "measured_at": "2026-10-29T20:28:16Z",
+          "qualified": false,
+          "unknowns": {}
+        },
+        "regime": "standard",
+        "release_pin": "2026.10.25.1",
+        "resources": {
+          "cpus_per_eval": 8,
+          "cpus_per_eval_basis": "jax cpu: NPROC threads in XLA's CPU intra-op pool",
+          "devices_per_eval": 0,
+          "peak_rss_basis": "in_process_ru_maxrss",
+          "peak_rss_gb": 0.536113,
+          "peak_rss_note": "resource.getrusage(RUSAGE_SELF).ru_maxrss when the row was built: this process's peak resident set (children excluded), GB = 1e9 bytes",
+          "source": "row"
+        },
+        "run_id": "legacy/77785ca2807efaeb33ee",
+        "setup": {
+          "backend": "jax",
+          "device": "cpu",
+          "operator": "dense",
+          "precision": "fp64",
+          "threads": null,
+          "transformer": "na"
+        },
+        "setup_id": "jax_cpu_dense_fp64",
+        "status": "current",
+        "superseded_by": null,
+        "unit": "s",
+        "validation": {
+          "reason": "Legacy evidence labelled by the phase-0 day-zero rule; not an accepted baseline.",
+          "status": "unreviewed"
+        },
+        "values": {
+          "full_pipeline.steady_per_call_s": 0.00034363929880782963,
+          "full_pipeline_vmap32.steady_per_call_s": 5.6621734256623316e-05,
+          "single_jit_block": 0.00034363929880782963,
+          "single_jit_median": 0.0003150574630126357,
+          "vmap.batch_time": 0.001811895496211946,
+          "vmap.per_call": 5.6621734256623316e-05
         }
       },
       {
@@ -153465,6 +155429,172 @@
           "full_pipeline.compile": 6.518163339991588,
           "full_pipeline.first_call": 5.121204396011308,
           "full_pipeline.lower": 4.02433075098088
+        }
+      },
+      {
+        "class": "secondary",
+        "day_zero": null,
+        "decision_id": null,
+        "evidence": {
+          "fragment": null,
+          "path": "results/weak/isothermal/simple/jax_gpu_dense_fp64/hpc_a100/runtime.json"
+        },
+        "figures": [
+          {
+            "kind": "fit",
+            "path": "results/weak/isothermal/simple/jax_gpu_dense_fp64/hpc_a100/fit.png",
+            "sha256": "e5d18188d555d3e0e07167bbbedf2a8f42fe878b750b51a305ede838f5c15b3d"
+          }
+        ],
+        "host_class": "hpc_a100",
+        "id": "lifecycle/fbd315b1a0e03f308c76",
+        "identity": {
+          "backend": "gpu",
+          "device": "a100",
+          "hardware_details": {
+            "autotune_cache_entries_at_start": 0,
+            "backend": "gpu",
+            "cache_fresh": true,
+            "cpu_count": 124,
+            "device": "cuda:0",
+            "hostname": "euclid-ral-gpu-2",
+            "nvidia_smi": "NVIDIA A100 80GB PCIe, 445 MiB, 81920 MiB",
+            "omp_num_threads": "1",
+            "xla_flags": "--xla_disable_hlo_passes=constant_folding --xla_gpu_autotune_level=0 --xla_gpu_enable_triton_gemm=false"
+          },
+          "library_version": "2026.10.25.1",
+          "precision": "float64",
+          "software": {
+            "PyAutoArray.library_revisions": "0f12fac7789c81d0fdaa324508ced5b4c434d42a",
+            "PyAutoArray.library_versions": "2026.8.17.1",
+            "PyAutoFit.library_revisions": "8cb533a605f556d85012d5eb7ed8d4f3c2a4dcf6",
+            "PyAutoFit.library_versions": "2026.8.17.1",
+            "PyAutoGalaxy.library_revisions": "7472211470b9d2b3a76bb12dcacbac51ab4de06f",
+            "PyAutoGalaxy.library_versions": "2026.8.17.1",
+            "PyAutoLens": "2026.10.25.1",
+            "PyAutoLens.library_revisions": "c6927eeb33724c2de2f2e2c773ba3ebe651943a8",
+            "PyAutoLens.library_versions": "2026.8.17.1",
+            "PyAutoNerves.library_revisions": "ec8b5c1e5f17ac03ac5246b5fbc322624a6cd3f6",
+            "PyAutoNerves.library_versions": "2026.8.17.1",
+            "autolens_profiling.library_revisions": "ad103340618b24ff2e56f8c8d912a16762396490",
+            "finufft.dependency_versions": "2.5.1",
+            "jax.dependency_versions": "0.11.2",
+            "jaxlib.dependency_versions": "0.11.2",
+            "nufftax.dependency_versions": "0.6.1",
+            "numba.dependency_versions": "0.65.1",
+            "numpy.dependency_versions": "2.2.6",
+            "release_pin_basis": "library_revisions equal tag 2026.10.25.1's SHAs (catalogue/release_revisions.json); the source checkout stamped autolens_version 2026.8.17.1",
+            "scipy.dependency_versions": "1.17.1"
+          },
+          "unknowns": {}
+        },
+        "instrument": "simple",
+        "likelihood": {
+          "dataset_type": "weak",
+          "variant": "isothermal"
+        },
+        "limitations": [
+          "provisional_secondary: true"
+        ],
+        "location": "cell",
+        "measured_at": "2026-10-29T20:28:31Z",
+        "measurement": "runtime",
+        "method": {
+          "cache_state": null,
+          "id": "legacy/7ccaf802e198af9ef0dd",
+          "repetitions": null,
+          "statistic": "median",
+          "synchronization": null,
+          "unknowns": {
+            "cache_state": "Not recorded in this legacy evidence; no current default substituted.",
+            "repetitions": "Not recorded in this legacy evidence; no current default substituted.",
+            "synchronization": "Not recorded in this legacy evidence; no current default substituted.",
+            "warmup": "Not recorded in this legacy evidence; no current default substituted."
+          },
+          "warmup": null
+        },
+        "metric": "single_jit_median",
+        "model_variant": "default",
+        "pointers": {
+          "full_pipeline.steady_per_call_s": "/jit_phases/full_pipeline/steady_per_call_s",
+          "full_pipeline_vmap32.steady_per_call_s": "/jit_phases/full_pipeline_vmap32/steady_per_call_s",
+          "single_jit_block": "/full_pipeline_single_jit",
+          "single_jit_median": "/full_pipeline_single_jit_median",
+          "vmap.batch_time": "/vmap/batch_time",
+          "vmap.per_call": "/vmap/per_call"
+        },
+        "projected_node_throughput": {
+          "basis": "projected",
+          "cpus_per_eval": 8,
+          "devices_per_eval": 1,
+          "hosts": [
+            {
+              "bound_by": "gpus",
+              "calls_per_s": 447700.0,
+              "host": "ral_gpu_node",
+              "host_class": "hpc_a100",
+              "limits": {
+                "cores": 15,
+                "gpus": 4,
+                "memory": 1370
+              },
+              "workers": 4
+            }
+          ],
+          "not_modelled": "The sampler's batch ceiling: Nautilus evaluates at most n_batch points in parallel per batch, so a node cannot use more workers than n_batch. Shared memory bandwidth and caches between workers are also not modelled; the declared parallel efficiency stands in for them.",
+          "parallel_efficiency": {
+            "kind": "upper bound",
+            "source": "declared, unmeasured (phase 4 measures)",
+            "value": 1.0
+          },
+          "peak_rss_basis": "in_process_ru_maxrss",
+          "peak_rss_gb": 0.645538,
+          "per_call_s": 8.93486248969566e-06,
+          "per_call_source": "vmap.per_call",
+          "status": "projected"
+        },
+        "provenance": {
+          "has_provenance": true,
+          "host": "euclid-ral-gpu-2",
+          "measured_at": "2026-10-29T20:28:31Z",
+          "qualified": false,
+          "unknowns": {}
+        },
+        "regime": "standard",
+        "release_pin": "2026.10.25.1",
+        "resources": {
+          "cpus_per_eval": 8,
+          "cpus_per_eval_basis": "jax gpu: one device; cpus_per_eval = NPROC host threads",
+          "devices_per_eval": 1,
+          "peak_rss_basis": "in_process_ru_maxrss",
+          "peak_rss_gb": 0.645538,
+          "peak_rss_note": "resource.getrusage(RUSAGE_SELF).ru_maxrss when the row was built: this process's peak resident set (children excluded), GB = 1e9 bytes",
+          "source": "row"
+        },
+        "run_id": "legacy/bf679ff4692d80eaaa00",
+        "setup": {
+          "backend": "jax",
+          "device": "gpu",
+          "operator": "dense",
+          "precision": "fp64",
+          "threads": null,
+          "transformer": "na"
+        },
+        "setup_id": "jax_gpu_dense_fp64",
+        "status": "current",
+        "superseded_by": null,
+        "unit": "s",
+        "validation": {
+          "reason": "Legacy evidence labelled by the phase-0 day-zero rule; not an accepted baseline.",
+          "status": "unreviewed"
+        },
+        "values": {
+          "full_pipeline.steady_per_call_s": 0.00034571319120004775,
+          "full_pipeline_vmap32.steady_per_call_s": 8.93486248969566e-06,
+          "single_jit_block": 0.00034571319120004775,
+          "single_jit_median": 0.0001986434799619019,
+          "vmap.batch_time": 0.0002859155996702611,
+          "vmap.per_call": 8.93486248969566e-06
         }
       },
       {
