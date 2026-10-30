@@ -117,7 +117,13 @@ going forward". The record, its scope and its revisit conditions are in
 
 - **RAL.** The pin 2026.10.25.1 runs the same jaxlib 0.11.2 on RAL (its 2026.10.17.1
   `hpc_ral_cpu` rows record jaxlib 0.11.2). Whether the deadlock fires on a 236-core RAL node is
-  untested. The 2d legs apply the flag there regardless.
+  untested. The 2d legs apply the flag there regardless. Update 2026-10-30: the 2d-2g batch-0
+  arrays (RAL 413272-413274, 413292-413293; A100 413294-413297; jax/jaxlib 0.11.2 in the shared
+  venv) ran every JAX CPU leg with the flag and none hung (all 56 legs exit 0). Without the flag
+  on RAL is still untested.
+- **The flag on 2d GPU legs.** The 2d driver appends the flag whatever the platform, so all 14
+  2d A100 rows, GPU legs included, record it in `device.xla_flags`; the shared preamble keeps it
+  off the 2e-2g GPU legs (autolens_profiling#487).
 - **The 2a / 2b JAX CPU cells.** They were measured without the flag and completed. Nobody has
   tested whether those executables are susceptible on repeated calls, or whether a longer run
   (a fit) would hang.

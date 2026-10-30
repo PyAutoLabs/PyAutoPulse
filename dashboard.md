@@ -1,6 +1,6 @@
 # PyAutoPulse — profiling dashboard
 
-<!-- pulse-campaigns:3283e557de1d110da97abe4c9ffeaed914e3a35fa18b55feff3e32ebb760654d -->
+<!-- pulse-campaigns:84cc47237d7c19f44558da7a0bc541c9efc3d1354cbb622031aa73aec5b7a23b -->
 ## Profiling Check In
 
 <details><summary>Full check-in prompt</summary>
@@ -178,6 +178,17 @@ Reviewed 2026-10-17. No new campaign measurement. Phase 3b cap fix remains shipp
 Reviewed 2026-10-17. Parked unchanged. No new campaign evidence; existing C2/library/workspace drafts remain pending. Do not infer admission from solver timing, and do not change default or restart the campaign. Check-in 2026-10-17: no project wiki/results/issue change since 2026-10-13 beyond autolens_profiling#420/#422/#424 (interferometer only); releases 2026.10.16.1/.2 and 2026.10.17.1 supply no new measurement.
 
 [Campaign evidence](https://github.com/PyAutoLabs/autolens_profiling/blob/4db4d988e520a82219152743748c3188d485a4ba/wiki/campaigns/certified_positive_solver.md)
+
+### Active tasks
+
+
+</details>
+
+<details><summary>Likelihood lifecycle phase 2 (per-dataset-type runtime and breakdown cells on the pinned release) — active</summary>
+
+Reviewed 2026-10-30. Phase 2 sub-campaigns 2a-2g on pin 2026.10.25.1 (epic in Mind draft/research/autolens_profiling/likelihood_lifecycle_epic.md). 2a imaging, 2b interferometer and 2c point source rows committed (#461, #483, #480); 2b/2c quiet RAL reruns in flight on their own branches. 2d multi_galaxy+group, 2e cluster, 2f multi_dataset+datacube and 2g weak: batch 0 ran 2026-10-29 (RAL 413272-413274/413292-413293, A100 413294-413297; all 56 legs exit 0, every parity witness match, jax 0.11.2 with the eigen flag on every CPU leg). Walls commit autolens_profiling#487 sets batch 1 at 0:30-1:30 (human /prm pending). 2g rows (the campaign&#x27;s rows under D9) in autolens_profiling#488, stacked on #487. Human ruling 2026-10-30: loaded RAL nodes accepted (batch-0 RAL rows had loadavg 95-109); batch 1 runs on shared ral nodes with no quiet gate. 2d driver fixed to keep the eigen flag off GPU legs (#487, 830314e9). Batch 1 submitted 2026-10-30 (human go) from autolens_profiling_p2dg at 830314e9 (#487 head, unmerged): RAL 413445-413452 (ral arrays), A100 413453-413459 (one job each). Next: verify batch 1, then PR B for 2d/2e/2f.
+
+[Campaign evidence](https://github.com/PyAutoLabs/autolens_profiling/pull/487)
 
 ### Active tasks
 
