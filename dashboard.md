@@ -605,9 +605,48 @@ Project `autolens_inference`, scope `None`, read from [PyAutoLabs/autolens_infer
 </details>
 
 
-<!-- decision-history:ad27a8de3dc279fc950485bff4ddf33985732256d23062b150ac9ca97304de61 -->
+<!-- decision-history:562135600793f146716313805af5bad5a15e5cc228fad39c62d426531b3e81d4 -->
 ## Decision History
 
+- <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/weak-isothermal-standard-gpu-a100.md">Designation: weak/isothermal standard gpu_a100</a>
+- <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/weak-isothermal-standard-cpu-many-core.md">Designation: weak/isothermal standard cpu_many_core</a>
+- <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/point-source-source-source-plane-standard-gpu-a100.md">Designation: point_source_source/source_plane standard gpu_a100</a>
+- <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/point-source-source-source-plane-standard-cpu-many-core.md">Designation: point_source_source/source_plane standard cpu_many_core</a>
+- <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/point-source-image-image-plane-standard-gpu-a100.md">Designation: point_source_image/image_plane standard gpu_a100</a>
+- <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/point-source-image-image-plane-standard-cpu-many-core.md">Designation: point_source_image/image_plane standard cpu_many_core</a>
+- <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/multi-galaxy-rectangular-standard-gpu-a100.md">Designation: multi_galaxy/rectangular standard gpu_a100</a>
+- <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/multi-galaxy-rectangular-standard-cpu-many-core.md">Designation: multi_galaxy/rectangular standard cpu_many_core</a>
+- <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/multi-galaxy-mge-standard-gpu-a100.md">Designation: multi_galaxy/mge standard gpu_a100</a>
+- <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/multi-galaxy-mge-standard-cpu-many-core.md">Designation: multi_galaxy/mge standard cpu_many_core</a>
+- <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/multi-galaxy-delaunay-standard-gpu-a100.md">Designation: multi_galaxy/delaunay standard gpu_a100</a>
+- <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/multi-galaxy-delaunay-standard-cpu-many-core.md">Designation: multi_galaxy/delaunay standard cpu_many_core</a>
+- <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/multi-dataset-delaunay-standard-gpu-a100.md">Designation: multi_dataset/delaunay standard gpu_a100</a>
+- <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/multi-dataset-delaunay-standard-cpu-many-core.md">Designation: multi_dataset/delaunay standard cpu_many_core</a>
+- <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/interferometer-rectangular-standard-gpu-a100.md">Designation: interferometer/rectangular standard gpu_a100</a>
+- <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/interferometer-rectangular-standard-cpu-many-core.md">Designation: interferometer/rectangular standard cpu_many_core</a>
+- <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/interferometer-mge-standard-gpu-a100.md">Designation: interferometer/mge standard gpu_a100</a>
+- <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/interferometer-mge-standard-cpu-many-core.md">Designation: interferometer/mge standard cpu_many_core</a>
+- <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/interferometer-delaunay-standard-gpu-a100.md">Designation: interferometer/delaunay standard gpu_a100</a>
+- <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/interferometer-delaunay-standard-cpu-many-core.md">Designation: interferometer/delaunay standard cpu_many_core</a>
+- <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/imaging-rectangular-standard-gpu-a100.md">Designation: imaging/rectangular standard gpu_a100</a>
+- <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/imaging-rectangular-standard-cpu-many-core.md">Designation: imaging/rectangular standard cpu_many_core</a>
+- <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/imaging-mge-standard-gpu-a100.md">Designation: imaging/mge standard gpu_a100</a>
+- <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/imaging-mge-standard-cpu-many-core.md">Designation: imaging/mge standard cpu_many_core</a>
+- <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/imaging-delaunay-standard-gpu-a100.md">Designation: imaging/delaunay standard gpu_a100</a>
+- <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/imaging-delaunay-standard-cpu-many-core.md">Designation: imaging/delaunay standard cpu_many_core</a>
+- <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/imaging-delaunay-nn-standard-gpu-a100.md">Designation: imaging/delaunay_nn standard gpu_a100</a>
+- <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/imaging-delaunay-nn-standard-cpu-many-core.md">Designation: imaging/delaunay_nn standard cpu_many_core</a>
+- <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/group-rectangular-standard-gpu-a100.md">Designation: group/rectangular standard gpu_a100</a>
+- <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/group-rectangular-standard-cpu-many-core.md">Designation: group/rectangular standard cpu_many_core</a>
+- <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/group-mge-standard-gpu-a100.md">Designation: group/mge standard gpu_a100</a>
+- <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/group-mge-standard-cpu-many-core.md">Designation: group/mge standard cpu_many_core</a>
+- <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/group-delaunay-standard-gpu-a100.md">Designation: group/delaunay standard gpu_a100</a>
+- <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/group-delaunay-standard-cpu-many-core.md">Designation: group/delaunay standard cpu_many_core</a>
+- <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/datacube-delaunay-standard-cpu-many-core.md">Designation: datacube/delaunay standard cpu_many_core</a>
+- <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/cluster-source-plane-standard-gpu-a100.md">Designation: cluster/source_plane standard gpu_a100</a>
+- <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/cluster-source-plane-standard-cpu-many-core.md">Designation: cluster/source_plane standard cpu_many_core</a>
+- <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/cluster-image-plane-standard-gpu-a100.md">Designation: cluster/image_plane standard gpu_a100</a>
+- <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/cluster-image-plane-standard-cpu-many-core.md">Designation: cluster/image_plane standard cpu_many_core</a>
 - <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/xla-cpu-deadlock-eigen-workaround.md">Keep --xla_cpu_multi_thread_eigen=false for the 2d JAX CPU legs (jaxlib 0.11.2 deadlock)</a>
 - <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/cluster-pointsolver-starting-grid.md">Keep the 1.0″ PointSolver starting grid for cluster fits, with a validation check</a>
 - <a href="https://github.com/PyAutoLabs/PyAutoPulse/blob/main/decisions/direct-conv-symmetric-gate.md">Gate the symmetric direct_conv kernel at work fraction 0.7, with ymin column ordering</a>

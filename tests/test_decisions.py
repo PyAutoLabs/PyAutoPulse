@@ -164,5 +164,11 @@ def test_designation_fields_require_the_kind(tmp_path):
         decisions.load(tmp_path)
 
 
-def test_the_live_index_holds_no_designation_yet():
-    assert all("kind" not in r for r in decisions.load())
+def test_the_live_index_holds_the_day_zero_designations():
+    # Likelihood-lifecycle phase 3 (PyAutoPulse#83): the human recorded 39 designations on
+    # 2026-10-31 and held datacube/delaunay gpu_a100, which does not separate.
+    designations = [r for r in decisions.load() if r.get("kind") == "designation"]
+    assert len(designations) == 39
+    assert len({(r["likelihood"], r["regime"], r["hardware_class"]) for r in designations}) == 39
+    assert all(r["date"] == "2026-10-31" and r["supersedes"] is None for r in designations)
+    assert "datacube-delaunay-standard-gpu-a100" not in {r["id"] for r in designations}
