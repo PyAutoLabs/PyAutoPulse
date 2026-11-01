@@ -3,8 +3,8 @@
   "repo": "autolens_profiling",
   "github": "PyAutoLabs/autolens_profiling",
   "summary_path": "dashboard/catalogue.json",
-  "commit": "e4811a25ddfbc087a66f561fe8b2b41a707885aa",
-  "fetched_at": "2026-11-01T11:17:35Z",
+  "commit": "a319e83b77770955044c664062e561c1b802d587",
+  "fetched_at": "2026-11-01T13:59:18Z",
   "summary": {
     "archive_record_count": 99,
     "comparison_policy": {
@@ -1872,7 +1872,7 @@
     "hazards": [],
     "limitations": [
       "Phase-0 labels (autolens_profiling#442): nothing was re-measured. A current record is the canonical cell row on a reference host class for a planned baseline cell.",
-      "Day zero (catalogue/day_zero.json, autolens_profiling#499; lifecycle report section 3.6): a current record carries day_zero 2026.10.25.1 when its class is optimal or secondary, its regime is standard, it is on a reference host (hpc_ral_cpu, hpc_a100), its release_pin is the tag, and its cell has a current parity match and a fit figure; a passing cell is stamped whole. Experimental rows, size variants and rows off the tag are not stamped. PyAutoPulse freezes the stamped records as its day_zero snapshot.",
+      "Day zero (catalogue/day_zero.json, autolens_profiling#499; lifecycle report section 3.6): a current record carries day_zero 2026.10.25.1 when its class is optimal or secondary, its regime is standard, it is on a reference host (hpc_ral_cpu, hpc_a100), its release_pin is the tag, and its cell has a current parity match and a fit figure; a passing cell is stamped whole. A phase-6 gradient record never decides a cell but carries its stamp when it is measured on the tag and its finite-difference check passed (human ruling 2026-11-01, #506). Experimental rows, size variants and rows off the tag are not stamped. PyAutoPulse freezes the stamped records as its day_zero snapshot.",
       "Classes come from the PyAutoPulse designation records (decisions.yaml kind: designation, mirrored in catalogue/pulse_designations.json; autolens_profiling#497): the designated optimal setup on its likelihood x standard regime x hardware class (hpc_ral_cpu = cpu_many_core, hpc_a100 = gpu_a100) is class optimal with that decision_id, a named secondary is class secondary with it, and any other setup on a designated key is experimental. Rows on local_* hosts or in a non-standard regime (source_pixels_<n>) inherit the role as class secondary with an 'undesignated_regime_or_host' limitation and no decision_id. The held datacube/delaunay hpc_a100 group (catalogue/designation_holds.json) keeps its provisional label: class secondary with 'provisional_optimal: true' (or provisional_secondary), and its planned_cells carry the provisional class.",
       "Standard source-pixel counts are Delaunay 1250 and rectangular 1225 (35x35). No committed row is at the standard size; current pixelized rows carry a size_fallback limitation.",
       "Records whose key has no current row (laptop-only, experiment-only, or outside the planned cells) are not rendered; coverage.excluded counts them per key. Every row stays in the companion v2 setup catalogue (dashboard/catalogue/setups.json).",
