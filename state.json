@@ -4,7 +4,7 @@
   "repo": "PyAutoPulse",
   "status": "yellow",
   "headline": "3 projects · 1635 records · 0 cached",
-  "updated": "2026-10-31T16:56:22Z",
+  "updated": "2026-11-01T11:17:40Z",
   "pages_url": "https://pyautolabs.github.io/PyAutoPulse/",
   "items": [
     {
@@ -27,7 +27,7 @@
     {
       "id": "pulse:lens:census",
       "severity": "info",
-      "text": "lens: 1548 records · 0 comparisons · 10 limitations · 0 qualified · 612 current · 936 superseded · 99 archived (producer-declared)",
+      "text": "lens: 1548 records · 0 comparisons · 11 limitations · 0 qualified · 612 current · 936 superseded · 99 archived (producer-declared)",
       "url": "https://pyautolabs.github.io/autolens_profiling/",
       "prompt": null
     },
