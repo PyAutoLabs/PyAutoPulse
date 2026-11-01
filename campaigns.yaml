@@ -3,15 +3,16 @@ last_checkin: '2026-10-23T15:00:32Z'
 campaigns:
 - id: setup-baseline
   title: Setup baseline collection and scientific acceptance
-  status: needs-decision
-  updated: '2026-10-17'
-  next: 'Review the Pulse collection choices (candidate input hashes and 31-worker resource plan verified without
-    execution) alongside project correctness audit #417. Resolve data origin/suitability, named host/stack/full
-    settings, witness/tolerances and background-load method. No freeze, compute or acceptance authorized.
-    Check-in 2026-10-17: no project wiki/results/issue change since 2026-10-13 beyond
-    autolens_profiling#420/#422/#424 (interferometer only); releases 2026.10.16.1/.2 and 2026.10.17.1 supply no
-    new measurement. Post-/prm 2026-10-17: autolens_profiling#418 (pilot qualification design) merged after an independent review (FINDINGS, none blocking); issue #417 closed; Mind record complete/2026/10/hst-mge-pilot-qualification.md. Carried to the next bounded step: background-load method (none proposed), the 1e-8 relative image L2 budget (likely unattainable; synthetic-harness calibration must be allowed to revise tolerances), and the correctness-process feasibility needed before the 32-process budget is final.'
-  evidence: https://github.com/PyAutoLabs/autolens_profiling/pull/416
+  status: complete
+  updated: '2026-11-01'
+  next: 'Closed 2026-11-01 without collection (likelihood lifecycle ruling R10, autolens_profiling#503):
+    superseded by the day-zero baseline, tag 2026.10.25.1 (autolens_profiling#500; frozen here as
+    snapshots/day_zero/lens.json in PyAutoPulse#85: 480 records, 116 cells, 39 designations). Day zero answers
+    the six unknowns (released tag; reference hosts hpc_ral_cpu and hpc_a100; cell script, dataset, parity
+    witness and fit figure; compile not a class axis; mixed precision experimental). Coverage: 232/232 planned
+    cells current, no optimal cell not measured. The 1,044-slot draft manifest is kept in autolens_profiling
+    baseline/superseded/; runtime estimates for phase 5E in catalogue/runtime_estimates.yaml.'
+  evidence: https://github.com/PyAutoLabs/autolens_profiling/pull/504
 - id: point-source-image-cpu
   title: Point-source image plane · CPU
   status: active
@@ -165,16 +166,14 @@ tasks:
 - id: setup_baseline_campaign
   campaign: setup-baseline
   title: Freeze the setup baseline specification, then collect and review evidence
-  status: needs-decision
+  status: complete
   priority: high
   path: tasks/setup_baseline_campaign.md
-  updated: '2026-10-13'
-  next: 'HST/MGE raw fixed-parameter CPU runner merged in #416; Pulse handoff #55 merged and Mind implementation
-    closed. Resolve exact production host/stack/data, full settings, independent correctness witness/tolerances
-    and background-load method. No collection, campaign freeze or acceptance authorized; global compile dispatch
-    remains unavailable.'
+  updated: '2026-11-01'
+  next: 'Closed 2026-11-01 (ruling R10): superseded by the day-zero baseline 2026.10.25.1; no collection
+    or acceptance under this protocol. Closure manifest: autolens_profiling baseline/campaign.json (#504).'
   issue: https://github.com/PyAutoLabs/autolens_profiling/issues/384
-  evidence: https://github.com/PyAutoLabs/autolens_profiling/pull/416
+  evidence: https://github.com/PyAutoLabs/autolens_profiling/pull/504
 - id: hst_mge_cpu_pilot
   campaign: setup-baseline
   title: Prepare and review the HST/MGE fp64 CPU pilot

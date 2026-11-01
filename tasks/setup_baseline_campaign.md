@@ -2,7 +2,8 @@
 
 Campaign: setup-baseline
 Task: setup_baseline_campaign
-Reviewed: 2026-10-06
+Reviewed: 2026-11-01
+Status: complete (closed by day zero, ruling R10)
 
 Current scheduling state lives in `campaigns.yaml`. This is a pending scientific
 campaign task, not authorization to run jobs or accept measurements. The project
@@ -112,3 +113,29 @@ Reviewed at 2026-10-13T17:51:40Z. HST/MGE raw fixed-parameter CPU runner merged 
 GitHub sources and limits. Current RAL queue was empty; the transfer preview timed
 out, so historical jobs and unpulled results remain unverified. Review time does
 not refresh measurements or authorize compute. Historical task text is retained.
+
+## Closed 2026-11-01: superseded by day zero (R10)
+
+The likelihood lifecycle epic replaced this protocol rather than resuming it (ruling R10,
+recommended 2026-10-21, carried out under autolens_profiling#503). Nothing was collected or
+accepted under the draft. The day-zero baseline answers its six unknowns:
+
+| Unknown | Day-zero answer |
+|---|---|
+| Frozen revisions / environment lock | released tag `2026.10.25.1`; RAL shared venv (jax/jaxlib 0.11.2) recorded per row |
+| Collection authorization / window | phase-2 campaigns 2a–2g and the phase-3 JAX rows, per-batch human go (R9; CPU on `ral` only) |
+| Hardware / affinity identity | reference hosts `hpc_ral_cpu` and `hpc_a100` only (R7); host, threads and resources per row |
+| Settings, input hashes, witness, tolerances | the cell script and dataset; `parity.json` (reference log L, tolerance, `match`) and `fit.png` |
+| Compile per-cell builder | compile is recorded where available but is not an Optimal-class axis (R5) |
+| fp64 / mixed coverage | day zero is fp64; mixed precision is `experimental` (R4) |
+
+- Baseline: tag `2026.10.25.1` stamped on 480 records over 116 cells
+  (https://github.com/PyAutoLabs/autolens_profiling/pull/500), frozen here as
+  `snapshots/day_zero/lens.json` (https://github.com/PyAutoLabs/PyAutoPulse/pull/85).
+- Designations: the 39 `kind: designation` decisions (https://github.com/PyAutoLabs/PyAutoPulse/pull/84).
+- Coverage: 232/232 planned cells current; the board's Coverage panel lists no optimal cell as
+  not measured (0 of 148).
+- Closure manifest: autolens_profiling `baseline/campaign.json`; the 1,044-slot draft and its
+  readiness contract are kept in `baseline/superseded/`; the screening tool is retired
+  (https://github.com/PyAutoLabs/autolens_profiling/pull/504).
+- Runtime estimates for phase 5E: autolens_profiling `catalogue/runtime_estimates.yaml`.
