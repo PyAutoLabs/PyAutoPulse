@@ -1,6 +1,6 @@
 # PyAutoPulse — profiling dashboard
 
-<!-- pulse-campaigns:84cc47237d7c19f44558da7a0bc541c9efc3d1354cbb622031aa73aec5b7a23b -->
+<!-- pulse-campaigns:1d875169f93a57e6620c6e3593398f7e518ab029907c025c3c4666ee477ef154 -->
 ## Profiling Check In
 
 <details><summary>Full check-in prompt</summary>
@@ -28,18 +28,6 @@ After taking action, report what changed, what the evidence supports and what re
 Last check-in: 2026-10-23T15:00:32Z (review date, not measurement freshness).
 
 ## Active campaigns
-
-<details><summary>Setup baseline collection and scientific acceptance — needs-decision</summary>
-
-Reviewed 2026-10-17. Review the Pulse collection choices (candidate input hashes and 31-worker resource plan verified without execution) alongside project correctness audit #417. Resolve data origin/suitability, named host/stack/full settings, witness/tolerances and background-load method. No freeze, compute or acceptance authorized. Check-in 2026-10-17: no project wiki/results/issue change since 2026-10-13 beyond autolens_profiling#420/#422/#424 (interferometer only); releases 2026.10.16.1/.2 and 2026.10.17.1 supply no new measurement. Post-/prm 2026-10-17: autolens_profiling#418 (pilot qualification design) merged after an independent review (FINDINGS, none blocking); issue #417 closed; Mind record complete/2026/10/hst-mge-pilot-qualification.md. Carried to the next bounded step: background-load method (none proposed), the 1e-8 relative image L2 budget (likely unattainable; synthetic-harness calibration must be allowed to revise tolerances), and the correctness-process feasibility needed before the 32-process budget is final.
-
-[Campaign evidence](https://github.com/PyAutoLabs/autolens_profiling/pull/416)
-
-### Active tasks
-
-- [Freeze the setup baseline specification, then collect and review evidence](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/setup_baseline_campaign.md) — needs-decision: HST/MGE raw fixed-parameter CPU runner merged in #416; Pulse handoff #55 merged and Mind implementation closed. Resolve exact production host/stack/data, full settings, independent correctness witness/tolerances and background-load method. No collection, campaign freeze or acceptance authorized; global compile dispatch remains unavailable.
-
-</details>
 
 <details><summary>Point-source image plane · CPU — active</summary>
 

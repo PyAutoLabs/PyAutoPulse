@@ -58,7 +58,9 @@ def test_invalid_ledgers_fail_closed(tmp_path, mutation):
 
 def test_control_room_precedes_measurements_and_escapes():
     data = copy.deepcopy(campaigns.load())
-    data["campaigns"][0]["title"] = "<script>alert(1)</script>"
+    # The first rendered (not closed) campaign: closed campaigns leave the board.
+    shown = next(c for c in data["campaigns"] if c["status"] not in campaigns.CLOSED)
+    shown["title"] = "<script>alert(1)</script>"
     for text in (
         board.render_html([], campaign_data=data),
         board.render_markdown([], campaign_data=data),
