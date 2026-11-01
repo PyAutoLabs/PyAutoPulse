@@ -1,4 +1,4 @@
-"""``pyauto-pulse``: the organ's command line (check, board, census, fetch)."""
+"""``pyauto-pulse``: the organ's command line (check, board, census, fetch, freeze)."""
 
 from __future__ import annotations
 
@@ -9,7 +9,7 @@ import os
 import sys
 from pathlib import Path
 
-from pulse import ORGAN_ROOT, board, campaigns, decisions, ingest, registry
+from pulse import ORGAN_ROOT, board, campaigns, decisions, freeze, ingest, registry
 from pulse import summary as summary_mod
 
 
@@ -255,8 +255,44 @@ def cmd_check(args) -> int:
         else:
             print("ok   dashboard: current with every receipt")
     problems += _check_state(out / "state.json")
+    try:
+        frozen_ok, frozen_problems = freeze.verify(out)
+    except ValueError as exc:
+        frozen_ok, frozen_problems = [], [f"frozen snapshots: {exc}"]
+    for line in frozen_ok:
+        print(f"ok   frozen {line}")
+    for line in frozen_problems:
+        print(f"FAIL frozen {line}")
+    problems += frozen_problems
     print("check: " + ("FAIL" if problems else "OK"))
     return 1 if problems else 0
+
+
+def cmd_freeze(args) -> int:
+    instances, sources = _load(args)
+    match = [i for i in instances if i.instance == args.instance]
+    if not match:
+        print(f"pyauto-pulse: no instance {args.instance!r}", file=sys.stderr)
+        return 1
+    try:
+        path = freeze.freeze(
+            match[0],
+            args.label,
+            args.commit,
+            Path(args.out),
+            ingest.utc_now(),
+            local=sources.get(args.instance),
+        )
+    except (freeze.FreezeError, ingest.FetchError) as exc:
+        print(f"FAIL freeze: {exc}")
+        return 1
+    snap = json.loads(path.read_text())
+    counts = snap["counts"]
+    print(
+        f"ok   freeze: {path.relative_to(Path(args.out))} — tag {snap['tag']}, "
+        f"{counts['records']} records over {counts['cells']} cells at {snap['commit'][:12]}"
+    )
+    return 0
 
 
 def main(argv=None) -> int:
@@ -311,6 +347,25 @@ def main(argv=None) -> int:
     common(p, reading=False)
     p.add_argument("--instance", metavar="K", help="only this instance")
     p.set_defaults(func=cmd_fetch)
+    p = sub.add_parser(
+        "freeze",
+        help="write the frozen snapshot snapshots/<label>/<instance>.json from one commit's "
+        "day_zero-stamped records (never overwrites)",
+    )
+    common(p, reading=False)
+    p.add_argument("--instance", metavar="K", required=True, help="the instance to freeze")
+    p.add_argument("--label", default="day_zero", help="the snapshot label (default day_zero)")
+    p.add_argument(
+        "--commit", required=True, metavar="SHA", help="the producer commit to freeze (40-hex)"
+    )
+    p.add_argument(
+        "--from",
+        dest="sources",
+        action="append",
+        metavar="[INSTANCE=]PATH",
+        help="read the summary from this local file instead of fetching it at --commit",
+    )
+    p.set_defaults(func=cmd_freeze)
 
     args = parser.parse_args(argv)
     try:

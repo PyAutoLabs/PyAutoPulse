@@ -607,6 +607,12 @@ def _record_v3(check, item, ids):
             "class optimal requires a decision_id (a Pulse designation decision)",
         )
     _nullable_text(check, item, "day_zero", where)
+    if item.get("day_zero") is not None:
+        check.require(
+            item.get("status") == "current",
+            f"{where}.day_zero",
+            "only a current record carries a day_zero stamp",
+        )
     _nullable_text(check, item, "release_pin", where)
     check.require(
         summary.parse_utc(item.get("measured_at")) is not None,

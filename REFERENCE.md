@@ -262,7 +262,25 @@ threads}` and the matching `setup_id`, `host_class`, `model_variant` (e.g.
 - `superseded_by` is `null` unless `status: superseded`, when it names another
   record in the same document.
 - `day_zero`, `release_pin`, `decision_id`: string or `null`. `measured_at`:
-  ISO-8601 UTC.
+  ISO-8601 UTC. A non-null `day_zero` (the producer's frozen-baseline tag,
+  lifecycle report §3.6) is allowed only on a `current` record
+  (autolens_profiling#499; additive, no version bump: no capture before it
+  stamped a superseded row).
+
+**Frozen snapshots** (`snapshots/<label>/<instance>.json`, schema
+`pulse-frozen-snapshot` v1; `pulse/freeze.py`). `bin/pyauto-pulse freeze
+--instance lens --label day_zero --commit <sha>` reads the instance's v3
+catalogue at that commit, validates it (decision ids resolved), and keeps the
+records the producer stamped `day_zero` (exactly one tag, or the freeze is
+refused) with the catalogue's `planned_cells` and a manifest: `commit`, `tag`,
+`frozen_at`, `source` (schema, generated_at, producer_revision, sha256 of the
+full catalogue, its record count), `counts` (records, cells, by_class,
+with_decision), `decision_ids` and `records_sha256`. A frozen snapshot is never
+rewritten: a new baseline is a new label. `pyauto-pulse check` verifies each
+offline: the digest still matches its records, every record is `current` on
+the tag, and every `decision_id` resolves. Pulse selects nothing: the producer's
+stamp decides what is day zero. The rolling `snapshots/<instance>.json` is
+unrelated and is overwritten on every good read.
 - `figures`: list of `{kind, path, sha256}` with safe repo-relative paths and
   64-hex digests (may be empty).
 

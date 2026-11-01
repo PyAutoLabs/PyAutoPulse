@@ -110,6 +110,7 @@ The design has **two layers** (`profiling_inference_organs.md`, PyAutoBrain#444)
 | The read contract as this organ implements it | `pulse/summary.py` + `REFERENCE.md` | the dev flow (reader first, producer second on a version bump) |
 | Ingest receipts — the resolved commit, fetch time, outcome and errors per instance | `receipts/<instance>.json` | `bin/pyauto-pulse board` / `fetch` / `check` |
 | Last-good snapshots — the summary as captured, with its commit and fetch time | `snapshots/<instance>.json` | the same, on a good read only |
+| Frozen snapshots — a producer's stamped baseline (`day_zero`), captured once at one commit with a manifest; never rewritten | `snapshots/<label>/<instance>.json` | `bin/pyauto-pulse freeze` (by a human-approved task); verified by `check` |
 | The board | `dashboard.md`, `dashboard.html`, `state.json`, `badge.json` | `bin/pyauto-pulse board` (and `dashboard_refresh.yml`) |
 
 Repository location and GitHub identity are **not** owned here: a registry row
@@ -193,6 +194,7 @@ bin/pyauto-pulse check            # registry + body map, ingest at one commit, r
 bin/pyauto-pulse check --offline  # the same over the committed receipts + snapshots (CI)
 bin/pyauto-pulse board            # ingest, then render dashboard.md/.html, badge.json, state.json
 bin/pyauto-pulse census           # one line per instance from the committed snapshots
+bin/pyauto-pulse freeze --instance lens --label day_zero --commit <sha>  # frozen baseline, once
 bin/pyauto-pulse fetch [--instance K]  # ingest + receipt only
 ```
 
