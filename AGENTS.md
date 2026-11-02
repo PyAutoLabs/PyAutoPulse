@@ -195,6 +195,7 @@ bin/pyauto-pulse check --offline  # the same over the committed receipts + snaps
 bin/pyauto-pulse board            # ingest, then render dashboard.md/.html, badge.json, state.json
 bin/pyauto-pulse census           # one line per instance from the committed snapshots
 bin/pyauto-pulse freeze --instance lens --label day_zero --commit <sha>  # frozen baseline, once
+bin/pyauto-pulse freeze --instance lens --label day_zero_gradient --measurement gradient --commit <sha>  # one measurement's stamps
 bin/pyauto-pulse fetch [--instance K]  # ingest + receipt only
 ```
 

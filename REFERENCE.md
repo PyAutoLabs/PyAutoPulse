@@ -275,8 +275,11 @@ records the producer stamped `day_zero` (exactly one tag, or the freeze is
 refused) with the catalogue's `planned_cells` and a manifest: `commit`, `tag`,
 `frozen_at`, `source` (schema, generated_at, producer_revision, sha256 of the
 full catalogue, its record count), `counts` (records, cells, by_class,
-with_decision), `decision_ids` and `records_sha256`. A frozen snapshot is never
-rewritten: a new baseline is a new label. `pyauto-pulse check` verifies each
+with_decision), `decision_ids` and `records_sha256`. `--measurement <m>` keeps
+only the stamped records of that measurement and writes `measurement` into the
+snapshot, which `check` then enforces: `--label day_zero_gradient --measurement
+gradient` freezes the phase-6 gradient stamps beside the runtime `day_zero`. A
+frozen snapshot is never rewritten: a new baseline is a new label. `pyauto-pulse check` verifies each
 offline: the digest still matches its records, every record is `current` on
 the tag, and every `decision_id` resolves. Pulse selects nothing: the producer's
 stamp decides what is day zero. The rolling `snapshots/<instance>.json` is

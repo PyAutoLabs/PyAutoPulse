@@ -8,6 +8,11 @@ this organ's ``decisions.yaml``), keeps the records the producer stamped ``day_z
 manifest (source commit, tag, counts, the sha256 of the full catalogue and of the frozen
 records). It refuses to overwrite a frozen snapshot: a new baseline is a new label.
 
+``--measurement <m>`` keeps only the stamped records of that measurement and records it in the
+snapshot (``measurement``), so a later family of stamps gets its own frozen label without
+touching an earlier one: ``freeze --label day_zero_gradient --measurement gradient`` freezes the
+phase-6 gradient records while ``day_zero`` keeps the runtime baseline (autolens_profiling#512).
+
 ``pyauto-pulse check`` verifies every frozen snapshot offline (``verify``): its manifest
 digest still matches its records, every record is ``current`` and carries the snapshot's tag,
 and every ``decision_id`` resolves. Pulse selects nothing here: the producer's stamp decides
@@ -70,8 +75,20 @@ def _counts(records: list[dict]) -> dict:
     }
 
 
-def build(inst, doc: dict, raw: bytes, commit: str, label: str, frozen_at: str, root=ORGAN_ROOT):
-    """The frozen snapshot document for one validated v3 catalogue at ``commit``."""
+def build(
+    inst,
+    doc: dict,
+    raw: bytes,
+    commit: str,
+    label: str,
+    frozen_at: str,
+    root=ORGAN_ROOT,
+    measurement: str | None = None,
+):
+    """The frozen snapshot document for one validated v3 catalogue at ``commit``.
+
+    With ``measurement``, only the stamped records of that measurement are kept.
+    """
     if not _LABEL.match(label):
         raise FreezeError(f"label {label!r} must be lower_snake_case")
     if not _SHA.match(commit):
@@ -79,15 +96,21 @@ def build(inst, doc: dict, raw: bytes, commit: str, label: str, frozen_at: str, 
     outcome, errors = ingest.classify(doc, ("profiling-summary", 3), root)
     if outcome != "ok":
         raise FreezeError(f"{inst.instance}@{commit[:12]} is {outcome}: " + "; ".join(errors[:5]))
-    stamped = [r for r in doc["records"] if r.get("day_zero") is not None]
+    stamped = [
+        r
+        for r in doc["records"]
+        if r.get("day_zero") is not None
+        and (measurement is None or r.get("measurement") == measurement)
+    ]
     tags = sorted({r["day_zero"] for r in stamped})
     if len(tags) != 1:
+        scope = f" {measurement}" if measurement else ""
         raise FreezeError(
-            f"{inst.instance}@{commit[:12]}: a frozen snapshot needs exactly one day_zero tag, "
-            f"found {tags or 'none'}"
+            f"{inst.instance}@{commit[:12]}: a frozen snapshot needs exactly one day_zero tag "
+            f"on its{scope} records, found {tags or 'none'}"
         )
     records = sorted(stamped, key=lambda r: r["id"])
-    return {
+    snap = {
         "schema": SCHEMA,
         "version": VERSION,
         "label": label,
@@ -111,6 +134,9 @@ def build(inst, doc: dict, raw: bytes, commit: str, label: str, frozen_at: str, 
         "planned_cells": doc.get("planned_cells") or [],
         "records": records,
     }
+    if measurement is not None:
+        snap["measurement"] = measurement
+    return snap
 
 
 def write(out_dir: Path, snap: dict) -> Path:
@@ -124,7 +150,14 @@ def write(out_dir: Path, snap: dict) -> Path:
 
 
 def freeze(
-    inst, label: str, commit: str, out_dir: Path, frozen_at: str, local=None, root=ORGAN_ROOT
+    inst,
+    label: str,
+    commit: str,
+    out_dir: Path,
+    frozen_at: str,
+    local=None,
+    root=ORGAN_ROOT,
+    measurement: str | None = None,
 ):
     """Fetch ``inst``'s summary at ``commit`` (or read ``local``), build and write the snapshot."""
     if local is not None:
@@ -140,7 +173,7 @@ def freeze(
             f"{frozen_path(out_dir, label, inst.instance)} exists: a frozen snapshot is never "
             "rewritten (use a new label)"
         )
-    return write(out_dir, build(inst, doc, raw, commit, label, frozen_at, root))
+    return write(out_dir, build(inst, doc, raw, commit, label, frozen_at, root, measurement))
 
 
 def verify_one(path: Path, known_decisions: set[str]) -> list[str]:
@@ -164,6 +197,13 @@ def verify_one(path: Path, known_decisions: set[str]) -> list[str]:
     off = [r.get("id") for r in records if r.get("day_zero") != tag or r.get("status") != "current"]
     if off:
         problems.append(f"{where}: {len(off)} record(s) not current on tag {tag}, e.g. {off[0]}")
+    measurement = snap.get("measurement")
+    if measurement is not None:
+        other = [r.get("id") for r in records if r.get("measurement") != measurement]
+        if other:
+            problems.append(
+                f"{where}: {len(other)} record(s) not measurement {measurement}, e.g. {other[0]}"
+            )
     wanted = {r["decision_id"] for r in records if r.get("decision_id")}
     if sorted(wanted) != snap.get("decision_ids"):
         problems.append(f"{where}: decision_ids do not match its records")

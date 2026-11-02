@@ -27,10 +27,12 @@ def root(tmp_path):
     return root
 
 
-def _freeze(root, doc=None, label="day_zero"):
+def _freeze(root, doc=None, label="day_zero", measurement=None):
     doc = doc or fixture_doc("setup_summary_v3.json")
     raw = json.dumps(doc).encode()
-    snap = freeze.build(LENS, doc, raw, SHA_A, label, "2026-11-01T00:00:00Z", root)
+    snap = freeze.build(
+        LENS, doc, raw, SHA_A, label, "2026-11-01T00:00:00Z", root, measurement=measurement
+    )
     return freeze.write(root, snap), snap
 
 
@@ -91,6 +93,45 @@ def test_freeze_refuses_a_catalogue_with_no_or_two_day_zero_tags(root):
         _freeze(root, two)
 
 
+def _two_measurements():
+    """The fixture with its breakdown record also stamped, on its own tag."""
+    doc = fixture_doc("setup_summary_v3.json")
+    doc["records"][2]["day_zero"] = "2026.10.25.1"
+    assert doc["records"][2]["measurement"] == "breakdown"
+    return doc
+
+
+def test_freeze_measurement_keeps_only_that_measurement_under_its_own_label(root):
+    """#512: a gradient-style family freezes beside the runtime baseline, never into it."""
+    doc = _two_measurements()
+    path, snap = _freeze(root, doc, label="day_zero_breakdown", measurement="breakdown")
+    assert path == root / "snapshots" / "day_zero_breakdown" / "lens.json"
+    assert snap["measurement"] == "breakdown" and snap["tag"] == "2026.10.25.1"
+    assert [r["id"] for r in snap["records"]] == ["imaging-delaunay-hst-a100-breakdown"]
+    _path, runtime = _freeze(root, doc, measurement="runtime")
+    assert [r["id"] for r in runtime["records"]] == ["imaging-delaunay-hst-a100-runtime"]
+    ok, problems = freeze.verify(root, root)
+    assert problems == [] and len(ok) == 2
+    # Without --measurement the two families are two tags: refused, as before.
+    with pytest.raises(freeze.FreezeError, match="exactly one day_zero tag"):
+        _freeze(root, doc, label="day_zero_all")
+
+
+def test_freeze_measurement_refuses_when_none_of_it_is_stamped(root):
+    with pytest.raises(freeze.FreezeError, match="on its gradient records, found none"):
+        _freeze(root, measurement="gradient")
+
+
+def test_verify_catches_a_record_of_another_measurement(root):
+    path, _snap = _freeze(root, _two_measurements(), "day_zero_breakdown", "breakdown")
+    snap = json.loads(path.read_text())
+    snap["records"][0]["measurement"] = "runtime"
+    snap["records_sha256"] = freeze._digest(snap["records"])
+    path.write_text(json.dumps(snap))
+    _ok, problems = freeze.verify(root, root)
+    assert any("not measurement breakdown" in p for p in problems)
+
+
 def test_freeze_refuses_an_invalid_catalogue(root):
     _decisions(root, ["other"])
     with pytest.raises(freeze.FreezeError, match="invalid"):
@@ -135,3 +176,9 @@ def test_cli_freeze_fetches_the_commit_and_refuses_a_second_write(
     assert snap["commit"] == SHA_A and snap["summary_path"] == "dashboard/summary.json"
     assert cli.main(args) == 1
     assert "never rewritten" in capsys.readouterr().out
+    # --measurement freezes one family under its own label; none of it stamped is refused.
+    assert cli.main(args + ["--label", "day_zero_runtime", "--measurement", "runtime"]) == 0
+    snap = json.loads((out / "snapshots" / "day_zero_runtime" / "lens.json").read_text())
+    assert snap["measurement"] == "runtime"
+    assert cli.main(args + ["--label", "day_zero_gradient", "--measurement", "gradient"]) == 1
+    assert "on its gradient records, found none" in capsys.readouterr().out
