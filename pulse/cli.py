@@ -282,6 +282,7 @@ def cmd_freeze(args) -> int:
             Path(args.out),
             ingest.utc_now(),
             local=sources.get(args.instance),
+            measurement=args.measurement,
         )
     except (freeze.FreezeError, ingest.FetchError) as exc:
         print(f"FAIL freeze: {exc}")
@@ -357,6 +358,11 @@ def main(argv=None) -> int:
     p.add_argument("--label", default="day_zero", help="the snapshot label (default day_zero)")
     p.add_argument(
         "--commit", required=True, metavar="SHA", help="the producer commit to freeze (40-hex)"
+    )
+    p.add_argument(
+        "--measurement",
+        metavar="M",
+        help="keep only the stamped records of this measurement (e.g. gradient)",
     )
     p.add_argument(
         "--from",
