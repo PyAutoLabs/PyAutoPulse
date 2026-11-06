@@ -1,6 +1,6 @@
 # PyAutoPulse — profiling dashboard
 
-<!-- pulse-campaigns:10bb316908e8807a27bae7d29a3b5e07a08acc4900cd75a3fe6c9890a72c8f4e -->
+<!-- pulse-campaigns:b371fb8025668c6fa7dc5615aa826c8ef33c13d92435224ac399cc8b08988069 -->
 ## Profiling Check In
 
 <details><summary>Full check-in prompt</summary>
@@ -149,14 +149,15 @@ Reviewed 2026-11-06. B4a (autofit_profiling#3) and B4b (autofit_profiling#5, iss
 
 </details>
 
-<details><summary>Critical curves and evaluation grids — needs-decision</summary>
+<details><summary>Critical curves and evaluation grids — active</summary>
 
-Reviewed 2026-11-06. No new campaign measurement. Phase 3b cap fix remains shipped; project wiki still incorrectly says #646 awaits merge/release. Seed coverage and path completion remain unresolved; retain marching-squares decision and ask the human whether to scope the next phase. Check-in 2026-10-17: no project wiki/results/issue change since 2026-10-13 beyond autolens_profiling#420/#422/#424 (interferometer only); releases 2026.10.16.1/.2 and 2026.10.17.1 supply no new measurement. Check-in 2026-11-06: no campaign measurement. Adjacent: PyAutoLens#808 (cluster plot_critical_curves/plot_caustics now read general.critical_curves_method). Still needs a human decision on whether to scope the next phase.
+Reviewed 2026-11-06. Human decision 2026-11-06 (chat): move toward the JAX zero-contour engine for critical curves in modeling-run visualization, starting with a feasibility phase (&quot;or doing work to figure out if its feasible&quot;). Next bounded step: task critical_curves_jax_modeling_viz_feasibility (correctness on posterior draws per scale against the pre-registered two-pixel rule, cold/warm cost per visualization call on CPU and A100, cheap incomplete-curve detection and marching-squares fallback; GO/NO-GO per scale). No default changes until a later phase. Prior: phase 3a cluster NO-GO for default seeds (autolens_profiling#364); phase 3b cap fix PyAutoGalaxy#646; PyAutoLens#808 cluster plots read critical_curves_method.
 
 [Campaign evidence](https://github.com/PyAutoLabs/autolens_profiling/blob/4db4d988e520a82219152743748c3188d485a4ba/wiki/campaigns/critical_curves.md)
 
 ### Active tasks
 
+- [Feasibility: JAX zero-contour critical curves and caustics in modeling-run visualization](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/tasks/critical_curves_jax_modeling_viz_feasibility.md) — ready: Filed 2026-11-06 (human decision). Research only, no default change. Issue through start_dev (autolens_profiling, with a Mind prompt referencing this task) when prioritised; uses the phase-4 posterior draws (autolens_inference#59) as the correctness corpus.
 
 </details>
 
