@@ -257,7 +257,7 @@ tasks:
   campaign: measurement-tools
   title: 'A gradient-cost probe: forward vs `value_and_grad` ms/eval and a strict FD check, on any registry
     cell'
-  status: needs-decision
+  status: superseded
   priority: low
   path: tasks/gradient_cost_probe.md
   updated: '2026-11-06'
@@ -266,7 +266,8 @@ tasks:
     Select one bounded step when prioritised. Check-in 2026-11-06: lifecycle phase 6 (autolens_profiling#506-#518)
     measured forward vs value_and_grad ms/eval and an FD witness for every likelihood''s Optimal cell (day_zero_gradient
     frozen, PyAutoPulse#88), which is this probe''s scope on the registry cells. Human decision: supersede, or keep
-    for the PyAutoLens#768 test-timing question.'
+    for the PyAutoLens#768 test-timing question. Human decision 2026-11-06 (chat, "2. yes"): superseded by likelihood-lifecycle
+    phase 6 (autolens_profiling#506-#518; day_zero_gradient, PyAutoPulse#88).'
   evidence: https://github.com/PyAutoLabs/PyAutoLens/pull/768
 - id: numba_breakdown_harness_memo_blind
   campaign: measurement-tools
@@ -438,7 +439,7 @@ tasks:
 - id: interferometer_large_mask_aris
   campaign: interferometer
   title: 'Interferometer large-mask likelihood (Aris 512×512): sparse data-vector memory, AdaptSplit log-det backend parity, numba route-gate cost model'
-  status: needs-decision
+  status: complete
   priority: high
   path: tasks/interferometer_large_mask_aris.md
   updated: '2026-11-06'
@@ -453,7 +454,9 @@ tasks:
     numba 1-thread 0.14/0.45/1.82 s per call at 1,405/2,947/5,526 vertices, matching JAX figure of merit to 1e-15.
     The >=16-worker Nautilus SIGSEGV root cause was numba first-imported inside forked workers (the interferometer
     parent never called numba pre-fork). Fixed by PyAutoFit#1715 (parent likelihood warm-up; 28-core run clean); PyAutoArray#655
-    (finufft CPU NUFFT) shipped on speed and memory. #626-#628 closed earlier. Candidate to close: human decision.'
+    (finufft CPU NUFFT) shipped on speed and memory. #626-#628 closed earlier. Candidate to close: human decision.
+    Human decision 2026-11-06 (chat, "1. yes"): closed. The root cause and its fixes shipped (PyAutoFit#1715, PyAutoArray#655);
+    PyAutoArray#626-#628 were closed earlier.'
   issue: https://github.com/PyAutoLabs/PyAutoPulse/issues/62
   evidence: https://github.com/PyAutoLabs/PyAutoArray/issues/626
 - id: interferometer_w_tilde_fft_size_levers

@@ -367,3 +367,7 @@ Not worth it (measured on the 125×125 setup unless stated):
 - Status: needs-decision.
 - 2026-10-24 RAL re-check (2026.10.23.1, EPYC 7763): numba 1-thread 0.14/0.45/1.82 s per call at 1,405/2,947/5,526 vertices, matching JAX figure of merit to 1e-15. The >=16-worker Nautilus SIGSEGV root cause was numba first-imported inside forked workers (the interferometer parent never called numba pre-fork). Fixed by PyAutoFit#1715 (parent likelihood warm-up; 28-core run clean); PyAutoArray#655 (finufft CPU NUFFT) shipped on speed and memory. #626-#628 closed earlier. Candidate to close: human decision.
 - [Full dated review](../checkins/2026-11-06.md). Review time doesn't refresh measurement dates, and the check-in authorizes no compute, default change, release or merge.
+
+## Human decision 2026-11-06
+
+- Status: complete. Human decision 2026-11-06 (chat, "1. yes"): closed. The root cause and its fixes shipped (PyAutoFit#1715, PyAutoArray#655); PyAutoArray#626-#628 were closed earlier.
