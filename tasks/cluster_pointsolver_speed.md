@@ -113,6 +113,13 @@ Mitigation adopted: the validation check (Mind draft
 spurious-core candidates library task (`draft/feature/autolens/point_solver_spurious_core_candidates.md`,
 start_dev in progress). This record changes no library or workspace default.
 
+
+## Check-in 2026-11-06
+
+- Status: active.
+- spurious-core shipped (PyAutoLens#800, default residual_threshold 10.0, 2026-10-23) plus the point-solver guide (PyAutoLens#801, autolens_workspace#600/#601, HowToLens#101). Next bounded task: the workspace validation check (Mind draft draft/feature/autolens_workspace/cluster_point_solver_validation_check.md, not started).
+- [Full dated review](../checkins/2026-11-06.md). Review time doesn't refresh measurement dates, and the check-in authorizes no compute, default change, release or merge.
+
 ---
 
 # Cluster PointSolver — robustness, analysis settings and performance
@@ -298,10 +305,3 @@ This inherits the point-source campaign contract (phase-4 prompt, "Campaign cont
 2. Deflection-cost lever (JAX dPIE/NFW deflection cell first; PyAutoGalaxy change separately scoped).
 3. Cluster grid-extent guidance with completeness evidence.
 4. Whatever the phase-1 split exposes (per-source batching, multiplane bookkeeping, capacity).
-
-
-## Check-in 2026-11-06
-
-- Status: active.
-- spurious-core shipped (PyAutoLens#800, default residual_threshold 10.0, 2026-10-23) plus the point-solver guide (PyAutoLens#801, autolens_workspace#600/#601, HowToLens#101). Next bounded task: the workspace validation check (Mind draft draft/feature/autolens_workspace/cluster_point_solver_validation_check.md, not started).
-- [Full dated review](../checkins/2026-11-06.md). Review time doesn't refresh measurement dates, and the check-in authorizes no compute, default change, release or merge.
