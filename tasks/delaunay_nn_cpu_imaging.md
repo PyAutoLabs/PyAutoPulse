@@ -64,3 +64,10 @@ Per the human decision of 2026-10-17 these stay as research:
 - **Merged 2026-10-17 (human /prm):** [PyAutoArray#637](https://github.com/PyAutoLabs/PyAutoArray/pull/637) (pending-release).
 - **Issues closed:** PyAutoArray#629.
 - **Mind record:** [`delaunaynn-wide-row-overhead`](https://github.com/PyAutoLabs/PyAutoMind/blob/main/complete/2026/10/delaunaynn-wide-row-overhead.md).
+
+
+## Check-in 2026-11-06
+
+- Status: parked.
+- PyAutoArray#677 (pending release) runs a serial Sibson build in Nautilus workers; autolens_profiling#519/#520 time the DelaunayNN cells on that route; the serial kernel is about 1.25x prange@1 (Mind draft draft/bug/autoarray/sibson_serial_kernel_loses_allocation_hoisting.md). Still parked.
+- [Full dated review](../checkins/2026-11-06.md). Review time doesn't refresh measurement dates, and the check-in authorizes no compute, default change, release or merge.

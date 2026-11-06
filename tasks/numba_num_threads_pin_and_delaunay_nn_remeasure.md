@@ -62,3 +62,10 @@ Not affected:
   (`configuration.thread_env.vars` lacks `NUMBA_NUM_THREADS`; `device.cpu_count` 252).
 - Human doctrine: numba CPU cost is per process and per core ("one process per core under Nautilus"),
   and numba parallel threads never run inside multiprocessing workers (2026-11-05).
+
+
+## Check-in 2026-11-06
+
+- Status: blocked.
+- Step 1 done differently than filed: autolens_profiling#519/#520 (merged 2026-11-05, human decision) pin only the two DelaunayNN numba cells to the Nautilus worker route (patched parallel_kernel_allowed, serial Sibson) instead of adding NUMBA_NUM_THREADS to THREAD_ENV_VARS. Laptop witness: patched route matches a real forked worker (1.024x); serial Sibson is about 1.25x prange@1 (Mind draft draft/bug/autoarray/sibson_serial_kernel_loses_allocation_hoisting.md). Step 2 (RAL re-measure, supersede the 2026.10.25.1 rows) is Mind draft draft/feature/autolens_profiling/delaunay_nn_numba_optimal_remeasure_after_677.md, blocked on a release carrying PyAutoArray#677 (2026.11.5.1 does not). Step 3 (day-zero designation) stays a human decision.
+- [Full dated review](../checkins/2026-11-06.md). Review time doesn't refresh measurement dates, and the check-in authorizes no compute, default change, release or merge.

@@ -106,3 +106,10 @@ run them. This prompt adds a tool beside them and changes none of them. No libra
 PyAutoArray / PyAutoGalaxy / PyAutoLens: if the probe finds a real gradient-cost or
 gradient-correctness fault, that is a bug filed in the Mind, not fixed here. No RAL
 submission as part of the task — the submit script is written, not run.
+
+
+## Check-in 2026-11-06
+
+- Status: needs-decision.
+- lifecycle phase 6 (autolens_profiling#506-#518) measured forward vs value_and_grad ms/eval and an FD witness for every likelihood's Optimal cell (day_zero_gradient frozen, PyAutoPulse#88), which is this probe's scope on the registry cells. Human decision: supersede, or keep for the PyAutoLens#768 test-timing question.
+- [Full dated review](../checkins/2026-11-06.md). Review time doesn't refresh measurement dates, and the check-in authorizes no compute, default change, release or merge.
