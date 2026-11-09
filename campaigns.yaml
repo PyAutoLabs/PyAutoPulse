@@ -158,15 +158,16 @@ campaigns:
 - id: critical-curves
   title: Critical curves and evaluation grids
   status: active
-  updated: '2026-11-06'
-  next: 'Human decision 2026-11-06 (chat): move toward the JAX zero-contour engine for critical curves in modeling-run
-    visualization, starting with a feasibility phase ("or doing work to figure out if its feasible"). Next bounded
-    step: task critical_curves_jax_modeling_viz_feasibility (correctness on posterior draws per scale against the
-    pre-registered two-pixel rule, cold/warm cost per visualization call on CPU and A100, cheap incomplete-curve detection
-    and marching-squares fallback; GO/NO-GO per scale). No default changes until a later phase. Prior: phase 3a cluster
-    NO-GO for default seeds (autolens_profiling#364); phase 3b cap fix PyAutoGalaxy#646; PyAutoLens#808 cluster plots
-    read critical_curves_method.'
-  evidence: https://github.com/PyAutoLabs/autolens_profiling/blob/4db4d988e520a82219152743748c3188d485a4ba/wiki/campaigns/critical_curves.md
+  updated: '2026-11-09'
+  next: 'Feasibility task complete 2026-11-09 (autolens_profiling#521, PR #522): keep marching squares for modeling-run
+    figures at every scale; zero-contour is correct where seeded but recompiles every figure and its +/-3" seeds miss
+    group/cluster curves. Next (all human-gated Mind drafts): zero-contour pytree compile cache + field-wide seeds +
+    duplicate removal + fallback (draft/refactor/autogalaxy/zero_contour_pytree_compile_cache.md), or a smaller
+    marching-squares grid for interferometer/group (visualization run-time campaign draft); long-term critical-curve
+    oracle and regime map (draft/research/autolens_profiling/critical_curve_oracle_find_the_regime_where.md); cluster
+    figures miss member-galaxy curves (draft/research/autolens/cluster_figure_critical_curves_miss_member_curves.md);
+    plot_utils docstring drift. Prior: phase 3a cluster NO-GO (#364); phase 3b cap fix PyAutoGalaxy#646.'
+  evidence: https://github.com/PyAutoLabs/autolens_profiling/blob/main/wiki/campaigns/lens/critical_curves/critical_curves.md
 - id: certified-solver
   title: Certified positive solver
   status: parked
@@ -595,11 +596,13 @@ tasks:
 - id: critical_curves_jax_modeling_viz_feasibility
   campaign: critical-curves
   title: 'Feasibility: JAX zero-contour critical curves and caustics in modeling-run visualization'
-  status: ready
+  status: complete
   priority: medium
   path: tasks/critical_curves_jax_modeling_viz_feasibility.md
-  updated: '2026-11-06'
-  next: Filed 2026-11-06 (human decision). Research only, no default change. Issue through start_dev (autolens_profiling,
-    with a Mind prompt referencing this task) when prioritised; uses the phase-4 posterior draws (autolens_inference#59)
-    as the correctness corpus.
-  evidence: https://github.com/PyAutoLabs/autolens_profiling/pull/364
+  updated: '2026-11-09'
+  next: 'Complete 2026-11-09: autolens_profiling#521 / PR #522 merged (human /prm). Verdict: keep marching squares as the
+    modeling-run default at every scale. Zero-contour recompiles every figure (6-22 s vs MS 0.1-3.7 s, RAL 414456, 17
+    phase-4 legs, 211 draws); cached warm 0.2-0.8 s wins only for interferometer (~8-12x) and group (~4x); +/-3" auto
+    seeds miss group and cluster curves; coarse 0.2" fallback detector caught 47/47 failures. Record:
+    https://github.com/PyAutoLabs/PyAutoMind/blob/main/complete/2026/11/critical-curves-jax-viz-feasibility.md'
+  evidence: https://github.com/PyAutoLabs/autolens_profiling/pull/522
