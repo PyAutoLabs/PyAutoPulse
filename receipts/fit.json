@@ -3,15 +3,15 @@
   "repo": "autofit_profiling",
   "github": "PyAutoLabs/autofit_profiling",
   "branch": "main",
-  "resolved_commit": "0481145eee4a01c62b4cbfd87a57de01ce40655a",
+  "resolved_commit": "6ab7358a9e9ddcbaf14dd31068d1cfb64caf5f89",
   "summary_path": "dashboard/catalogue.json",
   "source": "remote",
-  "fetched_at": "2026-10-23T17:38:02Z",
+  "fetched_at": "2026-11-10T12:43:22Z",
   "outcome": "ok",
   "schema": "profiling-summary",
   "version": 2,
-  "record_count": 31,
+  "record_count": 157,
   "errors": [],
   "cached_from": null,
-  "refreshed_at": "2026-11-10T11:56:08Z"
+  "refreshed_at": "2026-11-10T12:43:22Z"
 }

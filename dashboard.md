@@ -195,6 +195,7 @@ Reviewed 2026-11-06. Phases 2, 3 and 6 complete (day_zero 2026.10.25.1: 480 reco
 <details><summary>analytic_gaussian</summary>
 
 - **conjugate hierarchical gaussian**: unspecified
+- **correlated_gaussian**: unspecified
 
 </details>
 
@@ -217,13 +218,13 @@ Reviewed 2026-11-06. Phases 2, 3 and 6 complete (day_zero 2026.10.25.1: 480 reco
 
 ## fit
 
-<!-- pulse:instance name=fit receipt=0481145eee4a01c62b4cbfd87a57de01ce40655a outcome=ok shown=0481145eee4a01c62b4cbfd87a57de01ce40655a -->
+<!-- pulse:instance name=fit receipt=6ab7358a9e9ddcbaf14dd31068d1cfb64caf5f89 outcome=ok shown=6ab7358a9e9ddcbaf14dd31068d1cfb64caf5f89 -->
 
-Project `autofit_profiling`, scope `pyautofit-profiling`, read from [PyAutoLabs/autofit_profiling](https://github.com/PyAutoLabs/autofit_profiling) `dashboard/catalogue.json` at [`0481145e`](https://github.com/PyAutoLabs/autofit_profiling/tree/0481145eee4a01c62b4cbfd87a57de01ce40655a); producer revision `—`; generated 2026-10-14T14:45:45Z; comparison policy `no-temporal-comparisons`. [Project dashboard](https://pyautolabs.github.io/autofit_profiling/) · [receipt](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/receipts/fit.json).
+Project `autofit_profiling`, scope `pyautofit-profiling`, read from [PyAutoLabs/autofit_profiling](https://github.com/PyAutoLabs/autofit_profiling) `dashboard/catalogue.json` at [`6ab7358a`](https://github.com/PyAutoLabs/autofit_profiling/tree/6ab7358a9e9ddcbaf14dd31068d1cfb64caf5f89); producer revision `—`; generated 2026-11-10T12:16:33.016502+00:00; comparison policy `no-temporal-comparisons`. [Project dashboard](https://pyautolabs.github.io/autofit_profiling/) · [receipt](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/receipts/fit.json).
 
 - **Integrity:** ok
-- **Freshness:** freshness policy unspecified · age 9 d at fetch 2026-10-23 (evidence 2026-10-14)
-- **Qualification:** 31/31 records · 0/0 comparisons qualified
+- **Freshness:** freshness policy unspecified · age 0 d at fetch 2026-11-10 (evidence 2026-11-10)
+- **Qualification:** 157/157 records · 0/0 comparisons qualified
 
 ### fit / limitations
 
