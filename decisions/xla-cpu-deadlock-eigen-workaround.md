@@ -82,3 +82,19 @@ measured slightly faster. Every 2d JAX CPU leg, MGE and pixelized, compiles with
 ## History
 
 First record for this choice (2d decision D12, drafted 2026-10-29, decided the same day).
+
+## Status update — 2026-11-11
+
+Unchanged in scope: the 2d JAX CPU legs on jaxlib 0.11.2 keep the eigen flag. Two things have moved
+since:
+
+- **Policy moved to PyAutoDNA.** Which jax versions PyAuto requires, and whether any XLA flag is a
+  default, is now decided in PyAutoDNA (human, 2026-11-10). The current decision is
+  [PyAutoDNA `decisions/jax-cpu-policy-2026-11.md`](https://github.com/PyAutoLabs/PyAutoDNA/blob/main/decisions/jax-cpu-policy-2026-11.md): jax and jaxlib 0.12.0 or newer, no
+  default XLA:CPU flag.
+- **The revisit condition was tested.** On jax 0.12.0 and 0.12.0.1 every reproducer ran 300 calls
+  with no flag (RAL job 415009 and the laptop pilot, [PyAutoNerves#213](https://github.com/PyAutoLabs/PyAutoNerves/issues/213)). Dropping the
+  flag from the 2d driver and the other places that carry it is queued as the PyAutoMind follow-up
+  `draft/maintenance/workspaces/remove_xla_eigen_flag_workarounds_after_jax_0_12.md`, after the
+  jax floor is released. That change will be recorded as a new decision that supersedes this one.
+
