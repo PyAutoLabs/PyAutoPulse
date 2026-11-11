@@ -540,7 +540,7 @@ PyAutoFit inference benchmarking is collected on the [PyAutoInsight board](https
 
 <details><summary>autolens_inference — inference timings</summary>
 
-96 results.
+108 results.
 
 All rows: nautilus sampler
 
@@ -626,10 +626,22 @@ All rows: nautilus sampler
 | multi_dataset | delaunay | hst | `jax_gpu_dense` | hpc_a100 | default | [**0.17631**](https://pyautolabs.github.io/PyAutoPulse/?view=setup&instance=lens&record=lifecycle%2Fb5dea27fcaf8b14ec9bb) | 1 | 8 | **3504.1** | 46580 | **0.07523** |
 | multi_dataset | delaunay | hst | `jax_gpu_dense` | hpc_a100 | light_fixed | — | 0 | 8 | **3577.4** | 56840 | **0.06294** |
 | multi_dataset | delaunay | hst | `jax_gpu_dense` | hpc_a100 | light_fixed | — | 1 | 8 | **3064.3** | 48080 | **0.06373** |
+| multi_dataset | delaunay | hst | `numba_cpu_sparse` | hpc_ral_cpu | default | [**2.85239**](https://pyautolabs.github.io/PyAutoPulse/?view=setup&instance=lens&record=lifecycle%2Ff57f23fc63823bcdf1bc) | 0 | 8 | **18440.5** | 46100 | **0.40001** |
+| multi_dataset | delaunay | hst | `numba_cpu_sparse` | hpc_ral_cpu | default | [**2.85239**](https://pyautolabs.github.io/PyAutoPulse/?view=setup&instance=lens&record=lifecycle%2Ff57f23fc63823bcdf1bc) | 1 | 8 | **24358.1** | 60620 | **0.40182** |
+| multi_dataset | delaunay | hst | `numba_cpu_sparse` | hpc_ral_cpu | light_fixed | — | 0 | 8 | **11133.8** | 43180 | **0.25785** |
+| multi_dataset | delaunay | hst | `numba_cpu_sparse` | hpc_ral_cpu | light_fixed | — | 1 | 8 | **18929.6** | 75740 | **0.24993** |
 | multi_galaxy | delaunay | hst | `jax_gpu_dense` | hpc_a100 | default | [**0.03050**](https://pyautolabs.github.io/PyAutoPulse/?view=setup&instance=lens&record=lifecycle%2F5a510cca4fff0c0d5b58) | 0 | 8 | **3951.3** | 98140 | **0.04026** |
 | multi_galaxy | delaunay | hst | `jax_gpu_dense` | hpc_a100 | default | [**0.03050**](https://pyautolabs.github.io/PyAutoPulse/?view=setup&instance=lens&record=lifecycle%2F5a510cca4fff0c0d5b58) | 1 | 8 | **3213.7** | 79180 | **0.04059** |
 | multi_galaxy | delaunay | hst | `jax_gpu_dense` | hpc_a100 | light_fixed | — | 0 | 8 | **3494.6** | 103000 | **0.03393** |
 | multi_galaxy | delaunay | hst | `jax_gpu_dense` | hpc_a100 | light_fixed | — | 1 | 8 | **2630.3** | 76200 | **0.03452** |
+| multi_galaxy | delaunay | hst | `numba_cpu_sparse` | hpc_ral_cpu | default | [**0.85033**](https://pyautolabs.github.io/PyAutoPulse/?view=setup&instance=lens&record=lifecycle%2Ffc2096cb1c848e64b674) | 0 | 8 | **17909.3** | 83000 | **0.21577** |
+| multi_galaxy | delaunay | hst | `numba_cpu_sparse` | hpc_ral_cpu | default | [**0.85033**](https://pyautolabs.github.io/PyAutoPulse/?view=setup&instance=lens&record=lifecycle%2Ffc2096cb1c848e64b674) | 1 | 8 | **17193.6** | 81840 | **0.21009** |
+| multi_galaxy | delaunay | hst | `numba_cpu_sparse` | hpc_ral_cpu | light_fixed | — | 0 | 8 | **12079.9** | 81180 | **0.14880** |
+| multi_galaxy | delaunay | hst | `numba_cpu_sparse` | hpc_ral_cpu | light_fixed | — | 1 | 8 | **11378.0** | 80520 | **0.14131** |
+| multi_galaxy | mge | hst | `jax_cpu_dense` | hpc_ral_cpu | default | [**0.02658**](https://pyautolabs.github.io/PyAutoPulse/?view=setup&instance=lens&record=lifecycle%2F2ee75bc51ab781c2df4e) | 0 | 8 | **4169.6** | 131160 | **0.03179** |
+| multi_galaxy | mge | hst | `jax_cpu_dense` | hpc_ral_cpu | default | [**0.02658**](https://pyautolabs.github.io/PyAutoPulse/?view=setup&instance=lens&record=lifecycle%2F2ee75bc51ab781c2df4e) | 1 | 8 | **3816.3** | 131700 | **0.02898** |
+| multi_galaxy | mge | hst | `jax_cpu_dense` | hpc_ral_cpu | light_fixed | — | 0 | 8 | **4050.9** | 135700 | **0.02985** |
+| multi_galaxy | mge | hst | `jax_cpu_dense` | hpc_ral_cpu | light_fixed | — | 1 | 8 | **3271.3** | 132420 | **0.02470** |
 | multi_galaxy | mge | hst | `jax_gpu_dense` | hpc_a100 | default | [**0.00058**](https://pyautolabs.github.io/PyAutoPulse/?view=setup&instance=lens&record=lifecycle%2Fad7e6ff9cd88a460649a) | 0 | 8 | **1294.8** | 131460 | **0.00985** |
 | multi_galaxy | mge | hst | `jax_gpu_dense` | hpc_a100 | default | [**0.00058**](https://pyautolabs.github.io/PyAutoPulse/?view=setup&instance=lens&record=lifecycle%2Fad7e6ff9cd88a460649a) | 1 | 8 | **1306.9** | 133340 | **0.00980** |
 | multi_galaxy | mge | hst | `jax_gpu_dense` | hpc_a100 | light_fixed | — | 0 | 8 | **1287.3** | 133980 | **0.00961** |
@@ -650,27 +662,27 @@ All rows: nautilus sampler
 
 ## lens-walltime
 
-<!-- pulse:instance name=lens-walltime receipt=e744a4a785eacb0f1800dc34287b31b307c0182d outcome=ok shown=e744a4a785eacb0f1800dc34287b31b307c0182d -->
+<!-- pulse:instance name=lens-walltime receipt=8ccfb933ad696b23113fd3260996949322e025fc outcome=ok shown=8ccfb933ad696b23113fd3260996949322e025fc -->
 
-Project `autolens_inference`, scope `None`, read from [PyAutoLabs/autolens_inference](https://github.com/PyAutoLabs/autolens_inference) `dashboard/walltime_validation.json` at [`e744a4a7`](https://github.com/PyAutoLabs/autolens_inference/tree/e744a4a785eacb0f1800dc34287b31b307c0182d); producer revision `6443c8fc`; generated 2026-11-11T09:18:16Z; comparison policy `None`. [Project dashboard](https://pyautolabs.github.io/autolens_inference/) · [receipt](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/receipts/lens-walltime.json).
+Project `autolens_inference`, scope `None`, read from [PyAutoLabs/autolens_inference](https://github.com/PyAutoLabs/autolens_inference) `dashboard/walltime_validation.json` at [`8ccfb933`](https://github.com/PyAutoLabs/autolens_inference/tree/8ccfb933ad696b23113fd3260996949322e025fc); producer revision `d029159b`; generated 2026-11-11T13:24:21Z; comparison policy `None`. [Project dashboard](https://pyautolabs.github.io/autolens_inference/) · [receipt](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/receipts/lens-walltime.json).
 
 - **Integrity:** ok
 - **Freshness:** freshness policy unspecified · evidence time unknown (evidence unknown (no reason given))
-- **Qualification:** 297 full-fit records (walltime-validation carries no qualification flag)
+- **Qualification:** 329 full-fit records (walltime-validation carries no qualification flag)
 
 ### lens-walltime / limitations
 
 - Full-fit measurements: one Nautilus stage of one SLaM chain per record, never a per-likelihood cost; the sampler is <sampler>:<stage> because the key has no stage
 - wall_s is the sampler clock (samples_info.json). implied_s_per_eval = wall_s / likelihood_evals (implied_ms_per_eval the same in ms) is the one per-evaluation number, on every hardware: it deliberately includes the sampler's overhead (Nautilus bookkeeping, batching), so it is the cost a fit actually pays per evaluation, an upper bound on the bare likelihood call
-- parallel_efficiency = wall_1 / (n x wall_n) among cores-sweep records (results tag cores_<n>, folded into sampler as <sampler>:<stage>:cores_<n>) identical in key apart from that suffix, relative to the group's 1-core record; null without a 1-core record and on every record outside a sweep: 6 of 297 records carry it (6 cores-sweep record(s))
+- parallel_efficiency = wall_1 / (n x wall_n) among cores-sweep records (results tag cores_<n>, folded into sampler as <sampler>:<stage>:cores_<n>) identical in key apart from that suffix, relative to the group's 1-core record; null without a 1-core record and on every record outside a sweep: 6 of 329 records carry it (6 cores-sweep record(s))
 - parity_status is not_assessed unless a declared ruling of record names the run (parity_basis); the exporter computes no parity verdict
-- 209 of 297 records pair with a profiling-summary@3 runtime record of the lens snapshot cached in catalogue/pulse_lens_runtime_reference.json on an exact (likelihood, instrument, setup_id, host_class, model_variant) match, the current record first, then the one whose size bin equals the run's source pixels, then the newest (profiling_status says which); a stage is paired under the likelihood it evaluates: a row's likelihood_evaluated declaration when its stage makes one (null = none, never paired), else the row's likelihood, with the stages that solve no inversion never paired; profiling_per_call_s is Pulse's per-call time of that record, predicted_ms_per_eval the same in ms; unmatched: 40 no profiling runtime record with model_variant light_fixed; 10 no profiling runtime record with setup_id jax_cpu_dense_fp64; 31 stage declares it evaluates no profiled likelihood (likelihood_evaluated: null, a parametric stage of a pixelized chain); 7 stage has no inversion (parametric); no matching profiling likelihood
+- 231 of 329 records pair with a profiling-summary@3 runtime record of the lens snapshot cached in catalogue/pulse_lens_runtime_reference.json on an exact (likelihood, instrument, setup_id, host_class, model_variant) match, the current record first, then the one whose size bin equals the run's source pixels, then the newest (profiling_status says which); a stage is paired under the likelihood it evaluates: a row's likelihood_evaluated declaration when its stage makes one (null = none, never paired), else the row's likelihood, with the stages that solve no inversion never paired; profiling_per_call_s is Pulse's per-call time of that record, predicted_ms_per_eval the same in ms; unmatched: 46 no profiling runtime record with model_variant light_fixed; 10 no profiling runtime record with setup_id jax_cpu_dense_fp64; 35 stage declares it evaluates no profiled likelihood (likelihood_evaluated: null, a parametric stage of a pixelized chain); 7 stage has no inversion (parametric); no matching profiling likelihood
 - 56 record(s) at release pin 2026.10.17.1 are adopted as day-zero evidence by the human ruling of 2026-11-02 ("day zero may span versions where the code changes do not affect run times"), not re-run on the day-zero tag
 - 10 record(s) of slurm job 414189 ran on release pin 2026.10.25.1 plus PyAutoArray#677 (library commit d24c2477 = the tag with 56db9c0f cherry-picked: serial Sibson interpolation inside Nautilus workers); the rerun of 414150, which failed on a GNU OpenMP fork; their release_pin names the pin alone, library_patch carries the patch
-- size_match compares the run's source pixels (rectangular mesh_shape product, Delaunay mesh_pixels Hilbert vertices) with the profiling record's size bin: 151 match, 0 differ (a different-size likelihood than the run's), 58 unknown because a side records no count
+- size_match compares the run's source pixels (rectangular mesh_shape product, Delaunay mesh_pixels Hilbert vertices) with the profiling record's size bin: 167 match, 0 differ (a different-size likelihood than the run's), 64 unknown because a side records no count
 - 17 CPU-backend record(s) keep host_class hpc_a100 from their config prefix: the row records no host that proves a RAL CPU node
 - 26 stage(s) omitted: stages loaded from another config (--stages-from) are not this run's fit
-- 146 stage(s) omitted: non-default model-variant stages identical to the default run's (one --lens-light both job, one fit) are listed once, under default
+- 166 stage(s) omitted: non-default model-variant stages identical to the default run's (one --lens-light both job, one fit) are listed once, under default
 </details>
 
 

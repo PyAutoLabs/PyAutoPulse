@@ -3,8 +3,8 @@
   "organ": "pulse",
   "repo": "PyAutoPulse",
   "status": "yellow",
-  "headline": "3 projects · 2075 records · 0 cached",
-  "updated": "2026-11-10T12:43:26Z",
+  "headline": "3 projects · 2107 records · 0 cached",
+  "updated": "2026-11-11T13:50:30Z",
   "pages_url": "https://pyautolabs.github.io/PyAutoPulse/",
   "items": [
     {
@@ -41,7 +41,7 @@
     {
       "id": "pulse:lens-walltime:census",
       "severity": "info",
-      "text": "lens-walltime: 297 records · 0 comparisons · 11 limitations · 0 qualified",
+      "text": "lens-walltime: 329 records · 0 comparisons · 11 limitations · 0 qualified",
       "url": "https://pyautolabs.github.io/autolens_inference/",
       "prompt": null
     }
