@@ -12,6 +12,13 @@ Evidence is on the 2d campaign pages at
 (group page). All timings below are from one laptop (8 cores) on the local library mains, not
 the pinned release. Pulse records this; it does not apply, detect or enforce a flag.
 
+> **Policy now lives in PyAutoDNA (2026-11-11).** Which jax versions PyAuto requires and which XLA
+> flags, if any, are defaults is PyAutoDNA's call (human, 2026-11-10). The current decision is
+> [PyAutoDNA `decisions/jax-cpu-policy-2026-11.md`](https://github.com/PyAutoLabs/PyAutoDNA/blob/main/decisions/jax-cpu-policy-2026-11.md): require jax and jaxlib 0.12.0 or newer,
+> with no default XLA:CPU flag, once Heart has validated 0.12 (research
+> [PyAutoNerves#213](https://github.com/PyAutoLabs/PyAutoNerves/issues/213)). This page keeps the evidence and how to read timing rows measured
+> with the flag.
+
 ## Symptom and how to recognise it
 
 - Lowering, compiling and the first call of a jitted likelihood return normally. A later call of
@@ -115,12 +122,12 @@ going forward". The record, its scope and its revisit conditions are in
 
 ## Open questions
 
-- **RAL.** The pin 2026.10.25.1 runs the same jaxlib 0.11.2 on RAL (its 2026.10.17.1
-  `hpc_ral_cpu` rows record jaxlib 0.11.2). Whether the deadlock fires on a 236-core RAL node is
-  untested. The 2d legs apply the flag there regardless. Update 2026-10-30: the 2d-2g batch-0
-  arrays (RAL 413272-413274, 413292-413293; A100 413294-413297; jax/jaxlib 0.11.2 in the shared
-  venv) ran every JAX CPU leg with the flag and none hung (all 56 legs exit 0). Without the flag
-  on RAL is still untested.
+- **RAL. Answered 2026-11-11.** Without the flag on RAL (job 415009, AMD EPYC 7763, jax/jaxlib
+  0.11.2, 300 calls a cell, 5 repeats) the deadlock depends on the cores the process has: every
+  reproducer hung on its first call at 4 cores (25 of 25 cells) and none hung at 16 (0 of 25). The
+  laptop's 8 cores sit between (hangs from call 1 to call 94). A large node can hide the bug. Details:
+  [PyAutoNerves#213](https://github.com/PyAutoLabs/PyAutoNerves/issues/213). (Earlier: the 2d-2g batch-0 arrays ran every JAX CPU leg with the
+  flag and none hung.)
 - **The flag on 2d GPU legs.** The 2d driver appends the flag whatever the platform, so all 14
   2d A100 rows, GPU legs included, record it in `device.xla_flags`; the shared preamble keeps it
   off the 2e-2g GPU legs (autolens_profiling#487).
@@ -129,10 +136,14 @@ going forward". The record, its scope and its revisit conditions are in
   (a fit) would hang.
 - **GPU.** The flag is inert for a GPU executable; whether the GPU runtime has an analogue was
   not tested.
-- **When to re-test and drop the flag.** Any jax / jaxlib upgrade away from 0.11.2 (a new
-  release pin or a change to the PyAutoNerves jax bounds) should trigger the minimal repro
-  above with `XLA_FLAGS` empty. If it runs 300 calls, the next campaign may propose dropping the
-  flag; that is a new human decision, recorded with a "Supersedes" link.
+- **When to re-test and drop the flag. Re-tested 2026-11-11.** jax 0.12.0 and 0.12.0.1 ran every
+  reproducer with `XLA_FLAGS` empty: 0 hangs in 30,000 calls, at 4 and 16 cores. The FFT part of
+  the bug class is upstream jax-ml/jax#41265, fixed by openxla/xla#50091 in 0.12.0. On 0.12 the
+  eigen flag costs nothing on MGE but 18 % (4 cores) to about 50 % (16 cores) on the pixelized
+  (rectangular) likelihood. Dropping the flag waits for the PyAutoNerves floor (jax and jaxlib
+  0.12.0 or newer) to be released; the removal is the PyAutoMind follow-up
+  `draft/maintenance/workspaces/remove_xla_eigen_flag_workarounds_after_jax_0_12.md`. That
+  removal will be a new human decision, recorded with a "Supersedes" link to D12.
 - **Relation to the August Eigen-pool deadlock.** PyAutoMind
   `complete/2026/08/xla-cpu-eigen-pool-deadlock.md` (an `FftThunk` handing ducc0 the Eigen pool)
   was avoided by the same `--xla_cpu_multi_thread_eigen=false` flag, which the test workspaces

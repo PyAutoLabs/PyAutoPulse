@@ -42,6 +42,17 @@ not refresh measurements or authorize compute. Historical task text is retained.
   ([decision record](../decisions/xla-cpu-deadlock-eigen-workaround.md)); that sets no library
   default, so this task's question is unchanged.
 
+## Note — 2026-11-11
+
+- **Policy is PyAutoDNA's now.** The human decided on 2026-11-10 that the jax version and
+  environment-variable policy (which versions to require, which XLA flags to set by default)
+  belongs to PyAutoDNA, not Pulse. Its first decision is
+  [PyAutoDNA `decisions/jax-cpu-policy-2026-11.md`](https://github.com/PyAutoLabs/PyAutoDNA/blob/main/decisions/jax-cpu-policy-2026-11.md), from research
+  [PyAutoNerves#213](https://github.com/PyAutoLabs/PyAutoNerves/issues/213). DNA's dashboard now shows each environment's XLA options and a
+  JAX CPU hang matrix.
+- This task keeps the measurement side: pairing each timing row with the jax version and XLA
+  flags it ran under, so rows are compared like-for-like.
+
 ---
 
 # Pair JAX/XLA env vars with measured compile and run times, per backend
