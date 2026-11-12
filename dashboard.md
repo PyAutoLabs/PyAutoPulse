@@ -662,9 +662,9 @@ All rows: nautilus sampler
 
 ## lens-walltime
 
-<!-- pulse:instance name=lens-walltime receipt=8ccfb933ad696b23113fd3260996949322e025fc outcome=ok shown=8ccfb933ad696b23113fd3260996949322e025fc -->
+<!-- pulse:instance name=lens-walltime receipt=e4f2f4a955467227819d99fe7835bf4bcdd75e8c outcome=ok shown=e4f2f4a955467227819d99fe7835bf4bcdd75e8c -->
 
-Project `autolens_inference`, scope `None`, read from [PyAutoLabs/autolens_inference](https://github.com/PyAutoLabs/autolens_inference) `dashboard/walltime_validation.json` at [`8ccfb933`](https://github.com/PyAutoLabs/autolens_inference/tree/8ccfb933ad696b23113fd3260996949322e025fc); producer revision `d029159b`; generated 2026-11-11T13:24:21Z; comparison policy `None`. [Project dashboard](https://pyautolabs.github.io/autolens_inference/) · [receipt](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/receipts/lens-walltime.json).
+Project `autolens_inference`, scope `None`, read from [PyAutoLabs/autolens_inference](https://github.com/PyAutoLabs/autolens_inference) `dashboard/walltime_validation.json` at [`e4f2f4a9`](https://github.com/PyAutoLabs/autolens_inference/tree/e4f2f4a955467227819d99fe7835bf4bcdd75e8c); producer revision `d029159b`; generated 2026-11-11T13:24:21Z; comparison policy `None`. [Project dashboard](https://pyautolabs.github.io/autolens_inference/) · [receipt](https://github.com/PyAutoLabs/PyAutoPulse/blob/main/receipts/lens-walltime.json).
 
 - **Integrity:** ok
 - **Freshness:** freshness policy unspecified · evidence time unknown (evidence unknown (no reason given))
