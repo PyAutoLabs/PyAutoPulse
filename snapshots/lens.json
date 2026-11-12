@@ -3,8 +3,8 @@
   "repo": "autolens_profiling",
   "github": "PyAutoLabs/autolens_profiling",
   "summary_path": "dashboard/catalogue.json",
-  "commit": "a66136c4b329c6a7ff99d44f81f567b6782e37b8",
-  "fetched_at": "2026-11-11T13:09:01Z",
+  "commit": "5d329c3e117278d02b7a4f6bc3f82288b7b62bf9",
+  "fetched_at": "2026-11-12T14:35:59Z",
   "summary": {
     "archive_record_count": 99,
     "comparison_policy": {
@@ -1862,13 +1862,13 @@
       },
       "observed": {
         "current": 685,
-        "records": 1621,
-        "superseded": 936
+        "records": 1624,
+        "superseded": 939
       }
     },
     "evidence_updated_at": null,
     "evidence_updated_at_reason": "No common measurement wall-clock across legacy evidence; inspect each record's measured_at.",
-    "generated_at": "2026-11-09T18:21:30Z",
+    "generated_at": "2026-11-12T14:21:41Z",
     "hazards": [],
     "limitations": [
       "Phase-0 labels (autolens_profiling#442): nothing was re-measured. A current record is the canonical cell row on a reference host class for a planned baseline cell.",
@@ -2890,6 +2890,20 @@
         "path": "results/imaging/delaunay_nn/hst/jax_gpu_sparse_fp64/hpc_a100/parity.json",
         "record_id": "lifecycle/5082531d009e61e07a7d",
         "setup_id": "jax_gpu_sparse_fp64",
+        "status": "match"
+      },
+      {
+        "host_class": "hpc_ral_cpu",
+        "instrument": "hst",
+        "likelihood": {
+          "dataset_type": "imaging",
+          "variant": "delaunay_nn"
+        },
+        "location": "experiments",
+        "model_variant": "default",
+        "path": "results/imaging/delaunay_nn/hst/numba_cpu_sparse_fp64/hpc_ral_cpu/experiments/worker_route_remeasure_p677/parity.json",
+        "record_id": "lifecycle/544b2d42e7c9d3504ad6",
+        "setup_id": "numba_cpu_sparse_fp64",
         "status": "match"
       },
       {
@@ -7853,7 +7867,7 @@
         "setup_id": "jax_cpu_dense_fp64"
       }
     ],
-    "producer_revision": "4d3610df56704f97bd86b9264789e49fe0a3b4f2",
+    "producer_revision": "93ba0388456e735096b07bba6f80b172f6eb6a16",
     "project": "autolens_profiling",
     "recommendations": [],
     "records": [
@@ -44972,6 +44986,179 @@
       {
         "class": "optimal",
         "day_zero": null,
+        "decision_id": "imaging-delaunay-nn-standard-cpu-many-core",
+        "evidence": {
+          "fragment": null,
+          "path": "results/imaging/delaunay_nn/hst/numba_cpu_sparse_fp64/hpc_ral_cpu/experiments/worker_route_remeasure_p677/breakdown.json"
+        },
+        "figures": [
+          {
+            "kind": "fit",
+            "path": "results/imaging/delaunay_nn/hst/numba_cpu_sparse_fp64/hpc_ral_cpu/experiments/worker_route_remeasure_p677/fit.png",
+            "sha256": "ef4a5f7904c1519fd3fbc8a2ae8f4d06cccfd028eb8e86d6c3c0b6b1e01c8b34"
+          }
+        ],
+        "host_class": "hpc_ral_cpu",
+        "id": "lifecycle/27387f4ccbbcb1a46c7a",
+        "identity": {
+          "backend": "cpu",
+          "device": "cpu",
+          "hardware_details": {
+            "autotune_cache_entries_at_start": 0,
+            "backend": "cpu",
+            "cache_fresh": true,
+            "cpu_count": 252,
+            "device": "cpu:0",
+            "hostname": "euclid-ral-compute-1",
+            "omp_num_threads": "1",
+            "xla_flags": "--xla_disable_hlo_passes=constant_folding --xla_cpu_multi_thread_eigen=false --xla_gpu_autotune_level=0 --xla_gpu_enable_triton_gemm=false"
+          },
+          "library_version": "2026.8.17.1",
+          "precision": "float64",
+          "software": {
+            "PyAutoArray.library_revisions": "d24c2477b9214b72618b1473df8dabc9c10cc708",
+            "PyAutoArray.library_versions": "2026.8.17.1",
+            "PyAutoFit.library_revisions": "8cb533a605f556d85012d5eb7ed8d4f3c2a4dcf6",
+            "PyAutoFit.library_versions": "2026.8.17.1",
+            "PyAutoGalaxy.library_revisions": "7472211470b9d2b3a76bb12dcacbac51ab4de06f",
+            "PyAutoGalaxy.library_versions": "2026.8.17.1",
+            "PyAutoLens": "2026.8.17.1",
+            "PyAutoLens.library_revisions": "c6927eeb33724c2de2f2e2c773ba3ebe651943a8",
+            "PyAutoLens.library_versions": "2026.8.17.1",
+            "PyAutoNerves.library_revisions": "ec8b5c1e5f17ac03ac5246b5fbc322624a6cd3f6",
+            "PyAutoNerves.library_versions": "2026.8.17.1",
+            "autolens_profiling.library_revisions": "a66136c4b329c6a7ff99d44f81f567b6782e37b8",
+            "finufft.dependency_versions": "2.5.1",
+            "jax.dependency_versions": "0.11.2",
+            "jaxlib.dependency_versions": "0.11.2",
+            "nufftax.dependency_versions": "0.6.1",
+            "numba.dependency_versions": "0.65.1",
+            "numpy.dependency_versions": "2.2.6",
+            "scipy.dependency_versions": "1.17.1"
+          },
+          "unknowns": {}
+        },
+        "instrument": "hst",
+        "likelihood": {
+          "dataset_type": "imaging",
+          "variant": "delaunay_nn"
+        },
+        "limitations": [],
+        "location": "experiments",
+        "measured_at": "2026-11-12T09:48:14Z",
+        "measurement": "breakdown",
+        "method": {
+          "cache_state": null,
+          "id": "legacy/e7a018ac254a602f17bc",
+          "repetitions": null,
+          "statistic": null,
+          "synchronization": null,
+          "unknowns": {
+            "cache_state": "Not recorded in this legacy evidence; no current default substituted.",
+            "repetitions": "Not recorded in this legacy evidence; no current default substituted.",
+            "statistic": "Not recorded in this legacy evidence; no current default substituted.",
+            "synchronization": "Not recorded in this legacy evidence; no current default substituted.",
+            "warmup": "Not recorded in this legacy evidence; no current default substituted."
+          },
+          "warmup": null
+        },
+        "metric": "component_total",
+        "model_variant": "default",
+        "pointers": {
+          "component_total": "/total_step_by_step",
+          "direct_call": "/direct_log_likelihood_function_per_call",
+          "steps.Blurred image (FFT convolve)": "/steps/Blurred image (FFT convolve)",
+          "steps.Curvature matrix F [residual: mirror + diag-add]": "/steps/Curvature matrix F [residual: mirror + diag-add]",
+          "steps.Data vector D [numba]": "/steps/Data vector D [numba]",
+          "steps.F + H": "/steps/F + H",
+          "steps.F: linear-func×linear-func block [BLAS]": "/steps/F: linear-func×linear-func block [BLAS]",
+          "steps.F: mapper×linear-func block [FFT conv + scatter]": "/steps/F: mapper×linear-func block [FFT conv + scatter]",
+          "steps.F: mapper×mapper block [sparse-op]": "/steps/F: mapper×mapper block [sparse-op]",
+          "steps.FitImaging construct": "/steps/FitImaging construct",
+          "steps.Inversion build (trace+Delaunay+mapper)": "/steps/Inversion build (trace+Delaunay+mapper)",
+          "steps.Log evidence (figure of merit)": "/steps/Log evidence (figure of merit)",
+          "steps.MGE operated mapping matrix [residual: dict assembly]": "/steps/MGE operated mapping matrix [residual: dict assembly]",
+          "steps.MGE: batched PSF convolution [real-space np]": "/steps/MGE: batched PSF convolution [real-space np]",
+          "steps.MGE: image_2d_from(blurring_grid) x60 [numpy]": "/steps/MGE: image_2d_from(blurring_grid) x60 [numpy]",
+          "steps.MGE: image_2d_from(grid) x60 [numpy]": "/steps/MGE: image_2d_from(grid) x60 [numpy]",
+          "steps.Mapped reconstruction [numba+FFT]": "/steps/Mapped reconstruction [numba+FFT]",
+          "steps.Mapper sparse triplets": "/steps/Mapper sparse triplets",
+          "steps.Model data + chi^2": "/steps/Model data + chi^2",
+          "steps.PSF-weighted data [numba]": "/steps/PSF-weighted data [numba]",
+          "steps.Profile subtracted image": "/steps/Profile subtracted image",
+          "steps.Reconstruction solve (BLAS)": "/steps/Reconstruction solve (BLAS)",
+          "steps.Regularization matrix H": "/steps/Regularization matrix H",
+          "steps.Regularization term s'Hs": "/steps/Regularization term s'Hs",
+          "steps.log det (F+H) [Cholesky]": "/steps/log det (F+H) [Cholesky]",
+          "steps.log det H [Cholesky]": "/steps/log det H [Cholesky]"
+        },
+        "provenance": {
+          "has_provenance": true,
+          "host": "euclid-ral-compute-1",
+          "measured_at": "2026-11-12T09:48:14Z",
+          "qualified": false,
+          "unknowns": {}
+        },
+        "regime": "standard",
+        "release_pin": "2026.8.17.1",
+        "resources": {
+          "cpus_per_eval": 1,
+          "cpus_per_eval_basis": "numba: one serial evaluation, numba and BLAS threads pinned to 1",
+          "devices_per_eval": 0,
+          "peak_rss_basis": "in_process_ru_maxrss",
+          "peak_rss_gb": 1.413353,
+          "peak_rss_note": "resource.getrusage(RUSAGE_SELF).ru_maxrss when the row was built: this process's peak resident set (children excluded), GB = 1e9 bytes",
+          "source": "row"
+        },
+        "run_id": "legacy/c53b5e3ef9138159183e",
+        "setup": {
+          "backend": "numba",
+          "device": "cpu",
+          "operator": "sparse",
+          "precision": "fp64",
+          "threads": null,
+          "transformer": "na"
+        },
+        "setup_id": "numba_cpu_sparse_fp64",
+        "status": "superseded",
+        "superseded_by": "lifecycle/e2eca903b22bc23c3b37",
+        "unit": "s",
+        "validation": {
+          "reason": "Legacy evidence labelled by the phase-0 day-zero rule; not an accepted baseline.",
+          "status": "unreviewed"
+        },
+        "values": {
+          "component_total": 1.3427934383726097,
+          "direct_call": 1.2205478264950216,
+          "steps.Blurred image (FFT convolve)": 0.011147505625558551,
+          "steps.Curvature matrix F [residual: mirror + diag-add]": 0.0009656354668550193,
+          "steps.Data vector D [numba]": 0.021420004886749666,
+          "steps.F + H": 0.0010550797451287508,
+          "steps.F: linear-func×linear-func block [BLAS]": 0.003100648806139361,
+          "steps.F: mapper×linear-func block [FFT conv + scatter]": 0.04682441661861958,
+          "steps.F: mapper×mapper block [sparse-op]": 0.23366416224598652,
+          "steps.FitImaging construct": 0.00011646856728475541,
+          "steps.Inversion build (trace+Delaunay+mapper)": 0.03290000773995416,
+          "steps.Log evidence (figure of merit)": 0.048475547060661484,
+          "steps.MGE operated mapping matrix [residual: dict assembly]": 0.005673822699463926,
+          "steps.MGE: batched PSF convolution [real-space np]": 0.04394601481908467,
+          "steps.MGE: image_2d_from(blurring_grid) x60 [numpy]": 0.010890036865021102,
+          "steps.MGE: image_2d_from(grid) x60 [numpy]": 0.05893704630580032,
+          "steps.Mapped reconstruction [numba+FFT]": 0.003948045574361458,
+          "steps.Mapper sparse triplets": 0.12235997971583856,
+          "steps.Model data + chi^2": 0.0037359371926868334,
+          "steps.PSF-weighted data [numba]": 0.007564560750324745,
+          "steps.Profile subtracted image": 4.483519296627492e-05,
+          "steps.Reconstruction solve (BLAS)": 0.628317457420053,
+          "steps.Regularization matrix H": 0.0055382407663273625,
+          "steps.Regularization term s'Hs": 0.00047067119157873094,
+          "steps.log det (F+H) [Cholesky]": 0.03457011273712851,
+          "steps.log det H [Cholesky]": 0.017127200379036367
+        }
+      },
+      {
+        "class": "optimal",
+        "day_zero": null,
         "decision_id": "imaging-mge-standard-gpu-a100",
         "evidence": {
           "fragment": null,
@@ -58661,6 +58848,167 @@
           "w_tilde_reconstruction.compile_s": 9.699999282020144e-06,
           "w_tilde_reconstruction.first_call_s": 0.00042750000102387276,
           "w_tilde_reconstruction.lower_s": 0.0002835000013874378
+        }
+      },
+      {
+        "class": "optimal",
+        "day_zero": null,
+        "decision_id": "imaging-delaunay-nn-standard-cpu-many-core",
+        "estimated_12_core": {
+          "basis": "estimate",
+          "cores": 12,
+          "divisor": 6,
+          "per_call_s": 1.2143110644537956,
+          "per_call_source": "warm_iid_median_s",
+          "ruling": "human 2026-10-26: per-call / 6 at 12 cores",
+          "value_s": 0.20238517740896592
+        },
+        "evidence": {
+          "fragment": null,
+          "path": "results/imaging/delaunay_nn/hst/numba_cpu_sparse_fp64/hpc_ral_cpu/experiments/worker_route_remeasure_p677/runtime.json"
+        },
+        "figures": [
+          {
+            "kind": "fit",
+            "path": "results/imaging/delaunay_nn/hst/numba_cpu_sparse_fp64/hpc_ral_cpu/experiments/worker_route_remeasure_p677/fit.png",
+            "sha256": "ef4a5f7904c1519fd3fbc8a2ae8f4d06cccfd028eb8e86d6c3c0b6b1e01c8b34"
+          }
+        ],
+        "host_class": "hpc_ral_cpu",
+        "id": "lifecycle/34bb5058a531026ef834",
+        "identity": {
+          "backend": "cpu",
+          "device": "cpu",
+          "hardware_details": {
+            "autotune_cache_entries_at_start": 0,
+            "backend": "cpu",
+            "cache_fresh": true,
+            "cpu_count": 252,
+            "device": "cpu:0",
+            "hostname": "euclid-ral-compute-1",
+            "omp_num_threads": "1",
+            "xla_flags": "--xla_disable_hlo_passes=constant_folding --xla_cpu_multi_thread_eigen=false --xla_gpu_autotune_level=0 --xla_gpu_enable_triton_gemm=false"
+          },
+          "library_version": "2026.8.17.1",
+          "precision": "float64",
+          "software": {
+            "PyAutoArray.library_revisions": "d24c2477b9214b72618b1473df8dabc9c10cc708",
+            "PyAutoArray.library_versions": "2026.8.17.1",
+            "PyAutoFit.library_revisions": "8cb533a605f556d85012d5eb7ed8d4f3c2a4dcf6",
+            "PyAutoFit.library_versions": "2026.8.17.1",
+            "PyAutoGalaxy.library_revisions": "7472211470b9d2b3a76bb12dcacbac51ab4de06f",
+            "PyAutoGalaxy.library_versions": "2026.8.17.1",
+            "PyAutoLens": "2026.8.17.1",
+            "PyAutoLens.library_revisions": "c6927eeb33724c2de2f2e2c773ba3ebe651943a8",
+            "PyAutoLens.library_versions": "2026.8.17.1",
+            "PyAutoNerves.library_revisions": "ec8b5c1e5f17ac03ac5246b5fbc322624a6cd3f6",
+            "PyAutoNerves.library_versions": "2026.8.17.1",
+            "autolens_profiling.library_revisions": "a66136c4b329c6a7ff99d44f81f567b6782e37b8",
+            "finufft.dependency_versions": "2.5.1",
+            "jax.dependency_versions": "0.11.2",
+            "jaxlib.dependency_versions": "0.11.2",
+            "nufftax.dependency_versions": "0.6.1",
+            "numba.dependency_versions": "0.65.1",
+            "numpy.dependency_versions": "2.2.6",
+            "scipy.dependency_versions": "1.17.1"
+          },
+          "unknowns": {}
+        },
+        "instrument": "hst",
+        "likelihood": {
+          "dataset_type": "imaging",
+          "variant": "delaunay_nn"
+        },
+        "limitations": [],
+        "location": "experiments",
+        "measured_at": "2026-11-12T09:47:51Z",
+        "measurement": "runtime",
+        "method": {
+          "cache_state": null,
+          "id": "legacy/269c49df32f77f4631a5",
+          "repetitions": null,
+          "statistic": null,
+          "synchronization": null,
+          "unknowns": {
+            "cache_state": "Not recorded in this legacy evidence; no current default substituted.",
+            "repetitions": "Not recorded in this legacy evidence; no current default substituted.",
+            "statistic": "Not recorded in this legacy evidence; no current default substituted.",
+            "synchronization": "Not recorded in this legacy evidence; no current default substituted.",
+            "warmup": "Not recorded in this legacy evidence; no current default substituted."
+          },
+          "warmup": null
+        },
+        "metric": "single_jit_block",
+        "model_variant": "default",
+        "pointers": {
+          "single_jit_block": "/full_pipeline_single_jit"
+        },
+        "projected_node_throughput": {
+          "basis": "projected",
+          "cpus_per_eval": 1,
+          "devices_per_eval": 0,
+          "hosts": [
+            {
+              "bound_by": "cores",
+              "calls_per_s": 194.3,
+              "host": "ral_cpu_node",
+              "host_class": "hpc_ral_cpu",
+              "limits": {
+                "cores": 236,
+                "memory": 687
+              },
+              "workers": 236
+            }
+          ],
+          "not_modelled": "The sampler's batch ceiling: Nautilus evaluates at most n_batch points in parallel per batch, so a node cannot use more workers than n_batch. Shared memory bandwidth and caches between workers are also not modelled; the declared parallel efficiency stands in for them.",
+          "parallel_efficiency": {
+            "kind": "upper bound",
+            "source": "declared, unmeasured (phase 4 measures)",
+            "value": 1.0
+          },
+          "peak_rss_basis": "in_process_ru_maxrss",
+          "peak_rss_gb": 1.338769,
+          "per_call_s": 1.2143110644537956,
+          "per_call_source": "warm_iid_median_s",
+          "status": "projected"
+        },
+        "provenance": {
+          "has_provenance": true,
+          "host": "euclid-ral-compute-1",
+          "measured_at": "2026-11-12T09:47:51Z",
+          "qualified": false,
+          "unknowns": {}
+        },
+        "regime": "standard",
+        "release_pin": "2026.8.17.1",
+        "resources": {
+          "cpus_per_eval": 1,
+          "cpus_per_eval_basis": "numba: one serial evaluation, numba and BLAS threads pinned to 1",
+          "devices_per_eval": 0,
+          "peak_rss_basis": "in_process_ru_maxrss",
+          "peak_rss_gb": 1.338769,
+          "peak_rss_note": "resource.getrusage(RUSAGE_SELF).ru_maxrss when the row was built: this process's peak resident set (children excluded), GB = 1e9 bytes",
+          "source": "row"
+        },
+        "run_id": "legacy/f145839f70f235b6638b",
+        "setup": {
+          "backend": "numba",
+          "device": "cpu",
+          "operator": "sparse",
+          "precision": "fp64",
+          "threads": null,
+          "transformer": "na"
+        },
+        "setup_id": "numba_cpu_sparse_fp64",
+        "status": "superseded",
+        "superseded_by": "lifecycle/05dde64a0eb7fdd0c4a1",
+        "unit": "s",
+        "validation": {
+          "reason": "Legacy evidence labelled by the phase-0 day-zero rule; not an accepted baseline.",
+          "status": "unreviewed"
+        },
+        "values": {
+          "single_jit_block": 1.2143110644537956
         }
       },
       {
@@ -90067,6 +90415,102 @@
           "sparse_triplets.compile_s": 0.05896442802622914,
           "sparse_triplets.first_call_s": 0.0008998700068332255,
           "sparse_triplets.lower_s": 0.014056939980946481
+        }
+      },
+      {
+        "class": "optimal",
+        "day_zero": null,
+        "decision_id": "imaging-delaunay-nn-standard-cpu-many-core",
+        "evidence": {
+          "fragment": null,
+          "path": "results/imaging/delaunay_nn/hst/numba_cpu_sparse_fp64/hpc_ral_cpu/experiments/worker_route_remeasure_p677/parity.json"
+        },
+        "figures": [],
+        "host_class": "hpc_ral_cpu",
+        "id": "lifecycle/544b2d42e7c9d3504ad6",
+        "identity": {
+          "backend": null,
+          "device": null,
+          "hardware_details": {},
+          "library_version": "2026.8.17.1",
+          "precision": "float64",
+          "software": {
+            "PyAutoLens": "2026.8.17.1"
+          },
+          "unknowns": {
+            "backend": "Not recorded in this legacy evidence; no current default substituted.",
+            "device": "Not recorded in this legacy evidence; no current default substituted."
+          }
+        },
+        "instrument": "hst",
+        "likelihood": {
+          "dataset_type": "imaging",
+          "variant": "delaunay_nn"
+        },
+        "limitations": [],
+        "location": "experiments",
+        "measured_at": "2026-11-12T09:47:55Z",
+        "measurement": "parity",
+        "method": {
+          "cache_state": null,
+          "id": "parity-witness",
+          "repetitions": null,
+          "statistic": null,
+          "synchronization": null,
+          "unknowns": {
+            "cache_state": "A parity witness compares one log-likelihood evaluation; not a timing.",
+            "repetitions": "A parity witness compares one log-likelihood evaluation; not a timing.",
+            "statistic": "A parity witness compares one log-likelihood evaluation; not a timing.",
+            "synchronization": "A parity witness compares one log-likelihood evaluation; not a timing.",
+            "warmup": "A parity witness compares one log-likelihood evaluation; not a timing."
+          },
+          "warmup": null
+        },
+        "metric": "abs_delta_log_likelihood",
+        "model_variant": "default",
+        "parity": {
+          "log_likelihood": 28751.55357100398,
+          "reference": {
+            "date": "2026-11-12",
+            "source": "eager NumPy dense-mapping al.AnalysisImaging(use_jax=False, no sparse operator) in the same process: hst, 1280 source pixels, same dataset, mesh, model and instance"
+          },
+          "reference_log_likelihood": 28751.553571004188,
+          "status": "match"
+        },
+        "pointers": {
+          "tolerance": "/tolerance"
+        },
+        "provenance": {
+          "has_provenance": false,
+          "host": null,
+          "measured_at": "2026-11-12T09:47:55Z",
+          "qualified": false,
+          "unknowns": {
+            "host": "Not recorded in this legacy evidence; no current default substituted."
+          }
+        },
+        "regime": "standard",
+        "release_pin": "2026.8.17.1",
+        "run_id": "parity/4df1115d6358ed2ecc6a",
+        "setup": {
+          "backend": "numba",
+          "device": "cpu",
+          "operator": "sparse",
+          "precision": "fp64",
+          "threads": null,
+          "transformer": "na"
+        },
+        "setup_id": "numba_cpu_sparse_fp64",
+        "status": "superseded",
+        "superseded_by": "lifecycle/22e86297033ff62cf19e",
+        "unit": "dimensionless",
+        "validation": {
+          "reason": "Parity witness status match (|delta log L| against tolerance, recorded by the producing run); not an accepted baseline.",
+          "status": "unreviewed"
+        },
+        "values": {
+          "abs_delta_log_likelihood": 2.0736479200422764e-10,
+          "tolerance": 2.875155357100419
         }
       },
       {
