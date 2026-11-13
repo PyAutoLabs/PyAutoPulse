@@ -3,8 +3,8 @@
   "repo": "autofit_profiling",
   "github": "PyAutoLabs/autofit_profiling",
   "summary_path": "dashboard/catalogue.json",
-  "commit": "62e67ccf2942778f2493f70a9752e8d884bc3c43",
-  "fetched_at": "2026-11-11T11:33:18Z",
+  "commit": "4f14e6145a2a7178266394a074e4fb20fc2f4aed",
+  "fetched_at": "2026-11-13T11:41:38Z",
   "summary": {
     "schema": "profiling-summary",
     "version": 2,
