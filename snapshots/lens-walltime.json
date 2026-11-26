@@ -3,10 +3,10 @@
   "repo": "autolens_inference",
   "github": "PyAutoLabs/autolens_inference",
   "summary_path": "dashboard/walltime_validation.json",
-  "commit": "0af93f6092ca4b147c570814a535cb34f7c700de",
-  "fetched_at": "2026-11-23T13:49:38Z",
+  "commit": "72bf395425da1bfab3f3db4707d1ed8f6c7f3fa0",
+  "fetched_at": "2026-11-26T13:20:32Z",
   "summary": {
-    "generated_at": "2026-11-12T14:36:53Z",
+    "generated_at": "2026-11-26T10:58:02Z",
     "limitations": [
       "Full-fit measurements: one Nautilus stage of one SLaM chain per record, never a per-likelihood cost; the sampler is <sampler>:<stage> because the key has no stage",
       "wall_s is the sampler clock (samples_info.json). implied_s_per_eval = wall_s / likelihood_evals (implied_ms_per_eval the same in ms) is the one per-evaluation number, on every hardware: it deliberately includes the sampler's overhead (Nautilus bookkeeping, batching), so it is the cost a fit actually pays per evaluation, an upper bound on the bare likelihood call",
@@ -20,7 +20,7 @@
       "26 stage(s) omitted: stages loaded from another config (--stages-from) are not this run's fit",
       "166 stage(s) omitted: non-default model-variant stages identical to the default run's (one --lens-light both job, one fit) are listed once, under default"
     ],
-    "producer_revision": "0b43083200219f560d9fc8e67d0ca868ddad5139",
+    "producer_revision": "3ebb3158fea01a8732b0c27671a55abe7a8f535c",
     "project": "autolens_inference",
     "records": [
       {
