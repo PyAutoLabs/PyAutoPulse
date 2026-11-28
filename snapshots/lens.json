@@ -3,10 +3,10 @@
   "repo": "autolens_profiling",
   "github": "PyAutoLabs/autolens_profiling",
   "summary_path": "dashboard/catalogue.json",
-  "commit": "72939f36ed145f9d73817dccb3b2edef09f7b815",
-  "fetched_at": "2026-11-25T13:42:14Z",
+  "commit": "16dde88ab87507a2b7ee2a92d1ee312661ca094b",
+  "fetched_at": "2026-11-28T11:37:05Z",
   "summary": {
-    "archive_record_count": 99,
+    "archive_record_count": 103,
     "comparison_policy": {
       "id": "no-temporal-comparisons"
     },
@@ -1862,13 +1862,13 @@
       },
       "observed": {
         "current": 685,
-        "records": 1624,
-        "superseded": 939
+        "records": 1630,
+        "superseded": 945
       }
     },
     "evidence_updated_at": null,
     "evidence_updated_at_reason": "No common measurement wall-clock across legacy evidence; inspect each record's measured_at.",
-    "generated_at": "2026-11-12T14:21:41Z",
+    "generated_at": "2026-11-28T10:36:48Z",
     "hazards": [],
     "limitations": [
       "Phase-0 labels (autolens_profiling#442): nothing was re-measured. A current record is the canonical cell row on a reference host class for a planned baseline cell.",
@@ -1895,6 +1895,20 @@
         "model_variant": "default",
         "path": "results/cluster/image_plane/simple/jax_cpu_na_fp64/hpc_ral_cpu/parity.json",
         "record_id": "lifecycle/0533eec58c25ebd8637b",
+        "setup_id": "jax_cpu_na_fp64",
+        "status": "match"
+      },
+      {
+        "host_class": "local_laptop",
+        "instrument": "simple",
+        "likelihood": {
+          "dataset_type": "cluster",
+          "variant": "image_plane"
+        },
+        "location": "cell",
+        "model_variant": "default",
+        "path": "results/cluster/image_plane/simple/jax_cpu_na_fp64/local_laptop/parity.json",
+        "record_id": "lifecycle/f500a38246e11252db39",
         "setup_id": "jax_cpu_na_fp64",
         "status": "match"
       },
@@ -1937,6 +1951,20 @@
         "model_variant": "default",
         "path": "results/cluster/source_plane/simple/jax_cpu_na_fp64/hpc_ral_cpu/parity.json",
         "record_id": "lifecycle/8909566077ecf0ba922a",
+        "setup_id": "jax_cpu_na_fp64",
+        "status": "match"
+      },
+      {
+        "host_class": "local_laptop",
+        "instrument": "simple",
+        "likelihood": {
+          "dataset_type": "cluster",
+          "variant": "source_plane"
+        },
+        "location": "cell",
+        "model_variant": "default",
+        "path": "results/cluster/source_plane/simple/jax_cpu_na_fp64/local_laptop/parity.json",
+        "record_id": "lifecycle/5a2660b9e5ba847d6f89",
         "setup_id": "jax_cpu_na_fp64",
         "status": "match"
       },
@@ -7867,7 +7895,7 @@
         "setup_id": "jax_cpu_dense_fp64"
       }
     ],
-    "producer_revision": "93ba0388456e735096b07bba6f80b172f6eb6a16",
+    "producer_revision": "6a027974162c3eb4bc6310bf192fcea07e38c411",
     "project": "autolens_profiling",
     "recommendations": [],
     "records": [
@@ -70733,6 +70761,171 @@
         "decision_id": null,
         "evidence": {
           "fragment": null,
+          "path": "results/cluster/source_plane/simple/jax_cpu_na_fp64/local_laptop/runtime.json"
+        },
+        "figures": [
+          {
+            "kind": "fit",
+            "path": "results/cluster/source_plane/simple/jax_cpu_na_fp64/local_laptop/fit.png",
+            "sha256": "7c083f8b6bbdccecfa7a611c58053b5e36c6d9b81dcfeba8afc7114fb6d9be1a"
+          }
+        ],
+        "host_class": "local_laptop",
+        "id": "lifecycle/41569e1428fffabffe4d",
+        "identity": {
+          "backend": "cpu",
+          "device": "cpu",
+          "hardware_details": {
+            "autotune_cache_entries_at_start": 0,
+            "backend": "cpu",
+            "cache_fresh": true,
+            "cpu_count": 8,
+            "device": "cpu:0",
+            "hostname": "DESKTOP-H143S82",
+            "omp_num_threads": "1",
+            "xla_flags": "--xla_disable_hlo_passes=constant_folding --xla_gpu_autotune_level=0 --xla_gpu_enable_triton_gemm=false"
+          },
+          "library_version": "2026.8.17.1",
+          "precision": "float64",
+          "software": {
+            "PyAutoArray.library_revisions": "5240c7e88618d4bb0d9845e07e3ddf4e18bef1d7",
+            "PyAutoArray.library_versions": "2026.8.17.1",
+            "PyAutoFit.library_revisions": "cc764bf70bcca8015fb6eb2e99cbb1a226a073ad",
+            "PyAutoFit.library_versions": "2026.8.17.1",
+            "PyAutoGalaxy.library_revisions": "9756fa9c1615d18b3e7d21fcb2e2c8e3b5290c63",
+            "PyAutoGalaxy.library_versions": "2026.8.17.1",
+            "PyAutoLens": "2026.8.17.1",
+            "PyAutoLens.library_revisions": "f216a053b87b90d708827fc270eb3de80168eb78",
+            "PyAutoLens.library_versions": "2026.8.17.1",
+            "PyAutoNerves.library_revisions": "3af6de8d6f9262289bd5e9dd2d78e191403332f1",
+            "PyAutoNerves.library_versions": "2026.8.17.1",
+            "autolens_profiling.library_revisions": "20239d48c6ec80174169f21c879864b33a924a54",
+            "finufft.dependency_versions": "2.5.1",
+            "jax.dependency_versions": "0.10.2",
+            "jaxlib.dependency_versions": "0.10.2",
+            "nufftax.dependency_versions": "0.6.1",
+            "numba.dependency_versions": "0.62.1",
+            "numpy.dependency_versions": "2.2.6",
+            "scipy.dependency_versions": "1.17.1"
+          },
+          "unknowns": {}
+        },
+        "instrument": "simple",
+        "likelihood": {
+          "dataset_type": "cluster",
+          "variant": "source_plane"
+        },
+        "limitations": [
+          "undesignated_regime_or_host: host local_laptop inherits the optimal role of designation cluster-source-plane-standard-cpu-many-core (standard regime, cpu_many_core) without its decision_id"
+        ],
+        "location": "cell",
+        "measured_at": "2026-11-25T16:14:40Z",
+        "measurement": "runtime",
+        "method": {
+          "cache_state": null,
+          "id": "legacy/7ccaf802e198af9ef0dd",
+          "repetitions": null,
+          "statistic": "median",
+          "synchronization": null,
+          "unknowns": {
+            "cache_state": "Not recorded in this legacy evidence; no current default substituted.",
+            "repetitions": "Not recorded in this legacy evidence; no current default substituted.",
+            "synchronization": "Not recorded in this legacy evidence; no current default substituted.",
+            "warmup": "Not recorded in this legacy evidence; no current default substituted."
+          },
+          "warmup": null
+        },
+        "metric": "single_jit_median",
+        "model_variant": "default",
+        "pointers": {
+          "full_pipeline_plain.steady_per_call_s": "/jit_phases/full_pipeline_plain/steady_per_call_s",
+          "full_pipeline_solved.steady_per_call_s": "/jit_phases/full_pipeline_solved/steady_per_call_s",
+          "full_pipeline_vmap3.steady_per_call_s": "/jit_phases/full_pipeline_vmap3/steady_per_call_s",
+          "single_jit_block": "/full_pipeline_single_jit",
+          "single_jit_median": "/full_pipeline_single_jit_median",
+          "vmap.batch_time": "/vmap/batch_time",
+          "vmap.per_call": "/vmap/per_call"
+        },
+        "projected_node_throughput": {
+          "basis": "projected",
+          "cpus_per_eval": 8,
+          "devices_per_eval": 0,
+          "hosts": [
+            {
+              "bound_by": "cores",
+              "calls_per_s": 3804.0,
+              "host": "laptop",
+              "host_class": "local_laptop",
+              "limits": {
+                "cores": 1,
+                "memory": 56
+              },
+              "workers": 1
+            }
+          ],
+          "not_modelled": "The sampler's batch ceiling: Nautilus evaluates at most n_batch points in parallel per batch, so a node cannot use more workers than n_batch. Shared memory bandwidth and caches between workers are also not modelled; the declared parallel efficiency stands in for them.",
+          "parallel_efficiency": {
+            "kind": "upper bound",
+            "source": "declared, unmeasured (phase 4 measures)",
+            "value": 1.0
+          },
+          "peak_rss_basis": "in_process_ru_maxrss",
+          "peak_rss_gb": 0.565879,
+          "per_call_s": 0.0002628887332927358,
+          "per_call_source": "vmap.per_call",
+          "status": "projected"
+        },
+        "provenance": {
+          "has_provenance": true,
+          "host": "DESKTOP-H143S82",
+          "measured_at": "2026-11-25T16:14:40Z",
+          "qualified": false,
+          "unknowns": {}
+        },
+        "regime": "standard",
+        "release_pin": "2026.8.17.1",
+        "resources": {
+          "cpus_per_eval": 8,
+          "cpus_per_eval_basis": "jax cpu: NPROC threads in XLA's CPU intra-op pool",
+          "devices_per_eval": 0,
+          "peak_rss_basis": "in_process_ru_maxrss",
+          "peak_rss_gb": 0.565879,
+          "peak_rss_note": "resource.getrusage(RUSAGE_SELF).ru_maxrss when the row was built: this process's peak resident set (children excluded), GB = 1e9 bytes",
+          "source": "row"
+        },
+        "run_id": "legacy/77b68cb1d8b2a6fd3d48",
+        "setup": {
+          "backend": "jax",
+          "device": "cpu",
+          "operator": "na",
+          "precision": "fp64",
+          "threads": null,
+          "transformer": "na"
+        },
+        "setup_id": "jax_cpu_na_fp64",
+        "status": "superseded",
+        "superseded_by": "lifecycle/004001caf29a727421e0",
+        "unit": "s",
+        "validation": {
+          "reason": "Legacy evidence labelled by the phase-0 day-zero rule; not an accepted baseline.",
+          "status": "unreviewed"
+        },
+        "values": {
+          "full_pipeline_plain.steady_per_call_s": 0.0005019797998102149,
+          "full_pipeline_solved.steady_per_call_s": 0.0007913117999123643,
+          "full_pipeline_vmap3.steady_per_call_s": 0.0002628887332927358,
+          "single_jit_block": 0.0007913117999123643,
+          "single_jit_median": 0.0005178004994377261,
+          "vmap.batch_time": 0.0007886661998782075,
+          "vmap.per_call": 0.0002628887332927358
+        }
+      },
+      {
+        "class": "secondary",
+        "day_zero": null,
+        "decision_id": null,
+        "evidence": {
+          "fragment": null,
           "path": "results/interferometer/delaunay/alma/jax_gpu_sparse_fp64_wtilde/hpc_a100/experiments/constant_split/breakdown.json"
         },
         "figures": [],
@@ -95616,6 +95809,104 @@
           "full_pipeline.first_call_s": 4.908011939958669,
           "full_pipeline.lower_s": 6.53830978507176,
           "full_pipeline_vmap3.first_call_s": 39.61934864602517
+        }
+      },
+      {
+        "class": "secondary",
+        "day_zero": null,
+        "decision_id": null,
+        "evidence": {
+          "fragment": null,
+          "path": "results/cluster/source_plane/simple/jax_cpu_na_fp64/local_laptop/parity.json"
+        },
+        "figures": [],
+        "host_class": "local_laptop",
+        "id": "lifecycle/5a2660b9e5ba847d6f89",
+        "identity": {
+          "backend": null,
+          "device": null,
+          "hardware_details": {},
+          "library_version": "2026.8.17.1",
+          "precision": "float64",
+          "software": {
+            "PyAutoLens": "2026.8.17.1"
+          },
+          "unknowns": {
+            "backend": "Not recorded in this legacy evidence; no current default substituted.",
+            "device": "Not recorded in this legacy evidence; no current default substituted."
+          }
+        },
+        "instrument": "simple",
+        "likelihood": {
+          "dataset_type": "cluster",
+          "variant": "source_plane"
+        },
+        "limitations": [
+          "undesignated_regime_or_host: host local_laptop inherits the optimal role of designation cluster-source-plane-standard-cpu-many-core (standard regime, cpu_many_core) without its decision_id"
+        ],
+        "location": "cell",
+        "measured_at": "2026-11-25T16:14:40Z",
+        "measurement": "parity",
+        "method": {
+          "cache_state": null,
+          "id": "parity-witness",
+          "repetitions": null,
+          "statistic": null,
+          "synchronization": null,
+          "unknowns": {
+            "cache_state": "A parity witness compares one log-likelihood evaluation; not a timing.",
+            "repetitions": "A parity witness compares one log-likelihood evaluation; not a timing.",
+            "statistic": "A parity witness compares one log-likelihood evaluation; not a timing.",
+            "synchronization": "A parity witness compares one log-likelihood evaluation; not a timing.",
+            "warmup": "A parity witness compares one log-likelihood evaluation; not a timing."
+          },
+          "warmup": null
+        },
+        "metric": "abs_delta_log_likelihood",
+        "model_variant": "default",
+        "parity": {
+          "log_likelihood": 32.71169393827806,
+          "reference": {
+            "date": "2026-11-25",
+            "source": "eager NumPy AnalysisPoint(use_jax=False, FitPositionsSourceSolved) summed over 2 systems in the same process: same dataset, model, instance and solver"
+          },
+          "reference_log_likelihood": 32.71169393369787,
+          "status": "match"
+        },
+        "pointers": {
+          "tolerance": "/tolerance"
+        },
+        "provenance": {
+          "has_provenance": false,
+          "host": null,
+          "measured_at": "2026-11-25T16:14:40Z",
+          "qualified": false,
+          "unknowns": {
+            "host": "Not recorded in this legacy evidence; no current default substituted."
+          }
+        },
+        "regime": "standard",
+        "release_pin": "2026.8.17.1",
+        "run_id": "parity/47b2b6b3ee8757114bbb",
+        "setup": {
+          "backend": "jax",
+          "device": "cpu",
+          "operator": "na",
+          "precision": "fp64",
+          "threads": null,
+          "transformer": "na"
+        },
+        "setup_id": "jax_cpu_na_fp64",
+        "status": "superseded",
+        "superseded_by": "lifecycle/8909566077ecf0ba922a",
+        "unit": "dimensionless",
+        "validation": {
+          "reason": "Parity witness status match (|delta log L| against tolerance, recorded by the producing run); not an accepted baseline.",
+          "status": "unreviewed"
+        },
+        "values": {
+          "abs_delta_log_likelihood": 4.580186896419036e-09,
+          "tolerance": 0.0032711693933697877
         }
       },
       {
@@ -138568,6 +138859,143 @@
           "sparse_triplets.compile_s": 0.06837355700554326,
           "sparse_triplets.first_call_s": 0.0011366799590177834,
           "sparse_triplets.lower_s": 0.01603431801777333
+        }
+      },
+      {
+        "class": "secondary",
+        "day_zero": null,
+        "decision_id": null,
+        "evidence": {
+          "fragment": null,
+          "path": "results/cluster/source_plane/simple/jax_cpu_na_fp64/local_laptop/runtime.json"
+        },
+        "figures": [
+          {
+            "kind": "fit",
+            "path": "results/cluster/source_plane/simple/jax_cpu_na_fp64/local_laptop/fit.png",
+            "sha256": "7c083f8b6bbdccecfa7a611c58053b5e36c6d9b81dcfeba8afc7114fb6d9be1a"
+          }
+        ],
+        "host_class": "local_laptop",
+        "id": "lifecycle/88c44f55fb1f1524607d",
+        "identity": {
+          "backend": "cpu",
+          "device": "cpu",
+          "hardware_details": {
+            "autotune_cache_entries_at_start": 0,
+            "backend": "cpu",
+            "cache_fresh": true,
+            "cpu_count": 8,
+            "device": "cpu:0",
+            "hostname": "DESKTOP-H143S82",
+            "omp_num_threads": "1",
+            "xla_flags": "--xla_disable_hlo_passes=constant_folding --xla_gpu_autotune_level=0 --xla_gpu_enable_triton_gemm=false"
+          },
+          "library_version": "2026.8.17.1",
+          "precision": "float64",
+          "software": {
+            "PyAutoArray.library_revisions": "5240c7e88618d4bb0d9845e07e3ddf4e18bef1d7",
+            "PyAutoArray.library_versions": "2026.8.17.1",
+            "PyAutoFit.library_revisions": "cc764bf70bcca8015fb6eb2e99cbb1a226a073ad",
+            "PyAutoFit.library_versions": "2026.8.17.1",
+            "PyAutoGalaxy.library_revisions": "9756fa9c1615d18b3e7d21fcb2e2c8e3b5290c63",
+            "PyAutoGalaxy.library_versions": "2026.8.17.1",
+            "PyAutoLens": "2026.8.17.1",
+            "PyAutoLens.library_revisions": "f216a053b87b90d708827fc270eb3de80168eb78",
+            "PyAutoLens.library_versions": "2026.8.17.1",
+            "PyAutoNerves.library_revisions": "3af6de8d6f9262289bd5e9dd2d78e191403332f1",
+            "PyAutoNerves.library_versions": "2026.8.17.1",
+            "autolens_profiling.library_revisions": "20239d48c6ec80174169f21c879864b33a924a54",
+            "finufft.dependency_versions": "2.5.1",
+            "jax.dependency_versions": "0.10.2",
+            "jaxlib.dependency_versions": "0.10.2",
+            "nufftax.dependency_versions": "0.6.1",
+            "numba.dependency_versions": "0.62.1",
+            "numpy.dependency_versions": "2.2.6",
+            "scipy.dependency_versions": "1.17.1"
+          },
+          "unknowns": {}
+        },
+        "instrument": "simple",
+        "likelihood": {
+          "dataset_type": "cluster",
+          "variant": "source_plane"
+        },
+        "limitations": [
+          "undesignated_regime_or_host: host local_laptop inherits the optimal role of designation cluster-source-plane-standard-cpu-many-core (standard regime, cpu_many_core) without its decision_id"
+        ],
+        "location": "cell",
+        "measured_at": "2026-11-25T16:14:40Z",
+        "measurement": "compile",
+        "method": {
+          "cache_state": null,
+          "id": "legacy/c8727dce967d1a836549",
+          "repetitions": null,
+          "statistic": null,
+          "synchronization": null,
+          "unknowns": {
+            "cache_state": "Not recorded in this legacy evidence; no current default substituted.",
+            "repetitions": "Not recorded in this legacy evidence; no current default substituted.",
+            "statistic": "Not recorded in this legacy evidence; no current default substituted.",
+            "synchronization": "Not recorded in this legacy evidence; no current default substituted.",
+            "warmup": "Not recorded in this legacy evidence; no current default substituted."
+          },
+          "warmup": null
+        },
+        "metric": "full_pipeline_plain.compile_s",
+        "model_variant": "default",
+        "pointers": {
+          "full_pipeline_plain.compile_s": "/jit_phases/full_pipeline_plain/compile_s",
+          "full_pipeline_plain.first_call_s": "/jit_phases/full_pipeline_plain/first_call_s",
+          "full_pipeline_plain.lower_s": "/jit_phases/full_pipeline_plain/lower_s",
+          "full_pipeline_solved.compile_s": "/jit_phases/full_pipeline_solved/compile_s",
+          "full_pipeline_solved.first_call_s": "/jit_phases/full_pipeline_solved/first_call_s",
+          "full_pipeline_solved.lower_s": "/jit_phases/full_pipeline_solved/lower_s",
+          "full_pipeline_vmap3.first_call_s": "/jit_phases/full_pipeline_vmap3/first_call_s"
+        },
+        "provenance": {
+          "has_provenance": true,
+          "host": "DESKTOP-H143S82",
+          "measured_at": "2026-11-25T16:14:40Z",
+          "qualified": false,
+          "unknowns": {}
+        },
+        "regime": "standard",
+        "release_pin": "2026.8.17.1",
+        "resources": {
+          "cpus_per_eval": 8,
+          "cpus_per_eval_basis": "jax cpu: NPROC threads in XLA's CPU intra-op pool",
+          "devices_per_eval": 0,
+          "peak_rss_basis": "in_process_ru_maxrss",
+          "peak_rss_gb": 0.565879,
+          "peak_rss_note": "resource.getrusage(RUSAGE_SELF).ru_maxrss when the row was built: this process's peak resident set (children excluded), GB = 1e9 bytes",
+          "source": "row"
+        },
+        "run_id": "legacy/77b68cb1d8b2a6fd3d48",
+        "setup": {
+          "backend": "jax",
+          "device": "cpu",
+          "operator": "na",
+          "precision": "fp64",
+          "threads": null,
+          "transformer": "na"
+        },
+        "setup_id": "jax_cpu_na_fp64",
+        "status": "superseded",
+        "superseded_by": "lifecycle/86dc8ba07787d464aee1",
+        "unit": "s",
+        "validation": {
+          "reason": "Legacy evidence labelled by the phase-0 day-zero rule; not an accepted baseline.",
+          "status": "unreviewed"
+        },
+        "values": {
+          "full_pipeline_plain.compile_s": 0.2552234889990359,
+          "full_pipeline_plain.first_call_s": 0.001965438001207076,
+          "full_pipeline_plain.lower_s": 4.091054745000292,
+          "full_pipeline_solved.compile_s": 0.3463946370029589,
+          "full_pipeline_solved.first_call_s": 0.0026704490010160953,
+          "full_pipeline_solved.lower_s": 11.547851712999545,
+          "full_pipeline_vmap3.first_call_s": 11.175212531001307
         }
       },
       {
@@ -185639,6 +186067,171 @@
       },
       {
         "class": "secondary",
+        "day_zero": null,
+        "decision_id": null,
+        "evidence": {
+          "fragment": null,
+          "path": "results/cluster/image_plane/simple/jax_cpu_na_fp64/local_laptop/runtime.json"
+        },
+        "figures": [
+          {
+            "kind": "fit",
+            "path": "results/cluster/image_plane/simple/jax_cpu_na_fp64/local_laptop/fit.png",
+            "sha256": "b3b18935d8081791ed4cd2aefc3b9c5cd3a136b61702dfe34cbe923b4c228478"
+          }
+        ],
+        "host_class": "local_laptop",
+        "id": "lifecycle/b48b04f905afc10647f1",
+        "identity": {
+          "backend": "cpu",
+          "device": "cpu",
+          "hardware_details": {
+            "autotune_cache_entries_at_start": 0,
+            "backend": "cpu",
+            "cache_fresh": true,
+            "cpu_count": 8,
+            "device": "cpu:0",
+            "hostname": "DESKTOP-H143S82",
+            "omp_num_threads": "1",
+            "xla_flags": "--xla_disable_hlo_passes=constant_folding --xla_gpu_autotune_level=0 --xla_gpu_enable_triton_gemm=false"
+          },
+          "library_version": "2026.8.17.1",
+          "precision": "float64",
+          "software": {
+            "PyAutoArray.library_revisions": "5240c7e88618d4bb0d9845e07e3ddf4e18bef1d7",
+            "PyAutoArray.library_versions": "2026.8.17.1",
+            "PyAutoFit.library_revisions": "cc764bf70bcca8015fb6eb2e99cbb1a226a073ad",
+            "PyAutoFit.library_versions": "2026.8.17.1",
+            "PyAutoGalaxy.library_revisions": "9756fa9c1615d18b3e7d21fcb2e2c8e3b5290c63",
+            "PyAutoGalaxy.library_versions": "2026.8.17.1",
+            "PyAutoLens": "2026.8.17.1",
+            "PyAutoLens.library_revisions": "f216a053b87b90d708827fc270eb3de80168eb78",
+            "PyAutoLens.library_versions": "2026.8.17.1",
+            "PyAutoNerves.library_revisions": "3af6de8d6f9262289bd5e9dd2d78e191403332f1",
+            "PyAutoNerves.library_versions": "2026.8.17.1",
+            "autolens_profiling.library_revisions": "20239d48c6ec80174169f21c879864b33a924a54",
+            "finufft.dependency_versions": "2.5.1",
+            "jax.dependency_versions": "0.10.2",
+            "jaxlib.dependency_versions": "0.10.2",
+            "nufftax.dependency_versions": "0.6.1",
+            "numba.dependency_versions": "0.62.1",
+            "numpy.dependency_versions": "2.2.6",
+            "scipy.dependency_versions": "1.17.1"
+          },
+          "unknowns": {}
+        },
+        "instrument": "simple",
+        "likelihood": {
+          "dataset_type": "cluster",
+          "variant": "image_plane"
+        },
+        "limitations": [
+          "undesignated_regime_or_host: host local_laptop inherits the optimal role of designation cluster-image-plane-standard-cpu-many-core (standard regime, cpu_many_core) without its decision_id"
+        ],
+        "location": "cell",
+        "measured_at": "2026-11-25T16:21:15Z",
+        "measurement": "runtime",
+        "method": {
+          "cache_state": null,
+          "id": "legacy/7ccaf802e198af9ef0dd",
+          "repetitions": null,
+          "statistic": "median",
+          "synchronization": null,
+          "unknowns": {
+            "cache_state": "Not recorded in this legacy evidence; no current default substituted.",
+            "repetitions": "Not recorded in this legacy evidence; no current default substituted.",
+            "synchronization": "Not recorded in this legacy evidence; no current default substituted.",
+            "warmup": "Not recorded in this legacy evidence; no current default substituted."
+          },
+          "warmup": null
+        },
+        "metric": "single_jit_median",
+        "model_variant": "default",
+        "pointers": {
+          "full_pipeline_plain.steady_per_call_s": "/jit_phases/full_pipeline_plain/steady_per_call_s",
+          "full_pipeline_solved.steady_per_call_s": "/jit_phases/full_pipeline_solved/steady_per_call_s",
+          "full_pipeline_vmap3.steady_per_call_s": "/jit_phases/full_pipeline_vmap3/steady_per_call_s",
+          "single_jit_block": "/full_pipeline_single_jit",
+          "single_jit_median": "/full_pipeline_single_jit_median",
+          "vmap.batch_time": "/vmap/batch_time",
+          "vmap.per_call": "/vmap/per_call"
+        },
+        "projected_node_throughput": {
+          "basis": "projected",
+          "cpus_per_eval": 8,
+          "devices_per_eval": 0,
+          "hosts": [
+            {
+              "bound_by": "cores",
+              "calls_per_s": 201.8,
+              "host": "laptop",
+              "host_class": "local_laptop",
+              "limits": {
+                "cores": 1,
+                "memory": 12
+              },
+              "workers": 1
+            }
+          ],
+          "not_modelled": "The sampler's batch ceiling: Nautilus evaluates at most n_batch points in parallel per batch, so a node cannot use more workers than n_batch. Shared memory bandwidth and caches between workers are also not modelled; the declared parallel efficiency stands in for them.",
+          "parallel_efficiency": {
+            "kind": "upper bound",
+            "source": "declared, unmeasured (phase 4 measures)",
+            "value": 1.0
+          },
+          "peak_rss_basis": "in_process_ru_maxrss",
+          "peak_rss_gb": 2.634887,
+          "per_call_s": 0.00495426344423322,
+          "per_call_source": "vmap.per_call",
+          "status": "projected"
+        },
+        "provenance": {
+          "has_provenance": true,
+          "host": "DESKTOP-H143S82",
+          "measured_at": "2026-11-25T16:21:15Z",
+          "qualified": false,
+          "unknowns": {}
+        },
+        "regime": "standard",
+        "release_pin": "2026.8.17.1",
+        "resources": {
+          "cpus_per_eval": 8,
+          "cpus_per_eval_basis": "jax cpu: NPROC threads in XLA's CPU intra-op pool",
+          "devices_per_eval": 0,
+          "peak_rss_basis": "in_process_ru_maxrss",
+          "peak_rss_gb": 2.634887,
+          "peak_rss_note": "resource.getrusage(RUSAGE_SELF).ru_maxrss when the row was built: this process's peak resident set (children excluded), GB = 1e9 bytes",
+          "source": "row"
+        },
+        "run_id": "legacy/c3f3ac511e8128e33344",
+        "setup": {
+          "backend": "jax",
+          "device": "cpu",
+          "operator": "na",
+          "precision": "fp64",
+          "threads": null,
+          "transformer": "na"
+        },
+        "setup_id": "jax_cpu_na_fp64",
+        "status": "superseded",
+        "superseded_by": "lifecycle/86d6277f36e3c8ec1d2f",
+        "unit": "s",
+        "validation": {
+          "reason": "Legacy evidence labelled by the phase-0 day-zero rule; not an accepted baseline.",
+          "status": "unreviewed"
+        },
+        "values": {
+          "full_pipeline_plain.steady_per_call_s": 0.007427890000447708,
+          "full_pipeline_solved.steady_per_call_s": 0.011344428334268741,
+          "full_pipeline_vmap3.steady_per_call_s": 0.00495426344423322,
+          "single_jit_block": 0.011344428334268741,
+          "single_jit_median": 0.008917552999264444,
+          "vmap.batch_time": 0.01486279033269966,
+          "vmap.per_call": 0.00495426344423322
+        }
+      },
+      {
+        "class": "secondary",
         "day_zero": "2026.10.25.1",
         "decision_id": "imaging-delaunay-standard-cpu-many-core",
         "evidence": {
@@ -231984,6 +232577,143 @@
         }
       },
       {
+        "class": "secondary",
+        "day_zero": null,
+        "decision_id": null,
+        "evidence": {
+          "fragment": null,
+          "path": "results/cluster/image_plane/simple/jax_cpu_na_fp64/local_laptop/runtime.json"
+        },
+        "figures": [
+          {
+            "kind": "fit",
+            "path": "results/cluster/image_plane/simple/jax_cpu_na_fp64/local_laptop/fit.png",
+            "sha256": "b3b18935d8081791ed4cd2aefc3b9c5cd3a136b61702dfe34cbe923b4c228478"
+          }
+        ],
+        "host_class": "local_laptop",
+        "id": "lifecycle/df67318f9743f3b4233f",
+        "identity": {
+          "backend": "cpu",
+          "device": "cpu",
+          "hardware_details": {
+            "autotune_cache_entries_at_start": 0,
+            "backend": "cpu",
+            "cache_fresh": true,
+            "cpu_count": 8,
+            "device": "cpu:0",
+            "hostname": "DESKTOP-H143S82",
+            "omp_num_threads": "1",
+            "xla_flags": "--xla_disable_hlo_passes=constant_folding --xla_gpu_autotune_level=0 --xla_gpu_enable_triton_gemm=false"
+          },
+          "library_version": "2026.8.17.1",
+          "precision": "float64",
+          "software": {
+            "PyAutoArray.library_revisions": "5240c7e88618d4bb0d9845e07e3ddf4e18bef1d7",
+            "PyAutoArray.library_versions": "2026.8.17.1",
+            "PyAutoFit.library_revisions": "cc764bf70bcca8015fb6eb2e99cbb1a226a073ad",
+            "PyAutoFit.library_versions": "2026.8.17.1",
+            "PyAutoGalaxy.library_revisions": "9756fa9c1615d18b3e7d21fcb2e2c8e3b5290c63",
+            "PyAutoGalaxy.library_versions": "2026.8.17.1",
+            "PyAutoLens": "2026.8.17.1",
+            "PyAutoLens.library_revisions": "f216a053b87b90d708827fc270eb3de80168eb78",
+            "PyAutoLens.library_versions": "2026.8.17.1",
+            "PyAutoNerves.library_revisions": "3af6de8d6f9262289bd5e9dd2d78e191403332f1",
+            "PyAutoNerves.library_versions": "2026.8.17.1",
+            "autolens_profiling.library_revisions": "20239d48c6ec80174169f21c879864b33a924a54",
+            "finufft.dependency_versions": "2.5.1",
+            "jax.dependency_versions": "0.10.2",
+            "jaxlib.dependency_versions": "0.10.2",
+            "nufftax.dependency_versions": "0.6.1",
+            "numba.dependency_versions": "0.62.1",
+            "numpy.dependency_versions": "2.2.6",
+            "scipy.dependency_versions": "1.17.1"
+          },
+          "unknowns": {}
+        },
+        "instrument": "simple",
+        "likelihood": {
+          "dataset_type": "cluster",
+          "variant": "image_plane"
+        },
+        "limitations": [
+          "undesignated_regime_or_host: host local_laptop inherits the optimal role of designation cluster-image-plane-standard-cpu-many-core (standard regime, cpu_many_core) without its decision_id"
+        ],
+        "location": "cell",
+        "measured_at": "2026-11-25T16:21:15Z",
+        "measurement": "compile",
+        "method": {
+          "cache_state": null,
+          "id": "legacy/c8727dce967d1a836549",
+          "repetitions": null,
+          "statistic": null,
+          "synchronization": null,
+          "unknowns": {
+            "cache_state": "Not recorded in this legacy evidence; no current default substituted.",
+            "repetitions": "Not recorded in this legacy evidence; no current default substituted.",
+            "statistic": "Not recorded in this legacy evidence; no current default substituted.",
+            "synchronization": "Not recorded in this legacy evidence; no current default substituted.",
+            "warmup": "Not recorded in this legacy evidence; no current default substituted."
+          },
+          "warmup": null
+        },
+        "metric": "full_pipeline_plain.compile_s",
+        "model_variant": "default",
+        "pointers": {
+          "full_pipeline_plain.compile_s": "/jit_phases/full_pipeline_plain/compile_s",
+          "full_pipeline_plain.first_call_s": "/jit_phases/full_pipeline_plain/first_call_s",
+          "full_pipeline_plain.lower_s": "/jit_phases/full_pipeline_plain/lower_s",
+          "full_pipeline_solved.compile_s": "/jit_phases/full_pipeline_solved/compile_s",
+          "full_pipeline_solved.first_call_s": "/jit_phases/full_pipeline_solved/first_call_s",
+          "full_pipeline_solved.lower_s": "/jit_phases/full_pipeline_solved/lower_s",
+          "full_pipeline_vmap3.first_call_s": "/jit_phases/full_pipeline_vmap3/first_call_s"
+        },
+        "provenance": {
+          "has_provenance": true,
+          "host": "DESKTOP-H143S82",
+          "measured_at": "2026-11-25T16:21:15Z",
+          "qualified": false,
+          "unknowns": {}
+        },
+        "regime": "standard",
+        "release_pin": "2026.8.17.1",
+        "resources": {
+          "cpus_per_eval": 8,
+          "cpus_per_eval_basis": "jax cpu: NPROC threads in XLA's CPU intra-op pool",
+          "devices_per_eval": 0,
+          "peak_rss_basis": "in_process_ru_maxrss",
+          "peak_rss_gb": 2.634887,
+          "peak_rss_note": "resource.getrusage(RUSAGE_SELF).ru_maxrss when the row was built: this process's peak resident set (children excluded), GB = 1e9 bytes",
+          "source": "row"
+        },
+        "run_id": "legacy/c3f3ac511e8128e33344",
+        "setup": {
+          "backend": "jax",
+          "device": "cpu",
+          "operator": "na",
+          "precision": "fp64",
+          "threads": null,
+          "transformer": "na"
+        },
+        "setup_id": "jax_cpu_na_fp64",
+        "status": "superseded",
+        "superseded_by": "lifecycle/ccf6774f9d486d6e4c9c",
+        "unit": "s",
+        "validation": {
+          "reason": "Legacy evidence labelled by the phase-0 day-zero rule; not an accepted baseline.",
+          "status": "unreviewed"
+        },
+        "values": {
+          "full_pipeline_plain.compile_s": 2.249049878999358,
+          "full_pipeline_plain.first_call_s": 0.008362533000763506,
+          "full_pipeline_plain.lower_s": 79.63654223299818,
+          "full_pipeline_solved.compile_s": 3.3456347819992516,
+          "full_pipeline_solved.first_call_s": 0.013657634997798596,
+          "full_pipeline_solved.lower_s": 67.99136060299861,
+          "full_pipeline_vmap3.first_call_s": 216.1776969780003
+        }
+      },
+      {
         "class": "optimal",
         "day_zero": null,
         "decision_id": "group-delaunay-standard-gpu-a100",
@@ -255015,6 +255745,104 @@
           "full_pipeline.first_call_s": 5.897848395979963,
           "full_pipeline.lower_s": 0.42251910199411213,
           "full_pipeline_vmap3.first_call_s": 20.123799526016228
+        }
+      },
+      {
+        "class": "secondary",
+        "day_zero": null,
+        "decision_id": null,
+        "evidence": {
+          "fragment": null,
+          "path": "results/cluster/image_plane/simple/jax_cpu_na_fp64/local_laptop/parity.json"
+        },
+        "figures": [],
+        "host_class": "local_laptop",
+        "id": "lifecycle/f500a38246e11252db39",
+        "identity": {
+          "backend": null,
+          "device": null,
+          "hardware_details": {},
+          "library_version": "2026.8.17.1",
+          "precision": "float64",
+          "software": {
+            "PyAutoLens": "2026.8.17.1"
+          },
+          "unknowns": {
+            "backend": "Not recorded in this legacy evidence; no current default substituted.",
+            "device": "Not recorded in this legacy evidence; no current default substituted."
+          }
+        },
+        "instrument": "simple",
+        "likelihood": {
+          "dataset_type": "cluster",
+          "variant": "image_plane"
+        },
+        "limitations": [
+          "undesignated_regime_or_host: host local_laptop inherits the optimal role of designation cluster-image-plane-standard-cpu-many-core (standard regime, cpu_many_core) without its decision_id"
+        ],
+        "location": "cell",
+        "measured_at": "2026-11-25T16:21:15Z",
+        "measurement": "parity",
+        "method": {
+          "cache_state": null,
+          "id": "parity-witness",
+          "repetitions": null,
+          "statistic": null,
+          "synchronization": null,
+          "unknowns": {
+            "cache_state": "A parity witness compares one log-likelihood evaluation; not a timing.",
+            "repetitions": "A parity witness compares one log-likelihood evaluation; not a timing.",
+            "statistic": "A parity witness compares one log-likelihood evaluation; not a timing.",
+            "synchronization": "A parity witness compares one log-likelihood evaluation; not a timing.",
+            "warmup": "A parity witness compares one log-likelihood evaluation; not a timing."
+          },
+          "warmup": null
+        },
+        "metric": "abs_delta_log_likelihood",
+        "model_variant": "default",
+        "parity": {
+          "log_likelihood": -152787.8206474597,
+          "reference": {
+            "date": "2026-11-25",
+            "source": "eager NumPy AnalysisPoint(use_jax=False, FitPositionsImagePairRepeatSolved) summed over 2 systems in the same process: same dataset, model, instance and solver"
+          },
+          "reference_log_likelihood": -152787.82064745954,
+          "status": "match"
+        },
+        "pointers": {
+          "tolerance": "/tolerance"
+        },
+        "provenance": {
+          "has_provenance": false,
+          "host": null,
+          "measured_at": "2026-11-25T16:21:15Z",
+          "qualified": false,
+          "unknowns": {
+            "host": "Not recorded in this legacy evidence; no current default substituted."
+          }
+        },
+        "regime": "standard",
+        "release_pin": "2026.8.17.1",
+        "run_id": "parity/c104714edf384c090f23",
+        "setup": {
+          "backend": "jax",
+          "device": "cpu",
+          "operator": "na",
+          "precision": "fp64",
+          "threads": null,
+          "transformer": "na"
+        },
+        "setup_id": "jax_cpu_na_fp64",
+        "status": "superseded",
+        "superseded_by": "lifecycle/0533eec58c25ebd8637b",
+        "unit": "dimensionless",
+        "validation": {
+          "reason": "Parity witness status match (|delta log L| against tolerance, recorded by the producing run); not an accepted baseline.",
+          "status": "unreviewed"
+        },
+        "values": {
+          "abs_delta_log_likelihood": 1.7462298274040222e-10,
+          "tolerance": 15.278782064745954
         }
       },
       {
